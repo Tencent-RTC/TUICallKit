@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Video Call</string>
+    <string name="app_toast_login_success">Logged in</string>
+    <string name="app_toast_login_fail">Login failed [%d]%s</string>
+    <string name="working">Running</string>
+    <string name="self_userId">your userId:</string>
+    <string name="tips_search">"Search for a registered user\n\t\t\t\t\t\t to start a call."</string>
+    <string name="toast_video_call">Video Call:%s</string>
+    <string name="toast_voice_call">Audio Call:%s</string>
+    <string name="toast_not_call_myself">You cannot call yourself.</string>
+    <string name="call_self_format">Your userId %s</string>
+    <string name="audio_call">Audio Call</string>
+    <string name="video_call">Video Call</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="trtccalling_search_call_hint">User id</string>
+</resources>

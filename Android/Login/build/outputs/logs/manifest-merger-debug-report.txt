@@ -1,0 +1,65 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:1:1-23:12
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:1:1-23:12
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:1:1-23:12
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:1:1-23:12
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:1:1-23:12
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:1:1-23:12
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:1:1-23:12
+	package
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:2:5-39
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:1:1-23:12
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:1:1-23:12
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:1:11-69
+application
+ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:5:5-21:19
+activity#com.tencent.liteav.login.ui.LoginActivity
+ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:6:9-14:20
+	android:screenOrientation
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:9:13-49
+	android:theme
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:8:13-63
+	android:name
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:7:13-45
+intent-filter#action:name:com.tencent.liteav.action.startLogin+category:name:android.intent.category.DEFAULT
+ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:10:13-13:29
+action#com.tencent.liteav.action.startLogin
+ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:11:17-79
+	android:name
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:11:25-76
+category#android.intent.category.DEFAULT
+ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:12:17-76
+	android:name
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:12:27-73
+activity#com.tencent.liteav.login.ui.ProfileActivity
+ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:16:9-20:20
+	android:screenOrientation
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:19:13-49
+	android:theme
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:18:13-63
+	android:name
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:17:13-47
+uses-sdk
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml

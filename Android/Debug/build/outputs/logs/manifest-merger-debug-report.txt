@@ -1,0 +1,39 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml:1:1-6:12
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml:1:1-6:12
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml:1:1-6:12
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml:1:1-6:12
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml:1:1-6:12
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml:1:1-6:12
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml:1:1-6:12
+	package
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml:1:11-45
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml:1:1-6:12
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml:1:1-6:12
+	android:versionCode
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml:1:1-6:12
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml
+application
+ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml:4:5-32
+uses-sdk
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml
+INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml
+		ADDED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml
+		INJECTED from /Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Debug/src/main/AndroidManifest.xml

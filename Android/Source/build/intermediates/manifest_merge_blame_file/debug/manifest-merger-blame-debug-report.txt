@@ -1,0 +1,37 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.tencent.liteav.trtccalling"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="19"
+8-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Source/src/main/AndroidManifest.xml
+9        android:targetSdkVersion="26" />
+9-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Source/src/main/AndroidManifest.xml
+10
+11    <application>
+11-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Source/src/main/AndroidManifest.xml:5:5-16:19
+12        <activity
+12-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Source/src/main/AndroidManifest.xml:6:9-10:66
+13            android:name="com.tencent.liteav.trtccalling.ui.videocall.TRTCVideoCallActivity"
+13-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Source/src/main/AndroidManifest.xml:7:13-93
+14            android:launchMode="singleTop"
+14-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Source/src/main/AndroidManifest.xml:8:13-43
+15            android:screenOrientation="portrait"
+15-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Source/src/main/AndroidManifest.xml:9:13-49
+16            android:theme="@style/Theme.AppCompat.NoActionBar" />
+16-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Source/src/main/AndroidManifest.xml:10:13-63
+17        <activity
+17-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Source/src/main/AndroidManifest.xml:11:9-15:66
+18            android:name="com.tencent.liteav.trtccalling.ui.audiocall.TRTCAudioCallActivity"
+18-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Source/src/main/AndroidManifest.xml:12:13-63
+19            android:launchMode="singleTop"
+19-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Source/src/main/AndroidManifest.xml:13:13-43
+20            android:screenOrientation="portrait"
+20-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Source/src/main/AndroidManifest.xml:14:13-49
+21            android:theme="@style/Theme.AppCompat.NoActionBar" />
+21-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Source/src/main/AndroidManifest.xml:15:13-63
+22    </application>
+23
+24</manifest>

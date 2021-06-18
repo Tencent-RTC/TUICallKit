@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">音视频通话</string>
+    <string name="app_toast_login_success">登录成功</string>
+    <string name="app_toast_login_fail">登录IM失败，所有功能不可用[%d]%s</string>
+    <string name="working">正在运行中</string>
+    <string name="self_userId">您的userId:</string>
+    <string name="tips_search">搜索添加已注册用户\n\t\t\t以发起通话</string>
+    <string name="toast_video_call">视频呼叫:%s</string>
+    <string name="toast_voice_call">语音呼叫:%s</string>
+    <string name="toast_not_call_myself">不能呼叫自己</string>
+    <string name="call_self_format">您的userId: %s</string>
+    <string name="audio_call">语音通话</string>
+    <string name="video_call">视频通话</string>
+    <string name="btn_cancel">取消</string>
+    <string name="trtccalling_search_call_hint">搜索 userId</string>
+</resources>

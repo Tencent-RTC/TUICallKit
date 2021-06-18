@@ -1,0 +1,6 @@
+include ':App'
+include ':Source'
+include ':audioeffectsettingkit'
+include ':Beauty'
+include ':Debug'
+include ':Login'

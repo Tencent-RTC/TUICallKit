@@ -1,0 +1,45 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.tencent.liteav.login"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="19"
+8-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+9        android:targetSdkVersion="26" />
+9-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml
+10
+11    <application>
+11-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:5:5-21:19
+12        <activity
+12-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:6:9-14:20
+13            android:name="com.tencent.liteav.login.ui.LoginActivity"
+13-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:7:13-45
+14            android:screenOrientation="portrait"
+14-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:9:13-49
+15            android:theme="@style/Theme.AppCompat.NoActionBar" >
+15-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:8:13-63
+16            <intent-filter>
+16-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:10:13-13:29
+17                <action android:name="com.tencent.liteav.action.startLogin" />
+17-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:11:17-79
+17-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:11:25-76
+18
+19                <category android:name="android.intent.category.DEFAULT" />
+19-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:12:17-76
+19-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:12:27-73
+20            </intent-filter>
+21        </activity>
+22        <activity
+22-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:16:9-20:20
+23            android:name="com.tencent.liteav.login.ui.ProfileActivity"
+23-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:17:13-47
+24            android:screenOrientation="portrait"
+24-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:19:13-49
+25            android:theme="@style/Theme.AppCompat.NoActionBar" >
+25-->/Users/reneechai/Downloads/LiteAVSDK_TRTC_Scene_Android_8.9.10307/TUICalling/Login/src/main/AndroidManifest.xml:18:13-63
+26        </activity>
+27    </application>
+28
+29</manifest>
