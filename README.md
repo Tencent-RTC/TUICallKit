@@ -16,9 +16,6 @@
 </tr>
 </table>
 
-![img](https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/video1.gif)
-![img](https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/video2.gif)
-
 ### 实时语音通话
 
 <table>
