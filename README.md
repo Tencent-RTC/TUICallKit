@@ -12,8 +12,8 @@
    <th>被叫接听</th>
  </tr>
 <tr>
-<td><img src="video1.gif"/></td>
-<td><img src="video2.gif"/></td>
+<td><img src="video1.gif" width="300px" height="640px"/></td>
+<td><img src="video2.gif" width="300px" height="640px"/></td>
 </tr>
 </table>
 
@@ -25,8 +25,8 @@
    <th>被叫接听</th>
  </tr>
 <tr>
-<td><img src="audio1.gif"/></td>
-<td><img src="audio2.gif"/></td>
+<td><img src="audio1.gif" width="300px" height="640px"/></td>
+<td><img src="audio2.gif" width="300px" height="640px"/></td>
 </tr>
 </table>
 
