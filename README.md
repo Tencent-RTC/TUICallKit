@@ -1,6 +1,35 @@
 
 # 实时语音/视频通话
 
+
+## 效果演示
+
+### 实时视频通话
+
+<table>
+<tr>
+   <th>主动呼叫</th>
+   <th>被叫接听</th>
+ </tr>
+<tr>
+<td><img src="video1.gif"/></td>
+<td><img src="video2.gif"/></td>
+</tr>
+</table>
+
+### 实时语音通话
+
+<table>
+<tr>
+   <th>主动呼叫</th>
+   <th>被叫接听</th>
+ </tr>
+<tr>
+<td><img src="audio1.gif"/></td>
+<td><img src="audio2.gif"/></td>
+</tr>
+</table>
+
 ## 应用地址
 
 ### iOS
