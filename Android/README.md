@@ -51,29 +51,30 @@ TUICalling
 1. 在 dependencies 中添加 SDK 的依赖。
   - 若使用3.x版本的 com.android.tools.build:gradle 工具，请执行以下命令：
 
-	```
-	dependencies {
-    	implementation 'com.tencent.liteav:LiteAVSDK_TRTC:latest.release'
-	}
-	```
+```
+dependencies {
+    implementation 'com.tencent.liteav:LiteAVSDK_TRTC:latest.release'
+}
+```
 
   - 若使用2.x版本的 com.android.tools.build:gradle 工具，请执行以下命令：
 
-	```
-	dependencies {
-	    compile 'com.tencent.liteav:LiteAVSDK_TRTC:latest.release'
-	}
-	```
+```
+dependencies {
+    compile 'com.tencent.liteav:LiteAVSDK_TRTC:latest.release'
+}
+```
 
 2. 在 defaultConfig 中，指定 App 使用的 CPU 架构。
 
-	```
-	defaultConfig {
-    	ndk {
-        	abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"
-    	}
-	}
-	```
+```
+defaultConfig {
+    ndk {
+        abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"
+    }
+}
+```
+
 3. 单击【Sync Now】，自动下载 SDK 并集成到工程里。
 
 
@@ -84,34 +85,35 @@ TUICalling
 2. 将下载到的 aar 文件拷贝到工程的 **App/libs** 目录下。
 3. 在工程根目录下的 build.gradle 中，添加 **flatDir**，指定本地仓库路径。
 
-	```
-	allprojects {
-    	repositories {
-        	flatDir {
-            	dirs 'libs'
-           	 dirs project(':App').file('libs')
-       	 }
-    	}
-	}
-	```
+```
+allprojects {
+    repositories {
+        flatDir {
+            dirs 'libs'
+            dirs project(':App').file('libs')
+        }
+    }
+}
+```
 
 4. 在 App/build.gradle 中，添加引用 aar 包的代码。
 
-	```
-	dependencies {
-    	compile(name: 'LiteAVSDK_TRTC_xxx', ext: 'aar') // xxx表示解压出来的SDK版本号    
-	}
-	```
+```
+dependencies {
+    compile(name: 'LiteAVSDK_TRTC_xxx', ext: 'aar') // xxx表示解压出来的SDK版本号    
+}
+```
 
 5. 在 App/build.gradle的defaultConfig 中，指定 App 使用的 CPU 架构。
 
-	```
-	defaultConfig {
-    	ndk {
-       	 abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"
-    	}
-	}
-	```
+```
+defaultConfig {
+    ndk {
+        abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"
+    }
+}
+```
+
 6. 单击【Sync Now】，完成 SDK 的集成工作。 
 
 ### 编译运行
