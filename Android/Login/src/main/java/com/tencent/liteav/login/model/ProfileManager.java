@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.tencent.imsdk.v2.V2TIMGroupInfoResult;
 import com.tencent.liteav.debug.GenerateTestUserSig;
 import com.tencent.liteav.login.R;
 
@@ -300,6 +301,19 @@ public class ProfileManager {
         return new NetworkAction();
     }
 
+    public void getGroupInfo(String roomId, final GetGroupInfoCallback callback) {
+        IMManager.sharedInstance().getGroupInfo(roomId, new IMManager.GroupInfoCallback() {
+            @Override
+            public void onCallback(int code, String msg, V2TIMGroupInfoResult result) {
+                if (code == 0) {
+                    callback.onSuccess(result);
+                } else {
+                    callback.onFailed(code, msg);
+                }
+            }
+        });
+    }
+
     public NetworkAction getUserInfoByPhone(String phone, final GetUserInfoCallback callback) {
         UserModel userModel = new UserModel();
         userModel.userAvatar = getAvatarUrl(phone);
@@ -387,5 +401,11 @@ public class ProfileManager {
 
     public void checkNeedShowSecurityTips(Activity activity) {
 
+    }
+
+    // 通过房间号获取房间信息的回调
+    public interface GetGroupInfoCallback {
+        void onSuccess(V2TIMGroupInfoResult result);
+        void onFailed(int code, String msg);
     }
 }

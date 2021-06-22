@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.tencent.imsdk.session.SessionWrapper;
 import com.tencent.imsdk.v2.V2TIMCallback;
+import com.tencent.imsdk.v2.V2TIMGroupInfoResult;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMSDKConfig;
 import com.tencent.imsdk.v2.V2TIMSDKListener;
@@ -161,7 +162,7 @@ public class IMManager {
         V2TIMManager.getInstance().getUsersInfo(userList, new V2TIMValueCallback<List<V2TIMUserFullInfo>>() {
             @Override
             public void onError(int i, String s) {
-                Log.e(TAG, "get user info list fail, code:" + i);
+                Log.e(TAG, "get user info list fail, code:" + i + " msg: " + s);
                 if (callback != null) {
                     callback.onCallback(i, s, null);
                 }
@@ -181,6 +182,37 @@ public class IMManager {
                 }
                 if (callback != null) {
                     callback.onCallback(0, "success", list.get(0));
+                }
+            }
+        });
+    }
+
+    public void getGroupInfo(final String roomId, final GroupInfoCallback callback) {
+        if (!isLogin()) {
+            Log.e(TAG, "get group info list fail, not enter room yet.");
+            if (callback != null) {
+                callback.onCallback(-1, "get user info list fail, not enter room yet.", null);
+            }
+            return;
+        }
+
+        List<String> roomIdList = new ArrayList<>();
+        roomIdList.add(roomId);
+        Log.i(TAG, "get room id list " + roomIdList);
+        V2TIMManager.getGroupManager().getGroupsInfo(roomIdList, new V2TIMValueCallback<List<V2TIMGroupInfoResult>>() {
+            @Override
+            public void onError(int i, String s) {
+                Log.e(TAG, "get group info list fail, code:" + i+ " msg: " + s);
+                callback.onCallback(-1, s, null);
+            }
+
+            @Override
+            public void onSuccess(List<V2TIMGroupInfoResult> resultList) {
+                if (resultList != null && !resultList.isEmpty()) {
+                    V2TIMGroupInfoResult result = resultList.get(0);
+                    callback.onCallback(0, "success", result);
+                } else {
+                    callback.onCallback(-1, "get groupInfo List is null", null);
                 }
             }
         });
@@ -212,5 +244,9 @@ public class IMManager {
 
     public interface UserCallback {
         void onCallback(int code, String msg, IMUserInfo userInfo);
+    }
+
+    public interface GroupInfoCallback {
+        void onCallback(int code, String msg, V2TIMGroupInfoResult result);
     }
 }

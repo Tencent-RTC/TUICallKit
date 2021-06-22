@@ -5,7 +5,6 @@
 ```
 TUICalling
 ├─ App							// 主面板，各种场景入口
-├─ audioeffectsettingkit		// 音效面板，包含BGM播放，变声，混响，变调等效果
 ├─ Beauty						// 美颜面板，包含美颜，滤镜，动效等效果
 ├─ Debug						// 调试相关
 ├─ Login						// 登录相关

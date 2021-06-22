@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_bg_main_gradient">
+    android:background="@color/login_color_white">
 
     <com.tencent.liteav.login.ui.view.LoginStatusLayout
         android:id="@+id/cl_login_status"
@@ -20,7 +20,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="30dp"
-        android:background="@color/login_color_btn_disable"
+        android:background="@drawable/login_bg_edit_text"
         android:padding="16dp"
         app:layout_constraintBottom_toTopOf="@id/tv_login"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login_text_user_id"
-            android:textColor="@color/login_color_white"
+            android:textColor="@color/login_color_black"
             android:textSize="16sp"
             app:layout_constraintLeft_toLeftOf="@id/cl_edit"
             app:layout_constraintTop_toTopOf="@id/cl_edit" />
@@ -48,8 +48,8 @@
             android:layout_marginRight="30dp"
             android:maxLines="1"
             android:singleLine="true"
-            android:textColor="@color/login_color_white"
-            android:textColorHint="@color/login_color_edit_hint"
+            android:textColor="@color/login_color_black"
+            android:textColorHint="@color/login_color_input_normal"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_phone_number"
             app:layout_constraintEnd_toEndOf="parent"
@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:background="@drawable/login_button_border"
+        android:background="@drawable/login_bg_button"
         android:text="@string/login_btn_login"
         android:textColor="@color/login_color_white"
         android:textSize="16sp"
