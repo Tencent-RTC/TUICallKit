@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <color name="audio_white">#FFFFFF</color>
-    <color name="audio_white_alpha">#66FFFFFF</color>
-    <color name="audio_black">#000000</color>
-
-</resources>
