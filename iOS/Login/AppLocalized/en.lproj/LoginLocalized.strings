@@ -7,7 +7,7 @@
 */
 
 "Demo.TRTC.Login.welcome" = "Welcome to Tencent Real-Time Communication";
-"V2.Live.LinkMicNew.enterphonenumber" = "Enter a mobile number";
+"V2.Live.LinkMicNew.enterphonenumber" = "Enter a User Name";
 "V2.Live.LinkMicNew.enterverificationcode" = "Enter a verification code";
 "V2.Live.LinkMicNew.getverificationcode" = "Get";
 "V2.Live.LoginMock.login" = "Log In";

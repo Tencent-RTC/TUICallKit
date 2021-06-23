@@ -7,7 +7,7 @@
 */
 
 "Demo.TRTC.Login.welcome" = "欢迎使用腾讯云实时音视频";
-"V2.Live.LinkMicNew.enterphonenumber" = "请输入手机号";
+"V2.Live.LinkMicNew.enterphonenumber" = "请输入用户名";
 "V2.Live.LinkMicNew.enterverificationcode" = "请输入验证码";
 "V2.Live.LinkMicNew.getverificationcode" = "获取验证码";
 "V2.Live.LoginMock.login" = "登录";
