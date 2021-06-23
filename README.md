@@ -10,7 +10,7 @@
 - [语音聊天室-TUIVoiceRoom](https://github.com/tencentyun/TUIVoiceRoom/)
 - [语音沙龙-TUIChatSalon](https://github.com/tencentyun/TUIChatSalon/)
 
-更多组件化方案，敬请期待，也欢迎加入我们的QQ交流群，随时反馈！
+更多组件化方案，敬请期待，也欢迎加入我们的QQ交流群：592465424，期待一起交流&学习！
 
 ## 效果演示
 
@@ -57,13 +57,13 @@
 
 ### 交流&反馈
 
-欢迎加入QQ群进行技术交流和反馈问题，QQ群:592465424
+欢迎加入QQ群进行技术交流和反馈问题，QQ群：592465424
 
 ![image-20210622142449407](https://main.qcloudimg.com/raw/1ea3ab1ff36d37c889f4140499585a4a.png)
 
 ### 更多信息
 
-访问 Github 较慢的客户可以考虑使用国内下载地址，腾讯云提供有全平台等解决方案： [DOWNLOAD](https://cloud.tencent.com/document/product/647/32689) 。
+访问 Github 较慢的客户可以考虑使用国内下载地址，腾讯云提供有全平台等解决方案，更多信息详见[腾讯云TRTC - SDK 下载](https://cloud.tencent.com/document/product/647/32689) 。
 
 | 所属平台 | Zip下载 | SDK集成指引 | API 列表 |
 |:---------:| :--------:|:--------:|:--------:|
