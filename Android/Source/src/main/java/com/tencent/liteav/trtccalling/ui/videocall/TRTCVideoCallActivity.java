@@ -209,6 +209,7 @@ public class TRTCVideoCallActivity extends BaseCallActivity {
                             ToastUtils.showLong(getString(R.string.trtccalling_toast_user_not_response, userInfo.userName));
                         }
                     }
+                    stopCameraAndFinish();
                 }
             });
         }

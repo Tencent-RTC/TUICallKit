@@ -8,16 +8,19 @@ public class UserModel implements Serializable {
     public String userSig;
     public String userName;
     public String userAvatar;
-    public UserType userType     = UserType.NONE;
-    public enum   UserType{
+    public UserType userType = UserType.NONE;
+
+    public enum UserType {
         NONE,
-        CHATSALONTYPE,   //语音沙龙
-        VOICEROOMTYPE,   //语聊房
-        LIVINGROOMTYPE;  //视频互动直播
+        MEETING,    // 视频会议
+        CALLING,    // 语音/视频通话
+        CHAT_SALON, // 语音沙龙
+        VOICE_ROOM, // 语音聊天室
+        LIVE_ROOM   // 视频互动直播
     }
 
-    @java.lang.Override
-    public java.lang.String toString() {
+    @Override
+    public String toString() {
         return "UserModel{" +
                 "phone='" + phone + '\'' +
                 ", userId='" + userId + '\'' +

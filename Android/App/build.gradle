@@ -1,17 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion COMPILE_SDK_VERSION as Integer
+    buildToolsVersion BUILD_TOOLS_VERSION
 
     defaultConfig {
-        applicationId 'com.tencent.liteav.tuicaling'
+        applicationId 'com.tencent.liteav.tuicalling'
         versionName VERSION_NAME
         versionCode VERSION_CODE as Integer
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-
+        minSdkVersion MIN_SDK_VERSION as Integer
+        targetSdkVersion TARGET_SDK_VERSION as Integer
         multiDexEnabled true
     }
 
@@ -24,7 +22,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(":Source")
-    implementation project(':Login')
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    api project(":Source")
+    api project(':Login')
 }

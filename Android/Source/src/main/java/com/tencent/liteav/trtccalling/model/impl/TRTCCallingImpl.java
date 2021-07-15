@@ -4,11 +4,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import com.tencent.imsdk.TIMConversationType;
-import com.tencent.imsdk.session.SessionWrapper;
 import com.tencent.imsdk.v2.V2TIMCallback;
+import com.tencent.imsdk.v2.V2TIMConversation;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMOfflinePushInfo;
@@ -25,6 +27,7 @@ import com.tencent.liteav.trtccalling.R;
 import com.tencent.liteav.trtccalling.model.TRTCCalling;
 import com.tencent.liteav.trtccalling.model.TRTCCallingDelegate;
 import com.tencent.liteav.trtccalling.model.impl.base.CallModel;
+import com.tencent.liteav.trtccalling.model.impl.base.SignallingData;
 import com.tencent.liteav.trtccalling.model.impl.base.MessageCustom;
 import com.tencent.liteav.trtccalling.model.impl.base.OfflineMessageBean;
 import com.tencent.liteav.trtccalling.model.impl.base.OfflineMessageContainerBean;
@@ -34,8 +37,6 @@ import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.tencent.trtc.TRTCCloud;
 import com.tencent.trtc.TRTCCloudDef;
 import com.tencent.trtc.TRTCCloudListener;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -143,19 +144,23 @@ public class TRTCCallingImpl extends TRTCCalling {
         @Override
         public void onReceiveNewInvitation(String inviteID, String inviter, String groupID, List<String> inviteeList, String data) {
             TRTCLogger.d(TAG, "onReceiveNewInvitation inviteID:" + inviteID + ", inviter:" + inviter + " data:" + data);
-            if (!isCallingData(data)) {
+            SignallingData signallingData = convert2CallingData(data);
+            if (!isCallingData(signallingData)) {
+                TRTCLogger.d(TAG, "this is not the calling sense ");
                 return;
             }
-            processInvite(inviteID, inviter, groupID, inviteeList, data);
+            processInvite(inviteID, inviter, groupID, inviteeList, signallingData);
         }
 
         @Override
         public void onInviteeAccepted(String inviteID, String invitee, String data) {
             TRTCLogger.d(TAG, "onInviteeAccepted inviteID:" + inviteID + ", invitee:" + invitee + " data:" + data);
-            if (!isCallingData(data)) {
+            SignallingData signallingData = convert2CallingData(data);
+            if (!isCallingData(signallingData)) {
+                TRTCLogger.d(TAG, "this is not the calling sense ");
                 return;
             }
-            if (isSwitchAudioData(data)) {
+            if (isSwitchAudioData(signallingData)) {
                 realSwitchToAudioCall();
                 return;
             }
@@ -165,39 +170,38 @@ public class TRTCCallingImpl extends TRTCCalling {
         @Override
         public void onInviteeRejected(String inviteID, String invitee, String data) {
             TRTCLogger.d(TAG, "onInviteeRejected inviteID:" + inviteID + ", invitee:" + invitee + " data:" + data);
-            if (!isCallingData(data)) {
+            SignallingData signallingData = convert2CallingData(data);
+            if (!isCallingData(signallingData)) {
+                TRTCLogger.d(TAG, "this is not the calling sense ");
                 return;
             }
-            if (isSwitchAudioData(data)) {
-                String message = getSwitchAudioRejectMessage(data);
+            if (isSwitchAudioData(signallingData)) {
+                String message = getSwitchAudioRejectMessage(signallingData);
                 onSwitchToAudio(false, message);
                 return;
             }
             if (!TextUtils.isEmpty(mCurCallID) && mCurCallID.equals(inviteID)) {
-                try {
-                    Map rejectData = new Gson().fromJson(data, Map.class);
-                    mCurInvitedList.remove(invitee);
-                    mCurRoomRemoteUserSet.remove(invitee);
-                    if (rejectData != null && rejectData.containsKey(CallModel.SIGNALING_EXTRA_KEY_LINE_BUSY)) {
-                        if (mTRTCInternalListenerManager != null) {
-                            mTRTCInternalListenerManager.onLineBusy(invitee);
-                        }
-                    } else {
-                        if (mTRTCInternalListenerManager != null) {
-                            mTRTCInternalListenerManager.onReject(invitee);
-                        }
+                mCurInvitedList.remove(invitee);
+                mCurRoomRemoteUserSet.remove(invitee);
+                if (isLineBusy(signallingData)) {
+                    if (mTRTCInternalListenerManager != null) {
+                        mTRTCInternalListenerManager.onLineBusy(invitee);
                     }
-                    preExitRoom(null);
-                } catch (JsonSyntaxException e) {
-                    TRTCLogger.e(TAG, "onReceiveNewInvitation JsonSyntaxException:" + e);
+                } else {
+                    if (mTRTCInternalListenerManager != null) {
+                        mTRTCInternalListenerManager.onReject(invitee);
+                    }
                 }
+                preExitRoom(null);
             }
         }
 
         @Override
         public void onInvitationCancelled(String inviteID, String inviter, String data) {
             TRTCLogger.d(TAG, "onInvitationCancelled inviteID:" + inviteID + " data:" + data);
-            if (!isCallingData(data)) {
+            SignallingData signallingData = convert2CallingData(data);
+            if (!isCallingData(signallingData)) {
+                TRTCLogger.d(TAG, "this is not the calling sense ");
                 return;
             }
             if (inviteID.equals(mCurCallID)) {
@@ -237,110 +241,241 @@ public class TRTCCallingImpl extends TRTCCalling {
         }
     };
 
-    private String getSwitchAudioRejectMessage(String data) {
-        try {
-            Map<String, Object> extraMap = new Gson().fromJson(data, Map.class);
-            if (extraMap == null) {
-                TRTCLogger.e(TAG, "getSwitchAudioRejectMessage extraMap is null, ignore");
+    private boolean isLineBusy(SignallingData signallingData) {
+        if (isNewSignallingVersion(signallingData)) {
+            SignallingData.DataInfo dataInfo = signallingData.getData();
+            if (dataInfo == null) {
+                return false;
+            }
+            return CallModel.VALUE_MSG_LINE_BUSY.equals(dataInfo.getMessage());
+        }
+        return CallModel.SIGNALING_EXTRA_KEY_LINE_BUSY.equals(signallingData.getLineBusy());
+    }
+
+    //是否是6-30改造后的信令版本
+    private boolean isNewSignallingVersion(SignallingData signallingData) {
+        return !TextUtils.isEmpty(signallingData.getPlatform()) && !TextUtils.isEmpty(signallingData.getBusinessID());
+    }
+
+    private String getSwitchAudioRejectMessage(SignallingData signallingData) {
+        if (isNewSignallingVersion(signallingData)) {
+            SignallingData.DataInfo dataInfo = signallingData.getData();
+            if (dataInfo == null) {
                 return "";
             }
-            if (extraMap.containsKey(CallModel.SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL)) {
-                Object value = extraMap.get(CallModel.SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL);
-                if (value instanceof String) {
-                    return (String) value;
+            return dataInfo.getMessage();
+        }
+        String message = signallingData.getSwitchToAudioCall();
+        return TextUtils.isEmpty(message) ? "" : message;
+    }
+
+    private boolean isCallingData(SignallingData signallingData) {
+        //如果是老版本直接反馈true
+        if (!isNewSignallingVersion(signallingData)) {
+            return true;
+        }
+        String businessId = signallingData.getBusinessID();
+        return CallModel.VALUE_BUSINESS_ID.equals(businessId);
+    }
+
+    private boolean isSwitchAudioData(SignallingData signallingData) {
+        if (!isNewSignallingVersion(signallingData)) {
+            return !TextUtils.isEmpty(signallingData.getSwitchToAudioCall());
+        }
+        if (signallingData.getData() == null) {
+            return false;
+        }
+        return CallModel.VALUE_CMD_SWITCH_TO_AUDIO.equals(signallingData.getData().getCmd());
+    }
+
+    private SignallingData convert2CallingData(String data) {
+        SignallingData signallingData = new SignallingData();
+        Map<String, Object> extraMap;
+        try {
+            extraMap = new Gson().fromJson(data, Map.class);
+            if (extraMap == null) {
+                TRTCLogger.e(TAG, "onReceiveNewInvitation extraMap is null, ignore");
+                return signallingData;
+            }
+            if (extraMap.containsKey(CallModel.KEY_VERSION)) {
+                Object version = extraMap.get(CallModel.KEY_VERSION);
+                if (version instanceof Double) {
+                    signallingData.setVersion(((Double) version).intValue());
                 } else {
-                    TRTCLogger.e(TAG, "switch_to_audio_call is not String, value is :" + value);
+                    TRTCLogger.e(TAG, "version is not Double, value is :" + version);
+                }
+            }
+
+            if (extraMap.containsKey(CallModel.KEY_PLATFORM)) {
+                Object platform = extraMap.get(CallModel.KEY_PLATFORM);
+                if (platform instanceof String) {
+                    signallingData.setPlatform((String) platform);
+                } else {
+                    TRTCLogger.e(TAG, "platform is not string, value is :" + platform);
+                }
+            }
+
+            if (extraMap.containsKey(CallModel.KEY_BUSINESS_ID)) {
+                Object businessId = extraMap.get(CallModel.KEY_BUSINESS_ID);
+                if (businessId instanceof String) {
+                    signallingData.setBusinessID((String) businessId);
+                } else {
+                    TRTCLogger.e(TAG, "businessId is not string, value is :" + businessId);
+                }
+            }
+
+            //兼容老版本某些字段
+            if (extraMap.containsKey(CallModel.SIGNALING_EXTRA_KEY_CALL_TYPE)) {
+                Object callType = extraMap.get(CallModel.SIGNALING_EXTRA_KEY_CALL_TYPE);
+                if (callType instanceof Double) {
+                    signallingData.setCallType(((Double) callType).intValue());
+                } else {
+                    TRTCLogger.e(TAG, "callType is not Double, value is :" + callType);
+                }
+            }
+
+            if (extraMap.containsKey(CallModel.SIGNALING_EXTRA_KEY_ROOM_ID)) {
+                Object roomId = extraMap.get(CallModel.SIGNALING_EXTRA_KEY_ROOM_ID);
+                if (roomId instanceof Double) {
+                    signallingData.setRoomId(((Double) roomId).intValue());
+                } else {
+                    TRTCLogger.e(TAG, "roomId is not Double, value is :" + roomId);
+                }
+            }
+
+            if (extraMap.containsKey(CallModel.SIGNALING_EXTRA_KEY_LINE_BUSY)) {
+                Object lineBusy = extraMap.get(CallModel.SIGNALING_EXTRA_KEY_LINE_BUSY);
+                if (lineBusy instanceof String) {
+                    signallingData.setLineBusy((String) lineBusy);
+                } else {
+                    TRTCLogger.e(TAG, "lineBusy is not string, value is :" + lineBusy);
+                }
+            }
+
+            if (extraMap.containsKey(CallModel.SIGNALING_EXTRA_KEY_CALL_END)) {
+                Object callEnd = extraMap.get(CallModel.SIGNALING_EXTRA_KEY_CALL_END);
+                if (callEnd instanceof Double) {
+                    signallingData.setCallEnd(((Double) callEnd).intValue());
+                } else {
+                    TRTCLogger.e(TAG, "callEnd is not Double, value is :" + callEnd);
+                }
+            }
+
+            if (extraMap.containsKey(CallModel.SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL)) {
+                Object switchToAudioCall = extraMap.get(CallModel.SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL);
+                if (switchToAudioCall instanceof String) {
+                    signallingData.setSwitchToAudioCall((String) switchToAudioCall);
+                } else {
+                    TRTCLogger.e(TAG, "switchToAudioCall is not string, value is :" + switchToAudioCall);
+                }
+            }
+
+            if (extraMap.containsKey(CallModel.KEY_DATA)) {
+                Object dataMapObj = extraMap.get(CallModel.KEY_DATA);
+                if (dataMapObj != null && dataMapObj instanceof Map) {
+                    Map<String, Object> dataMap = (Map<String, Object>) dataMapObj;
+                    SignallingData.DataInfo dataInfo = convert2DataInfo(dataMap);
+                    signallingData.setData(dataInfo);
+                } else {
+                    TRTCLogger.e(TAG, "dataMapObj is not map, value is :" + dataMapObj);
                 }
             }
         } catch (JsonSyntaxException e) {
-            TRTCLogger.e(TAG, "getSwitchAudioRejectMessage JsonSyntaxException:" + e);
+            TRTCLogger.e(TAG, "convert2CallingDataBean json parse error");
         }
-        return "";
+        return signallingData;
     }
 
-    private boolean isCallingData(String data) {
-        try {
-            JSONObject jsonObject = new JSONObject(data);
-            if (jsonObject.has(CallModel.SIGNALING_EXTRA_KEY_CALL_TYPE)) {
-                return true;
-            }
-        } catch (Exception e) {
-            TRTCLogger.i(TAG, "isCallingData json parse error");
-            return false;
-        }
-        return false;
-    }
-
-    private boolean isSwitchAudioData(String data) {
-        try {
-            JSONObject jsonObject = new JSONObject(data);
-            if (jsonObject.has(CallModel.SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL)) {
-                return true;
-            }
-        } catch (Exception e) {
-            TRTCLogger.i(TAG, "isSwitchAudioData json parse error");
-        }
-        return false;
-    }
-
-    private void processInvite(String inviteID, String inviter, String groupID, List<String> inviteeList, String data) {
+    private void processInvite(String inviteID, String inviter, String groupID, List<String> inviteeList, SignallingData signallingData) {
         CallModel callModel = new CallModel();
         callModel.callId = inviteID;
         callModel.groupId = groupID;
         callModel.action = CallModel.VIDEO_CALL_ACTION_DIALING;
         callModel.invitedList = inviteeList;
+        if (isNewSignallingVersion(signallingData)) {
+            handleNewSignallingInvite(signallingData, callModel, inviter);
+        } else {
+            handleOldSignallingInvite(signallingData, callModel, inviter);
+        }
+    }
 
-        Map<String, Object> extraMap = null;
+    private void handleNewSignallingInvite(SignallingData signallingData, CallModel callModel, String inviter) {
+        SignallingData.DataInfo dataInfo = signallingData.getData();
+        if (dataInfo == null) {
+            TRTCLogger.i(TAG, "signallingData dataInfo is null");
+            return;
+        }
+        callModel.roomId = dataInfo.getRoomID();
+        if (CallModel.VALUE_CMD_AUDIO_CALL.equals(dataInfo.getCmd())) {
+            callModel.callType = TRTCCalling.TYPE_AUDIO_CALL;
+            mCurCallType = callModel.callType;
+        } else if (CallModel.VALUE_CMD_VIDEO_CALL.equals(dataInfo.getCmd())) {
+            callModel.callType = TRTCCalling.TYPE_VIDEO_CALL;
+            mCurCallType = callModel.callType;
+        }
+        if (CallModel.VALUE_CMD_HAND_UP.equals(dataInfo.getCmd())) {
+            preExitRoom(null);
+            return;
+        }
+        if (CallModel.VALUE_CMD_SWITCH_TO_AUDIO.equals(dataInfo.getCmd())) {
+            handleSwitchToAudio(callModel, inviter);
+            return;
+        }
+        handleDialing(callModel, inviter);
+        if (mCurCallID.equals(callModel.callId)) {
+            mLastCallModel = (CallModel) callModel.clone();
+        }
+    }
+
+    private void handleOldSignallingInvite(SignallingData signallingData, CallModel callModel, String inviter) {
+        callModel.callType = signallingData.getCallType();
+        mCurCallType = callModel.callType;
+        callModel.roomId = signallingData.getRoomId();
+        if (signallingData.getCallEnd() != 0) {
+            preExitRoom(null);
+            return;
+        }
+        if (CallModel.SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL.equals(signallingData.getSwitchToAudioCall())) {
+            handleSwitchToAudio(callModel, inviter);
+            return;
+        }
+        handleDialing(callModel, inviter);
+        if (mCurCallID.equals(callModel.callId)) {
+            mLastCallModel = (CallModel) callModel.clone();
+        }
+    }
+
+    private SignallingData.DataInfo convert2DataInfo(Map<String, Object> dataMap) {
+        SignallingData.DataInfo dataInfo = new SignallingData.DataInfo();
         try {
-            extraMap = new Gson().fromJson(data, Map.class);
-            if (extraMap == null) {
-                TRTCLogger.e(TAG, "onReceiveNewInvitation extraMap is null, ignore");
-                return;
-            }
-            if (extraMap.containsKey(CallModel.SIGNALING_EXTRA_KEY_VERSION)) {
-                Object version = extraMap.get(CallModel.SIGNALING_EXTRA_KEY_VERSION);
-                if (version instanceof Double) {
-                    callModel.version = ((Double) version).intValue();
+            if (dataMap.containsKey(CallModel.KEY_CMD)) {
+                Object cmd = dataMap.get(CallModel.KEY_CMD);
+                if (cmd instanceof String) {
+                    dataInfo.setCmd((String) cmd);
                 } else {
-                    TRTCLogger.e(TAG, "version is not Double, value is :" + version);
-                    return;
+                    TRTCLogger.e(TAG, "cmd is not string, value is :" + cmd);
                 }
             }
-            if (extraMap.containsKey(CallModel.SIGNALING_EXTRA_KEY_CALL_TYPE)) {
-                Object callType = extraMap.get(CallModel.SIGNALING_EXTRA_KEY_CALL_TYPE);
-                if (callType instanceof Double) {
-                    callModel.callType = ((Double) callType).intValue();
-                    mCurCallType = callModel.callType;
-                } else {
-                    TRTCLogger.e(TAG, "callType is not Double, callType is :" + callType);
-                    return;
-                }
-            }
-            if (extraMap.containsKey(CallModel.SIGNALING_EXTRA_KEY_CALL_END)) {
-                preExitRoom(null);
-                return;
-            }
-            if (extraMap.containsKey(CallModel.SIGNALING_EXTRA_KEY_ROOM_ID)) {
-                Object roomId = extraMap.get(CallModel.SIGNALING_EXTRA_KEY_ROOM_ID);
+            if (dataMap.containsKey(CallModel.KEY_ROOM_ID)) {
+                Object roomId = dataMap.get(CallModel.KEY_ROOM_ID);
                 if (roomId instanceof Double) {
-                    callModel.roomId = ((Double) roomId).intValue();
+                    dataInfo.setRoomID(((Double) roomId).intValue());
                 } else {
                     TRTCLogger.e(TAG, "roomId is not Double, value is :" + roomId);
-                    return;
                 }
             }
-            if (extraMap.containsKey(CallModel.SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL)) {
-                handleSwitchToAudio(callModel, inviter);
-                return;
+            if (dataMap.containsKey(CallModel.KEY_MESSAGE)) {
+                Object message = dataMap.get(CallModel.KEY_MESSAGE);
+                if (message instanceof String) {
+                    dataInfo.setMessage((String) message);
+                } else {
+                    TRTCLogger.e(TAG, "message is not string, value is :" + message);
+                }
             }
         } catch (JsonSyntaxException e) {
             TRTCLogger.e(TAG, "onReceiveNewInvitation JsonSyntaxException:" + e);
         }
-        handleDialing(callModel, inviter);
-
-        if (mCurCallID.equals(callModel.callId)) {
-            mLastCallModel = (CallModel) callModel.clone();
-        }
+        return dataInfo;
     }
 
     /**
@@ -426,7 +561,7 @@ public class TRTCCallingImpl extends TRTCCalling {
         }
 
         @Override
-            public void onNetworkQuality(TRTCCloudDef.TRTCQuality trtcQuality, ArrayList<TRTCCloudDef.TRTCQuality> arrayList) {
+        public void onNetworkQuality(TRTCCloudDef.TRTCQuality trtcQuality, ArrayList<TRTCCloudDef.TRTCQuality> arrayList) {
             if (mTRTCInternalListenerManager != null) {
                 mTRTCInternalListenerManager.onNetworkQuality(trtcQuality, arrayList);
             }
@@ -438,11 +573,12 @@ public class TRTCCallingImpl extends TRTCCalling {
         mContext = context;
         mTRTCCloud = TRTCCloud.sharedInstance(context);
         mTRTCInternalListenerManager = new TRTCInternalListenerManager();
-        mLastCallModel.version = CallModel.VALUE_PROTOCOL_VERSION;
+        mLastCallModel.version = CallModel.VALUE_VERSION;
     }
 
     private void startCall() {
         isOnCalling = true;
+        ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.CALLING;
     }
 
     /**
@@ -458,9 +594,10 @@ public class TRTCCallingImpl extends TRTCCalling {
         mCurRoomRemoteUserSet.clear();
         mCurSponsorForMe = "";
         mLastCallModel = new CallModel();
-        mLastCallModel.version = CallModel.VALUE_PROTOCOL_VERSION;
+        mLastCallModel.version = CallModel.VALUE_VERSION;
         mCurGroupId = "";
         mCurCallType = TYPE_UNKNOWN;
+        ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.NONE;
     }
 
     private void realSwitchToAudioCall() {
@@ -475,42 +612,40 @@ public class TRTCCallingImpl extends TRTCCalling {
      * 这里会初始化IM，如果您的项目中已经使用了腾讯云IM，可以删除，不需要再次初始化
      */
     private void initIM() {
-        if (SessionWrapper.isMainProcess(mContext.getApplicationContext())) {
+        V2TIMSDKConfig config = new V2TIMSDKConfig();
+        config.setLogLevel(V2TIMSDKConfig.V2TIM_LOG_DEBUG);
+        //初始化 SDK
+        mIsInitIMSDK = V2TIMManager.getInstance().initSDK(mContext.getApplicationContext(), mSdkAppId, config, new V2TIMSDKListener() {
+            @Override
+            public void onConnecting() {
+            }
 
-            V2TIMSDKConfig config = new V2TIMSDKConfig();
-            config.setLogLevel(V2TIMSDKConfig.V2TIM_LOG_DEBUG);
-            //初始化 SDK
-            mIsInitIMSDK = V2TIMManager.getInstance().initSDK(mContext.getApplicationContext(), mSdkAppId, config, new V2TIMSDKListener() {
-                @Override
-                public void onConnecting() {
-                }
+            @Override
+            public void onConnectSuccess() {
+            }
 
-                @Override
-                public void onConnectSuccess() {
-                }
-
-                @Override
-                public void onConnectFailed(int code, String error) {
-                    TRTCLogger.e(TAG, "init im sdk error.");
-                }
-            });
-        }
+            @Override
+            public void onConnectFailed(int code, String error) {
+                TRTCLogger.e(TAG, "init im sdk error.");
+            }
+        });
     }
 
     /**
-     * 判断用户是否在体验视频互动、语聊房、语音沙龙模块
+     * 判断用户是否正忙
+     *
      * @param userType
      * @return
      */
-    public boolean isUserModelBusy(UserModel.UserType userType){
-        return (userType.equals(UserModel.UserType.CHATSALONTYPE) || userType.equals(UserModel.UserType.LIVINGROOMTYPE) || userType.equals(UserModel.UserType.VOICEROOMTYPE));
+    private boolean isUserModelBusy(UserModel.UserType userType) {
+        return userType != UserModel.UserType.NONE;
     }
 
     public void handleDialing(CallModel callModel, String user) {
-       //正在体验视频互动、语聊房、语音沙龙模块时，收到一个邀请我的通话请求，告诉对方忙线
+        //正在体验视频互动、语聊房、语音沙龙模块时，收到一个邀请我的通话请求，告诉对方忙线
         UserModel.UserType userType = ProfileManager.getInstance().getUserModel().userType;
-        if(isUserModelBusy(userType) ){
-            sendModel(user, CallModel.VIDEO_CALL_ACTION_LINE_BUSY, callModel,null);
+        if (isUserModelBusy(userType)) {
+            sendModel(user, CallModel.VIDEO_CALL_ACTION_LINE_BUSY, callModel, null);
             return;
         }
 
@@ -600,6 +735,7 @@ public class TRTCCallingImpl extends TRTCCalling {
         }
         //2. 需要将监听器添加到IM上
         V2TIMManager.getSignalingManager().addSignalingListener(mTIMSignallingListener);
+        V2TIMManager.getMessageManager();
 
         String loginUser = V2TIMManager.getInstance().getLoginUser();
         if (loginUser != null && loginUser.equals(userId)) {
@@ -942,7 +1078,7 @@ public class TRTCCallingImpl extends TRTCCalling {
 
     private void sendOnlineMessageWithOfflinePushInfo(String userId, String nickname, CallModel model) {
         OfflineMessageContainerBean containerBean = new OfflineMessageContainerBean();
-        OfflineMessageBean          entity        = new OfflineMessageBean();
+        OfflineMessageBean entity = new OfflineMessageBean();
         entity.content = new Gson().toJson(model);
         entity.sender = V2TIMManager.getInstance().getLoginUser(); // 发送者肯定是登录账号
         entity.action = OfflineMessageBean.REDIRECT_ACTION_CALL;
@@ -950,10 +1086,10 @@ public class TRTCCallingImpl extends TRTCCalling {
         entity.nickname = nickname;
         entity.faceUrl = mFaceUrl;
         containerBean.entity = entity;
-        List<String>  invitedList = new ArrayList<>();
-        final boolean isGroup     = (!TextUtils.isEmpty(model.groupId));
+        List<String> invitedList = new ArrayList<>();
+        final boolean isGroup = (!TextUtils.isEmpty(model.groupId));
         if (isGroup) {
-            entity.chatType = TIMConversationType.Group.value();
+            entity.chatType = V2TIMConversation.V2TIM_GROUP;
             invitedList.addAll(model.invitedList);
         } else {
             invitedList.add(userId);
@@ -1001,7 +1137,7 @@ public class TRTCCallingImpl extends TRTCCalling {
      * @param message
      */
     private String sendModel(final String user, int action, CallModel model, String message) {
-        String          callID = null;
+        String callID = null;
         final CallModel realCallModel;
         if (model != null) {
             realCallModel = (CallModel) model.clone();
@@ -1009,29 +1145,39 @@ public class TRTCCallingImpl extends TRTCCalling {
         } else {
             realCallModel = generateModel(action);
         }
-
         final boolean isGroup = (!TextUtils.isEmpty(realCallModel.groupId));
         if (action == CallModel.VIDEO_CALL_ACTION_HANGUP && mEnterRoomTime != 0 && !isGroup) {
             realCallModel.duration = (int) (System.currentTimeMillis() - mEnterRoomTime) / 1000;
             mEnterRoomTime = 0;
         }
         String receiver = "";
-        String groupId  = "";
+        String groupId = "";
         if (isGroup) {
             groupId = realCallModel.groupId;
         } else {
             receiver = user;
         }
-        Map<String, Object> customMap = new HashMap();
-        customMap.put(CallModel.SIGNALING_EXTRA_KEY_VERSION, CallModel.VALUE_PROTOCOL_VERSION);
-        customMap.put(CallModel.SIGNALING_EXTRA_KEY_CALL_TYPE, realCallModel.callType);
+        final SignallingData signallingData = createSignallingData();
+        signallingData.setCallType(realCallModel.callType);
+        GsonBuilder gsonBuilder = new GsonBuilder();
         // signalling
         switch (realCallModel.action) {
             case CallModel.VIDEO_CALL_ACTION_DIALING:
-                customMap.put(CallModel.SIGNALING_EXTRA_KEY_ROOM_ID, realCallModel.roomId);
-                String dialingDataStr = new Gson().toJson(customMap);
+                signallingData.setRoomId(realCallModel.roomId);
+                SignallingData.DataInfo callDataInfo = new SignallingData.DataInfo();
+                if (realCallModel.callType == TRTCCalling.TYPE_AUDIO_CALL) {
+                    callDataInfo.setCmd(CallModel.VALUE_CMD_AUDIO_CALL);
+                } else if (realCallModel.callType == TRTCCalling.TYPE_VIDEO_CALL) {
+                    callDataInfo.setCmd(CallModel.VALUE_CMD_VIDEO_CALL);
+                } else {
+                    break;
+                }
+                callDataInfo.setRoomID(realCallModel.roomId);
+                signallingData.setData(callDataInfo);
+                addFilterKey(gsonBuilder, CallModel.SIGNALING_EXTRA_KEY_CALL_END);
+                String dialingDataStr = gsonBuilder.create().toJson(signallingData);
                 if (isGroup) {
-                    callID = V2TIMManager.getSignalingManager().inviteInGroup(groupId, realCallModel.invitedList, dialingDataStr, TIME_OUT_COUNT, new V2TIMCallback() {
+                    callID = sendGroupInvite(groupId, realCallModel.invitedList, dialingDataStr, TIME_OUT_COUNT, new V2TIMCallback() {
                         @Override
                         public void onError(int code, String desc) {
                             TRTCLogger.e(TAG, "inviteInGroup callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
@@ -1042,12 +1188,12 @@ public class TRTCCallingImpl extends TRTCCalling {
                             TRTCLogger.d(TAG, "inviteInGroup success:" + realCallModel);
                             realCallModel.callId = getCallId();
                             realCallModel.timeout = TIME_OUT_COUNT;
-                            realCallModel.version = CallModel.VALUE_PROTOCOL_VERSION;
+                            realCallModel.version = CallModel.VALUE_VERSION;
                             sendOnlineMessageWithOfflinePushInfo(user, realCallModel);
                         }
                     });
                 } else {
-                    callID = V2TIMManager.getSignalingManager().invite(receiver, dialingDataStr, TIME_OUT_COUNT, new V2TIMCallback() {
+                    callID = sendInvite(receiver, dialingDataStr, TIME_OUT_COUNT, new V2TIMCallback() {
                         @Override
                         public void onError(int code, String desc) {
                             TRTCLogger.e(TAG, "invite  callID:" + realCallModel.callId + ",error:" + code + " desc:" + desc);
@@ -1058,15 +1204,16 @@ public class TRTCCallingImpl extends TRTCCalling {
                             TRTCLogger.d(TAG, "invite success:" + realCallModel);
                             realCallModel.callId = getCallId();
                             realCallModel.timeout = TIME_OUT_COUNT;
-                            realCallModel.version = CallModel.VALUE_PROTOCOL_VERSION;
+                            realCallModel.version = CallModel.VALUE_VERSION;
                             sendOnlineMessageWithOfflinePushInfo(user, realCallModel);
                         }
                     });
                 }
                 break;
             case CallModel.VIDEO_CALL_ACTION_ACCEPT:
-                String acceptDataStr = new Gson().toJson(customMap);
-                V2TIMManager.getSignalingManager().accept(realCallModel.callId, acceptDataStr, new V2TIMCallback() {
+                addFilterKey(gsonBuilder, CallModel.SIGNALING_EXTRA_KEY_CALL_END);
+                String acceptDataStr = gsonBuilder.create().toJson(signallingData);
+                acceptInvite(realCallModel.callId, acceptDataStr, new V2TIMCallback() {
                     @Override
                     public void onError(int code, String desc) {
                         TRTCLogger.e(TAG, "accept callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
@@ -1080,8 +1227,9 @@ public class TRTCCallingImpl extends TRTCCalling {
                 break;
 
             case CallModel.VIDEO_CALL_ACTION_REJECT:
-                String rejectDataStr = new Gson().toJson(customMap);
-                V2TIMManager.getSignalingManager().reject(realCallModel.callId, rejectDataStr, new V2TIMCallback() {
+                addFilterKey(gsonBuilder, CallModel.SIGNALING_EXTRA_KEY_CALL_END);
+                String rejectDataStr = gsonBuilder.create().toJson(signallingData);
+                rejectInvite(realCallModel.callId, rejectDataStr, new V2TIMCallback() {
                     @Override
                     public void onError(int code, String desc) {
                         TRTCLogger.e(TAG, "reject callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
@@ -1094,10 +1242,13 @@ public class TRTCCallingImpl extends TRTCCalling {
                 });
                 break;
             case CallModel.VIDEO_CALL_ACTION_LINE_BUSY:
-                customMap.put(CallModel.SIGNALING_EXTRA_KEY_LINE_BUSY, CallModel.SIGNALING_EXTRA_KEY_LINE_BUSY);
-                String lineBusyMapStr = new Gson().toJson(customMap);
-
-                V2TIMManager.getSignalingManager().reject(realCallModel.callId, lineBusyMapStr, new V2TIMCallback() {
+                addFilterKey(gsonBuilder, CallModel.SIGNALING_EXTRA_KEY_CALL_END);
+                SignallingData.DataInfo lineBusyDataInfo = new SignallingData.DataInfo();
+                signallingData.setLineBusy(CallModel.SIGNALING_EXTRA_KEY_LINE_BUSY);
+                lineBusyDataInfo.setMessage(CallModel.VALUE_MSG_LINE_BUSY);
+                signallingData.setData(lineBusyDataInfo);
+                String lineBusyMapStr = new Gson().toJson(signallingData);
+                rejectInvite(realCallModel.callId, lineBusyMapStr, new V2TIMCallback() {
                     @Override
                     public void onError(int code, String desc) {
                         TRTCLogger.e(TAG, "reject  callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
@@ -1111,8 +1262,9 @@ public class TRTCCallingImpl extends TRTCCalling {
                 break;
 
             case CallModel.VIDEO_CALL_ACTION_SPONSOR_CANCEL:
-                String cancelMapStr = new Gson().toJson(customMap);
-                V2TIMManager.getSignalingManager().cancel(realCallModel.callId, cancelMapStr, new V2TIMCallback() {
+                addFilterKey(gsonBuilder, CallModel.SIGNALING_EXTRA_KEY_CALL_END);
+                String cancelMapStr = gsonBuilder.create().toJson(signallingData);
+                cancelInvite(realCallModel.callId, cancelMapStr, new V2TIMCallback() {
                     @Override
                     public void onError(int code, String desc) {
                         TRTCLogger.e(TAG, "cancel callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
@@ -1126,10 +1278,13 @@ public class TRTCCallingImpl extends TRTCCalling {
                 break;
 
             case CallModel.VIDEO_CALL_ACTION_HANGUP:
-                customMap.put(CallModel.SIGNALING_EXTRA_KEY_CALL_END, realCallModel.duration);
-                String hangupMapStr = new Gson().toJson(customMap);
+                SignallingData.DataInfo hangupDataInfo = new SignallingData.DataInfo();
+                signallingData.setCallEnd(realCallModel.duration);
+                hangupDataInfo.setCmd(CallModel.VALUE_CMD_HAND_UP);
+                signallingData.setData(hangupDataInfo);
+                String hangupMapStr = gsonBuilder.create().toJson(signallingData);
                 if (isGroup) {
-                    V2TIMManager.getSignalingManager().inviteInGroup(groupId, realCallModel.invitedList, hangupMapStr, 0, new V2TIMCallback() {
+                    sendGroupInvite(groupId, realCallModel.invitedList, hangupMapStr, 0, new V2TIMCallback() {
                         @Override
                         public void onError(int code, String desc) {
                             TRTCLogger.e(TAG, "inviteInGroup-->hangup callID: " + realCallModel.callId + ", error:" + code + " desc:" + desc);
@@ -1141,7 +1296,7 @@ public class TRTCCallingImpl extends TRTCCalling {
                         }
                     });
                 } else {
-                    V2TIMManager.getSignalingManager().invite(receiver, hangupMapStr, 0, new V2TIMCallback() {
+                    sendInvite(receiver, hangupMapStr, TIME_OUT_COUNT, new V2TIMCallback() {
                         @Override
                         public void onError(int code, String desc) {
                             TRTCLogger.e(TAG, "invite-->hangup callID: " + realCallModel.callId + ", error:" + code + " desc:" + desc);
@@ -1156,9 +1311,13 @@ public class TRTCCallingImpl extends TRTCCalling {
                 break;
 
             case CallModel.VIDEO_CALL_SWITCH_TO_AUDIO_CALL:
-                customMap.put(CallModel.SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL, CallModel.SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL);
-                String switchAudioCall = new Gson().toJson(customMap);
-                V2TIMManager.getSignalingManager().invite(receiver, switchAudioCall, 0, new V2TIMCallback() {
+                addFilterKey(gsonBuilder, CallModel.SIGNALING_EXTRA_KEY_CALL_END);
+                SignallingData.DataInfo switchAudioCallDataInfo = new SignallingData.DataInfo();
+                switchAudioCallDataInfo.setCmd(CallModel.VALUE_CMD_SWITCH_TO_AUDIO);
+                signallingData.setSwitchToAudioCall(CallModel.VALUE_CMD_SWITCH_TO_AUDIO);
+                signallingData.setData(switchAudioCallDataInfo);
+                String switchAudioCall = gsonBuilder.create().toJson(signallingData);
+                sendInvite(receiver, switchAudioCall, TIME_OUT_COUNT, new V2TIMCallback() {
                     @Override
                     public void onError(int code, String desc) {
                         TRTCLogger.e(TAG, "invite-->switchAudioCall callID: " + realCallModel.callId + ", error:" + code + " desc:" + desc);
@@ -1172,9 +1331,13 @@ public class TRTCCallingImpl extends TRTCCalling {
                 break;
 
             case CallModel.VIDEO_CALL_ACTION_ACCEPT_SWITCH_TO_AUDIO:
-                customMap.put(CallModel.SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL, CallModel.SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL);
-                String acceptSwitchAudioDataStr = new Gson().toJson(customMap);
-                V2TIMManager.getSignalingManager().accept(realCallModel.callId, acceptSwitchAudioDataStr, new V2TIMCallback() {
+                addFilterKey(gsonBuilder, CallModel.SIGNALING_EXTRA_KEY_CALL_END);
+                SignallingData.DataInfo acceptSwitchAudioCallData = new SignallingData.DataInfo();
+                acceptSwitchAudioCallData.setCmd(CallModel.VALUE_CMD_SWITCH_TO_AUDIO);
+                signallingData.setSwitchToAudioCall(CallModel.VALUE_CMD_SWITCH_TO_AUDIO);
+                signallingData.setData(acceptSwitchAudioCallData);
+                String acceptSwitchAudioDataStr = gsonBuilder.create().toJson(signallingData);
+                acceptInvite(realCallModel.callId, acceptSwitchAudioDataStr, new V2TIMCallback() {
                     @Override
                     public void onError(int code, String desc) {
                         TRTCLogger.e(TAG, "accept switch audio call callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
@@ -1189,9 +1352,14 @@ public class TRTCCallingImpl extends TRTCCalling {
                 break;
 
             case CallModel.VIDEO_CALL_ACTION_REJECT_SWITCH_TO_AUDIO:
-                customMap.put(CallModel.SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL, message);
-                String rejectSwitchAudioMapStr = new Gson().toJson(customMap);
-                V2TIMManager.getSignalingManager().reject(realCallModel.callId, rejectSwitchAudioMapStr, new V2TIMCallback() {
+                addFilterKey(gsonBuilder, CallModel.SIGNALING_EXTRA_KEY_CALL_END);
+                SignallingData.DataInfo rejectSwitchAudioCallData = new SignallingData.DataInfo();
+                rejectSwitchAudioCallData.setCmd(CallModel.VALUE_CMD_SWITCH_TO_AUDIO);
+                signallingData.setSwitchToAudioCall(CallModel.VALUE_CMD_SWITCH_TO_AUDIO);
+                rejectSwitchAudioCallData.setMessage(message);
+                signallingData.setData(rejectSwitchAudioCallData);
+                String rejectSwitchAudioMapStr = gsonBuilder.create().toJson(signallingData);
+                rejectInvite(realCallModel.callId, rejectSwitchAudioMapStr, new V2TIMCallback() {
                     @Override
                     public void onError(int code, String desc) {
                         TRTCLogger.e(TAG, "reject switch to audio callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
@@ -1217,6 +1385,14 @@ public class TRTCCallingImpl extends TRTCCalling {
         return callID;
     }
 
+    private SignallingData createSignallingData() {
+        SignallingData signallingData = new SignallingData();
+        signallingData.setVersion(CallModel.VALUE_VERSION);
+        signallingData.setBusinessID(CallModel.VALUE_BUSINESS_ID);
+        signallingData.setPlatform(CallModel.VALUE_PLATFORM);
+        return signallingData;
+    }
+
     private void onSwitchToAudio(boolean success, String message) {
         if (mTRTCInternalListenerManager != null) {
             mTRTCInternalListenerManager.onSwitchToAudio(success, message);
@@ -1238,4 +1414,110 @@ public class TRTCCallingImpl extends TRTCCalling {
         return random.nextInt(ROOM_ID_MAX - ROOM_ID_MIN + 1) + ROOM_ID_MIN;
     }
 
+    private String sendInvite(String receiver, String data, int timeout, final V2TIMCallback callback) {
+        return V2TIMManager.getSignalingManager().invite(receiver, data, true, null, timeout, new V2TIMCallback() {
+            @Override
+            public void onError(int code, String desc) {
+                if (callback != null) {
+                    callback.onError(code, desc);
+                }
+            }
+
+            @Override
+            public void onSuccess() {
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+        });
+    }
+
+    private String sendGroupInvite(String groupId, List<String> inviteeList, String data, int timeout, final V2TIMCallback callback) {
+        return V2TIMManager.getSignalingManager().inviteInGroup(groupId, inviteeList, data, true, timeout, new V2TIMCallback() {
+            @Override
+            public void onError(int code, String desc) {
+                if (callback != null) {
+                    callback.onError(code, desc);
+                }
+            }
+
+            @Override
+            public void onSuccess() {
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+        });
+    }
+
+    private void acceptInvite(String inviteId, String data, final V2TIMCallback callback) {
+        V2TIMManager.getSignalingManager().accept(inviteId, data, new V2TIMCallback() {
+            @Override
+            public void onError(int code, String desc) {
+                if (callback != null) {
+                    callback.onError(code, desc);
+                }
+            }
+
+            @Override
+            public void onSuccess() {
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+        });
+    }
+
+    private void rejectInvite(String inviteId, String data, final V2TIMCallback callback) {
+        V2TIMManager.getSignalingManager().reject(inviteId, data, new V2TIMCallback() {
+            @Override
+            public void onError(int code, String desc) {
+                if (callback != null) {
+                    callback.onError(code, desc);
+                }
+            }
+
+            @Override
+            public void onSuccess() {
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+        });
+    }
+
+    private void cancelInvite(String inviteId, String data, final V2TIMCallback callback) {
+        V2TIMManager.getSignalingManager().cancel(inviteId, data, new V2TIMCallback() {
+            @Override
+            public void onError(int code, String desc) {
+                if (callback != null) {
+                    callback.onError(code, desc);
+                }
+            }
+
+            @Override
+            public void onSuccess() {
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+        });
+    }
+
+    //在json中过滤不需要的key
+    private void addFilterKey(GsonBuilder builder, final String... keys) {
+        for (final String key : keys) {
+            builder.setExclusionStrategies(new ExclusionStrategy() {
+                @Override
+                public boolean shouldSkipField(FieldAttributes f) {
+                    return f.getName().contains(key);
+                }
+
+                @Override
+                public boolean shouldSkipClass(Class<?> clazz) {
+                    return false;
+                }
+            });
+        }
+    }
 }

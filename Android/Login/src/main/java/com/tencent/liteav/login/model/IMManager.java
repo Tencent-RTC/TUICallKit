@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tencent.imsdk.session.SessionWrapper;
 import com.tencent.imsdk.v2.V2TIMCallback;
 import com.tencent.imsdk.v2.V2TIMGroupInfoResult;
 import com.tencent.imsdk.v2.V2TIMManager;
@@ -32,23 +31,21 @@ public class IMManager {
     // 由于两个模块公用一个IM，所以需要在这里先进行登录，您的App只使用一个model，可以直接调用VideoCall 对应函数
     // 目前 Demo 为了方便您接入，使用的是本地签发 sig 的方式，您的项目上线，务必要保证将签发逻辑转移到服务端，否者会出现 key 被盗用，流量盗用的风险。
     public void initIMSDK(Context context) {
-        if (SessionWrapper.isMainProcess(context)) {
-            V2TIMSDKConfig config = new V2TIMSDKConfig();
-            config.setLogLevel(V2TIMSDKConfig.V2TIM_LOG_DEBUG);
-            V2TIMManager.getInstance().initSDK(context, GenerateTestUserSig.SDKAPPID, config, new V2TIMSDKListener() {
-                @Override
-                public void onConnecting() {
-                }
+        V2TIMSDKConfig config = new V2TIMSDKConfig();
+        config.setLogLevel(V2TIMSDKConfig.V2TIM_LOG_DEBUG);
+        V2TIMManager.getInstance().initSDK(context, GenerateTestUserSig.SDKAPPID, config, new V2TIMSDKListener() {
+            @Override
+            public void onConnecting() {
+            }
 
-                @Override
-                public void onConnectSuccess() {
-                }
+            @Override
+            public void onConnectSuccess() {
+            }
 
-                @Override
-                public void onConnectFailed(int code, String error) {
-                }
-            });
-        }
+            @Override
+            public void onConnectFailed(int code, String error) {
+            }
+        });
     }
 
     private void setLogin(boolean isLogin) {

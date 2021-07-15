@@ -1,15 +1,10 @@
 package com.tencent.liteav.trtccalling.model.impl.base;
 
-import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
-import com.tencent.imsdk.v2.V2TIMManager;
-import com.tencent.imsdk.v2.V2TIMMessage;
-import com.tencent.imsdk.v2.V2TIMSignalingInfo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 自定义消息的bean实体，用来与json的相互转化
@@ -18,7 +13,22 @@ public class CallModel implements Cloneable, Serializable {
 
     private static final String TAG = CallModel.class.getSimpleName();
 
-    public static final int VALUE_PROTOCOL_VERSION = 1;
+    public static String  KEY_VERSION     = "version";
+    public static String  KEY_PLATFORM    = "platform";
+    public static String  KEY_BUSINESS_ID = "businessID";
+    public static String  KEY_DATA        = "data";
+    public static String  KEY_ROOM_ID     = "room_id";
+    public static String  KEY_CMD         = "cmd";
+    public static String  KEY_MESSAGE     = "message";
+
+    public static final int    VALUE_VERSION                  = 4;
+    public static final String VALUE_BUSINESS_ID              = "av_call";           //calling场景
+    public static final String VALUE_PLATFORM                 = "Android";           //当前平台
+    public static final String VALUE_CMD_VIDEO_CALL           = "videoCall";         //视频电话呼叫
+    public static final String VALUE_CMD_AUDIO_CALL           = "audioCall";         //语音电话呼叫
+    public static final String VALUE_CMD_HAND_UP              = "hangup";            //挂断
+    public static final String VALUE_CMD_SWITCH_TO_AUDIO      = "switchToAudio";     //切换为语音通话
+    public static final String VALUE_MSG_LINE_BUSY            = "lineBusy";          //忙线
 
     /**
      * 系统错误
@@ -72,11 +82,11 @@ public class CallModel implements Cloneable, Serializable {
      */
     public static final int VIDEO_CALL_ACTION_REJECT_SWITCH_TO_AUDIO = 10;
 
+    //兼容老版本字段，待废弃字段
     public static String SIGNALING_EXTRA_KEY_CALL_TYPE          = "call_type";
     public static String SIGNALING_EXTRA_KEY_ROOM_ID            = "room_id";
     public static String SIGNALING_EXTRA_KEY_LINE_BUSY          = "line_busy";
     public static String SIGNALING_EXTRA_KEY_CALL_END           = "call_end";
-    public static String SIGNALING_EXTRA_KEY_VERSION            = "version";
     public static String SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL  = "switch_to_audio_call";
 
     @SerializedName("version")
@@ -144,68 +154,6 @@ public class CallModel implements Cloneable, Serializable {
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
             TRTCLogger.w(TAG, "clone: " + e.getLocalizedMessage());
-        }
-        return callModel;
-    }
-
-    public static CallModel convert2VideoCallData(V2TIMMessage msg) {
-        V2TIMSignalingInfo signalingInfo = V2TIMManager.getSignalingManager().getSignalingInfo(msg);
-        if (signalingInfo == null) {
-            return null;
-        }
-        CallModel callModel = new CallModel();
-        try {
-            Map<String, Object> extraMap = new Gson().fromJson(signalingInfo.getData(), Map.class);
-            if (extraMap != null
-                    && extraMap.containsKey(CallModel.SIGNALING_EXTRA_KEY_VERSION)) {
-                callModel.action = CallModel.VIDEO_CALL_ACTION_UNKNOWN;
-                return callModel;
-            }
-            callModel.data = signalingInfo.getData();
-            if (signalingInfo.getActionType() == V2TIMSignalingInfo.SIGNALING_ACTION_TYPE_INVITE && extraMap != null) {
-                callModel.groupId = signalingInfo.getGroupID();
-                callModel.timestamp = msg.getTimestamp();
-                callModel.version = ((Double) extraMap.get(CallModel.SIGNALING_EXTRA_KEY_VERSION)).intValue();
-                if (extraMap.containsKey(CallModel.SIGNALING_EXTRA_KEY_CALL_END)) {
-                    callModel.action = CallModel.VIDEO_CALL_ACTION_HANGUP;
-                    callModel.duration = ((Double) extraMap.get(CallModel.SIGNALING_EXTRA_KEY_CALL_END)).intValue();
-                } else {
-                    callModel.action = CallModel.VIDEO_CALL_ACTION_DIALING;
-                    callModel.callId = signalingInfo.getInviteID();
-                    callModel.sender = signalingInfo.getInviter();
-                    callModel.invitedList = signalingInfo.getInviteeList();
-                    callModel.callType = ((Double) extraMap.get(CallModel.SIGNALING_EXTRA_KEY_CALL_TYPE)).intValue();
-                    callModel.roomId = ((Double) extraMap.get(CallModel.SIGNALING_EXTRA_KEY_ROOM_ID)).intValue();
-                }
-            } else if (signalingInfo.getActionType() == V2TIMSignalingInfo.SIGNALING_ACTION_TYPE_CANCEL_INVITE) {
-                callModel.action = CallModel.VIDEO_CALL_ACTION_SPONSOR_CANCEL;
-                callModel.groupId = signalingInfo.getGroupID();
-                callModel.callId = signalingInfo.getInviteID();
-                callModel.version = ((Double) extraMap.get(CallModel.SIGNALING_EXTRA_KEY_VERSION)).intValue();
-            } else if (signalingInfo.getActionType() == V2TIMSignalingInfo.SIGNALING_ACTION_TYPE_REJECT_INVITE && extraMap != null) {
-                callModel.groupId = signalingInfo.getGroupID();
-                callModel.callId = signalingInfo.getInviteID();
-                callModel.invitedList = signalingInfo.getInviteeList();
-                callModel.version = ((Double) extraMap.get(CallModel.SIGNALING_EXTRA_KEY_VERSION)).intValue();
-                if (extraMap.containsKey(CallModel.SIGNALING_EXTRA_KEY_LINE_BUSY)) {
-                    callModel.action = CallModel.VIDEO_CALL_ACTION_LINE_BUSY;
-                } else {
-                    callModel.action = CallModel.VIDEO_CALL_ACTION_REJECT;
-                }
-            } else if (signalingInfo.getActionType() == V2TIMSignalingInfo.SIGNALING_ACTION_TYPE_INVITE_TIMEOUT) {
-                callModel.action = CallModel.VIDEO_CALL_ACTION_SPONSOR_TIMEOUT;
-                callModel.groupId = signalingInfo.getGroupID();
-                callModel.callId = signalingInfo.getInviteID();
-                callModel.invitedList = signalingInfo.getInviteeList();
-            } else if (signalingInfo.getActionType() == V2TIMSignalingInfo.SIGNALING_ACTION_TYPE_ACCEPT_INVITE) {
-                callModel.action = CallModel.VIDEO_CALL_ACTION_ACCEPT;
-                callModel.groupId = signalingInfo.getGroupID();
-                callModel.callId = signalingInfo.getInviteID();
-                callModel.invitedList = signalingInfo.getInviteeList();
-                callModel.version = ((Double) extraMap.get(CallModel.SIGNALING_EXTRA_KEY_VERSION)).intValue();
-            }
-        } catch (Exception e) {
-            TRTCLogger.e(TAG, "convert2VideoCallData exception:" + e);
         }
         return callModel;
     }
