@@ -7,12 +7,7 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString *const SIGNALING_EXTRA_KEY_VERSION;
-extern NSString *const SIGNALING_EXTRA_KEY_CALL_TYPE;
-extern NSString *const SIGNALING_EXTRA_KEY_ROOM_ID;
-extern NSString *const SIGNALING_EXTRA_KEY_LINE_BUSY;
-extern NSString *const SIGNALING_EXTRA_KEY_CALL_END;
-extern NSString *const SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL;
+
 extern int SIGNALING_EXTRA_KEY_TIME_OUT;
 
 typedef void(^DismissBlock)(void);

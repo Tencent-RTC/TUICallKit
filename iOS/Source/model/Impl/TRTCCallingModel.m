@@ -7,12 +7,7 @@
 
 #import "TRTCCallingModel.h"
 
-NSString *const SIGNALING_EXTRA_KEY_VERSION = @"version";
-NSString *const SIGNALING_EXTRA_KEY_CALL_TYPE = @"call_type";
-NSString *const SIGNALING_EXTRA_KEY_ROOM_ID = @"room_id";
-NSString *const SIGNALING_EXTRA_KEY_LINE_BUSY = @"line_busy";
-NSString *const SIGNALING_EXTRA_KEY_CALL_END = @"call_end";
-NSString *const SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL  = @"switch_to_audio_call";
+
 
 int SIGNALING_EXTRA_KEY_TIME_OUT = 30;
 

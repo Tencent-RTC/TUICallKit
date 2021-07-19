@@ -10,6 +10,7 @@
 #import "TRTCCallingHeader.h"
 #import <ImSDK_Plus/ImSDK_Plus.h>
 #import "CallingLocalized.h"
+#import "TRTCSignalFactory.h"
 
 @implementation TRTCCalling (Signal)
 
@@ -35,12 +36,24 @@
             isGroup = YES;
         }
     }
-    NSMutableDictionary *param = [NSMutableDictionary dictionaryWithObjectsAndKeys:@(Version),SIGNALING_EXTRA_KEY_VERSION,@(realModel.calltype), SIGNALING_EXTRA_KEY_CALL_TYPE,nil];
     switch (realModel.action) {
     case CallAction_Call:
         {
-            param[SIGNALING_EXTRA_KEY_ROOM_ID] = @(realModel.roomid);
-            NSString *data = [TRTCCallingUtils dictionary2JsonStr:param];
+            NSString *cmd = @"";
+            switch (realModel.calltype) {
+                case CallType_Video:
+                    cmd = SIGNALING_CMD_VIDEOCALL;
+                break;
+                    
+                case CallType_Audio:
+                    cmd = SIGNALING_CMD_AUDIOCALL;
+                break;
+                default:
+                    break;
+            }
+            NSMutableDictionary *dataDic = [TRTCSignalFactory packagingSignalingWithExtInfo:@"" roomID:realModel.roomid cmd:cmd cmdInfo:@"" message:@"" callType:realModel.calltype];
+            [dataDic setValue:@(realModel.roomid) forKey:SIGNALING_EXTRA_KEY_ROOM_ID];
+            NSString *data = [TRTCCallingUtils dictionary2JsonStr:dataDic];
             if (isGroup) {
                 @weakify(self)
                 callID = [[V2TIMManager sharedInstance] inviteInGroup:realModel.groupid inviteeList:realModel.invitedList data:data onlineUserOnly:true timeout:SIGNALING_EXTRA_KEY_TIME_OUT succ:^{
@@ -58,10 +71,10 @@
                 self.callID = callID;
             } else {
                 @weakify(self)
-                callID = [[V2TIMManager sharedInstance] invite:realModel.invitedList.firstObject data:data onlineUserOnly:true offlinePushInfo:nil timeout:SIGNALING_EXTRA_KEY_TIME_OUT succ:^{
+                callID = [[V2TIMManager sharedInstance] invite:receiver data:data onlineUserOnly:true offlinePushInfo:nil timeout:SIGNALING_EXTRA_KEY_TIME_OUT succ:^{
                     @strongify(self)
                     // 发起 Apns 推送
-                    [self sendAPNsForCall:realModel.invitedList.firstObject inviteeList:realModel.invitedList callID:self.callID groupid:realModel.groupid roomid:realModel.roomid];
+                    [self sendAPNsForCall:receiver inviteeList:realModel.invitedList callID:self.callID groupid:realModel.groupid roomid:realModel.roomid];
                 } fail:^(int code, NSString *desc) {
                     @strongify(self)
                     if ([self canDelegateRespondMethod:@selector(onError:msg:)]) {
@@ -75,7 +88,8 @@
         
     case CallAction_Accept:
         {
-            NSString *data = [TRTCCallingUtils dictionary2JsonStr:param];
+            NSMutableDictionary *dataDic = [TRTCSignalFactory packagingSignalingWithExtInfo:@"" roomID:realModel.roomid cmd:@"" cmdInfo:@"" message:@"" callType:realModel.calltype];
+            NSString *data = [TRTCCallingUtils dictionary2JsonStr:dataDic];
             @weakify(self)
             [[V2TIMManager sharedInstance] accept:realModel.callid data:data succ:nil fail:^(int code, NSString *desc) {
                 @strongify(self)
@@ -88,7 +102,8 @@
         
     case CallAction_Reject:
         {
-            NSString *data = [TRTCCallingUtils dictionary2JsonStr:param];
+            NSMutableDictionary *dataDic = [TRTCSignalFactory packagingSignalingWithExtInfo:@"" roomID:realModel.roomid cmd:@"" cmdInfo:@"" message:@"" callType:realModel.calltype];
+            NSString *data = [TRTCCallingUtils dictionary2JsonStr:dataDic];
             @weakify(self)
             [[V2TIMManager sharedInstance] reject:realModel.callid data:data succ:nil fail:^(int code, NSString *desc) {
                 @strongify(self)
@@ -101,8 +116,9 @@
         
     case CallAction_Linebusy:
         {
-            param[SIGNALING_EXTRA_KEY_LINE_BUSY] = SIGNALING_EXTRA_KEY_LINE_BUSY;
-            NSString *data = [TRTCCallingUtils dictionary2JsonStr:param];
+            NSMutableDictionary *dataDic = [TRTCSignalFactory packagingSignalingWithExtInfo:@"" roomID:realModel.roomid cmd:@"" cmdInfo:@"" message:SIGNALING_MESSAGE_LINEBUSY callType:realModel.calltype];
+            [dataDic setValue:SIGNALING_EXTRA_KEY_LINE_BUSY forKey:SIGNALING_EXTRA_KEY_LINE_BUSY];
+            NSString *data = [TRTCCallingUtils dictionary2JsonStr:dataDic];
             @weakify(self)
             [[V2TIMManager sharedInstance] reject:realModel.callid data:data succ:nil fail:^(int code, NSString *desc) {
                 @strongify(self)
@@ -115,7 +131,8 @@
         
     case CallAction_Cancel:
         {
-            NSString *data = [TRTCCallingUtils dictionary2JsonStr:param];
+            NSMutableDictionary *dataDic = [TRTCSignalFactory packagingSignalingWithExtInfo:@"" roomID:realModel.roomid cmd:@"" cmdInfo:@"" message:@"" callType:realModel.calltype];
+            NSString *data = [TRTCCallingUtils dictionary2JsonStr:dataDic];
             @weakify(self)
             [[V2TIMManager sharedInstance] cancel:realModel.callid data:data succ:nil fail:^(int code, NSString *desc) {
                 @strongify(self)
@@ -129,8 +146,11 @@
     case CallAction_End:
         {
             if (isGroup) {
-                param[SIGNALING_EXTRA_KEY_CALL_END] = @(0);  // 群通话不需要计算通话时长
-                NSString *data = [TRTCCallingUtils dictionary2JsonStr:param];
+//                param[SIGNALING_EXTRA_KEY_CALL_END] = @(0);  // 群通话不需要计算通话时长
+//                NSString *data = [TRTCCallingUtils dictionary2JsonStr:param];
+                NSMutableDictionary *dataDic = [TRTCSignalFactory packagingSignalingWithExtInfo:@"" roomID:realModel.roomid cmd:SIGNALING_CMD_HANGUP cmdInfo:@"0" message:@"" callType:realModel.calltype];
+                [dataDic setValue:@(0) forKey:SIGNALING_EXTRA_KEY_CALL_END];
+                NSString *data = [TRTCCallingUtils dictionary2JsonStr:dataDic];
                 // 这里发结束事件的时候，inviteeList 已经为 nil 了，可以伪造一个被邀请用户，把结束的信令发到群里展示。
                 // timeout 这里传 0，结束的事件不需要做超时检测
                 @weakify(self)
@@ -143,8 +163,9 @@
             } else {
                 if (self.startCallTS > 0) {
                     NSDate *now = [NSDate date];
-                    param[SIGNALING_EXTRA_KEY_CALL_END] = @((UInt64)[now timeIntervalSince1970] - self.startCallTS);
-                    NSString *data = [TRTCCallingUtils dictionary2JsonStr:param];
+                    NSMutableDictionary *dataDic = [TRTCSignalFactory packagingSignalingWithExtInfo:@"" roomID:realModel.roomid cmd:SIGNALING_CMD_HANGUP cmdInfo:[NSString stringWithFormat:@"%llu",(UInt64)[now timeIntervalSince1970] - self.startCallTS] message:@"" callType:realModel.calltype];
+                    [dataDic setValue:@((UInt64)[now timeIntervalSince1970] - self.startCallTS) forKey:SIGNALING_EXTRA_KEY_CALL_END];
+                    NSString *data = [TRTCCallingUtils dictionary2JsonStr:dataDic];
                     @weakify(self)
                     callID = [[V2TIMManager sharedInstance] invite:receiver data:data onlineUserOnly:true offlinePushInfo:nil timeout:0 succ:nil fail:^(int code, NSString *desc) {
                         @strongify(self)
@@ -158,8 +179,9 @@
         }
             break;
     case CallAction_SwitchToAudio: {
-        param[SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL] = SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL;
-        NSString *data = [TRTCCallingUtils dictionary2JsonStr:param];
+        NSMutableDictionary *dataDic = [TRTCSignalFactory packagingSignalingWithExtInfo:@"" roomID:realModel.roomid cmd:SIGNALING_CMD_SWITCHTOVOICECALL cmdInfo:@"" message:@"" callType:realModel.calltype];
+        [dataDic setValue:SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL forKey:SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL];
+        NSString *data = [TRTCCallingUtils dictionary2JsonStr:dataDic];
         @weakify(self)
         [[V2TIMManager sharedInstance] invite:receiver data:data onlineUserOnly:true offlinePushInfo:nil timeout:SIGNALING_EXTRA_KEY_TIME_OUT succ:^{
             
@@ -218,7 +240,7 @@
     V2TIMOfflinePushInfo *info = [[V2TIMOfflinePushInfo alloc] init];
     info.desc = CallingLocalize(@"Demo.TRTC.calling.callingrequest");
     info.ext = [TRTCCallingUtils dictionary2JsonStr:extParam];
-    V2TIMMessage *msg = [[V2TIMManager sharedInstance] createCustomMessage:[TRTCCallingUtils dictionary2JsonData:@{@"version" : @(Version) , @"businessID" : @"av_call"}]];
+    V2TIMMessage *msg = [[V2TIMManager sharedInstance] createCustomMessage:[TRTCCallingUtils dictionary2JsonData:@{@"version" : @(Version) , @"businessID" : SIGNALING_BUSINESSID}]];
     // 针对每个被邀请成员单独邀请
     [[V2TIMManager sharedInstance] sendMessage:msg receiver:receiver groupID:nil priority:V2TIM_PRIORITY_HIGH onlineUserOnly:YES offlinePushInfo:info progress:nil succ:nil fail:nil];
 }
@@ -238,15 +260,15 @@
 -(void)onReceiveNewInvitation:(NSString *)inviteID inviter:(NSString *)inviter groupID:(NSString *)groupID inviteeList:(NSArray<NSString *> *)inviteeList data:(NSString *)data {
     NSDictionary *param = [self check:data];
     if (param) {
+        NSDictionary *data = [TRTCSignalFactory getDataDictionary:param];
         CallModel *model = [[CallModel alloc] init];
         model.callid = inviteID;
         model.groupid = groupID;
         model.inviter = inviter;
         model.invitedList = [NSMutableArray arrayWithArray:inviteeList];
-        model.calltype = (CallType)[param[SIGNALING_EXTRA_KEY_CALL_TYPE] intValue];
-        model.roomid = [param[SIGNALING_EXTRA_KEY_ROOM_ID] intValue];
-        
-        if ([param.allKeys containsObject:SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL]) {
+        model.calltype = [TRTCSignalFactory convertCmdToCallType:data[SIGNALING_EXTRA_KEY_CMD]];
+        model.roomid = [data[SIGNALING_EXTRA_KEY_ROOMID] intValue];
+        if ([data[SIGNALING_EXTRA_KEY_CMD] isEqualToString:SIGNALING_CMD_SWITCHTOVOICECALL]) {
             model.action = CallAction_SwitchToAudio;
             self.switchToAudioCallID = inviteID;
         }
@@ -274,7 +296,8 @@
         [TRTCCloud sharedInstance].delegate = self;
         CallModel *model = [[CallModel alloc] init];
         model.callid = inviteID;
-        if ([param.allKeys containsObject:SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL]) {
+        NSDictionary *data = [TRTCSignalFactory getDataDictionary:param];
+        if ([data[SIGNALING_EXTRA_KEY_CMD] isEqualToString:SIGNALING_CMD_SWITCHTOVOICECALL]) {
             model.action = CallAction_AcceptSwitchToAudio;
         }
         else {
@@ -289,10 +312,11 @@
     if (param) {
         CallModel *model = [[CallModel alloc] init];
         model.callid = inviteID;
-        if ([param.allKeys containsObject:SIGNALING_EXTRA_KEY_LINE_BUSY]) {
+        NSDictionary *data = [TRTCSignalFactory getDataDictionary:param];
+        if ([data[SIGNALING_EXTRA_KEY_MESSAGE] isEqualToString:SIGNALING_MESSAGE_LINEBUSY]) {
             model.action = CallAction_Linebusy;
         }
-        else if ([param.allKeys containsObject:SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL]) {
+        else if ([data[SIGNALING_EXTRA_KEY_CMD] isEqualToString:SIGNALING_CMD_SWITCHTOVOICECALL]) {
             model.action = CallAction_AcceptSwitchToAudio;
         }
         else {
@@ -311,19 +335,25 @@
 }
 
 - (NSDictionary *)check:(NSString *)data {
-    NSDictionary *param = [TRTCCallingUtils jsonSring2Dictionary:data];
-    if ([param.allKeys containsObject:SIGNALING_EXTRA_KEY_CALL_END]) {
-        //结束的事件只用于 UI 展示通话时长，不参与业务逻辑的处理
+    NSDictionary *signalingDictionary = [TRTCCallingUtils jsonSring2Dictionary:data];
+    
+    if(!signalingDictionary[SIGNALING_EXTRA_KEY_PLATFORM] || !signalingDictionary[SIGNALING_EXTRA_KEY_DATA]) {
+        signalingDictionary = [TRTCSignalFactory convertOldSignalingToNewSignaling:signalingDictionary];
+    }
+    
+    if (![signalingDictionary[SIGNALING_EXTRA_KEY_BUSINESSID] isEqualToString:SIGNALING_BUSINESSID]) {
         return nil;
     }
-    if (![param.allKeys containsObject:SIGNALING_EXTRA_KEY_CALL_TYPE]) {
-        return nil;
-    }
-    NSInteger version = [param[SIGNALING_EXTRA_KEY_VERSION] integerValue];
+    NSInteger version = [signalingDictionary[SIGNALING_EXTRA_KEY_VERSION] integerValue];
     if (version > Version) {
         return nil;
     }
-    return param;
+    NSDictionary *dataDictionary = [TRTCSignalFactory getDataDictionary:signalingDictionary];
+    if ([dataDictionary[SIGNALING_EXTRA_KEY_CMD] isEqualToString:SIGNALING_CMD_HANGUP]) {
+        //结束的事件只用于 UI 展示通话时长，不参与业务逻辑的处理
+        return nil;
+    }
+    return signalingDictionary;
 }
 
 - (void)handleCallModel:(NSString *)user model:(CallModel *)model message:(NSString *)message {
@@ -451,8 +481,11 @@
         }
         int res = [self checkAudioStatus];
         if (res == 0) {
-            NSMutableDictionary *param = [NSMutableDictionary dictionaryWithObjectsAndKeys:@(Version),SIGNALING_EXTRA_KEY_VERSION,@(CallType_Video), SIGNALING_EXTRA_KEY_CALL_TYPE,@(1),SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL, nil];
-            NSString *data = [TRTCCallingUtils dictionary2JsonStr:param];
+//            NSMutableDictionary *param = [NSMutableDictionary dictionaryWithObjectsAndKeys:@(Version),SIGNALING_EXTRA_KEY_VERSION,@(CallType_Video), SIGNALING_EXTRA_KEY_CALL_TYPE,@(1),SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL, nil];
+//            NSString *data = [TRTCCallingUtils dictionary2JsonStr:param];
+            NSMutableDictionary *dataDic = [TRTCSignalFactory packagingSignalingWithExtInfo:@"" roomID:0 cmd:SIGNALING_CMD_SWITCHTOVOICECALL cmdInfo:@"" message:@"" callType:CallType_Video];
+            [dataDic setValue:@(1) forKey:SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL];
+            NSString *data = [TRTCCallingUtils dictionary2JsonStr:dataDic];
             @weakify(self)
             [[V2TIMManager sharedInstance] accept:self.switchToAudioCallID data:data succ:^{
                 @strongify(self)
@@ -467,8 +500,11 @@
             }];
         }
         else {
-            NSMutableDictionary *param = [NSMutableDictionary dictionaryWithObjectsAndKeys:@(Version),SIGNALING_EXTRA_KEY_VERSION,@(CallType_Video), SIGNALING_EXTRA_KEY_CALL_TYPE,@(0),SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL, nil];
-            NSString *data = [TRTCCallingUtils dictionary2JsonStr:param];
+//            NSMutableDictionary *param = [NSMutableDictionary dictionaryWithObjectsAndKeys:@(Version),SIGNALING_EXTRA_KEY_VERSION,@(CallType_Video), SIGNALING_EXTRA_KEY_CALL_TYPE,@(0),SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL, nil];
+//            NSString *data = [TRTCCallingUtils dictionary2JsonStr:param];
+            NSMutableDictionary *dataDic = [TRTCSignalFactory packagingSignalingWithExtInfo:@"" roomID:0 cmd:@"" cmdInfo:@"" message:@"" callType:CallType_Video];
+            [dataDic setValue:@(0) forKey:SIGNALING_EXTRA_KEY_SWITCH_AUDIO_CALL];
+            NSString *data = [TRTCCallingUtils dictionary2JsonStr:dataDic];
             [[V2TIMManager sharedInstance] reject:self.switchToAudioCallID data:data succ:^{
                 
             } fail:^(int code, NSString *desc) {
