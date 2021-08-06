@@ -9,7 +9,7 @@
 #import "TRTCCallingHeader.h"
 
 NSString *const SIGNALING_EXTRA_KEY_VERSION = @"version";       // 协议版本信息
-NSString *const SIGNALING_EXTRA_KEY_BUSINESSID = @"businessID"; // 业务场景，可以是calling，KTV等
+NSString *const SIGNALING_EXTRA_KEY_BUSINESSID = @"businessID"; // 业务场景，可以是calling，Karaoke等
 NSString *const SIGNALING_EXTRA_KEY_PLATFORM = @"platform";     // 平台，iOS,Android,Web,Windows，flutter
 NSString *const SIGNALING_EXTRA_KEY_EXTINFO = @"extInfo";       // 扩展字段，备用
 NSString *const SIGNALING_EXTRA_KEY_DATA = @"data";             // 携带的指令信息字段
