@@ -5,9 +5,7 @@
 ```
 TUICalling
 ├─ App          // 主面板，各种场景入口
-├─ Basic        // 基础库
 ├─ Debug        // 调试相关
-├─ Login        // 登录相关
 └─ Source       // 实时语音/视频通话业务逻辑
 ```
 
