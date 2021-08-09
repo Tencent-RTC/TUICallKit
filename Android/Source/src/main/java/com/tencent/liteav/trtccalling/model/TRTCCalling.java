@@ -207,4 +207,13 @@ public abstract class TRTCCalling {
      * 视频通话切换为语音通话模式
      */
     public abstract void switchToAudioCall();
+
+    /**
+     * 设置用户信息，您设置的用户信息会被存储于腾讯云 IM 云服务中。
+     *
+     * @param userName 用户昵称
+     * @param avatarURL 用户头像
+     * @param callback 是否设置成功的结果回调
+     */
+    public abstract void setSelfProfile(String userName, String avatarURL, TRTCCallingCallback.ActionCallback callback);
 }

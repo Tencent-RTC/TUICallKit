@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:background="@null"
-            android:hint="@string/trtccalling_search_call_hint"
+            android:hint="@string/search_call_hint"
             android:imeOptions="actionSearch"
             android:inputType="number"
             android:maxLength="11"

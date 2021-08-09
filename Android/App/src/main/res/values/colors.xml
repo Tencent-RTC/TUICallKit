@@ -7,4 +7,5 @@
     <color name="color_blue">#006EFF</color>
     <color name="color_bg_dialog">#66000000</color>
     <color name="color_line">#DDDDDD</color>
+    <color name="color_input_normal">#BBBBBB</color>
 </resources>

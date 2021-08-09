@@ -1,4 +1,4 @@
-package com.tencent.liteav.login.model;
+package com.tencent.liteav.basic;
 
 public interface AvatarConstant {
     String USER_AVATAR_ARRAY [] = {

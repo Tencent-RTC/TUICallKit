@@ -27,12 +27,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ToastUtils;
-import com.squareup.picasso.Picasso;
+import com.tencent.liteav.basic.ImageLoader;
+import com.tencent.liteav.basic.UserModel;
+import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.debug.GenerateTestUserSig;
-import com.tencent.liteav.login.model.ProfileManager;
-import com.tencent.liteav.login.model.UserModel;
 import com.tencent.liteav.trtccalling.model.TRTCCalling;
 import com.tencent.liteav.trtccalling.model.TRTCCallingDelegate;
+import com.tencent.liteav.trtccalling.model.impl.base.CallingInfoManager;
 import com.tencent.liteav.trtccalling.ui.audiocall.TRTCAudioCallActivity;
 import com.tencent.liteav.trtccalling.ui.common.RoundCornerImageView;
 import com.tencent.liteav.trtccalling.ui.videocall.TRTCVideoCallActivity;
@@ -73,14 +74,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onInvited(String sponsor, final List<String> userIdList, boolean isFromGroup, final int callType) {
             //1. 收到邀请，先到服务器查询
-            ProfileManager.getInstance().getUserInfoByUserId(sponsor, new ProfileManager.GetUserInfoCallback() {
+            CallingInfoManager.getInstance().getUserInfoByUserId(sponsor, new CallingInfoManager.UserCallback() {
                 @Override
                 public void onSuccess(final UserModel model) {
                     if (callType == TRTCCalling.TYPE_VIDEO_CALL) {
                         TRTCVideoCallActivity.UserInfo selfInfo = new TRTCVideoCallActivity.UserInfo();
-                        selfInfo.userId = ProfileManager.getInstance().getUserModel().userId;
-                        selfInfo.userAvatar = ProfileManager.getInstance().getUserModel().userAvatar;
-                        selfInfo.userName = ProfileManager.getInstance().getUserModel().userName;
+                        selfInfo.userId = UserModelManager.getInstance().getUserModel().userId;
+                        selfInfo.userAvatar = UserModelManager.getInstance().getUserModel().userAvatar;
+                        selfInfo.userName = UserModelManager.getInstance().getUserModel().userName;
                         TRTCVideoCallActivity.UserInfo callUserInfo = new TRTCVideoCallActivity.UserInfo();
                         callUserInfo.userId = model.userId;
                         callUserInfo.userAvatar = model.userAvatar;
@@ -88,9 +89,9 @@ public class MainActivity extends AppCompatActivity {
                         TRTCVideoCallActivity.startBeingCall(MainActivity.this, selfInfo, callUserInfo, null);
                     } else if (callType == TRTCCalling.TYPE_AUDIO_CALL) {
                         TRTCAudioCallActivity.UserInfo selfInfo = new TRTCAudioCallActivity.UserInfo();
-                        selfInfo.userId = ProfileManager.getInstance().getUserModel().userId;
-                        selfInfo.userAvatar = ProfileManager.getInstance().getUserModel().userAvatar;
-                        selfInfo.userName = ProfileManager.getInstance().getUserModel().userName;
+                        selfInfo.userId = UserModelManager.getInstance().getUserModel().userId;
+                        selfInfo.userAvatar = UserModelManager.getInstance().getUserModel().userAvatar;
+                        selfInfo.userName = UserModelManager.getInstance().getUserModel().userName;
                         TRTCAudioCallActivity.UserInfo callUserInfo = new TRTCAudioCallActivity.UserInfo();
                         callUserInfo.userId = model.userId;
                         callUserInfo.userAvatar = model.userAvatar;
@@ -196,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mSelfModel = ProfileManager.getInstance().getUserModel();
+        mSelfModel = UserModelManager.getInstance().getUserModel();
         mType = getIntent().getIntExtra("TYPE", TRTCCalling.TYPE_VIDEO_CALL);
         initStatusBar();
         initView();
@@ -334,12 +335,7 @@ public class MainActivity extends AppCompatActivity {
         }
         mClTips.setVisibility(View.GONE);
         mLlContract.setVisibility(View.VISIBLE);
-        if (TextUtils.isEmpty(model.userAvatar)) {
-            mIvAvatar.setImageResource(R.drawable.trtccalling_ic_avatar);
-        } else {
-            Picasso.get().load(model.userAvatar).error(R.drawable.trtccalling_ic_avatar).
-                    placeholder(R.drawable.trtccalling_ic_avatar).into(mIvAvatar);
-        }
+        ImageLoader.loadImage(this, mIvAvatar, model.userAvatar, R.drawable.trtccalling_ic_avatar);
         mTvUserName.setText(model.userName);
     }
 
@@ -360,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(userId)) {
             return;
         }
-        ProfileManager.getInstance().getUserInfoByUserId(userId, new ProfileManager.GetUserInfoCallback() {
+        CallingInfoManager.getInstance().getUserInfoByUserId(userId, new CallingInfoManager.UserCallback() {
             @Override
             public void onSuccess(UserModel model) {
                 mSearchModel = model;
@@ -384,7 +380,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        final UserModel userModel = ProfileManager.getInstance().getUserModel();
+        final UserModel userModel = UserModelManager.getInstance().getUserModel();
         mTRTCCalling = TRTCCalling.sharedInstance(this);
         mTRTCCalling.addDelegate(mTRTCCallingDelegate);
         mTRTCCalling.login(GenerateTestUserSig.SDKAPPID, userModel.userId, userModel.userSig, new TRTCCalling.ActionCallBack() {
@@ -395,6 +391,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess() {
+
             }
         });
     }

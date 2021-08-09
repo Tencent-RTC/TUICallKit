@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.Nullable;
 import android.support.constraint.Group;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,9 +20,8 @@ import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.CollectionUtils;
 import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.squareup.picasso.Picasso;
-import com.tencent.liteav.login.model.ProfileManager;
-import com.tencent.liteav.login.model.UserModel;
+import com.tencent.liteav.basic.ImageLoader;
+import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.trtccalling.R;
 import com.tencent.liteav.trtccalling.model.TRTCCalling;
 import com.tencent.liteav.trtccalling.model.TRTCCallingDelegate;
@@ -258,7 +256,7 @@ public class TRTCAudioCallActivity extends BaseCallActivity {
      * @param selfModel
      * @param searchModel
      */
-    public static void startCallSomeone(Context context, UserModel selfModel,UserModel searchModel) {
+    public static void startCallSomeone(Context context, UserModel selfModel, UserModel searchModel) {
         UserInfo selfInfo = new UserInfo();
         selfInfo.userId = selfModel.userId;
         selfInfo.userAvatar = selfModel.userAvatar;
@@ -442,12 +440,8 @@ public class TRTCAudioCallActivity extends BaseCallActivity {
         //1. 展示对方的画面
         TRTCAudioLayout layout = mLayoutManagerTRTC.allocAudioCallLayout(mSponsorUserInfo.userId);
         layout.setUserId(mSponsorUserInfo.userName);
-        if (TextUtils.isEmpty(mSponsorUserInfo.userAvatar)) {
-            layout.getImageView().setImageResource(R.drawable.trtccalling_wait_background);
-        } else {
-            Picasso.get().load(mSponsorUserInfo.userAvatar).error(R.drawable.trtccalling_wait_background).
-                    placeholder(R.drawable.trtccalling_wait_background).into(layout.getImageView());
-        }
+        ImageLoader.loadImage(this, layout.getImageView(), mSponsorUserInfo.userAvatar,
+                R.drawable.trtccalling_wait_background);
         //2. 展示电话对应界面
         mLayoutHangup.setVisibility(View.VISIBLE);
         mLayoutDialing.setVisibility(View.VISIBLE);
@@ -579,12 +573,8 @@ public class TRTCAudioCallActivity extends BaseCallActivity {
                 layoutParams.leftMargin = leftMargin;
             }
             imageView.setLayoutParams(layoutParams);
-            if (TextUtils.isEmpty(userInfo.userAvatar)) {
-                imageView.setImageResource(R.drawable.trtccalling_wait_background);
-            } else {
-                Picasso.get().load(mSponsorUserInfo.userAvatar).error(R.drawable.trtccalling_wait_background).
-                        placeholder(R.drawable.trtccalling_wait_background).into(imageView);
-            }
+            ImageLoader.loadImage(this, imageView, mSponsorUserInfo.userAvatar,
+                    R.drawable.trtccalling_wait_background);
             mLayoutImgContainer.addView(imageView);
         }
     }
@@ -599,12 +589,8 @@ public class TRTCAudioCallActivity extends BaseCallActivity {
             return null;
         }
         layout.setUserId(userInfo.userName);
-        if (TextUtils.isEmpty(userInfo.userAvatar)) {
-            layout.getImageView().setImageResource(R.drawable.trtccalling_wait_background);
-        } else {
-            Picasso.get().load(userInfo.userAvatar).error(R.drawable.trtccalling_wait_background).
-                    placeholder(R.drawable.trtccalling_wait_background).into(layout.getImageView());
-        }
+        ImageLoader.loadImage(this, layout.getImageView(), userInfo.userAvatar,
+                R.drawable.trtccalling_wait_background);
         return layout;
     }
 

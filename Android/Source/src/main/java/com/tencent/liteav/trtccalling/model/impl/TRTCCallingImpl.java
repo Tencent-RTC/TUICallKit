@@ -20,11 +20,12 @@ import com.tencent.imsdk.v2.V2TIMSendCallback;
 import com.tencent.imsdk.v2.V2TIMSignalingListener;
 import com.tencent.imsdk.v2.V2TIMUserFullInfo;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
+import com.tencent.liteav.basic.UserModel;
+import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.beauty.TXBeautyManager;
-import com.tencent.liteav.login.model.ProfileManager;
-import com.tencent.liteav.login.model.UserModel;
 import com.tencent.liteav.trtccalling.R;
 import com.tencent.liteav.trtccalling.model.TRTCCalling;
+import com.tencent.liteav.trtccalling.model.TRTCCallingCallback;
 import com.tencent.liteav.trtccalling.model.TRTCCallingDelegate;
 import com.tencent.liteav.trtccalling.model.impl.base.CallModel;
 import com.tencent.liteav.trtccalling.model.impl.base.SignallingData;
@@ -578,7 +579,7 @@ public class TRTCCallingImpl extends TRTCCalling {
 
     private void startCall() {
         isOnCalling = true;
-        ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.CALLING;
+        UserModelManager.getInstance().getUserModel().userType = UserModel.UserType.CALLING;
     }
 
     /**
@@ -597,7 +598,7 @@ public class TRTCCallingImpl extends TRTCCalling {
         mLastCallModel.version = CallModel.VALUE_VERSION;
         mCurGroupId = "";
         mCurCallType = TYPE_UNKNOWN;
-        ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.NONE;
+        UserModelManager.getInstance().getUserModel().userType = UserModel.UserType.NONE;
     }
 
     private void realSwitchToAudioCall() {
@@ -643,7 +644,7 @@ public class TRTCCallingImpl extends TRTCCalling {
 
     public void handleDialing(CallModel callModel, String user) {
         //正在体验视频互动、语聊房、语音沙龙模块时，收到一个邀请我的通话请求，告诉对方忙线
-        UserModel.UserType userType = ProfileManager.getInstance().getUserModel().userType;
+        UserModel.UserType userType = UserModelManager.getInstance().getUserModel().userType;
         if (isUserModelBusy(userType)) {
             sendModel(user, CallModel.VIDEO_CALL_ACTION_LINE_BUSY, callModel, null);
             return;
@@ -1038,6 +1039,30 @@ public class TRTCCallingImpl extends TRTCCalling {
         for (final String userId : mCurRoomRemoteUserSet) {
             mCurCallID = sendModel(userId, CallModel.VIDEO_CALL_SWITCH_TO_AUDIO_CALL);
         }
+    }
+
+    @Override
+    public void setSelfProfile(String userName, String avatarURL, final TRTCCallingCallback.ActionCallback callback) {
+        V2TIMUserFullInfo v2TIMUserFullInfo = new V2TIMUserFullInfo();
+        v2TIMUserFullInfo.setNickname(userName);
+        v2TIMUserFullInfo.setFaceUrl(avatarURL);
+        V2TIMManager.getInstance().setSelfInfo(v2TIMUserFullInfo, new V2TIMCallback() {
+            @Override
+            public void onError(int code, String desc) {
+                TRTCLogger.e(TAG, "set profile code:" + code + " msg:" + desc);
+                if (callback != null) {
+                    callback.onCallback(code, desc);
+                }
+            }
+
+            @Override
+            public void onSuccess() {
+                TRTCLogger.i(TAG, "set profile success.");
+                if (callback != null) {
+                    callback.onCallback(0, "set profile success.");
+                }
+            }
+        });
     }
 
     private String sendModel(final String user, int action) {

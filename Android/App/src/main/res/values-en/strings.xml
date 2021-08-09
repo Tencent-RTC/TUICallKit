@@ -13,5 +13,8 @@
     <string name="audio_call">Audio Call</string>
     <string name="video_call">Video Call</string>
     <string name="btn_cancel">Cancel</string>
-    <string name="trtccalling_search_call_hint">User id</string>
+    <string name="search_call_hint">User id</string>
+    <string name="user_id">Username</string>
+    <string name="hint_user_id">Enter a userId</string>
+    <string name="btn_login">Log In</string>
 </resources>

@@ -10,7 +10,6 @@ import android.os.HandlerThread;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Group;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -22,13 +21,13 @@ import android.widget.Toast;
 import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.squareup.picasso.Picasso;
-import com.tencent.liteav.login.model.ProfileManager;
-import com.tencent.liteav.login.model.UserModel;
+import com.tencent.liteav.basic.ImageLoader;
+import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.trtccalling.R;
 import com.tencent.liteav.trtccalling.model.TRTCCalling;
 import com.tencent.liteav.trtccalling.model.TRTCCallingDelegate;
 import com.tencent.liteav.trtccalling.model.impl.TRTCCallingImpl;
+import com.tencent.liteav.trtccalling.model.impl.base.CallingInfoManager;
 import com.tencent.liteav.trtccalling.ui.BaseCallActivity;
 import com.tencent.liteav.trtccalling.ui.common.RoundCornerImageView;
 import com.tencent.liteav.trtccalling.ui.common.Utils;
@@ -135,15 +134,14 @@ public class TRTCVideoCallActivity extends BaseCallActivity {
                     mCallUserInfoList.add(model);
                     mCallUserModelMap.put(model.userId, model);
                     showVideoView(model);
-                    ProfileManager.getInstance().getUserInfoByUserId(userId, new ProfileManager.GetUserInfoCallback() {
+                    CallingInfoManager.getInstance().getUserInfoByUserId(userId, new CallingInfoManager.UserCallback() {
                         @Override
                         public void onSuccess(UserModel model) {
                             TRTCVideoLayout layout = mLayoutManagerTrtc.findCloudViewView(model.userId);
                             if (layout != null) {
                                 layout.getUserNameTv().setText(model.userName);
-                                if (!TextUtils.isEmpty(model.userAvatar)) {
-                                    Picasso.get().load(model.userAvatar).placeholder(R.drawable.trtccalling_ic_avatar).error(R.drawable.trtccalling_ic_avatar).into(layout.getHeadImg());
-                                }
+                                ImageLoader.loadImage(getApplicationContext(), layout.getHeadImg(), model.userAvatar,
+                                        R.drawable.trtccalling_ic_avatar);
                             }
                         }
 
@@ -593,11 +591,8 @@ public class TRTCVideoCallActivity extends BaseCallActivity {
         mTRTCCalling.openCamera(true, videoLayout.getVideoView());
         //2. 展示对方的头像和蒙层
         visibleSponsorGroup(true);
-        if (TextUtils.isEmpty(mSponsorUserInfo.userAvatar)) {
-            mSponsorAvatarImg.setImageResource(R.drawable.trtccalling_ic_avatar);
-        } else {
-            Picasso.get().load(mSponsorUserInfo.userAvatar).placeholder(R.drawable.trtccalling_ic_avatar).error(R.drawable.trtccalling_ic_avatar).into(mSponsorAvatarImg);
-        }
+        ImageLoader.loadImage(getApplicationContext(), mSponsorAvatarImg, mSponsorUserInfo.userAvatar,
+                R.drawable.trtccalling_ic_avatar);
         mSponsorUserNameTv.setText(mSponsorUserInfo.userName);
 
         //3. 展示电话对应界面
@@ -675,11 +670,8 @@ public class TRTCVideoCallActivity extends BaseCallActivity {
         //4. sponsor画面也隐藏
         visibleSponsorGroup(true);
         mSponsorUserInfo = mCallUserInfoList.get(0);
-        if (TextUtils.isEmpty(mSponsorUserInfo.userAvatar)) {
-            mSponsorAvatarImg.setImageResource(R.drawable.trtccalling_ic_avatar);
-        } else {
-            Picasso.get().load(mSponsorUserInfo.userAvatar).placeholder(R.drawable.trtccalling_ic_avatar).error(R.drawable.trtccalling_ic_avatar).into(mSponsorAvatarImg);
-        }
+        ImageLoader.loadImage(getApplicationContext(), mSponsorAvatarImg, mSponsorUserInfo.userAvatar,
+                R.drawable.trtccalling_ic_avatar);
         mSponsorUserVideoTag.setText(getString(R.string.trtccalling_waiting_be_accepted));
         mSponsorUserNameTv.setText(mSponsorUserInfo.userName);
         mTvHangup.setText(R.string.trtccalling_text_hangup);
@@ -761,11 +753,8 @@ public class TRTCVideoCallActivity extends BaseCallActivity {
                 layoutParams.leftMargin = leftMargin;
             }
             imageView.setLayoutParams(layoutParams);
-            if (TextUtils.isEmpty(mSponsorUserInfo.userAvatar)) {
-                imageView.setImageResource(R.drawable.trtccalling_ic_avatar);
-            } else {
-                Picasso.get().load(userInfo.userAvatar).placeholder(R.drawable.trtccalling_ic_avatar).error(R.drawable.trtccalling_ic_avatar).into(imageView);
-            }
+            ImageLoader.loadImage(getApplicationContext(), imageView, userInfo.userAvatar,
+                    R.drawable.trtccalling_ic_avatar);
             mImgContainerLl.addView(imageView);
         }
     }

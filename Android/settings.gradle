@@ -1,5 +1,3 @@
 include ':App'
 include ':Source'
-include ':Basic'
 include ':Debug'
-include ':Login'

@@ -30,6 +30,11 @@
         </activity>
 
         <activity
+            android:name=".LoginActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <activity
             android:name="com.tencent.liteav.demo.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>

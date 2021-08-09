@@ -4,8 +4,6 @@ import android.os.Build;
 import android.os.StrictMode;
 import android.support.multidex.MultiDexApplication;
 
-import com.tencent.liteav.login.model.ProfileManager;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -23,7 +21,6 @@ public class BaseApplication extends MultiDexApplication {
             builder.detectFileUriExposure();
         }
         closeAndroidPDialog();
-        ProfileManager.getInstance().initContext(this);
     }
 
     private void closeAndroidPDialog() {

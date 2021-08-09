@@ -21,9 +21,21 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
+    api "com.android.support:multidex:$MULTIDEX_VERSION"
+    api "com.android.support:recyclerview-v7:$RECYCLERVIEW_V7_VERSION"
+    api "com.android.support:appcompat-v7:$APPCOMPAT_V7_VERSION"
+    api "com.android.support:design:$DESIGN_VERSION"
+    api "com.android.support.constraint:constraint-layout:$CONSTRAINT_LAYOUT_VERSION"
+    api "com.squareup.okhttp3:logging-interceptor:$LOGGING_INTERCEPTOR_VERSION"
+    api "com.squareup.retrofit2:converter-gson:$CONVERTER_GSON_VERSION"
+    api "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
+    api "com.squareup.okhttp3:okhttp:$OKHTTP_VERSION"
+    api "com.github.bumptech.glide:glide:$GLIDE_VERSION"
+    api "com.github.ctiao:DanmakuFlameMaster:$DANMAKU_FLAME_MASTER_VERSION"
+    api "de.hdodenhof:circleimageview:$CIRCLEIMAGEVIEW_VERSION"
+    api "com.google.code.gson:gson:$GSON_VERSION"
+    api "com.blankj:utilcode:$UTIL_CODE_VERSION"
     api rootProject.ext.liteavSdk
     api rootProject.ext.imSdk
-    api project(':Login')
     api project(':Debug')
-    api project(':Basic')
 }

@@ -13,5 +13,8 @@
     <string name="audio_call">语音通话</string>
     <string name="video_call">视频通话</string>
     <string name="btn_cancel">取消</string>
-    <string name="trtccalling_search_call_hint">搜索 userId</string>
+    <string name="search_call_hint">搜索 userId</string>
+    <string name="user_id">用户名</string>
+    <string name="hint_user_id">请输入登录的userId</string>
+    <string name="btn_login">登录</string>
 </resources>
