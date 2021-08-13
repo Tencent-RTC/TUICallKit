@@ -32,7 +32,7 @@
 
 ### 步骤1：创建新的应用
 
-1. 登录实时音视频控制台，选择【开发辅助】>【[快速跑通Demo](https://console.cloud.tencent.com/trtc/quickstart)】。
+1. 登录实时音视频控制台，选择【开发辅助】>【[快速跑通组件](https://console.cloud.tencent.com/trtc/quickstart)】。
 
 2. 单击【立即开始】，输入应用名称，例如`TestTRTC`，单击【创建应用】。
 
@@ -40,13 +40,13 @@
 
 <span id="step2"></span>
 
-### 步骤2：下载 SDK 和 Demo 源码
+### 步骤2：下载 SDK 和 组件源码
 
-1. 您可以单击【[Github](https://github.com/tencentyun/TRTCSDK/tree/master/WXMini/TRTCScenesDemo)】跳转至 Github（或单击【[ZIP](https://web.sdk.qcloud.com/component/trtccalling/download/trtc-calling-miniapp.zip)】），下载相关 SDK 及配套的 Demo 源码。
+1. 您可以单击【[Github](https://github.com/tencentyun/TUICalling)】跳转至 Github（或单击【[ZIP](https://web.sdk.qcloud.com/component/trtccalling/download/trtc-calling-miniapp.zip)】），下载相关 SDK 及配套的组件源码。
 
 <span id="step3"></span>
 
-### 步骤3：配置 Demo 工程文件
+### 步骤3：配置 组件工程文件
 
 1. 解压 [步骤2](#step2) 中下载的源码包。
 
@@ -64,7 +64,7 @@
 
 5. 单击【关闭指引，进入控制台管理应用】。
 
->!本文提到的生成 UserSig 的方案是在客户端代码中配置 SECRETKEY，该方法中 SECRETKEY 很容易被反编译逆向破解，一旦您的密钥泄露，攻击者就可以盗用您的腾讯云流量，因此**该方法仅适合本地跑通 Demo 和功能调试**。
+>!本文提到的生成 UserSig 的方案是在客户端代码中配置 SECRETKEY，该方法中 SECRETKEY 很容易被反编译逆向破解，一旦您的密钥泄露，攻击者就可以盗用您的腾讯云流量，因此**该方法仅适合本地跑通组件和功能调试**。
 
 >正确的 UserSig 签发方式是将 UserSig 的计算代码集成到您的服务端，并提供面向 App 的接口，在需要 UserSig 时由您的 App 向业务服务器发起请求获取动态 UserSig。更多详情请参见 [服务端生成 UserSig](https://cloud.tencent.com/document/product/647/17275#Server)。
 
