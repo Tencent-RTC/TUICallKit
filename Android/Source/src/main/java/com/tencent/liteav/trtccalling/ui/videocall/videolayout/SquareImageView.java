@@ -3,7 +3,7 @@ package com.tencent.liteav.trtccalling.ui.videocall.videolayout;
 import android.content.Context;
 import android.util.AttributeSet;
 
-public class SquareImageView extends android.support.v7.widget.AppCompatImageView {
+public class SquareImageView extends androidx.appcompat.widget.AppCompatImageView {
     public SquareImageView(Context context) {
         super(context);
     }

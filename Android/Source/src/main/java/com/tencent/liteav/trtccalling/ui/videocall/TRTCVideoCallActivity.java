@@ -7,9 +7,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.Group;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Group;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -296,6 +296,7 @@ public class TRTCVideoCallActivity extends BaseCallActivity {
                 if (mIsCalledClick && mCallType == TYPE_BEING_CALLED) {
                     mTRTCCalling.accept();
                 }
+                enableHandsFree(false);
             } else {
                 Toast.makeText(TRTCVideoCallActivity.this, message, Toast.LENGTH_SHORT).show();
             }
@@ -482,6 +483,7 @@ public class TRTCVideoCallActivity extends BaseCallActivity {
             public void onClick(View v) {
                 mTRTCCalling.switchToAudioCall();
                 mIsCalledClick = true;
+                enableHandsFree(false);
             }
         });
     }
@@ -576,6 +578,11 @@ public class TRTCVideoCallActivity extends BaseCallActivity {
         mShadeSponsor = findViewById(R.id.shade_sponsor);
     }
 
+    private void enableHandsFree(boolean enable) {
+        mIsHandsFree = enable;
+        mTRTCCalling.setHandsFree(mIsHandsFree);
+        mHandsfreeImg.setActivated(mIsHandsFree);
+    }
 
     /**
      * 等待接听界面

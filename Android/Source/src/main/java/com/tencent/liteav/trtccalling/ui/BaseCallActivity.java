@@ -1,6 +1,6 @@
 package com.tencent.liteav.trtccalling.ui;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.tencent.liteav.trtccalling.R;

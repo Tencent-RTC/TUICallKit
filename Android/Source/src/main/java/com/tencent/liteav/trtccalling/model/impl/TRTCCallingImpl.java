@@ -1,7 +1,12 @@
 package com.tencent.liteav.trtccalling.model.impl;
 
 import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.text.TextUtils;
 
 import com.google.gson.ExclusionStrategy;
@@ -28,12 +33,13 @@ import com.tencent.liteav.trtccalling.model.TRTCCalling;
 import com.tencent.liteav.trtccalling.model.TRTCCallingCallback;
 import com.tencent.liteav.trtccalling.model.TRTCCallingDelegate;
 import com.tencent.liteav.trtccalling.model.impl.base.CallModel;
-import com.tencent.liteav.trtccalling.model.impl.base.SignallingData;
 import com.tencent.liteav.trtccalling.model.impl.base.MessageCustom;
 import com.tencent.liteav.trtccalling.model.impl.base.OfflineMessageBean;
 import com.tencent.liteav.trtccalling.model.impl.base.OfflineMessageContainerBean;
+import com.tencent.liteav.trtccalling.model.impl.base.SignallingData;
 import com.tencent.liteav.trtccalling.model.impl.base.TRTCInternalListenerManager;
 import com.tencent.liteav.trtccalling.model.impl.base.TRTCLogger;
+import com.tencent.liteav.trtccalling.model.impl.util.MediaPlayHelper;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.tencent.trtc.TRTCCloud;
 import com.tencent.trtc.TRTCCloudDef;
@@ -130,6 +136,14 @@ public class TRTCCallingImpl extends TRTCCalling {
     private boolean mWaitingLastActivityFinished;
     private boolean mIsInitIMSDK;
 
+    private MediaPlayHelper mMediaPlayHelper;        // 音效
+
+    private SensorManager       mSensorManager;
+    private SensorEventListener mSensorEventListener;
+
+    private boolean mIsBeingCalled = true;
+
+
     public boolean isWaitingLastActivityFinished() {
         return mWaitingLastActivityFinished;
     }
@@ -194,6 +208,8 @@ public class TRTCCallingImpl extends TRTCCalling {
                     }
                 }
                 preExitRoom(null);
+                stopDialingMusic();
+                unregisterSensorEventListener();
             }
         }
 
@@ -206,6 +222,7 @@ public class TRTCCallingImpl extends TRTCCalling {
                 return;
             }
             if (inviteID.equals(mCurCallID)) {
+                playHangupMusic();
                 stopCall();
                 if (mTRTCInternalListenerManager != null) {
                     mTRTCInternalListenerManager.onCallingCancel();
@@ -227,6 +244,7 @@ public class TRTCCallingImpl extends TRTCCalling {
                     }
                     mCurInvitedList.remove(userID);
                 }
+                stopDialingMusic();
             } else {
                 // 被邀请者
                 if (inviteeList.contains(mCurUserId)) {
@@ -239,6 +257,8 @@ public class TRTCCallingImpl extends TRTCCalling {
             }
             // 每次超时都需要判断当前是否需要结束通话
             preExitRoom(null);
+            playHangupMusic();
+            unregisterSensorEventListener();
         }
     };
 
@@ -516,6 +536,9 @@ public class TRTCCallingImpl extends TRTCCalling {
             if (mTRTCInternalListenerManager != null) {
                 mTRTCInternalListenerManager.onUserEnter(userId);
             }
+            if (!mIsBeingCalled) {
+                stopDialingMusic();
+            }
         }
 
         @Override
@@ -578,8 +601,10 @@ public class TRTCCallingImpl extends TRTCCalling {
     }
 
     private void startCall() {
+        mMediaPlayHelper = new MediaPlayHelper(mContext);
         isOnCalling = true;
         UserModelManager.getInstance().getUserModel().userType = UserModel.UserType.CALLING;
+        registerSensorEventListener();
     }
 
     /**
@@ -599,6 +624,9 @@ public class TRTCCallingImpl extends TRTCCalling {
         mCurGroupId = "";
         mCurCallType = TYPE_UNKNOWN;
         UserModelManager.getInstance().getUserModel().userType = UserModel.UserType.NONE;
+        stopDialingMusic();
+        stopRing();
+        unregisterSensorEventListener();
     }
 
     private void realSwitchToAudioCall() {
@@ -690,6 +718,7 @@ public class TRTCCallingImpl extends TRTCCalling {
             mTRTCInternalListenerManager.onInvited(user, onInvitedUserListParam, !TextUtils.isEmpty(mCurGroupId), mCurCallType);
         }
         mCurRoomRemoteUserSet.add(user);
+        startRing();
     }
 
     private void handleSwitchToAudio(CallModel callModel, String user) {
@@ -827,6 +856,8 @@ public class TRTCCallingImpl extends TRTCCalling {
             TRTCLogger.d(TAG, "First calling, generate room id " + mCurRoomID);
             enterTRTCRoom();
             startCall();
+            mIsBeingCalled = false;
+            startDialingMusic();
         }
         // 非首次拨打，不能发起新的groupId通话
         if (!TextUtils.equals(mCurGroupId, groupId)) {
@@ -883,6 +914,7 @@ public class TRTCCallingImpl extends TRTCCalling {
                     sendModel("", CallModel.VIDEO_CALL_ACTION_HANGUP);
                 }
             }
+            playHangupMusic();
             exitRoom();
             stopCall();
             if (mTRTCInternalListenerManager != null) {
@@ -904,6 +936,7 @@ public class TRTCCallingImpl extends TRTCCalling {
     public void accept() {
         sendModel(mCurSponsorForMe, CallModel.VIDEO_CALL_ACTION_ACCEPT);
         enterTRTCRoom();
+        stopRing();
     }
 
     /**
@@ -938,6 +971,7 @@ public class TRTCCallingImpl extends TRTCCalling {
 
     @Override
     public void reject() {
+        playHangupMusic();
         sendModel(mCurSponsorForMe, CallModel.VIDEO_CALL_ACTION_REJECT);
         stopCall();
     }
@@ -949,6 +983,7 @@ public class TRTCCallingImpl extends TRTCCalling {
             reject();
             return;
         }
+        playHangupMusic();
         boolean fromGroup = (!TextUtils.isEmpty(mCurGroupId));
         if (fromGroup) {
             TRTCLogger.d(TAG, "groupHangup");
@@ -1543,6 +1578,85 @@ public class TRTCCallingImpl extends TRTCCalling {
                     return false;
                 }
             });
+        }
+    }
+
+    private void registerSensorEventListener() {
+        if (null != mSensorManager) {
+            return;
+        }
+        mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
+        Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+        final PowerManager.WakeLock wakeLock = pm.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, "TUICalling:TRTCAudioCallWakeLock");
+        mSensorEventListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                switch (event.sensor.getType()) {
+                    case Sensor.TYPE_PROXIMITY:
+                        // 靠近手机
+                        if (event.values[0] == 0.0) {
+                            if (wakeLock.isHeld()) {
+                                // 检查WakeLock是否被占用
+                                return;
+                            } else {
+                                // 申请设备电源锁
+                                wakeLock.acquire();
+                            }
+                        } else {
+                            if (!wakeLock.isHeld()) {
+                                return;
+                            } else {
+                                wakeLock.setReferenceCounted(false);
+                                // 释放设备电源锁
+                                wakeLock.release();
+                            }
+                            break;
+                        }
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+            }
+        };
+        mSensorManager.registerListener(mSensorEventListener, sensor, SensorManager.SENSOR_DELAY_FASTEST);
+    }
+
+    private void unregisterSensorEventListener() {
+        if (null != mSensorManager && null != mSensorEventListener) {
+            Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+            mSensorManager.unregisterListener(mSensorEventListener, sensor);
+            mSensorManager = null;
+        }
+    }
+
+    private void startDialingMusic() {
+        mMediaPlayHelper.start(R.raw.phone_dialing);
+    }
+
+    private void stopDialingMusic() {
+        stopMusic();
+    }
+
+    private void startRing() {
+        mMediaPlayHelper.start(R.raw.phone_ringing);
+    }
+
+    private void stopRing() {
+        stopMusic();
+    }
+
+    private void playHangupMusic() {
+        mMediaPlayHelper.start(R.raw.phone_hangup, 2000);
+    }
+
+    private void stopMusic() {
+        final int resId = mMediaPlayHelper.getResId();
+        // 挂断音效很短，播放完即可；主叫铃音和被叫铃音需主动stop
+        if (resId != R.raw.phone_hangup) {
+            mMediaPlayHelper.stop();
         }
     }
 }

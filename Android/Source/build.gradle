@@ -21,11 +21,6 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api "com.android.support:multidex:$MULTIDEX_VERSION"
-    api "com.android.support:recyclerview-v7:$RECYCLERVIEW_V7_VERSION"
-    api "com.android.support:appcompat-v7:$APPCOMPAT_V7_VERSION"
-    api "com.android.support:design:$DESIGN_VERSION"
-    api "com.android.support.constraint:constraint-layout:$CONSTRAINT_LAYOUT_VERSION"
     api "com.squareup.okhttp3:logging-interceptor:$LOGGING_INTERCEPTOR_VERSION"
     api "com.squareup.retrofit2:converter-gson:$CONVERTER_GSON_VERSION"
     api "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
@@ -38,4 +33,9 @@ dependencies {
     api rootProject.ext.liteavSdk
     api rootProject.ext.imSdk
     api project(':Debug')
+    api 'androidx.constraintlayout:constraintlayout:1.1.3'
+    api 'com.google.android.material:material:1.0.0'
+    api 'androidx.appcompat:appcompat:1.0.0'
+    api 'androidx.recyclerview:recyclerview:1.0.0'
+    api 'androidx.multidex:multidex:2.0.0'
 }

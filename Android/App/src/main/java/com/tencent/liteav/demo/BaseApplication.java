@@ -2,7 +2,7 @@ package com.tencent.liteav.demo;
 
 import android.os.Build;
 import android.os.StrictMode;
-import android.support.multidex.MultiDexApplication;
+import androidx.multidex.MultiDexApplication;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

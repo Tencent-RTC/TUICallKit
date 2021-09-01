@@ -7,8 +7,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.annotation.Nullable;
-import android.support.constraint.Group;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.Group;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -78,8 +78,8 @@ public class TRTCAudioCallActivity extends BaseCallActivity {
     private List<UserInfo>        mOtherInvitingUserInfoList;
     private int                   mCallType;
     private TRTCCalling           mTRTCCalling;
-    private boolean               isHandsFree       = true;
-    private boolean               isMuteMic         = false;
+    private boolean               mIsHandsFree      = false;
+    private boolean               mIsMuteMic        = false;
 
     /**
      * 拨号的回调
@@ -230,7 +230,7 @@ public class TRTCAudioCallActivity extends BaseCallActivity {
         @Override
         public void onUserVoiceVolume(Map<String, Integer> volumeMap) {
             for (Map.Entry<String, Integer> entry : volumeMap.entrySet()) {
-                String          userId = entry.getKey();
+                String userId = entry.getKey();
                 TRTCAudioLayout layout = mLayoutManagerTRTC.findAudioCallLayout(userId);
                 if (layout != null) {
                     layout.setAudioVolume(entry.getValue());
@@ -262,7 +262,7 @@ public class TRTCAudioCallActivity extends BaseCallActivity {
         selfInfo.userAvatar = selfModel.userAvatar;
         selfInfo.userName = selfModel.userName;
         List<UserInfo> callUserInfoList = new ArrayList<>();
-        UserInfo       callUserInfo     = new UserInfo();
+        UserInfo callUserInfo = new UserInfo();
         callUserInfo.userId = searchModel.userId;
         callUserInfo.userAvatar = searchModel.userAvatar;
         callUserInfo.userName = searchModel.userName;
@@ -332,23 +332,23 @@ public class TRTCAudioCallActivity extends BaseCallActivity {
         mLayoutMute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isMuteMic = !isMuteMic;
-                mTRTCCalling.setMicMute(isMuteMic);
-                mImageMute.setActivated(isMuteMic);
-                ToastUtils.showLong(isMuteMic ? R.string.trtccalling_toast_enable_mute : R.string.trtccalling_toast_disable_mute);
+                mIsMuteMic = !mIsMuteMic;
+                mTRTCCalling.setMicMute(mIsMuteMic);
+                mImageMute.setActivated(mIsMuteMic);
+                ToastUtils.showLong(mIsMuteMic ? R.string.trtccalling_toast_enable_mute : R.string.trtccalling_toast_disable_mute);
             }
         });
         mLayoutHandsFree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isHandsFree = !isHandsFree;
-                mTRTCCalling.setHandsFree(isHandsFree);
-                mImageHandsFree.setActivated(isHandsFree);
-                ToastUtils.showLong(isHandsFree ? R.string.trtccalling_toast_use_speaker : R.string.trtccalling_toast_use_handset);
+                mIsHandsFree = !mIsHandsFree;
+                mTRTCCalling.setHandsFree(mIsHandsFree);
+                mImageHandsFree.setActivated(mIsHandsFree);
+                ToastUtils.showLong(mIsHandsFree ? R.string.trtccalling_toast_use_speaker : R.string.trtccalling_toast_use_handset);
             }
         });
-        mImageMute.setActivated(isMuteMic);
-        mImageHandsFree.setActivated(isHandsFree);
+        mImageMute.setActivated(mIsMuteMic);
+        mImageHandsFree.setActivated(mIsHandsFree);
     }
 
     private void initData() {
@@ -413,6 +413,7 @@ public class TRTCAudioCallActivity extends BaseCallActivity {
         for (UserInfo userInfo : mCallUserInfoList) {
             mTRTCCalling.call(userInfo.userId, TRTCCalling.TYPE_AUDIO_CALL);
         }
+        mTRTCCalling.setHandsFree(mIsHandsFree);
     }
 
     private void initView() {
@@ -463,6 +464,7 @@ public class TRTCAudioCallActivity extends BaseCallActivity {
 //                addUserToManager(mSelfModel);
                 //2.接听电话
                 mTRTCCalling.accept();
+                mTRTCCalling.setHandsFree(mIsHandsFree);
                 showCallingView();
             }
         });
@@ -564,10 +566,10 @@ public class TRTCAudioCallActivity extends BaseCallActivity {
         }
         mGroupInviting.setVisibility(View.VISIBLE);
         int squareWidth = getResources().getDimensionPixelOffset(R.dimen.trtccalling_small_image_size);
-        int leftMargin  = getResources().getDimensionPixelOffset(R.dimen.trtccalling_small_image_left_margin);
+        int leftMargin = getResources().getDimensionPixelOffset(R.dimen.trtccalling_small_image_left_margin);
         for (int index = 0; index < mOtherInvitingUserInfoList.size() && index < MAX_SHOW_INVITING_USER; index++) {
-            UserInfo                  userInfo     = mOtherInvitingUserInfoList.get(index);
-            ImageView                 imageView    = new ImageView(this);
+            UserInfo userInfo = mOtherInvitingUserInfoList.get(index);
+            ImageView imageView = new ImageView(this);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(squareWidth, squareWidth);
             if (index != 0) {
                 layoutParams.leftMargin = leftMargin;
