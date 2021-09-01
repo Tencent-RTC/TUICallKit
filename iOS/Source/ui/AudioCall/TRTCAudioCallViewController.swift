@@ -49,7 +49,9 @@ public class TRTCCallingAuidoViewController: UIViewController {
     
     // 麦克风和听筒状态记录
     private var isMicMute = false // 默认开启麦克风
-    private var isHandsFreeOn = true // 默认开启扬声器
+    private var isHandsFreeOn = false // 默认关闭扬声器
+    
+    private var hasRegistProximityMonitorNoti = false
     
     let hangup = UIButton()
     let accept = UIButton()
@@ -201,6 +203,45 @@ public class TRTCCallingAuidoViewController: UIViewController {
 }
 
 extension TRTCCallingAuidoViewController {
+    @objc func proximityStateDidChangeNoti() {
+        if UIDevice.current.proximityState {
+            if isHandsFreeOn {
+                debugPrint("ProximityMonitor: set earpiece")
+                TRTCCloud.sharedInstance().setAudioRoute(.modeEarpiece)
+            }
+        }
+        else {
+            if isHandsFreeOn {
+                debugPrint("ProximityMonitor: set speaker");
+                TRTCCloud.sharedInstance().setAudioRoute(.modeSpeakerphone)
+            }
+        }
+    }
+    
+    func setProximityMonitoringEnabled(_ enabled: Bool) {
+        UIDevice.current.isProximityMonitoringEnabled = enabled
+        if enabled {
+            if (!hasRegistProximityMonitorNoti) {
+                NotificationCenter.default.addObserver(self, selector: #selector(proximityStateDidChangeNoti), name: UIDevice.proximityStateDidChangeNotification, object: nil)
+                hasRegistProximityMonitorNoti = true
+                debugPrint("ProximityMonitor: regist noti")
+            }
+        }
+        else {
+            if hasRegistProximityMonitorNoti {
+                NotificationCenter.default.removeObserver(self, name: UIDevice.proximityStateDidChangeNotification, object: nil)
+                hasRegistProximityMonitorNoti = false
+            }
+            debugPrint("ProximityMonitor: unregist noti");
+            if (isHandsFreeOn) {
+                debugPrint("ProximityMonitor: set speaker");
+                TRTCCloud.sharedInstance().setAudioRoute(.modeSpeakerphone)
+            }
+        }
+    }
+}
+
+extension TRTCCallingAuidoViewController {
     func setupUI() {
         
         view.backgroundColor = UIColor(hex: "F4F5F9")
@@ -293,7 +334,7 @@ extension TRTCCallingAuidoViewController {
         }
         
         if handsfree.superview == nil {
-            handsfree.setBackgroundImage(UIImage.init(named: "ic_handsfree_on", in: CallingBundle(), compatibleWith: nil), for: .normal)
+            handsfree.setBackgroundImage(UIImage.init(named: "ic_handsfree", in: CallingBundle(), compatibleWith: nil), for: .normal)
             view.addSubview(handsfree)
             handsfree.isHidden = true
             handsfree.snp.makeConstraints { (make) in
@@ -335,6 +376,8 @@ extension TRTCCallingAuidoViewController {
             accept.isHidden = true
             hangup.transform = .identity
             startGCDTimer()
+            setProximityMonitoringEnabled(true)
+            TRTCCalling.shareInstance().setHandsFree(isHandsFreeOn)
             break
         }
         
@@ -482,38 +525,6 @@ extension TRTCCallingAuidoViewController: UICollectionViewDelegate, UICollection
                 userHeadImageView.kf.setImage(with: .network(url))
             }
         }
-        
-        return;
-        
-        var topPadding: CGFloat = 0
-        
-        if #available(iOS 11.0, *) {
-            let window = UIApplication.shared.keyWindow
-            topPadding = window!.safeAreaInsets.top
-        }
-        
-        if animate {
-            userCollectionView.performBatchUpdates({ [weak self] in
-                guard let self = self else {return}
-                self.userCollectionView.snp.remakeConstraints { (make) in
-                    make.leading.trailing.equalTo(self.view)
-                    make.bottom.equalTo(self.view).offset(-132)
-                    make.top.equalTo(self.collectionCount == 1 ? (topPadding + 62) : topPadding)
-                }
-                self.userCollectionView.reloadSections(IndexSet(integer: 0))
-            }) { _ in
-                
-            }
-        } else {
-            UIView.performWithoutAnimation {
-                userCollectionView.snp.remakeConstraints { (make) in
-                    make.leading.trailing.equalTo(view)
-                    make.bottom.equalTo(view).offset(-132)
-                    make.top.equalTo(collectionCount == 1 ? (topPadding + 62) : topPadding)
-                }
-                userCollectionView.reloadSections(IndexSet(integer: 0))
-            }
-        }
     }
 }
 
@@ -529,10 +540,11 @@ extension TRTCCallingAuidoViewController {
         TRTCCalling.shareInstance()
         TRTCCalling.shareInstance().hangup()
         disMiss()
+        playAudio(type: .hangup)
     }
     
     @objc private func acceptTouchEvent(sender: UIButton) {
-        
+        stopAudio()
         TRTCCalling.shareInstance().accept()
         if let name = TUICallingProfileManager.sharedManager().name,
            let avatar = TUICallingProfileManager.sharedManager().avatar,
@@ -595,6 +607,7 @@ extension TRTCCallingAuidoViewController: CallingViewControllerResponder {
     }
     
     public func disMiss() {
+        setProximityMonitoringEnabled(false)
         if self.curState != .calling {
             if !codeTimer.isCancelled {
                 self.codeTimer.resume()

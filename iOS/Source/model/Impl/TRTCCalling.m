@@ -46,6 +46,7 @@
         self.curRespList = [NSMutableArray array];
         self.curRoomList = [NSMutableArray array];
         [self addSignalListener];
+        self.isHandsFreeOn = YES;
     }
     return self;
 }

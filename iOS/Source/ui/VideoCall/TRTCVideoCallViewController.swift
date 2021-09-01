@@ -76,6 +76,8 @@ public class TRTCCallingVideoViewController: UIViewController {
     private var isMicMute = false // 默认开启麦克风
     private var isHandsFreeOn = true // 默认开启扬声器
     
+    private var hasRegistProximityMonitorNoti = false
+    
     let hangup = TRTCCallingBtn()
     let accept = TRTCCallingBtn()
     let handsfree = TRTCCallingBtn()
@@ -522,6 +524,8 @@ extension TRTCCallingVideoViewController {
             accept.sendActions(for: .touchUpInside)
         }
         
+        setProximityMonitoringEnabled(true)
+        
         DispatchQueue.main.async {
             TRTCCalling.shareInstance().closeCamara()
         }
@@ -929,6 +933,45 @@ extension TRTCCallingVideoViewController {
 }
 
 extension TRTCCallingVideoViewController {
+    @objc func proximityStateDidChangeNoti() {
+        if UIDevice.current.proximityState {
+            if isHandsFreeOn {
+                debugPrint("ProximityMonitor: set earpiece")
+                TRTCCloud.sharedInstance().setAudioRoute(.modeEarpiece)
+            }
+        }
+        else {
+            if isHandsFreeOn {
+                debugPrint("ProximityMonitor: set speaker");
+                TRTCCloud.sharedInstance().setAudioRoute(.modeSpeakerphone)
+            }
+        }
+    }
+    
+    func setProximityMonitoringEnabled(_ enabled: Bool) {
+        UIDevice.current.isProximityMonitoringEnabled = enabled
+        if enabled {
+            if (!hasRegistProximityMonitorNoti) {
+                NotificationCenter.default.addObserver(self, selector: #selector(proximityStateDidChangeNoti), name: UIDevice.proximityStateDidChangeNotification, object: nil)
+                hasRegistProximityMonitorNoti = true
+                debugPrint("ProximityMonitor: regist noti")
+            }
+        }
+        else {
+            if hasRegistProximityMonitorNoti {
+                NotificationCenter.default.removeObserver(self, name: UIDevice.proximityStateDidChangeNotification, object: nil)
+                hasRegistProximityMonitorNoti = false
+                debugPrint("ProximityMonitor: unregist noti");
+            }
+            if (isHandsFreeOn && switchedAudio) {
+                debugPrint("ProximityMonitor: set speaker");
+                TRTCCloud.sharedInstance().setAudioRoute(.modeSpeakerphone)
+            }
+        }
+    }
+}
+
+extension TRTCCallingVideoViewController {
     private func registerButtonTouchEvent() {
         hangup.addTarget(self, action: #selector(hangupBtnTouchEvent(sender:)), for: .touchUpInside)
         accept.addTarget(self, action: #selector(acceptBtnTouchEvent(sender:)), for: .touchUpInside)
@@ -941,10 +984,12 @@ extension TRTCCallingVideoViewController {
     
     @objc private func hangupBtnTouchEvent(sender: UIButton) {
         TRTCCalling.shareInstance().hangup()
-       self.disMiss()
+        self.disMiss()
+        playAudio(type: .hangup)
     }
     
     @objc private func acceptBtnTouchEvent(sender: UIButton) {
+        stopAudio()
         TRTCCalling.shareInstance().accept()
         if let name = TUICallingProfileManager.sharedManager().name,
            let avatar = TUICallingProfileManager.sharedManager().avatar,
@@ -1058,6 +1103,7 @@ extension TRTCCallingVideoViewController: CallingViewControllerResponder {
     }
     
     public func disMiss() {
+        setProximityMonitoringEnabled(false)
         if self.curState != .calling {
             if !codeTimer.isCancelled {
                 self.codeTimer.resume()
