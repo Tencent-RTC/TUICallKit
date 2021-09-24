@@ -23,9 +23,9 @@ public class Utils {
     public static ArrayList<RelativeLayout.LayoutParams> initGrid1Param(Context context, int layoutWidth, int layoutHeight) {
         ArrayList<RelativeLayout.LayoutParams> list = new ArrayList<>();
 
-        int                         margin        = dip2px(context, 10);
-        int                         grid4W        = (layoutWidth - margin * 2) / 2;
-        int                         grid4H        = (layoutHeight - margin * 2) / 2;
+        int margin = dip2px(context, 10);
+        int grid4W = (layoutWidth - margin * 2) / 2;
+        int grid4H = (layoutHeight - margin * 2) / 2;
         // 使用四宫格的大小
         RelativeLayout.LayoutParams layoutParams0 = new RelativeLayout.LayoutParams(grid4W, grid4H);
         layoutParams0.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -43,9 +43,9 @@ public class Utils {
      */
     public static ArrayList<RelativeLayout.LayoutParams> initGrid2Param(Context context, int layoutWidth, int layoutHeight) {
         ArrayList<RelativeLayout.LayoutParams> list = new ArrayList<>();
-        int                         margin        = dip2px(context, 10);
-        int                         grid4W        = (layoutWidth - margin * 2) / 2;
-        int                         grid4H        = (layoutHeight - margin * 2 ) / 2;
+        int margin = dip2px(context, 10);
+        int grid4W = (layoutWidth - margin * 2) / 2;
+        int grid4H = (layoutHeight - margin * 2) / 2;
         // 使用四宫格的大小
         RelativeLayout.LayoutParams layoutParams0 = new RelativeLayout.LayoutParams(grid4W, grid4H);
         layoutParams0.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -71,11 +71,11 @@ public class Utils {
      * @return
      */
     public static ArrayList<RelativeLayout.LayoutParams> initGrid3Param(Context context, int layoutWidth, int layoutHeight) {
-        int margin       = dip2px(context, 10);
+        int margin = dip2px(context, 10);
 
-        ArrayList<RelativeLayout.LayoutParams> list   = new ArrayList<>();
-        int                                    grid4W = (layoutWidth - margin * 2) / 2;
-        int                                    grid4H = (layoutHeight - margin * 2) / 2;
+        ArrayList<RelativeLayout.LayoutParams> list = new ArrayList<>();
+        int grid4W = (layoutWidth - margin * 2) / 2;
+        int grid4H = (layoutHeight - margin * 2) / 2;
 
         RelativeLayout.LayoutParams layoutParams0 = new RelativeLayout.LayoutParams(grid4W, grid4H);
         layoutParams0.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -110,11 +110,11 @@ public class Utils {
      * @return
      */
     public static ArrayList<RelativeLayout.LayoutParams> initGrid4Param(Context context, int layoutWidth, int layoutHeight) {
-        int margin       = dip2px(context, 10);
+        int margin = dip2px(context, 10);
 
-        ArrayList<RelativeLayout.LayoutParams> list   = new ArrayList<>();
-        int                                    grid4W = (layoutWidth - margin * 2) / 2;
-        int                                    grid4H = (layoutHeight - margin * 2) / 2;
+        ArrayList<RelativeLayout.LayoutParams> list = new ArrayList<>();
+        int grid4W = (layoutWidth - margin * 2) / 2;
+        int grid4H = (layoutHeight - margin * 2) / 2;
 
         RelativeLayout.LayoutParams layoutParams0 = new RelativeLayout.LayoutParams(grid4W, grid4H);
         layoutParams0.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -156,7 +156,7 @@ public class Utils {
      * @return
      */
     public static ArrayList<RelativeLayout.LayoutParams> initGrid9Param(Context context, int layoutWidth, int layoutHeight) {
-        int margin       = dip2px(context, 10);
+        int margin = dip2px(context, 10);
 
         ArrayList<RelativeLayout.LayoutParams> list = new ArrayList<>();
 

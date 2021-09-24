@@ -49,6 +49,13 @@ public class GenerateTestUserSig {
      */
     private static final int EXPIRETIME = 604800;
 
+    /**
+     * 向后台请求推拉流地址
+     * <p>
+     * key：url_push         获取RTMP推流地址
+     * key：url_play_flv     获取FLV播放地址
+     */
+    public static final String URL_FETCH_PUSH_URL = PLACEHOLDER;
 
     /**
      * 计算签名用的加密密钥，获取步骤如下：

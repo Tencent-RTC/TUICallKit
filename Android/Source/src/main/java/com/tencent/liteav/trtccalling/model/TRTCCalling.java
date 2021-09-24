@@ -122,10 +122,10 @@ public abstract class TRTCCalling {
      * C2C邀请通话，被邀请方会收到 {@link TRTCCallingDelegate#onInvited } 的回调
      * 如果当前处于通话中，可以调用该函数以邀请第三方进入通话
      *
-     * @param userId 被邀请方
+     * @param userIdList 被邀请方
      * @param type   1-语音通话，2-视频通话
      */
-    public abstract void call(String userId, int type);
+    public abstract void call(List<String> userIdList, int type);
 
     /**
      * IM群组邀请通话，被邀请方会收到 {@link TRTCCallingDelegate#onInvited } 的回调

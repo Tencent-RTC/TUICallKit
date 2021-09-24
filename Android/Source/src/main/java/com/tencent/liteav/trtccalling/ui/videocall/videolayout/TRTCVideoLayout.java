@@ -19,11 +19,11 @@ import com.tencent.rtmp.ui.TXCloudVideoView;
  * 此 TRTCVideoLayout 封装了{@link TXCloudVideoView} 以及业务逻辑 UI 控件
  */
 public class TRTCVideoLayout extends RelativeLayout {
-    private boolean               mMoveAble;
-    private TXCloudVideoView      mTCCloudViewTRTC;
-    private ProgressBar           mProgressAudio;
-    private RoundCornerImageView  mImageHead;
-    private TextView              mTextUserName;
+    private boolean              mMoveAble;
+    private TXCloudVideoView     mTCCloudViewTRTC;
+    private ProgressBar          mProgressAudio;
+    private RoundCornerImageView mImageHead;
+    private TextView             mTextUserName;
 
 
     public TRTCVideoLayout(Context context) {

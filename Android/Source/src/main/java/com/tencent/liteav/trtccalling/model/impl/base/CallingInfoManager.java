@@ -6,7 +6,7 @@ import android.util.Log;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMUserFullInfo;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
-import com.tencent.liteav.basic.UserModel;
+import com.tencent.liteav.trtccalling.model.impl.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +56,7 @@ public class CallingInfoManager {
                         model.userId = v2TIMUserFullInfos.get(i).getUserID();
                         model.userAvatar = v2TIMUserFullInfos.get(i).getFaceUrl();
                         list.add(model);
+                        Log.d(TAG, String.format("getUserInfoByUserId, userId=%s, userName=%s, userAvatar=%s", model.userId, model.userName, model.userAvatar));
                     }
                 }
                 if (callback != null) {

@@ -2,8 +2,11 @@ package com.tencent.liteav.trtccalling.ui.videocall.videolayout;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 
-public class SquareImageView extends androidx.appcompat.widget.AppCompatImageView {
+import androidx.appcompat.widget.AppCompatImageView;
+
+public class SquareImageView extends AppCompatImageView {
     public SquareImageView(Context context) {
         super(context);
     }
@@ -18,10 +21,10 @@ public class SquareImageView extends androidx.appcompat.widget.AppCompatImageVie
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int widthMode  = MeasureSpec.getMode(widthMeasureSpec);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
+        int heightMode = View.MeasureSpec.getMode(heightMeasureSpec);
         if (widthMode == MeasureSpec.EXACTLY && heightMode != MeasureSpec.EXACTLY) {
-            int width  = MeasureSpec.getSize(widthMeasureSpec);
+            int width = MeasureSpec.getSize(widthMeasureSpec);
             int height = width;
             if (heightMode == MeasureSpec.AT_MOST) {
                 height = Math.min(height, MeasureSpec.getSize(heightMeasureSpec));

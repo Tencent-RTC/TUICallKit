@@ -38,5 +38,8 @@
     <string name="trtccalling_btn_cancel">取消</string>
     <string name="trtccalling_tips_start_camera_audio">请先打开摄像头与麦克风权限</string>
     <string name="trtccalling_tips_start_audio">请先打开麦克风权限</string>
+    <string name="trtccalling_video_call">视频通话</string>
     <string name="trtccalling_audio_call">语音通话</string>
+    <string name="trtccalling_user_kicked_offline">您已被踢下线，请重新登录</string>
+    <string name="trtccalling_user_sig_expired">您的用户签名信息已过期</string>
 </resources>

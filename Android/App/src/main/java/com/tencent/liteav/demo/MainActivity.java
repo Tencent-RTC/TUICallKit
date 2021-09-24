@@ -6,10 +6,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -21,27 +17,32 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.blankj.utilcode.util.ToastUtils;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.tencent.imsdk.v2.V2TIMCallback;
+import com.tencent.imsdk.v2.V2TIMSDKConfig;
+import com.tencent.imsdk.v2.V2TIMSDKListener;
 import com.tencent.liteav.basic.ImageLoader;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.debug.GenerateTestUserSig;
 import com.tencent.liteav.trtccalling.model.TRTCCalling;
-import com.tencent.liteav.trtccalling.model.TRTCCallingDelegate;
+import com.tencent.liteav.trtccalling.model.TUICalling;
+import com.tencent.liteav.trtccalling.model.impl.TUICallingManager;
 import com.tencent.liteav.trtccalling.model.impl.base.CallingInfoManager;
-import com.tencent.liteav.trtccalling.ui.audiocall.TRTCAudioCallActivity;
+import com.tencent.liteav.trtccalling.model.util.TUICallingConstants;
 import com.tencent.liteav.trtccalling.ui.common.RoundCornerImageView;
-import com.tencent.liteav.trtccalling.ui.videocall.TRTCVideoCallActivity;
-import com.tencent.trtc.TRTCCloudDef;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.tencent.qcloud.tuicore.TUILogin;
 
 /**
  * 联系人选择Activity，可以通过此界面搜索已注册用户，并发起通话；
@@ -49,148 +50,100 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private Toolbar          mToolbar;      //导航栏，主要负责监听导航栏返回按钮
-    private EditText         mEtSearchUser; //输入手机号码的编辑文本框
-    private ImageView        mIvClearSearch;//清除搜索框文本按钮
-    private TextView         mTvSearch;     //开始搜索用户的按钮
-    private TextView         mTvSelfUserId;  //自己的userId
-    private LinearLayout     mLlContract;   //用来展示对方信息的layout
+    private Toolbar              mToolbar;      //导航栏，主要负责监听导航栏返回按钮
+    private EditText             mEtSearchUser; //输入手机号码的编辑文本框
+    private ImageView            mIvClearSearch;//清除搜索框文本按钮
+    private TextView             mTvSearch;     //开始搜索用户的按钮
+    private TextView             mTvSelfUserId;  //自己的userId
+    private LinearLayout         mLlContract;   //用来展示对方信息的layout
     private RoundCornerImageView mIvAvatar;    //用来展示对方头像
-    private TextView         mTvUserName;   //用来展示对方昵称
-    private Button           mBtnStartCall; //开始呼叫按钮
-    private ConstraintLayout mClTips;       //显示搜索提示信息
-    private ImageButton      mBtnLink;      //跳转官网链接
+    private TextView             mTvUserName;   //用来展示对方昵称
+    private Button               mBtnStartCall; //开始呼叫按钮
+    private ConstraintLayout     mClTips;       //显示搜索提示信息
+    private ImageButton          mBtnLink;      //跳转官网链接
 
     private UserModel mSelfModel;    //表示当前用户的UserModel
     private UserModel mSearchModel;  //表示当前搜索的usermodel
     private int       mType; //表示当前是 videocall/audiocall
-    private TRTCCalling mTRTCCalling;
 
-    private TRTCCallingDelegate mTRTCCallingDelegate = new TRTCCallingDelegate() {
-        @Override
-        public void onError(int code, String msg) {
-        }
+    private View mCallingView;
 
-        @Override
-        public void onInvited(String sponsor, final List<String> userIdList, boolean isFromGroup, final int callType) {
-            //1. 收到邀请，先到服务器查询
-            CallingInfoManager.getInstance().getUserInfoByUserId(sponsor, new CallingInfoManager.UserCallback() {
-                @Override
-                public void onSuccess(final UserModel model) {
-                    if (callType == TRTCCalling.TYPE_VIDEO_CALL) {
-                        TRTCVideoCallActivity.UserInfo selfInfo = new TRTCVideoCallActivity.UserInfo();
-                        selfInfo.userId = UserModelManager.getInstance().getUserModel().userId;
-                        selfInfo.userAvatar = UserModelManager.getInstance().getUserModel().userAvatar;
-                        selfInfo.userName = UserModelManager.getInstance().getUserModel().userName;
-                        TRTCVideoCallActivity.UserInfo callUserInfo = new TRTCVideoCallActivity.UserInfo();
-                        callUserInfo.userId = model.userId;
-                        callUserInfo.userAvatar = model.userAvatar;
-                        callUserInfo.userName = model.userName;
-                        TRTCVideoCallActivity.startBeingCall(MainActivity.this, selfInfo, callUserInfo, null);
-                    } else if (callType == TRTCCalling.TYPE_AUDIO_CALL) {
-                        TRTCAudioCallActivity.UserInfo selfInfo = new TRTCAudioCallActivity.UserInfo();
-                        selfInfo.userId = UserModelManager.getInstance().getUserModel().userId;
-                        selfInfo.userAvatar = UserModelManager.getInstance().getUserModel().userAvatar;
-                        selfInfo.userName = UserModelManager.getInstance().getUserModel().userName;
-                        TRTCAudioCallActivity.UserInfo callUserInfo = new TRTCAudioCallActivity.UserInfo();
-                        callUserInfo.userId = model.userId;
-                        callUserInfo.userAvatar = model.userAvatar;
-                        callUserInfo.userName = model.userName;
-                        TRTCAudioCallActivity.startBeingCall(MainActivity.this, selfInfo, callUserInfo, null);
-                    }
-                }
-
-                @Override
-                public void onFailed(int code, String msg) {
-
-                }
-            });
-        }
-
-        @Override
-        public void onGroupCallInviteeListUpdate(List<String> userIdList) {
-
-        }
-
-        @Override
-        public void onUserEnter(String userId) {
-
-        }
-
-        @Override
-        public void onUserLeave(String userId) {
-
-        }
-
-        @Override
-        public void onReject(String userId) {
-
-        }
-
-        @Override
-        public void onNoResp(String userId) {
-
-        }
-
-        @Override
-        public void onLineBusy(String userId) {
-
-        }
-
-        @Override
-        public void onCallingCancel() {
-
-        }
-
-        @Override
-        public void onCallingTimeout() {
-
-        }
-
-        @Override
-        public void onCallEnd() {
-
-        }
-
-        @Override
-        public void onUserVideoAvailable(String userId, boolean isVideoAvailable) {
-
-        }
-
-        @Override
-        public void onUserAudioAvailable(String userId, boolean isVideoAvailable) {
-
-        }
-
-        @Override
-        public void onUserVoiceVolume(Map<String, Integer> volumeMap) {
-
-        }
-
-        @Override
-        public void onNetworkQuality(TRTCCloudDef.TRTCQuality localQuality, ArrayList<TRTCCloudDef.TRTCQuality> remoteQuality) {
-
-        }
-
-        @Override
-        public void onSwitchToAudio(boolean success, String message) {
-
-        }
-        // </editor-fold  desc="视频监听代码">
-    };
-
+    private boolean mIsKickedOffline = false;
+    private boolean mIsUserSigExpired = false;
 
     /**
      * 开始呼叫某人
      */
     private void startCallSomeone() {
+//        custom();
         if (mType == TRTCCalling.TYPE_VIDEO_CALL) {
             ToastUtils.showShort(getString(R.string.toast_video_call, mSearchModel.userName));
-            TRTCVideoCallActivity.startCallSomeone(this, mSelfModel, mSearchModel);
-        } else if (mType == TRTCCalling.TYPE_AUDIO_CALL){
+            String[] userIDs = {mSearchModel.userId};
+            Bundle bundle = new Bundle();
+            bundle.putString(TUICallingConstants.PARAM_NAME_TYPE, TUICallingConstants.TYPE_VIDEO);
+            bundle.putStringArray(TUICallingConstants.PARAM_NAME_USERIDS, userIDs);
+            bundle.putString(TUICallingConstants.PARAM_NAME_GROUPID, "");
+//            TUICore.callService(TUIConstants.Service.TUI_CALLING, TUICallingConstants.METHOD_NAME_CALL, bundle);
+            TUICallingManager.sharedInstance().call(userIDs, TUICalling.Type.VIDEO);
+        } else if (mType == TRTCCalling.TYPE_AUDIO_CALL) {
             ToastUtils.showShort(getString(R.string.toast_voice_call, mSearchModel.userName));
-            TRTCAudioCallActivity.startCallSomeone(this, mSelfModel, mSearchModel);
+            String[] userIDs = {mSearchModel.userId};
+            Bundle bundle = new Bundle();
+            bundle.putString(TUICallingConstants.PARAM_NAME_TYPE, TUICallingConstants.TYPE_AUDIO);
+            bundle.putStringArray(TUICallingConstants.PARAM_NAME_USERIDS, userIDs);
+            bundle.putString(TUICallingConstants.PARAM_NAME_GROUPID, "");
+//            TUICore.callService(TUIConstants.Service.TUI_CALLING, TUICallingConstants.METHOD_NAME_CALL, bundle);
+            TUICallingManager.sharedInstance().call(userIDs, TUICalling.Type.AUDIO);
         }
+    }
+
+    private void custom() {
+        TUICallingManager.sharedInstance().enableCustomViewRoute(true);
+        TUICallingManager.sharedInstance().setCallingListener(new TUICalling.TUICallingListener() {
+            @Override
+            public boolean shouldShowOnCallView() {
+                return true;
+            }
+
+            @Override
+            public void onCallStart(String[] userIDs, TUICalling.Type type, TUICalling.Role role, final View tuiCallingView) {
+                if (!shouldShowOnCallView() || null == tuiCallingView) {
+                    return;
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+                        mCallingView = tuiCallingView;
+                        addContentView(tuiCallingView, params);
+                    }
+                });
+            }
+
+            @Override
+            public void onCallEnd(String[] userIDs, TUICalling.Type type, TUICalling.Role role, long totalTime) {
+                removeView();
+            }
+
+            @Override
+            public void onCallEvent(TUICalling.Event event, TUICalling.Type type, TUICalling.Role role, String message) {
+                if (TUICalling.Event.CALL_FAILED == event) {
+                    removeView();
+                }
+            }
+
+            private void removeView() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (null != mCallingView) {
+                            ((FrameLayout) mCallingView.getParent()).removeView(mCallingView);
+                            mCallingView = null;
+                        }
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -305,6 +258,9 @@ public class MainActivity extends AppCompatActivity {
         tvAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!checkUserStatus()) {
+                    return;
+                }
                 mType = TRTCCalling.TYPE_AUDIO_CALL;
                 startCallSomeone();
                 dialog.dismiss();
@@ -313,6 +269,9 @@ public class MainActivity extends AppCompatActivity {
         tvVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!checkUserStatus()) {
+                    return;
+                }
                 mType = TRTCCalling.TYPE_VIDEO_CALL;
                 startCallSomeone();
                 dialog.dismiss();
@@ -358,9 +317,11 @@ public class MainActivity extends AppCompatActivity {
         }
         CallingInfoManager.getInstance().getUserInfoByUserId(userId, new CallingInfoManager.UserCallback() {
             @Override
-            public void onSuccess(UserModel model) {
-                mSearchModel = model;
-                showSearchUserModel(model);
+            public void onSuccess(com.tencent.liteav.trtccalling.model.impl.UserModel model) {
+                mSearchModel = new UserModel();
+                mSearchModel.userId = model.userId;
+                mSearchModel.userName = TextUtils.isEmpty(model.userName) ? model.userId : model.userName;
+                showSearchUserModel(mSearchModel);
             }
 
             @Override
@@ -371,29 +332,45 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mTRTCCalling != null) {
-            mTRTCCalling.removeDelegate(mTRTCCallingDelegate);
-        }
-    }
-
     private void initData() {
         final UserModel userModel = UserModelManager.getInstance().getUserModel();
-        mTRTCCalling = TRTCCalling.sharedInstance(this);
-        mTRTCCalling.addDelegate(mTRTCCallingDelegate);
-        mTRTCCalling.login(GenerateTestUserSig.SDKAPPID, userModel.userId, userModel.userSig, new TRTCCalling.ActionCallBack() {
+        V2TIMSDKConfig config = new V2TIMSDKConfig();
+        config.setLogLevel(V2TIMSDKConfig.V2TIM_LOG_DEBUG);
+        TUILogin.init(this, GenerateTestUserSig.SDKAPPID, null, new V2TIMSDKListener() {
+
+            @Override
+            public void onKickedOffline() {
+                mIsKickedOffline = true;
+                checkUserStatus();
+            }
+
+            @Override
+            public void onUserSigExpired() {
+                mIsUserSigExpired = true;
+                checkUserStatus();
+            }
+        });
+        TUILogin.login(userModel.userId, userModel.userSig, new V2TIMCallback() {
             @Override
             public void onError(int code, String msg) {
-                Log.d(TAG, "code: "+code + " msg:"+msg);
+                Log.d(TAG, "code: " + code + " msg:" + msg);
             }
 
             @Override
             public void onSuccess() {
-
+                Log.d(TAG, "onSuccess");
             }
         });
+    }
+
+    private boolean checkUserStatus() {
+        if (mIsKickedOffline) {
+            ToastUtils.showShort(getString(com.tencent.liteav.trtccalling.R.string.trtccalling_user_kicked_offline));
+        }
+        if (mIsUserSigExpired) {
+            ToastUtils.showShort(getString(com.tencent.liteav.trtccalling.R.string.trtccalling_user_sig_expired));
+        }
+        return !mIsKickedOffline && !mIsUserSigExpired;
     }
 
 }

@@ -25,8 +25,6 @@ import com.tencent.imsdk.v2.V2TIMSendCallback;
 import com.tencent.imsdk.v2.V2TIMSignalingListener;
 import com.tencent.imsdk.v2.V2TIMUserFullInfo;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
-import com.tencent.liteav.basic.UserModel;
-import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.beauty.TXBeautyManager;
 import com.tencent.liteav.trtccalling.R;
 import com.tencent.liteav.trtccalling.model.TRTCCalling;
@@ -39,13 +37,15 @@ import com.tencent.liteav.trtccalling.model.impl.base.OfflineMessageContainerBea
 import com.tencent.liteav.trtccalling.model.impl.base.SignallingData;
 import com.tencent.liteav.trtccalling.model.impl.base.TRTCInternalListenerManager;
 import com.tencent.liteav.trtccalling.model.impl.base.TRTCLogger;
-import com.tencent.liteav.trtccalling.model.impl.util.MediaPlayHelper;
+import com.tencent.liteav.trtccalling.model.util.MediaPlayHelper;
+import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.tencent.trtc.TRTCCloud;
 import com.tencent.trtc.TRTCCloudDef;
 import com.tencent.trtc.TRTCCloudListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -143,6 +143,10 @@ public class TRTCCallingImpl extends TRTCCalling {
 
     private boolean mIsBeingCalled = true;
 
+    private int mUserType = USER_TYPE_NONE;
+
+    private static final int USER_TYPE_NONE    = 0;
+    private static final int USER_TYPE_CALLING = 1;
 
     public boolean isWaitingLastActivityFinished() {
         return mWaitingLastActivityFinished;
@@ -159,6 +163,7 @@ public class TRTCCallingImpl extends TRTCCalling {
         @Override
         public void onReceiveNewInvitation(String inviteID, String inviter, String groupID, List<String> inviteeList, String data) {
             TRTCLogger.d(TAG, "onReceiveNewInvitation inviteID:" + inviteID + ", inviter:" + inviter + " data:" + data);
+            initUserInfo();
             SignallingData signallingData = convert2CallingData(data);
             if (!isCallingData(signallingData)) {
                 TRTCLogger.d(TAG, "this is not the calling sense ");
@@ -170,6 +175,7 @@ public class TRTCCallingImpl extends TRTCCalling {
         @Override
         public void onInviteeAccepted(String inviteID, String invitee, String data) {
             TRTCLogger.d(TAG, "onInviteeAccepted inviteID:" + inviteID + ", invitee:" + invitee + " data:" + data);
+            initUserInfo();
             SignallingData signallingData = convert2CallingData(data);
             if (!isCallingData(signallingData)) {
                 TRTCLogger.d(TAG, "this is not the calling sense ");
@@ -185,6 +191,7 @@ public class TRTCCallingImpl extends TRTCCalling {
         @Override
         public void onInviteeRejected(String inviteID, String invitee, String data) {
             TRTCLogger.d(TAG, "onInviteeRejected inviteID:" + inviteID + ", invitee:" + invitee + " data:" + data);
+            initUserInfo();
             SignallingData signallingData = convert2CallingData(data);
             if (!isCallingData(signallingData)) {
                 TRTCLogger.d(TAG, "this is not the calling sense ");
@@ -216,6 +223,7 @@ public class TRTCCallingImpl extends TRTCCalling {
         @Override
         public void onInvitationCancelled(String inviteID, String inviter, String data) {
             TRTCLogger.d(TAG, "onInvitationCancelled inviteID:" + inviteID + " data:" + data);
+            initUserInfo();
             SignallingData signallingData = convert2CallingData(data);
             if (!isCallingData(signallingData)) {
                 TRTCLogger.d(TAG, "this is not the calling sense ");
@@ -233,6 +241,7 @@ public class TRTCCallingImpl extends TRTCCalling {
         @Override
         public void onInvitationTimeout(String inviteID, List<String> inviteeList) {
             TRTCLogger.d(TAG, "onInvitationTimeout inviteID:" + inviteID);
+            initUserInfo();
             if (!inviteID.equals(mCurCallID)) {
                 return;
             }
@@ -243,6 +252,7 @@ public class TRTCCallingImpl extends TRTCCalling {
                         mTRTCInternalListenerManager.onNoResp(userID);
                     }
                     mCurInvitedList.remove(userID);
+                    mCurRoomRemoteUserSet.remove(userID);
                 }
                 stopDialingMusic();
             } else {
@@ -254,6 +264,7 @@ public class TRTCCallingImpl extends TRTCCalling {
                     }
                 }
                 mCurInvitedList.removeAll(inviteeList);
+                mCurRoomRemoteUserSet.removeAll(inviteeList);
             }
             // 每次超时都需要判断当前是否需要结束通话
             preExitRoom(null);
@@ -261,6 +272,14 @@ public class TRTCCallingImpl extends TRTCCalling {
             unregisterSensorEventListener();
         }
     };
+
+    private void initUserInfo() {
+        if (TextUtils.isEmpty(mCurUserId)) {
+            mSdkAppId = TUILogin.getSdkAppId();
+            mCurUserId = TUILogin.getLoginUser();
+            mCurUserSig = TUILogin.getUserSig();
+        }
+    }
 
     private boolean isLineBusy(SignallingData signallingData) {
         if (isNewSignallingVersion(signallingData)) {
@@ -426,6 +445,10 @@ public class TRTCCallingImpl extends TRTCCalling {
             TRTCLogger.i(TAG, "signallingData dataInfo is null");
             return;
         }
+        if (TextUtils.isEmpty(callModel.groupId)) {
+            List list = signallingData.getData().getUserIDs();
+            callModel.invitedList = null == list ? callModel.invitedList : list;
+        }
         callModel.roomId = dataInfo.getRoomID();
         if (CallModel.VALUE_CMD_AUDIO_CALL.equals(dataInfo.getCmd())) {
             callModel.callType = TRTCCalling.TYPE_AUDIO_CALL;
@@ -475,6 +498,14 @@ public class TRTCCallingImpl extends TRTCCalling {
                     dataInfo.setCmd((String) cmd);
                 } else {
                     TRTCLogger.e(TAG, "cmd is not string, value is :" + cmd);
+                }
+            }
+            if (dataMap.containsKey(CallModel.KEY_USERIDS)) {
+                Object userIDs = dataMap.get(CallModel.KEY_USERIDS);
+                if (userIDs instanceof List) {
+                    dataInfo.setUserIDs((List<String>) userIDs);
+                } else {
+                    TRTCLogger.e(TAG, "userIDs is not List, value is :" + userIDs);
                 }
             }
             if (dataMap.containsKey(CallModel.KEY_ROOM_ID)) {
@@ -598,12 +629,14 @@ public class TRTCCallingImpl extends TRTCCalling {
         mTRTCCloud = TRTCCloud.sharedInstance(context);
         mTRTCInternalListenerManager = new TRTCInternalListenerManager();
         mLastCallModel.version = CallModel.VALUE_VERSION;
+        V2TIMManager.getMessageManager();
+        V2TIMManager.getSignalingManager().addSignalingListener(mTIMSignallingListener);
     }
 
     private void startCall() {
         mMediaPlayHelper = new MediaPlayHelper(mContext);
         isOnCalling = true;
-        UserModelManager.getInstance().getUserModel().userType = UserModel.UserType.CALLING;
+        mUserType = USER_TYPE_CALLING;
         registerSensorEventListener();
     }
 
@@ -623,7 +656,7 @@ public class TRTCCallingImpl extends TRTCCalling {
         mLastCallModel.version = CallModel.VALUE_VERSION;
         mCurGroupId = "";
         mCurCallType = TYPE_UNKNOWN;
-        UserModelManager.getInstance().getUserModel().userType = UserModel.UserType.NONE;
+        mUserType = USER_TYPE_NONE;
         stopDialingMusic();
         stopRing();
         unregisterSensorEventListener();
@@ -666,14 +699,13 @@ public class TRTCCallingImpl extends TRTCCalling {
      * @param userType
      * @return
      */
-    private boolean isUserModelBusy(UserModel.UserType userType) {
-        return userType != UserModel.UserType.NONE;
+    private boolean isUserModelBusy(int userType) {
+        return userType != USER_TYPE_NONE;
     }
 
     public void handleDialing(CallModel callModel, String user) {
         //正在体验视频互动、语聊房、语音沙龙模块时，收到一个邀请我的通话请求，告诉对方忙线
-        UserModel.UserType userType = UserModelManager.getInstance().getUserModel().userType;
-        if (isUserModelBusy(userType)) {
+        if (isUserModelBusy(mUserType)) {
             sendModel(user, CallModel.VIDEO_CALL_ACTION_LINE_BUSY, callModel, null);
             return;
         }
@@ -711,9 +743,7 @@ public class TRTCCallingImpl extends TRTCCalling {
         // 邀请列表中需要移除掉自己
         callModel.invitedList.remove(mCurUserId);
         List<String> onInvitedUserListParam = callModel.invitedList;
-        if (!TextUtils.isEmpty(mCurGroupId)) {
-            mCurInvitedList.addAll(callModel.invitedList);
-        }
+        mCurInvitedList.addAll(callModel.invitedList);
         if (mTRTCInternalListenerManager != null) {
             mTRTCInternalListenerManager.onInvited(user, onInvitedUserListParam, !TextUtils.isEmpty(mCurGroupId), mCurCallType);
         }
@@ -749,7 +779,7 @@ public class TRTCCallingImpl extends TRTCCalling {
     }
 
     @Override
-    public void login(int sdkAppId, final String userId, final String userSig, final TRTCCalling.ActionCallBack callback) {
+    public void login(int sdkAppId, final String userId, final String userSig, final ActionCallBack callback) {
         TRTCLogger.i(TAG, "start login, sdkAppId:" + sdkAppId + " userId:" + userId + " sign is empty:" + TextUtils.isEmpty(userSig));
         if (sdkAppId == 0 || TextUtils.isEmpty(userId) || TextUtils.isEmpty(userSig)) {
             TRTCLogger.e(TAG, "start login fail. params invalid.");
@@ -798,7 +828,7 @@ public class TRTCCallingImpl extends TRTCCalling {
     }
 
     @Override
-    public void logout(final TRTCCalling.ActionCallBack callBack) {
+    public void logout(final ActionCallBack callBack) {
         V2TIMManager.getInstance().logout(new V2TIMCallback() {
             @Override
             public void onError(int i, String s) {
@@ -821,14 +851,12 @@ public class TRTCCallingImpl extends TRTCCalling {
     }
 
     @Override
-    public void call(final String userId, int type) {
-        TRTCLogger.i(TAG, "start single call " + userId + ", type " + type);
-        if (TextUtils.isEmpty(userId)) {
+    public void call(final List<String> userIdList, int type) {
+        TRTCLogger.i(TAG, "start single call " + Arrays.toString(userIdList.toArray()) + ", type " + type);
+        if (userIdList.isEmpty()) {
             return;
         }
-        List<String> list = new ArrayList<>();
-        list.add(userId);
-        internalCall(list, type, "");
+        internalCall(userIdList, type, "");
     }
 
     @Override
@@ -959,6 +987,7 @@ public class TRTCCallingImpl extends TRTCCalling {
             mTRTCCloud.setVideoEncoderParam(encParam);
         }
         TRTCLogger.i(TAG, "enterTRTCRoom: " + mCurUserId + " room:" + mCurRoomID);
+        initUserInfo();
         TRTCCloudDef.TRTCParams TRTCParams = new TRTCCloudDef.TRTCParams(mSdkAppId, mCurUserId, mCurUserSig, mCurRoomID, "", "");
         TRTCParams.role = TRTCCloudDef.TRTCRoleAnchor;
         mTRTCCloud.enableAudioVolumeEvaluation(300);
@@ -995,7 +1024,15 @@ public class TRTCCallingImpl extends TRTCCalling {
     }
 
     private void groupHangup() {
-        if (isCollectionEmpty(mCurRoomRemoteUserSet)) {
+        boolean bHasCallUser = false;
+        for (String user : mCurRoomRemoteUserSet) {
+            if (!TextUtils.isEmpty(user) && !mCurInvitedList.contains(user)) {
+                // 还有正在通话用户
+                bHasCallUser = true;
+                break;
+            }
+        }
+        if (!bHasCallUser) {
             // 当前以及没有人在通话了，直接向群里发送一个取消消息
             sendModel("", CallModel.VIDEO_CALL_ACTION_SPONSOR_CANCEL);
         }
@@ -1004,6 +1041,9 @@ public class TRTCCallingImpl extends TRTCCalling {
     }
 
     private void singleHangup() {
+        if (!TextUtils.isEmpty(mCurSponsorForMe)) {
+            sendModel(mCurSponsorForMe, CallModel.VIDEO_CALL_ACTION_REJECT);
+        }
         for (String id : mCurInvitedList) {
             sendModel(id, CallModel.VIDEO_CALL_ACTION_SPONSOR_CANCEL);
         }
@@ -1235,8 +1275,8 @@ public class TRTCCallingImpl extends TRTCCalling {
                 callDataInfo.setRoomID(realCallModel.roomId);
                 signallingData.setData(callDataInfo);
                 addFilterKey(gsonBuilder, CallModel.SIGNALING_EXTRA_KEY_CALL_END);
-                String dialingDataStr = gsonBuilder.create().toJson(signallingData);
                 if (isGroup) {
+                    String dialingDataStr = gsonBuilder.create().toJson(signallingData);
                     callID = sendGroupInvite(groupId, realCallModel.invitedList, dialingDataStr, TIME_OUT_COUNT, new V2TIMCallback() {
                         @Override
                         public void onError(int code, String desc) {
@@ -1253,6 +1293,8 @@ public class TRTCCallingImpl extends TRTCCalling {
                         }
                     });
                 } else {
+                    callDataInfo.setUserIDs(realCallModel.invitedList);
+                    String dialingDataStr = gsonBuilder.create().toJson(signallingData);
                     callID = sendInvite(receiver, dialingDataStr, TIME_OUT_COUNT, new V2TIMCallback() {
                         @Override
                         public void onError(int code, String desc) {
@@ -1633,6 +1675,9 @@ public class TRTCCallingImpl extends TRTCCalling {
     }
 
     private void startDialingMusic() {
+        if (null == mMediaPlayHelper) {
+            return;
+        }
         mMediaPlayHelper.start(R.raw.phone_dialing);
     }
 
@@ -1641,6 +1686,9 @@ public class TRTCCallingImpl extends TRTCCalling {
     }
 
     private void startRing() {
+        if (null == mMediaPlayHelper) {
+            return;
+        }
         mMediaPlayHelper.start(R.raw.phone_ringing);
     }
 
@@ -1649,10 +1697,16 @@ public class TRTCCallingImpl extends TRTCCalling {
     }
 
     private void playHangupMusic() {
+        if (null == mMediaPlayHelper) {
+            return;
+        }
         mMediaPlayHelper.start(R.raw.phone_hangup, 2000);
     }
 
     private void stopMusic() {
+        if (null == mMediaPlayHelper) {
+            return;
+        }
         final int resId = mMediaPlayHelper.getResId();
         // 挂断音效很短，播放完即可；主叫铃音和被叫铃音需主动stop
         if (resId != R.raw.phone_hangup) {

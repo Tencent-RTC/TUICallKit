@@ -1,4 +1,4 @@
-package com.tencent.liteav.trtccalling.model.impl.util;
+package com.tencent.liteav.trtccalling.model.util;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;

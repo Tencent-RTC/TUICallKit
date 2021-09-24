@@ -38,11 +38,11 @@ import java.util.LinkedList;
  * 7.堆叠布局与宫格布局参数，见{@link Utils} 工具类
  */
 public class TRTCVideoLayoutManager extends RelativeLayout {
-    private final static String TAG        = TRTCVideoLayoutManager.class.getSimpleName();
+    private final static String TAG = "TRTCVideoLayoutManager";
 
-    public static final  int    MODE_FLOAT = 1;  // 前后堆叠模式
-    public static final  int    MODE_GRID  = 2;  // 九宫格模式
-    public static final  int    MAX_USER   = 9;
+    public static final int MODE_FLOAT = 1;  // 前后堆叠模式
+    public static final int MODE_GRID  = 2;  // 九宫格模式
+    public static final int MAX_USER   = 9;
 
     private LinkedList<TRTCLayoutEntity> mLayoutEntityList;
     private ArrayList<LayoutParams>      mFloatParamList;
@@ -179,8 +179,8 @@ public class TRTCVideoLayoutManager extends RelativeLayout {
                 // 当 TRTCVideoView 的父容器是 RelativeLayout 的时候，可以实现拖动
                 if (params instanceof LayoutParams) {
                     LayoutParams layoutParams = (LayoutParams) layout.getLayoutParams();
-                    int          newX         = (int) (layoutParams.leftMargin + (e2.getX() - e1.getX()));
-                    int          newY         = (int) (layoutParams.topMargin + (e2.getY() - e1.getY()));
+                    int newX = (int) (layoutParams.leftMargin + (e2.getX() - e1.getX()));
+                    int newY = (int) (layoutParams.topMargin + (e2.getY() - e1.getY()));
                     if (newX >= 0 && newX <= (getWidth() - layout.getWidth()) && newY >= 0 && newY <= (getHeight() - layout.getHeight())) {
                         layoutParams.leftMargin = newX;
                         layoutParams.topMargin = newY;
@@ -327,8 +327,8 @@ public class TRTCVideoLayoutManager extends RelativeLayout {
         // 根据堆叠布局参数，将每个view放到适当的位置，后加入的放在最大位
         int size = mLayoutEntityList.size();
         for (int i = 0; i < size; i++) {
-            TRTCLayoutEntity entity       = mLayoutEntityList.get(size - i - 1);
-            LayoutParams     layoutParams = mFloatParamList.get(i);
+            TRTCLayoutEntity entity = mLayoutEntityList.get(size - i - 1);
+            LayoutParams layoutParams = mFloatParamList.get(i);
             entity.layout.setLayoutParams(layoutParams);
             if (i == 0) {
                 entity.layout.setMoveAble(false);

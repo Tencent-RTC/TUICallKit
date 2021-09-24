@@ -1,11 +1,13 @@
 package com.tencent.liteav.trtccalling.model.impl.base;
 
+import java.util.List;
+
 public class SignallingData {
-    private             int      version;
-    private             String   businessID;
-    private             String   platform;
-    private             String   extInfo;
-    private             DataInfo data;
+    private int      version;
+    private String   businessID;
+    private String   platform;
+    private String   extInfo;
+    private DataInfo data;
 
     //兼容老版本字段，待废弃字段
     private int    call_type;
@@ -88,10 +90,11 @@ public class SignallingData {
     }
 
     public static class DataInfo {
-        private int    room_id;
-        private String cmd;
-        private String cmdInfo;
-        private String message;
+        private int          room_id;
+        private String       cmd;
+        private String       cmdInfo;
+        private String       message;
+        private List<String> userIDs;
 
         public int getRoomID() {
             return room_id;
@@ -123,6 +126,14 @@ public class SignallingData {
 
         public void setMessage(String message) {
             this.message = message;
+        }
+
+        public List<String> getUserIDs() {
+            return userIDs;
+        }
+
+        public void setUserIDs(List<String> userIDs) {
+            this.userIDs = userIDs;
         }
     }
 }

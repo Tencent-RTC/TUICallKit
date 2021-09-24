@@ -42,7 +42,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:textAlignment="center"
-	    android:background="@android:color/transparent"
+        android:background="@android:color/transparent"
         android:textColor="@color/trtccalling_color_black"
         android:visibility="visible"
         android:textSize="24sp" />

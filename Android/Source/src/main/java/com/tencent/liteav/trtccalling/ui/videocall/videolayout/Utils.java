@@ -28,12 +28,11 @@ public class Utils {
         RelativeLayout.LayoutParams layoutParams0 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         list.add(layoutParams0);
 
-        final int midMargin    = Utils.dip2px(context, 10);
-        final int lrMargin     = Utils.dip2px(context, 15);
+        final int midMargin = Utils.dip2px(context, 10);
+        final int lrMargin = Utils.dip2px(context, 15);
         final int bottomMargin = Utils.dip2px(context, 50);
-        final int subWidth     = Utils.dip2px(context, 120);
-        final int subHeight    = Utils.dip2px(context, 180);
-
+        final int subWidth = Utils.dip2px(context, 120);
+        final int subHeight = Utils.dip2px(context, 180);
         for (int i = 2; i >= 0; i--) {
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(subWidth, subHeight);
             layoutParams.leftMargin = layoutWidth - lrMargin - subWidth;
@@ -59,13 +58,12 @@ public class Utils {
      * @return
      */
     public static ArrayList<RelativeLayout.LayoutParams> initGrid4Param(Context context, int layoutWidth, int layoutHeight) {
-        int margin       = dip2px(context, 10);
+        int margin = dip2px(context, 10);
         int bottomMargin = dip2px(context, 50);
 
-        ArrayList<RelativeLayout.LayoutParams> list   = new ArrayList<>();
-        int                                    grid4W = (layoutWidth - margin * 2) / 2;
-        int                                    grid4H = (layoutHeight - margin * 2 - bottomMargin) / 2;
-
+        ArrayList<RelativeLayout.LayoutParams> list = new ArrayList<>();
+        int grid4W = (layoutWidth - margin * 2) / 2;
+        int grid4H = (layoutHeight - margin * 2 - bottomMargin) / 2;
         RelativeLayout.LayoutParams layoutParams0 = new RelativeLayout.LayoutParams(grid4W, grid4H);
         layoutParams0.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         layoutParams0.addRule(RelativeLayout.ALIGN_PARENT_TOP);
@@ -106,14 +104,13 @@ public class Utils {
      * @return
      */
     public static ArrayList<RelativeLayout.LayoutParams> initGrid9Param(Context context, int layoutWidth, int layoutHeight) {
-        int margin       = dip2px(context, 10);
+        int margin = dip2px(context, 10);
         int bottomMargin = dip2px(context, 50);
 
         ArrayList<RelativeLayout.LayoutParams> list = new ArrayList<>();
 
         int grid9W = (layoutWidth - margin * 2) / 3;
         int grid9H = (layoutHeight - margin * 2 - bottomMargin) / 3;
-
         RelativeLayout.LayoutParams layoutParams0 = new RelativeLayout.LayoutParams(grid9W, grid9H);
         layoutParams0.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         layoutParams0.addRule(RelativeLayout.ALIGN_PARENT_TOP);

@@ -19,10 +19,10 @@ public class TRTCAudioLayout extends RelativeLayout {
     private static final int MIN_AUDIO_VOLUME = 10;
 
     private RoundCornerImageView mImageHead;
-    private TextView    mTextName;
-    private ImageView   mImageAudioInput;
-    private FrameLayout mLayoutShade;
-    private String      mUserId;
+    private TextView             mTextName;
+    private ImageView            mImageAudioInput;
+    private FrameLayout          mLayoutShade;
+    private String               mUserId;
 
     public TRTCAudioLayout(Context context) {
         this(context, null);
