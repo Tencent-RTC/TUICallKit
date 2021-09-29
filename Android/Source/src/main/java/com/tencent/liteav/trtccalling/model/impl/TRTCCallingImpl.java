@@ -44,6 +44,9 @@ import com.tencent.trtc.TRTCCloud;
 import com.tencent.trtc.TRTCCloudDef;
 import com.tencent.trtc.TRTCCloudListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -232,6 +235,7 @@ public class TRTCCallingImpl extends TRTCCalling {
             if (inviteID.equals(mCurCallID)) {
                 playHangupMusic();
                 stopCall();
+                exitRoom();
                 if (mTRTCInternalListenerManager != null) {
                     mTRTCInternalListenerManager.onCallingCancel();
                 }
@@ -994,6 +998,7 @@ public class TRTCCallingImpl extends TRTCCalling {
         mTRTCCloud.setAudioRoute(TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER);
         mTRTCCloud.startLocalAudio();
         // 收到来电，开始监听 trtc 的消息
+        setFramework(5);
         mTRTCCloud.setListener(mTRTCCloudListener);
         mTRTCCloud.enterRoom(TRTCParams, mCurCallType == TRTCCalling.TYPE_VIDEO_CALL ? TRTCCloudDef.TRTC_APP_SCENE_VIDEOCALL : TRTCCloudDef.TRTC_APP_SCENE_AUDIOCALL);
     }
@@ -1711,6 +1716,19 @@ public class TRTCCallingImpl extends TRTCCalling {
         // 挂断音效很短，播放完即可；主叫铃音和被叫铃音需主动stop
         if (resId != R.raw.phone_hangup) {
             mMediaPlayHelper.stop();
+        }
+    }
+
+    private void setFramework(int framework) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("api", "setFramework");
+            JSONObject params = new JSONObject();
+            params.put("framework", framework);
+            jsonObject.put("params", params);
+            mTRTCCloud.callExperimentalAPI(jsonObject.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 }
