@@ -17,7 +17,7 @@ PODS:
 
 DEPENDENCIES:
   - TUICalling/TRTC (from `./`)
-  - TXAppBasic (from `../TXAppBasic/`)
+  - TXAppBasic (from `TXAppBasic/`)
   - TXLiteAVSDK_TRTC
 
 SPEC REPOS:
@@ -33,18 +33,18 @@ EXTERNAL SOURCES:
   TUICalling:
     :path: "./"
   TXAppBasic:
-    :path: "../TXAppBasic/"
+    :path: TXAppBasic/
 
 SPEC CHECKSUMS:
   Alamofire: 2291f7d21ca607c491dd17642e5d40fdcda0e65c
   Kingfisher: 6c3df386db71d82c0817a429d2c9421a77396529
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
-  TUICalling: 30178ae8a78c0da417b69f8872a0e0169ffab43b
+  TUICalling: 75780f4d488245593f9c47e7ee14db062ac79cd3
   TXAppBasic: f72fd658cb2cec20f0368158752b82226cb6cdec
   TXIMSDK_Plus_iOS: 4db13c8646d4f58d8ae558488f9523a2efd4ef6a
   TXLiteAVSDK_TRTC: dd581804b8badfffaf1d00856d7f2812eb8a47d4
 
-PODFILE CHECKSUM: b3c08afb0f3747c31c149ff0c5b5e8a32f0d361d
+PODFILE CHECKSUM: a86e87a8836d7a92b810800300f0b2395699ad74
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.1
