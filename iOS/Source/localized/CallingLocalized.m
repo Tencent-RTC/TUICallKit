@@ -23,6 +23,7 @@ NSString *TCLLocalizeFromTableAndCommon(NSString *key, NSString *common, NSStrin
 }
 
 #pragma mark - Replace String
+
 NSString *LocalizeReplaceXX(NSString *origin, NSString *xxx_replace) {
     if (xxx_replace == nil) { xxx_replace = @"";}
     return [origin stringByReplacingOccurrencesOfString:@"xxx" withString:xxx_replace];
@@ -48,8 +49,8 @@ NSString *LocalizeReplaceFiveCharacter(NSString *origin, NSString *xxx_replace, 
     return [LocalizeReplaceFourCharacter(origin, xxx_replace, yyy_replace, zzz_replace, mmm_replace) stringByReplacingOccurrencesOfString:@"nnn" withString:nnn_replace];
 }
 
-
 #pragma mark - Calling
+
 NSString *const Calling_Localize_TableName = @"CallingLocalized";
 NSString *CallingLocalize(NSString *key) {
     return TCLLocalizeFromTable(key, Calling_Localize_TableName);

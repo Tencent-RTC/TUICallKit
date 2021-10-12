@@ -34,6 +34,7 @@
 "LoginNetwork.AppUtils.tomeettheregulatory" = "In accordance with relevant regulations, the app forbids pornographic, abusive, violent, terrorist, and politically sensitive content. All audio/video calls and live streams are recorded and archived.";
 "LoginNetwork.AppUtils.determine" = "OK";
 "Demo.TRTC.calling.invitetovideocall" = "invites you to a video call";
+"Demo.TRTC.calling.invitetoaudiocall" = "invites you to a audio call";
 "Demo.TRTC.Streaming.call" = "Call";
 
 "Demo.TRTC.Calling.waitaccept" = "Waiting for the user to accept...";
@@ -48,3 +49,7 @@
 "Demo.TRTC.Calling.yournetworkpoor" = "Your network connection is poor";
 "Demo.TRTC.Salon.invitelimited" = "The request is being processed, please try again later";
 "Demo.TRTC.Login.countrycode" = "Country Code";
+
+"Demo.TRTC.Calling.failedtogetcamerapermission" = "Failed to get camera permission. Please go to Privacy > Camera to grant the permission";
+"Demo.TRTC.Calling.failedtogetmicrophonepermission" = "Failed to get mic permission. Please go to Privacy > Microphone to grant the permission";
+"Demo.TRTC.Calling.calleeTip" = "They also";

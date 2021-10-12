@@ -17,6 +17,7 @@ NSString *const SIGNALING_EXTRA_KEY_ROOMID = @"room_id";        // 房间号
 NSString *const SIGNALING_EXTRA_KEY_CMD = @"cmd";               // 指令
 NSString *const SIGNALING_EXTRA_KEY_CMDINFO = @"cmdInfo";       // 指令信息 （可选）
 NSString *const SIGNALING_EXTRA_KEY_MESSAGE = @"message";       // 携带的提示信息，用于UI显示（可选）
+NSString *const SIGNALING_EXTRA_KEY_USERIDS = @"userIDs";       // 携带的所有多人通话成员IDs
 
 //  兼容ver4老字段
 NSString *const SIGNALING_EXTRA_KEY_CALL_TYPE = @"call_type";
@@ -41,6 +42,10 @@ NSString *const SIGNALING_MESSAGE_LINEBUSY = @"lineBusy";       // 拒绝忙线
 @implementation TRTCSignalFactory
 
 + (NSMutableDictionary *)packagingSignalingWithExtInfo:(NSString *)extInfo roomID:(NSUInteger)roomID cmd:(NSString *)cmd cmdInfo:(NSString *)cmdInfo message:(NSString *)message callType:(CallType)callType {
+    return [[self class] packagingSignalingWithExtInfo:extInfo roomID:roomID cmd:cmd cmdInfo:cmdInfo userIds:@[] message:message callType:callType];
+}
+
++ (NSMutableDictionary *)packagingSignalingWithExtInfo:(NSString *)extInfo roomID:(NSUInteger)roomID cmd:(NSString *)cmd cmdInfo:(NSString *)cmdInfo userIds:(NSArray *)userIds message:(NSString *)message callType:(CallType)callType {
     NSMutableDictionary *signalingDictionary = [NSMutableDictionary dictionaryWithDictionary:@{SIGNALING_EXTRA_KEY_VERSION:@(SIGNALING_VERSION),
                                                                                                SIGNALING_EXTRA_KEY_BUSINESSID:SIGNALING_BUSINESSID,
                                                                                                SIGNALING_EXTRA_KEY_PLATFORM:SIGNALING_PLATFORM,
@@ -48,6 +53,7 @@ NSString *const SIGNALING_MESSAGE_LINEBUSY = @"lineBusy";       // 拒绝忙线
                                                                                                SIGNALING_EXTRA_KEY_CALL_TYPE:@(callType),
                                                                                                SIGNALING_EXTRA_KEY_DATA:@{SIGNALING_EXTRA_KEY_ROOMID:@(roomID),
                                                                                                                           SIGNALING_EXTRA_KEY_CMD:cmd,
+                                                                                                                          SIGNALING_EXTRA_KEY_USERIDS:userIds,
                                                                                                                           SIGNALING_EXTRA_KEY_CMDINFO:cmdInfo,
                                                                                                                           SIGNALING_EXTRA_KEY_MESSAGE:message}}];
     return signalingDictionary;

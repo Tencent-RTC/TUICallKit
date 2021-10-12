@@ -17,7 +17,8 @@
 - (void)removeSignalListener;
 
 ///通过信令发起通话邀请
-- (NSString *)invite:(NSString *)receiver action:(CallAction)action model:(CallModel *)model;
+- (NSString *)invite:(NSString *)receiver action:(CallAction)action model:(CallModel *)model cmdInfo:(NSString *)cmdInfo;
+- (NSString *)invite:(NSString *)receiver action:(CallAction)action model:(CallModel *)model cmdInfo:(NSString *)cmdInfo userIds:(NSArray<NSString *> *)userIds;
 
 ///收到通话邀请推送通知
 - (void)onReceiveGroupCallAPNs:(V2TIMSignalingInfo *)signalingInfo;
@@ -46,6 +47,9 @@
 @property(nonatomic,strong) NSString *callID;
 @property(nonatomic,copy) NSString *switchToAudioCallID;
 @property(nonatomic,copy) NSString *currentCallingUserID;
+
+/// 音视频邀请都需要展示消息，这个参数最好做成可配置，如果设置为 false 信令邀请就会产生 IM 消息
+@property(nonatomic,assign) BOOL onlineUserOnly;
 
 @property(nonatomic,weak) id<TRTCCallingDelegate> delegate;
 

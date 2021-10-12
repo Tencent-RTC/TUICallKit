@@ -34,6 +34,7 @@
 "LoginNetwork.AppUtils.tomeettheregulatory" = "为配合相关部门监管要求，本App内音视频互动全程均有录音录像存档，严禁色情、辱骂、暴恐、涉政等违规内容。";
 "LoginNetwork.AppUtils.determine" = "确定";
 "Demo.TRTC.calling.invitetovideocall" = "邀请你视频通话";
+"Demo.TRTC.calling.invitetoaudiocall" = "邀请你音频通话";
 "Demo.TRTC.Streaming.call" = "呼叫";
 
 "Demo.TRTC.Calling.waitaccept" = "等待对方接受";
@@ -48,3 +49,7 @@
 "Demo.TRTC.Calling.yournetworkpoor" = "己方网络不佳";
 "Demo.TRTC.Salon.invitelimited" = "请求正在处理，请稍后再试";
 "Demo.TRTC.Login.countrycode" = "国际电话区号";
+
+"Demo.TRTC.Calling.failedtogetcamerapermission" = "获取摄像头权限失败，请前往隐私-相机设置里面打开应用权限";
+"Demo.TRTC.Calling.failedtogetmicrophonepermission" = "获取麦克风权限失败，请前往隐私-麦克风设置里面打开应用权限";
+"Demo.TRTC.Calling.calleeTip" = "他们也在";

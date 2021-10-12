@@ -7,11 +7,10 @@
 
 #import "TRTCCallingModel.h"
 
-
-
 int SIGNALING_EXTRA_KEY_TIME_OUT = 30;
 
 @implementation CallModel
+
 - (id)copyWithZone:(NSZone *)zone {
     CallModel * model = [[CallModel alloc] init];
     model.version = self.version;
@@ -25,7 +24,9 @@ int SIGNALING_EXTRA_KEY_TIME_OUT = 30;
     model.inviter = self.inviter;
     return model;
 }
+
 @end
+
 
 @implementation TRTCCallingUserModel
 

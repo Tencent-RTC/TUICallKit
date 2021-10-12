@@ -8,8 +8,9 @@
 
 #ifndef TRTCCallingDelegate_h
 #define TRTCCallingDelegate_h
-
 #import <Foundation/Foundation.h>
+
+@class TRTCQualityInfo;
 
 NS_ASSUME_NONNULL_BEGIN
 

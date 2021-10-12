@@ -19,6 +19,7 @@ extern NSString *const SIGNALING_EXTRA_KEY_ROOMID;
 extern NSString *const SIGNALING_EXTRA_KEY_CMD;
 extern NSString *const SIGNALING_EXTRA_KEY_MESSAGE;
 extern NSString *const SIGNALING_EXTRA_KEY_CMDINFO;
+extern NSString *const SIGNALING_EXTRA_KEY_USERIDS;
 
 //  兼容ver4老字段
 extern NSString *const SIGNALING_EXTRA_KEY_CALL_TYPE;
@@ -37,6 +38,8 @@ extern NSString *const SIGNALING_BUSINESSID;
 @interface TRTCSignalFactory : NSObject
 
 + (NSMutableDictionary *)packagingSignalingWithExtInfo:(NSString *)extInfo roomID:(NSUInteger)roomID cmd:(NSString *)cmd cmdInfo:(NSString *)cmdInfo message:(NSString *)message callType:(CallType)callType;
+
++ (NSMutableDictionary *)packagingSignalingWithExtInfo:(NSString *)extInfo roomID:(NSUInteger)roomID cmd:(NSString *)cmd cmdInfo:(NSString *)cmdInfo userIds:(NSArray *)userIds message:(NSString *)message callType:(CallType)callType;
 
 + (NSDictionary *)getDataDictionary: (NSDictionary *)signaling;
 

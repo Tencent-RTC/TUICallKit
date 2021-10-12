@@ -9,20 +9,15 @@
 #import "TRTCCallingUtils.h"
 #import "TRTCCalling+Signal.h"
 #import "TRTCCallingHeader.h"
-
 #import "CallingLocalized.h"
+#import "TUILogin.h"
 
 @interface TRTCCalling ()
-
-@property(nonatomic, assign)int mSDKAppID;
-@property(nonatomic, strong)NSString *mUserID;
-@property(nonatomic, strong)NSString *mUserSig;
 
 @property(nonatomic,assign) BOOL isMicMute;
 @property(nonatomic,assign) BOOL isHandsFreeOn;
 
 @end
-
 
 @implementation TRTCCalling {
     BOOL _isOnCalling;
@@ -57,63 +52,6 @@
 
 - (void)addDelegate:(id<TRTCCallingDelegate>)delegate {
     self.delegate = delegate;
-}
-
-- (void)login:(UInt32)sdkAppID user:(NSString *)userID userSig:(NSString *)userSig success:(CallingActionCallback)success failed:(ErrorCallback)failed {
-    self.mSDKAppID = sdkAppID;
-    self.mUserID = userID;
-    self.mUserSig = userSig;
-    [[V2TIMManager sharedInstance] initSDK:sdkAppID config:nil listener:nil];
-    [self addSignalListener];
-    if ([[[V2TIMManager sharedInstance] getLoginUser] isEqualToString:userID]) {
-        if (success) {
-            success();
-        }
-        // 设置APNS
-        [self setupAPNS];
-        return;
-    }
-    NSAssert(userID.length > 0 || userSig.length > 0, CallingLocalize(@"Demo.TRTC.calling.useriderror"));
-    @weakify(self)
-    [[V2TIMManager sharedInstance] login:userID userSig:userSig succ:^{
-        @strongify(self)
-        if (!self) {
-            return;
-        }
-        if (success) {
-            success();
-        }
-        [self setupAPNS];
-    } fail:^(int code, NSString *desc) {
-        @strongify(self)
-        if (!self) {
-            return;
-        }
-        if ([self canDelegateRespondMethod:@selector(onError:msg:)]) {
-            [self.delegate onError:code msg:desc];
-        }
-        if (failed) {
-            failed(code, desc);
-        }
-    }];
-}
-
-- (void)logout:(CallingActionCallback)success failed:(ErrorCallback)failed {
-    self.mUserSig = nil;
-    self.mSDKAppID = 0;
-    [self removeSignalListener];
-    [[V2TIMManager sharedInstance] logout:^{
-        if (success) {
-            success();
-        }
-    } fail:^(int code, NSString *desc) {
-        if ([self canDelegateRespondMethod:@selector(onError:msg:)]) {
-            [self.delegate onError:code msg:desc];
-        }
-        if (failed) {
-            failed(code, desc);
-        }
-    }];
 }
 
 - (void)call:(NSString *)userID type:(CallType)type {
@@ -157,10 +95,10 @@
     
     //通话邀请
     if (self.curGroupID.length > 0 && newInviteList.count > 0) {
-        self.curCallID = [self invite:self.curGroupID action:CallAction_Call model:nil];
+        self.curCallID = [self invite:self.curGroupID action:CallAction_Call model:nil cmdInfo:nil];
     } else {
         for (NSString *userID in newInviteList) {
-            self.curCallID = [self invite:userID action:CallAction_Call model:nil];
+            self.curCallID = [self invite:userID action:CallAction_Call model:nil cmdInfo:nil userIds:userIDs];
         }
     }
 }
@@ -169,13 +107,13 @@
 - (void)accept {
     [self enterRoom];
     self.currentCallingUserID = self.curGroupID.length > 0 ? self.curGroupID : self.curSponsorForMe;
-    [self invite:self.curGroupID.length > 0 ? self.curGroupID : self.curSponsorForMe action:CallAction_Accept model:nil];
+    [self invite:self.curGroupID.length > 0 ? self.curGroupID : self.curSponsorForMe action:CallAction_Accept model:nil cmdInfo:nil];
     [self.curInvitingList removeObject:[TRTCCallingUtils loginUser]];
 }
 
 // 拒绝当前通话
 - (void)reject {
-    [self invite:self.curGroupID.length > 0 ? self.curGroupID : self.curSponsorForMe action:CallAction_Reject model:nil];
+    [self invite:self.curGroupID.length > 0 ? self.curGroupID : self.curSponsorForMe action:CallAction_Reject model:nil cmdInfo:nil];
     self.isOnCalling = NO;
     self.currentCallingUserID = nil;
 }
@@ -193,9 +131,9 @@
     // 这个函数供界面主动挂断使用，主动挂断的群通话，不能发 end 事件，end 事件由最后一名成员发出(记录通话时长)
     if (self.curRoomList.count == 0 && self.curInvitingList.count > 0) {
         if (self.curGroupID.length > 0) {
-            [self invite:self.curGroupID action:CallAction_Cancel model:nil];
+            [self invite:self.curGroupID action:CallAction_Cancel model:nil cmdInfo:nil];
         } else {
-            [self invite:self.curInvitingList.firstObject action:CallAction_Cancel model:nil];
+            [self invite:self.curInvitingList.firstObject action:CallAction_Cancel model:nil cmdInfo:nil];
         }
     }
     [self quitRoom];
@@ -205,7 +143,7 @@
 - (void)switchToAudio {
     int res = [self checkAudioStatus];
     if (res == 0) {
-        self.switchToAudioCallID = [self invite:self.currentCallingUserID action:CallAction_SwitchToAudio model:nil];
+        self.switchToAudioCallID = [self invite:self.currentCallingUserID action:CallAction_SwitchToAudio model:nil cmdInfo:nil];
     }
     else {
         if ([self canDelegateRespondMethod:@selector(onSwitchToAudio:message:)]) {
@@ -290,9 +228,10 @@
     [beauty setBeautyStyle:TXBeautyStyleNature];
     [beauty setBeautyLevel:6];
     TRTCParams *param = [[TRTCParams alloc] init];
-    param.sdkAppId = self.mSDKAppID;
-    param.userId = self.mUserID;
-    param.userSig = self.mUserSig;
+    
+    param.sdkAppId = [TUILogin getSdkAppID];
+    param.userId = [TUILogin getUserID];
+    param.userSig = [TUILogin getUserSig];
     param.roomId = self.curRoomID;
     
     TRTCVideoEncParam *videoEncParam = [[TRTCVideoEncParam alloc] init];
@@ -304,22 +243,12 @@
     [[TRTCCloud sharedInstance] setVideoEncoderParam:videoEncParam];
     
     [[TRTCCloud sharedInstance] setDelegate:self];
-    [self setFramework:5];
     [[TRTCCloud sharedInstance] enterRoom:param appScene:TRTCAppSceneVideoCall];
     [[TRTCCloud sharedInstance] startLocalAudio];
     [[TRTCCloud sharedInstance] enableAudioVolumeEvaluation:300];
     self.isMicMute = NO;
     self.isHandsFreeOn = YES;
     self.isInRoom = YES;
-}
-
-- (void)setFramework:(int)framework {
-    NSDictionary *jsonDic = @{@"api": @"setFramework",
-                              @"params":@{@"framework": @(framework)}};
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDic options:NSJSONWritingPrettyPrinted error:nil];
-    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    TRTCLog(@"jsonString = %@",jsonString);
-    [[TRTCCloud sharedInstance] callExperimentalAPI: jsonString];
 }
 
 - (void)quitRoom {
@@ -330,17 +259,6 @@
     self.isHandsFreeOn = YES;
     self.isInRoom = NO;
     self.currentCallingUserID = nil;
-}
-
-- (void)setupAPNS {
-    V2TIMAPNSConfig *config = [[V2TIMAPNSConfig alloc] init];
-    config.businessID = self.imBusinessID;
-    config.token = self.deviceToken;
-    [[V2TIMManager sharedInstance] setAPNS:config succ:^{
-        TRTCLog(@"-----> upload token success");
-    } fail:^(int code, NSString *desc) {
-        TRTCLog(@"-----> upload token failed");
-    }];
 }
 
 - (void)startRemoteView:(NSString *)userID view:(UIView *)view {
@@ -375,10 +293,8 @@
 }
 
 - (void)setHandsFree:(BOOL)isHandsFree {
-    if (self.isHandsFreeOn != isHandsFree) {
-        [[TRTCCloud sharedInstance] setAudioRoute:isHandsFree ? TRTCAudioModeSpeakerphone : TRTCAudioModeEarpiece];
-        self.isHandsFreeOn = isHandsFree;
-    }
+    [[TRTCCloud sharedInstance] setAudioRoute:isHandsFree ? TRTCAudioModeSpeakerphone : TRTCAudioModeEarpiece];
+    self.isHandsFreeOn = isHandsFree;
 }
 
 - (BOOL)micMute {

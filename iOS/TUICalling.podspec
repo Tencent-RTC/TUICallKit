@@ -1,25 +1,21 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICalling'
-  spec.version      = '1.0.0'
+  spec.version      = '9.2'
   spec.platform     = :ios
-  spec.ios.deployment_target = '11.0'
+  spec.ios.deployment_target = '9.0'
   spec.license      = { :type => 'Proprietary',
       :text => <<-LICENSE
         copyright 2017 tencent Ltd. All rights reserved.
         LICENSE
        }
-  spec.homepage     = 'https://cloud.tencent.com/document/product/269/3794'
-  spec.documentation_url = 'https://cloud.tencent.com/document/product/269/9147'
+  spec.homepage     = 'https://cloud.tencent.com/document/product/647'
+  spec.documentation_url = 'https://cloud.tencent.com/document/product/647'
   spec.authors      = 'tencent video cloud'
   spec.summary      = 'TUICalling'
   spec.xcconfig     = { 'VALID_ARCHS' => 'armv7 arm64 x86_64' }
-  
-  spec.dependency 'Alamofire'
-  spec.dependency 'SnapKit'
-  spec.dependency 'Toast-Swift'
-  spec.dependency 'Kingfisher'
-  spec.dependency 'TXAppBasic'
-  spec.dependency 'TXIMSDK_Plus_iOS'
+
+  spec.dependency 'Masonry'
+  spec.dependency 'TUICore'
   
   spec.requires_arc = true
   spec.static_framework = true
@@ -37,29 +33,27 @@ Pod::Spec.new do |spec|
     trtc.pod_target_xcconfig={
         'HEADER_SEARCH_PATHS'=>["$(PODS_TARGET_SRCROOT)/#{framework_path}/Headers"]
     }
-    trtc.source_files = 'Source/Localized/**/*.{h,m,mm,swift}', 'Source/model/**/*.{h,m,mm,swift}', 'Source/ui/**/*.{h,m,mm,swift}', 'Source/TUICallingKit_TRTC/*.{h,m,mm,swift}'
+    trtc.source_files = 'Source/localized/**/*.{h,m,mm}', 'Source/Model/**/*.{h,m,mm}', 'Source/Service/**/*.{h,m,mm}', 'Source/UI/**/*.{h,m,mm}', 'Source/TUICallingKit_TRTC/*.{h,m,mm}'
     trtc.ios.framework = ['AVFoundation', 'Accelerate']
     trtc.library = 'c++', 'resolv'
     trtc.resource_bundles = {
-      'TUICallingKitBundle' => ['Resources/localized/**/*.strings', 'Resources/*.xcassets', 'Resources/*.mp3', 'Resources/*.flac', 'Resources/*.m4a']
+      'TUICallingKitBundle' => ['Resources/Localized/**/*.strings', 'Resources/AudioFile', 'Resources/*.xcassets']
     }
   end
  
-  spec.subspec 'Enterprise' do |enterprise|
-    enterprise.dependency 'TXLiteAVSDK_Enterprise'
-    framework_path="../../SDK/TXLiteAVSDK_Enterprise.framework"
-    enterprise.pod_target_xcconfig={
+  spec.subspec 'Professional' do |professional|
+    professional.dependency 'TXLiteAVSDK_Professional'
+    framework_path="../../SDK/TXLiteAVSDK_Professional.framework"
+    professional.pod_target_xcconfig={
         'HEADER_SEARCH_PATHS'=>["$(PODS_TARGET_SRCROOT)/#{framework_path}/Headers"]
     }
-    enterprise.xcconfig = { 'HEADER_SEARCH_PATHS' => '${SRCROOT}/../SDK/TXLiteAVSDK_Enterprise.framework/Headers/'}
-    enterprise.source_files = 'Source/Localized/**/*.{h,m,mm,swift}', 'Source/model/**/*.{h,m,mm,swift}', 'Source/ui/**/*.{h,m,mm,swift}', 'Source/TUICallingKit_Enterprise/*.{h,m,mm,swift}'
-    enterprise.ios.framework = ['AVFoundation', 'Accelerate', 'AssetsLibrary']
-    enterprise.library = 'c++', 'resolv', 'sqlite3'
-    enterprise.resource_bundles = {
-      'TUICallingKitBundle' => ['Resources/localized/**/*.strings', 'Resources/*.xcassets', 'Resources/*.mp3', 'Resources/*.flac', 'Resources/*.m4a']
+    professional.xcconfig = { 'HEADER_SEARCH_PATHS' => '${SRCROOT}/../SDK/TXLiteAVSDK_Professional.framework/Headers/'}
+    professional.source_files = 'Source/localized/**/*.{h,m,mm}', 'Source/Model/**/*.{h,m,mm}', 'Source/Service/**/*.{h,m,mm}', 'Source/UI/**/*.{h,m,mm}', 'Source/TUICallingKit_Professional/*.{h,m,mm}'
+    professional.ios.framework = ['AVFoundation', 'Accelerate', 'AssetsLibrary']
+    professional.library = 'c++', 'resolv', 'sqlite3'
+    professional.resource_bundles = {
+      'TUICallingKitBundle' => ['Resources/Localized/**/*.strings', 'Resources/AudioFile', 'Resources/*.xcassets']
     }
   end
-
   
 end
-

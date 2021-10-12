@@ -19,38 +19,12 @@ typedef void(^ErrorCallback)(int code, NSString *des);
 
 @interface TRTCCalling : NSObject<TRTCCloudDelegate,V2TIMSignalingListener>
 
-/// IM APNS推送ID
-@property (nonatomic, assign) int imBusinessID;
-/// 推送DeviceToken，需要在调用登录之前设置，否则APNS推送会设置失败
-@property (nonatomic, strong) NSData *deviceToken;
-
 /// 单例对象
 + (TRTCCalling *)shareInstance;
 
 /// 设置TRTCCallingDelegate回调
 /// @param delegate 回调实例
 - (void)addDelegate:(id<TRTCCallingDelegate>)delegate;
-
-/// 登录接口
-/// @param sdkAppID SDK ID，可在腾讯云控制台获取
-/// @param userID 用户ID
-/// @param userSig 用户签名
-/// @param success 成功回调
-/// @param failed 失败回调
-- (void)login:(UInt32)sdkAppID
-         user:(NSString *)userID
-      userSig:(NSString *)userSig
-      success:(CallingActionCallback)success
-       failed:(ErrorCallback)failed
-NS_SWIFT_NAME(login(sdkAppID:user:userSig:success:failed:));
-
-
-/// 登出接口
-/// @param success 成功回调
-/// @param failed 失败回调
-- (void)logout:(CallingActionCallback)success
-        failed:(ErrorCallback)failed
-NS_SWIFT_NAME(logout(success:failed:));
 
 /// 发起1v1通话接口
 /// @param userID 被邀请方ID
@@ -106,7 +80,5 @@ NS_SWIFT_NAME(openCamera(frontCamera:view:));
 - (void)setHandsFree:(BOOL)isHandsFree;
 
 @end
-
-
 
 NS_ASSUME_NONNULL_END
