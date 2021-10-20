@@ -7,7 +7,15 @@ target 'TUICallingApp' do
   pod 'TXAppBasic', :path => "./TXAppBasic/"
   pod 'Toast-Swift'
   pod 'Alamofire'
-  pod 'Kingfisher'
+  pod 'Kingfisher', '~> 6.3.1'
   pod 'SnapKit'
-  pod 'TUICalling', :path => "../", :subspecs => ["Professional"]
+  pod 'TUICalling', :path => "../", :subspecs => ["TRTC"]
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+        config.build_settings['ENABLE_BITCODE'] = 'NO'
+    end
+  end
 end
