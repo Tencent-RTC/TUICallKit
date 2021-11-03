@@ -141,13 +141,14 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 }
 
 - (void)setCallingBell:(NSString *)filePath {
-    if (filePath) {
+    if (filePath && ![filePath hasPrefix:@"http"]) {
         self.bellFilePath = filePath;
     }
 }
 
 - (void)enableMuteMode:(BOOL)enable {
     self.enableMuteMode = enable;
+    [[TRTCCalling shareInstance] setMicMute:enable];
 }
 
 - (void)enableFloatWindow:(BOOL)enable {
@@ -170,12 +171,6 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 }
 
 - (void)callStartWithUserIDs:(NSArray *)userIDs type:(TUICallingType)type role:(TUICallingRole)role {
-    if (role == TUICallingRoleCall) {
-        playAudio(CallingAudioTypeDial);
-    } else {
-        playAudio(CallingAudioTypeCalled);
-    }
-    
     if (self.enableCustomViewRoute) {
         if (self.listener && [self.listener respondsToSelector:@selector(callStart:type:role:viewController:)]) {
             UIViewController *callVC = [[UIViewController alloc] init];
@@ -185,6 +180,19 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
         }
     } else {
         [self.callingView show];
+    }
+    
+    if (self.enableMuteMode) {
+        return;
+    }
+    if (role == TUICallingRoleCall) {
+        playAudio(CallingAudioTypeDial);
+        return;
+    }
+    if (self.bellFilePath) {
+        playAudioWithFilePath(self.bellFilePath);
+    } else {
+        playAudio(CallingAudioTypeCalled);
     }
 }
 

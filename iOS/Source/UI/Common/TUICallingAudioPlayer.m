@@ -44,6 +44,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
+BOOL playAudioWithFilePath(NSString *filePath) {
+    TUICallingAudioParam *param = [[TUICallingAudioParam alloc] init];
+    NSURL *url = [NSURL fileURLWithPath:filePath];
+    if (!url) {
+        return NO;
+    }
+    param.startTime = 1.5;
+    param.loop = YES;
+    return [[TUICallingAudioPlayer sharedInstance] playAudio:url params:param];
+}
+
 BOOL playAudio(CallingAudioType type) {
     NSBundle *bundle = [TUICommonUtil callingBundle];
     TUICallingAudioParam *param = [[TUICallingAudioParam alloc] init];
