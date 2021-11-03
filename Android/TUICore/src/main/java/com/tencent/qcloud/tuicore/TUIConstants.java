@@ -69,9 +69,14 @@ public final class TUIConstants {
 
         // 发送消息
         public static final String METHOD_SEND_MESSAGE = "sendMessage";
+        // 结束聊天
+        public static final String METHOD_EXIT_CHAT = "exitChat";
 
         // 更多输入按钮扩展
-        public static final String EXTENSION_INPUT_MORE = "inputMore";
+        public static final String EXTENSION_INPUT_MORE_CUSTOM_MESSAGE = "inputMoreCustomMessage";
+        public static final String EXTENSION_INPUT_MORE_LIVE = "inputMoreLive";
+        public static final String EXTENSION_INPUT_MORE_VIDEO_CALL = "inputMoreVideoCall";
+        public static final String EXTENSION_INPUT_MORE_AUDIO_CALL = "inputMoreAudioCall";
 
         // 更多输入按钮事件
         public static final String EVENT_KEY_INPUT_MORE = "eventKeyInputMore";
@@ -97,6 +102,7 @@ public final class TUIConstants {
         public static final String NOTICE = "notice";
         public static final String OWNER = "owner";
         public static final String MEMBER_DETAILS = "memberDetails";
+        public static final String IS_GROUP_CHAT = "isGroupChat";
 
 
         // 发送自定义消息字段
@@ -105,9 +111,14 @@ public final class TUIConstants {
         public static final String MESSAGE_EXTENSION = "messageExtension";
 
         // 更多输入按钮扩展字段
+        public static final String CONTEXT = "context";
         public static final String INPUT_MORE_ICON = "icon";
         public static final String INPUT_MORE_TITLE = "title";
         public static final String INPUT_MORE_ACTION_ID = "actionId";
+        public static final String INPUT_MORE_VIEW = "inputMoreView";
+
+        public static String UI_PARAMS = "ui_params";
+        public static String SOFT_KEY_BOARD_HEIGHT = "soft_key_board_height";
     }
 
     /**
@@ -121,15 +132,20 @@ public final class TUIConstants {
         public static final String METHOD_SET_TOP_CONVERSATION = "setTopConversation";
         public static final String METHOD_GET_TOTAL_UNREAD_COUNT = "getTotalUnreadCount";
         public static final String METHOD_UPDATE_TOTAL_UNREAD_COUNT = "updateTotalUnreadCount";
+        public static final String METHOD_DELETE_CONVERSATION = "deleteConversation";
 
         public static final String EVENT_UNREAD = "eventTotalUnreadCount";
         public static final String EVENT_SUB_KEY_UNREAD_CHANGED = "unreadCountChanged";
+
+        public static final String EXTENSION_SEARCH = "extensionSearch";
 
         public static final String CHAT_ID = "chatId";
         public static final String CONVERSATION_ID = "conversationId";
         public static final String IS_SET_TOP = "isSetTop";
         public static final String IS_TOP = "isTop";
         public static final String TOTAL_UNREAD_COUNT = "totalUnreadCount";
+        public static final String CONTEXT = "context";
+        public static final String SEARCH_VIEW = "searchView";
 
         public static final String CONVERSATION_C2C_PREFIX = "c2c_";
         public static final String CONVERSATION_GROUP_PREFIX = "group_";
@@ -139,9 +155,13 @@ public final class TUIConstants {
         public static final String SERVICE_NAME = Service.TUI_CONTACT;
 
         public static final String EVENT_FRIEND_STATE_CHANGED = "eventFriendStateChanged";
+        public static final String EVENT_FRIEND_INFO_CHANGED = "eventFriendInfoChanged";
+        public static final String EVENT_SUB_KEY_FRIEND_REMARK_CHANGED = "eventFriendRemarkChanged";
         public static final String EVENT_SUB_KEY_FRIEND_DELETE = "eventSubKeyFriendDelete";
 
         public static final String FRIEND_ID_LIST = "friendIdList";
+        public static final String FRIEND_ID = "friendId";
+        public static final String FRIEND_REMARK = "friendRemark";
 
     }
 
@@ -157,10 +177,12 @@ public final class TUIConstants {
         public static final String PARAM_NAME_TYPE = "type";
         public static final String PARAM_NAME_USERIDS = "userIDs";
         public static final String PARAM_NAME_GROUPID = "groupId";
+        public static final String PARAM_NAME_CALLMODEL = "call_model_data";
 
         public static final String METHOD_START_CALL = "startCall";
 
         public static final String CUSTOM_MESSAGE_BUSINESS_ID = "av_call";
+        public static final Double CALL_TIMEOUT_BUSINESS_ID = 1.0;
 
         public static final String CALL_ID = "callId";
         public static final String SENDER = "sender";

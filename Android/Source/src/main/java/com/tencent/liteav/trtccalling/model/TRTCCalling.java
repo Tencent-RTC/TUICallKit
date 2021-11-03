@@ -216,4 +216,25 @@ public abstract class TRTCCalling {
      * @param callback 是否设置成功的结果回调
      */
     public abstract void setSelfProfile(String userName, String avatarURL, TRTCCallingCallback.ActionCallback callback);
+
+    /**
+     * 收到离线邀请时处理邀请信令，无法走信令监听回调onReceiveNewInvitation（仅支持在线）
+     *
+     * @param sender
+     * @param content
+     */
+    public abstract void receiveNewInvitation(String sender, String content);
+
+    /**
+     * 设置铃声(建议在30s以内)
+     *
+     * @param filePath 接听方铃音路径
+     */
+    public abstract void setCallingBell(String filePath);
+
+    /**
+     * 开启静音模式（接听方不响铃音）
+     * @param enable
+     */
+    public abstract void enableMuteMode(boolean enable);
 }

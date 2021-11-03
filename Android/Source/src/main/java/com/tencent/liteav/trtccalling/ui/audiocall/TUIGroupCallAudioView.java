@@ -60,8 +60,8 @@ public class TUIGroupCallAudioView extends BaseTUICallView {
     private Handler       mTimeHandler;
     private HandlerThread mTimeHandlerThread;
 
-    private final List<UserModel>        mCallUserInfoList = new ArrayList<>(); // 呼叫方
-    private final Map<String, UserModel> mCallUserModelMap = new HashMap<>();
+    private final List<UserModel>        mCallUserInfoList          = new ArrayList<>(); // 呼叫方
+    private final Map<String, UserModel> mCallUserModelMap          = new HashMap<>();
     private       UserModel              mSponsorUserInfo;                               // 被叫方
     private final List<UserModel>        mOtherInvitingUserInfoList = new ArrayList<>();
     private       boolean                mIsHandsFree               = false;
@@ -476,15 +476,34 @@ public class TUIGroupCallAudioView extends BaseTUICallView {
         int squareWidth = getResources().getDimensionPixelOffset(R.dimen.trtccalling_small_image_size);
         int leftMargin = getResources().getDimensionPixelOffset(R.dimen.trtccalling_small_image_left_margin);
         for (int index = 0; index < mOtherInvitingUserInfoList.size() && index < MAX_SHOW_INVITING_USER; index++) {
-            UserModel userModel = mOtherInvitingUserInfoList.get(index);
-            ImageView imageView = new ImageView(mContext);
+            final UserModel userModel = mOtherInvitingUserInfoList.get(index);
+            final ImageView imageView = new ImageView(mContext);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(squareWidth, squareWidth);
             if (index != 0) {
                 layoutParams.leftMargin = leftMargin;
             }
             imageView.setLayoutParams(layoutParams);
-            ImageLoader.loadImage(mContext, imageView, userModel.userAvatar, R.drawable.trtccalling_wait_background);
+            ImageLoader.loadImage(mContext, imageView, userModel.userAvatar, R.drawable.trtccalling_groupcall_wait_background);
             mLayoutImgContainer.addView(imageView);
+
+            CallingInfoManager.getInstance().getUserInfoByUserId(userModel.userId, new CallingInfoManager.UserCallback() {
+                @Override
+                public void onSuccess(UserModel model) {
+                    userModel.userName = model.userName;
+                    userModel.userAvatar = model.userAvatar;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ImageLoader.loadImage(mContext, imageView, userModel.userAvatar, R.drawable.trtccalling_groupcall_wait_background);
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailed(int code, String msg) {
+                    ToastUtils.showLong(mContext.getString(R.string.trtccalling_toast_search_fail, msg));
+                }
+            });
         }
     }
 
@@ -498,7 +517,7 @@ public class TUIGroupCallAudioView extends BaseTUICallView {
             return null;
         }
         Log.d(TAG, String.format("addUserToManager, userId=%s, userName=%s, userAvatar=%s", userInfo.userId, userInfo.userName, userInfo.userAvatar));
-        layout.setUserId(TextUtils.isEmpty(userInfo.userName) ? userInfo.userId : userInfo.userName);
+        layout.setUserName(userInfo.userName);
         ImageLoader.loadImage(mContext, layout.getImageView(), userInfo.userAvatar, R.drawable.trtccalling_groupcall_wait_background);
         return layout;
     }
@@ -511,12 +530,12 @@ public class TUIGroupCallAudioView extends BaseTUICallView {
         CallingInfoManager.getInstance().getUserInfoByUserId(userModel.userId, new CallingInfoManager.UserCallback() {
             @Override
             public void onSuccess(UserModel model) {
-                userModel.userName = TextUtils.isEmpty(model.userName) ? model.userId : model.userName;
+                userModel.userName = model.userName;
                 userModel.userAvatar = model.userAvatar;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        layout.setUserId(userModel.userName);
+                        layout.setUserName(userModel.userName);
                         ImageLoader.loadImage(mContext, layout.getImageView(), userModel.userAvatar, R.drawable.trtccalling_groupcall_wait_background);
                     }
                 });

@@ -237,6 +237,7 @@
     <LinearLayout
         android:id="@+id/ll_switch_audio_call"
         android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/ll_handsfree"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

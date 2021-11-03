@@ -282,7 +282,6 @@ public class TUICallVideoView extends BaseTUICallView {
                 //1.先造一个虚拟的用户添加到屏幕上
                 UserModel model = new UserModel();
                 model.userId = userId;
-                model.userName = userId;
                 model.userAvatar = "";
                 mCallUserInfoList.add(model);
                 mCallUserModelMap.put(model.userId, model);
@@ -295,7 +294,7 @@ public class TUICallVideoView extends BaseTUICallView {
                         }
                         TRTCVideoLayout layout = mLayoutManagerTrtc.findCloudViewView(model.userId);
                         if (layout != null) {
-                            layout.getUserNameTv().setText(model.userName);
+                            layout.setUserName(model.userName);
                             ImageLoader.loadImage(mContext, layout.getHeadImg(), model.userAvatar, R.drawable.trtccalling_ic_avatar);
                         }
                     }
@@ -478,7 +477,7 @@ public class TUICallVideoView extends BaseTUICallView {
         CallingInfoManager.getInstance().getUserInfoByUserId(mSponsorUserInfo.userId, new CallingInfoManager.UserCallback() {
             @Override
             public void onSuccess(UserModel model) {
-                mSponsorUserInfo.userName = TextUtils.isEmpty(model.userName) ? model.userId : model.userName;
+                mSponsorUserInfo.userName = model.userName;
                 mSponsorUserInfo.userAvatar = model.userAvatar;
                 runOnUiThread(new Runnable() {
                     @Override
@@ -578,7 +577,7 @@ public class TUICallVideoView extends BaseTUICallView {
         CallingInfoManager.getInstance().getUserInfoByUserId(mSponsorUserInfo.userId, new CallingInfoManager.UserCallback() {
             @Override
             public void onSuccess(UserModel model) {
-                mSponsorUserInfo.userName = TextUtils.isEmpty(model.userName) ? model.userId : model.userName;
+                mSponsorUserInfo.userName = model.userName;
                 mSponsorUserInfo.userAvatar = model.userAvatar;
                 runOnUiThread(new Runnable() {
                     @Override

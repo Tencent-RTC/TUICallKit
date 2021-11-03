@@ -1,7 +1,7 @@
 package com.tencent.qcloud.tuicore.interfaces;
 
-import android.os.Bundle;
+import java.util.Map;
 
 public interface ITUIService {
-    Object onCall(String method, Bundle param);
+    Object onCall(String method, Map<String, Object> param);
 }

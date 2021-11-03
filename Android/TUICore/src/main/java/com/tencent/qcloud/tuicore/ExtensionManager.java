@@ -1,15 +1,14 @@
 package com.tencent.qcloud.tuicore;
 
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.tencent.qcloud.tuicore.interfaces.ITUIExtension;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 页面扩展注册和获取
@@ -44,7 +43,7 @@ class ExtensionManager {
         }
     }
 
-    public void removeExtension(String key, ITUIExtension extension) {
+    public void unRegisterExtension(String key, ITUIExtension extension) {
         Log.i(TAG, "removeExtension key : " + key + ", extension : " + extension);
         if (TextUtils.isEmpty(key) || extension == null) {
             return;
@@ -56,22 +55,18 @@ class ExtensionManager {
         list.remove(extension);
     }
 
-    public List<Bundle> getExtensionObjects(String key, Bundle param) {
-        Log.i(TAG, "getExtensionObjects key : " + key );
+    public Map<String, Object> getExtensionInfo(String key, Map<String, Object> param) {
+        Log.i(TAG, "getExtensionInfo key : " + key );
         if (TextUtils.isEmpty(key)) {
-            return new ArrayList<>();
+            return null;
         }
         List<ITUIExtension> list = extensionHashMap.get(key);
         if (list == null) {
-            return new ArrayList<>();
+            return null;
         }
-        List<Bundle> bundleList = new ArrayList<>();
         for(ITUIExtension extension : list) {
-            List<Bundle> bundles = extension.onGetInfo(key, param);
-            if (bundles != null) {
-                bundleList.addAll(bundles);
-            }
+            return extension.onGetExtensionInfo(key, param);
         }
-        return bundleList;
+        return null;
     }
 }

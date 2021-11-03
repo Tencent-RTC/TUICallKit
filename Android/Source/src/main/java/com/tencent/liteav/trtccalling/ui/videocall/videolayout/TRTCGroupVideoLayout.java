@@ -89,7 +89,7 @@ public class TRTCGroupVideoLayout extends RelativeLayout {
         mMoveAble = enable;
     }
 
-    public void setUserId(String userId) {
-        mTextUserName.setText(userId);
+    public void setUserName(String userName) {
+        mTextUserName.setText(userName);
     }
 }

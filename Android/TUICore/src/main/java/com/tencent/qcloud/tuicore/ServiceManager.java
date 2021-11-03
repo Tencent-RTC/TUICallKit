@@ -1,12 +1,12 @@
 package com.tencent.qcloud.tuicore;
 
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.tencent.qcloud.tuicore.interfaces.ITUIService;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Service 注册和调用
@@ -34,7 +34,7 @@ class ServiceManager {
         serviceMap.put(serviceName, service);
     }
 
-    public Object callService(String serviceName, String method, Bundle param) {
+    public Object callService(String serviceName, String method, Map<String, Object> param) {
         Log.i(TAG, "callService : " + serviceName + " method : " + method);
         ITUIService service = serviceMap.get(serviceName);
         if (service != null) {

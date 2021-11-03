@@ -1,5 +1,6 @@
 package com.tencent.liteav.trtccalling.model.impl;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -13,6 +14,10 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.tencent.imsdk.v2.V2TIMCallback;
 import com.tencent.imsdk.v2.V2TIMConversation;
@@ -38,6 +43,7 @@ import com.tencent.liteav.trtccalling.model.impl.base.SignallingData;
 import com.tencent.liteav.trtccalling.model.impl.base.TRTCInternalListenerManager;
 import com.tencent.liteav.trtccalling.model.impl.base.TRTCLogger;
 import com.tencent.liteav.trtccalling.model.util.MediaPlayHelper;
+import com.tencent.liteav.trtccalling.model.util.TUICallingConstants;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.tencent.trtc.TRTCCloud;
@@ -109,6 +115,8 @@ public class TRTCCallingImpl extends TRTCCalling {
      */
     private Set<String>  mCurRoomRemoteUserSet = new HashSet<>();
 
+    private final Map<Integer, String> mInviteIdMap = new HashMap<>();
+
     /**
      * C2C通话的邀请人
      * 例如A邀请B，B存储的mCurSponsorForMe为A
@@ -144,7 +152,9 @@ public class TRTCCallingImpl extends TRTCCalling {
     private SensorManager       mSensorManager;
     private SensorEventListener mSensorEventListener;
 
-    private boolean mIsBeingCalled = true;
+    private boolean mIsBeingCalled   = true;   // 默认是被叫
+    private boolean mEnableMuteMode  = false;  // 是否开启静音模式
+    private String  mCallingBellPath = "";     // 被叫铃音路径
 
     private int mUserType = USER_TYPE_NONE;
 
@@ -165,14 +175,25 @@ public class TRTCCallingImpl extends TRTCCalling {
     private V2TIMSignalingListener mTIMSignallingListener = new V2TIMSignalingListener() {
         @Override
         public void onReceiveNewInvitation(String inviteID, String inviter, String groupID, List<String> inviteeList, String data) {
-            TRTCLogger.d(TAG, "onReceiveNewInvitation inviteID:" + inviteID + ", inviter:" + inviter + " data:" + data);
+            TRTCLogger.d(TAG, "onReceiveNewInvitation inviteID:" + inviteID + ", inviter:" + inviter + ", groupID:" + groupID + ", inviteeList:" + Arrays.toString(inviteeList.toArray(new String[0])) + " data:" + data);
             initUserInfo();
             SignallingData signallingData = convert2CallingData(data);
             if (!isCallingData(signallingData)) {
                 TRTCLogger.d(TAG, "this is not the calling sense ");
                 return;
             }
-            processInvite(inviteID, inviter, groupID, inviteeList, signallingData);
+            if (!TextUtils.isEmpty(inviteID)) {
+                mInviteIdMap.put(signallingData.getRoomId(), inviteID);
+            }
+            if (!isAppRunningForeground(mContext)) {
+                TRTCLogger.d(TAG, "isAppRunningForeground is false");
+                return;
+            }
+            if (null != inviteeList && !inviteeList.contains(mCurUserId)) {
+                TRTCLogger.d(TAG, "this invitation is not for me");
+                return;
+            }
+            processInvite(TextUtils.isEmpty(inviteID) ? mInviteIdMap.get(signallingData.getRoomId()) : inviteID, inviter, groupID, inviteeList, signallingData);
         }
 
         @Override
@@ -217,6 +238,7 @@ public class TRTCCallingImpl extends TRTCCalling {
                         mTRTCInternalListenerManager.onReject(invitee);
                     }
                 }
+                TRTCLogger.d(TAG, "mIsInRoom=" + mIsInRoom);
                 preExitRoom(null);
                 stopDialingMusic();
                 unregisterSensorEventListener();
@@ -314,11 +336,16 @@ public class TRTCCallingImpl extends TRTCCalling {
     }
 
     private boolean isCallingData(SignallingData signallingData) {
-        //如果是老版本直接反馈true
+        String businessId = signallingData.getBusinessID();
+        // 判断新/旧版信令
         if (!isNewSignallingVersion(signallingData)) {
+            if (!TextUtils.isEmpty(businessId)) {
+                // 是旧版信令，但不是calling信令，则返回false。（备注：旧版calling信令不包括businessId字段）
+                return false;
+            }
+            // 是旧版calling信令，则返回true
             return true;
         }
-        String businessId = signallingData.getBusinessID();
         return CallModel.VALUE_BUSINESS_ID.equals(businessId);
     }
 
@@ -549,11 +576,15 @@ public class TRTCCallingImpl extends TRTCCalling {
 
         @Override
         public void onEnterRoom(long result) {
-            TRTCLogger.d(TAG, "onEnterRoom result:" + result);
+            TRTCLogger.d(TAG, "onEnterRoom result:" + result + " , mCurSponsorForMe = " + mCurSponsorForMe);
             if (result < 0) {
                 stopCall();
             } else {
                 mIsInRoom = true;
+                //如果自己是被叫,接收到通话请求后进房,进房成功后发送accept信令给主叫端;如果自己是主叫,不处理
+                if (mIsBeingCalled) {
+                    sendModel(mCurSponsorForMe, CallModel.VIDEO_CALL_ACTION_ACCEPT);
+                }
             }
         }
 
@@ -648,6 +679,7 @@ public class TRTCCallingImpl extends TRTCCalling {
      * 停止此次通话，把所有的变量都会重置
      */
     public void stopCall() {
+        TRTCLogger.d(TAG, "stopCall");
         isOnCalling = false;
         mIsInRoom = false;
         mEnterRoomTime = 0;
@@ -710,6 +742,9 @@ public class TRTCCallingImpl extends TRTCCalling {
     public void handleDialing(CallModel callModel, String user) {
         //正在体验视频互动、语聊房、语音沙龙模块时，收到一个邀请我的通话请求，告诉对方忙线
         if (isUserModelBusy(mUserType)) {
+            if (TextUtils.equals(user, mCurSponsorForMe)) {
+                return;
+            }
             sendModel(user, CallModel.VIDEO_CALL_ACTION_LINE_BUSY, callModel, null);
             return;
         }
@@ -936,10 +971,10 @@ public class TRTCCallingImpl extends TRTCCalling {
      * 在用户超时、拒绝、忙线、有人退出房间时需要进行判断
      */
     private void preExitRoom(String leaveUser) {
-        TRTCLogger.i(TAG, "preExitRoom: " + mCurRoomRemoteUserSet + " " + mCurInvitedList);
-        if (mCurRoomRemoteUserSet.isEmpty() && mCurInvitedList.isEmpty() && mIsInRoom) {
+        TRTCLogger.i(TAG, "preExitRoom: " + mCurRoomRemoteUserSet + " " + mCurInvitedList + " mIsInRoom=" + mIsInRoom + " leaveUser=" + leaveUser);
+        if (mCurRoomRemoteUserSet.isEmpty() && mCurInvitedList.isEmpty()) {
             // 当没有其他用户在房间里了，则结束通话。
-            if (!TextUtils.isEmpty(leaveUser)) {
+            if (!TextUtils.isEmpty(leaveUser) && mIsInRoom) {
                 if (TextUtils.isEmpty(mCurGroupId)) {
                     sendModel(leaveUser, CallModel.VIDEO_CALL_ACTION_HANGUP);
                 } else {
@@ -966,7 +1001,6 @@ public class TRTCCallingImpl extends TRTCCalling {
 
     @Override
     public void accept() {
-        sendModel(mCurSponsorForMe, CallModel.VIDEO_CALL_ACTION_ACCEPT);
         enterTRTCRoom();
         stopRing();
     }
@@ -1046,9 +1080,6 @@ public class TRTCCallingImpl extends TRTCCalling {
     }
 
     private void singleHangup() {
-        if (!TextUtils.isEmpty(mCurSponsorForMe)) {
-            sendModel(mCurSponsorForMe, CallModel.VIDEO_CALL_ACTION_REJECT);
-        }
         for (String id : mCurInvitedList) {
             sendModel(id, CallModel.VIDEO_CALL_ACTION_SPONSOR_CANCEL);
         }
@@ -1143,6 +1174,70 @@ public class TRTCCallingImpl extends TRTCCalling {
                 }
             }
         });
+    }
+
+    @Override
+    public void receiveNewInvitation(String sender, String content) {
+        if (TextUtils.isEmpty(sender) || TextUtils.isEmpty(content)) {
+            return;
+        }
+        List<String> invitedList = new ArrayList<>();
+        JsonObject contentJson = (JsonObject) new JsonParser().parse(content);
+        if (!contentJson.has(TUICallingConstants.KEY_GROUP_ID)) {
+            return;
+        }
+        String groupId = contentJson.get(TUICallingConstants.KEY_GROUP_ID).getAsString();
+        if (!contentJson.has(TUICallingConstants.KEY_INVITED_LIST)) {
+            return;
+        }
+        JsonArray invitedArray = contentJson.getAsJsonArray(TUICallingConstants.KEY_INVITED_LIST);
+        if (null != invitedArray) {
+            for (JsonElement element : invitedArray) {
+                invitedList.add(element.getAsString());
+            }
+        }
+        if (!contentJson.has(TUICallingConstants.KEY_CALL_ID)) {
+            return;
+        }
+        String inviteID = contentJson.get(TUICallingConstants.KEY_CALL_ID).getAsString();
+        if (!contentJson.has(TUICallingConstants.KEY_CALL_TYPE)) {
+            return;
+        }
+        int callType = contentJson.get(TUICallingConstants.KEY_CALL_TYPE).getAsInt();
+        if (!contentJson.has(TUICallingConstants.KEY_ROOM_ID)) {
+            return;
+        }
+        int roomId = contentJson.get(TUICallingConstants.KEY_ROOM_ID).getAsInt();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        SignallingData data = createSignallingData();
+        data.setCallType(callType);
+        data.setRoomId(roomId);
+        SignallingData.DataInfo callDataInfo = new SignallingData.DataInfo();
+        if (callType == TRTCCalling.TYPE_AUDIO_CALL) {
+            callDataInfo.setCmd(CallModel.VALUE_CMD_AUDIO_CALL);
+        } else if (callType == TRTCCalling.TYPE_VIDEO_CALL) {
+            callDataInfo.setCmd(CallModel.VALUE_CMD_VIDEO_CALL);
+        } else {
+            return;
+        }
+        callDataInfo.setRoomID(roomId);
+        data.setData(callDataInfo);
+        addFilterKey(gsonBuilder, CallModel.SIGNALING_EXTRA_KEY_CALL_END);
+        if (TextUtils.isEmpty(groupId)) {
+            callDataInfo.setUserIDs(invitedList);
+        }
+        String json = gsonBuilder.create().toJson(data);
+        mTIMSignallingListener.onReceiveNewInvitation(inviteID, sender, groupId, invitedList, json);
+    }
+
+    @Override
+    public void setCallingBell(String filePath) {
+        mCallingBellPath = filePath;
+    }
+
+    @Override
+    public void enableMuteMode(boolean enable) {
+        mEnableMuteMode = enable;
     }
 
     private String sendModel(final String user, int action) {
@@ -1264,6 +1359,7 @@ public class TRTCCallingImpl extends TRTCCalling {
         }
         final SignallingData signallingData = createSignallingData();
         signallingData.setCallType(realCallModel.callType);
+        signallingData.setRoomId(realCallModel.roomId);
         GsonBuilder gsonBuilder = new GsonBuilder();
         // signalling
         switch (realCallModel.action) {
@@ -1285,7 +1381,7 @@ public class TRTCCallingImpl extends TRTCCalling {
                     callID = sendGroupInvite(groupId, realCallModel.invitedList, dialingDataStr, TIME_OUT_COUNT, new V2TIMCallback() {
                         @Override
                         public void onError(int code, String desc) {
-                            TRTCLogger.e(TAG, "inviteInGroup callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
+                            TRTCLogger.e(TAG, "inviteInGroup failed callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
                         }
 
                         @Override
@@ -1300,10 +1396,14 @@ public class TRTCCallingImpl extends TRTCCalling {
                 } else {
                     callDataInfo.setUserIDs(realCallModel.invitedList);
                     String dialingDataStr = gsonBuilder.create().toJson(signallingData);
-                    callID = sendInvite(receiver, dialingDataStr, TIME_OUT_COUNT, new V2TIMCallback() {
+                    realCallModel.callId = getCallId();
+                    realCallModel.timeout = TIME_OUT_COUNT;
+                    realCallModel.version = CallModel.VALUE_VERSION;
+                    V2TIMOfflinePushInfo pushInfo = createV2TIMOfflinePushInfo(realCallModel, user, user);
+                    callID = sendInvite(receiver, dialingDataStr, pushInfo, TIME_OUT_COUNT, new V2TIMCallback() {
                         @Override
                         public void onError(int code, String desc) {
-                            TRTCLogger.e(TAG, "invite  callID:" + realCallModel.callId + ",error:" + code + " desc:" + desc);
+                            TRTCLogger.e(TAG, "invite failed callID:" + realCallModel.callId + ",error:" + code + " desc:" + desc);
                         }
 
                         @Override
@@ -1312,7 +1412,7 @@ public class TRTCCallingImpl extends TRTCCalling {
                             realCallModel.callId = getCallId();
                             realCallModel.timeout = TIME_OUT_COUNT;
                             realCallModel.version = CallModel.VALUE_VERSION;
-                            sendOnlineMessageWithOfflinePushInfo(user, realCallModel);
+//                            sendOnlineMessageWithOfflinePushInfo(user, realCallModel);
                         }
                     });
                 }
@@ -1323,7 +1423,7 @@ public class TRTCCallingImpl extends TRTCCalling {
                 acceptInvite(realCallModel.callId, acceptDataStr, new V2TIMCallback() {
                     @Override
                     public void onError(int code, String desc) {
-                        TRTCLogger.e(TAG, "accept callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
+                        TRTCLogger.e(TAG, "accept failed callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
                     }
 
                     @Override
@@ -1339,7 +1439,7 @@ public class TRTCCallingImpl extends TRTCCalling {
                 rejectInvite(realCallModel.callId, rejectDataStr, new V2TIMCallback() {
                     @Override
                     public void onError(int code, String desc) {
-                        TRTCLogger.e(TAG, "reject callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
+                        TRTCLogger.e(TAG, "reject failed callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
                     }
 
                     @Override
@@ -1358,12 +1458,12 @@ public class TRTCCallingImpl extends TRTCCalling {
                 rejectInvite(realCallModel.callId, lineBusyMapStr, new V2TIMCallback() {
                     @Override
                     public void onError(int code, String desc) {
-                        TRTCLogger.e(TAG, "reject  callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
+                        TRTCLogger.e(TAG, "line_busy failed callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
                     }
 
                     @Override
                     public void onSuccess() {
-                        TRTCLogger.d(TAG, "reject success callID:" + realCallModel.callId);
+                        TRTCLogger.d(TAG, "line_busy success callID:" + realCallModel.callId);
                     }
                 });
                 break;
@@ -1374,7 +1474,7 @@ public class TRTCCallingImpl extends TRTCCalling {
                 cancelInvite(realCallModel.callId, cancelMapStr, new V2TIMCallback() {
                     @Override
                     public void onError(int code, String desc) {
-                        TRTCLogger.e(TAG, "cancel callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
+                        TRTCLogger.e(TAG, "cancel failde callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
                     }
 
                     @Override
@@ -1394,7 +1494,7 @@ public class TRTCCallingImpl extends TRTCCalling {
                     sendGroupInvite(groupId, realCallModel.invitedList, hangupMapStr, 0, new V2TIMCallback() {
                         @Override
                         public void onError(int code, String desc) {
-                            TRTCLogger.e(TAG, "inviteInGroup-->hangup callID: " + realCallModel.callId + ", error:" + code + " desc:" + desc);
+                            TRTCLogger.e(TAG, "inviteInGroup-->hangup failed callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
                         }
 
                         @Override
@@ -1403,10 +1503,10 @@ public class TRTCCallingImpl extends TRTCCalling {
                         }
                     });
                 } else {
-                    sendInvite(receiver, hangupMapStr, TIME_OUT_COUNT, new V2TIMCallback() {
+                    sendInvite(receiver, hangupMapStr, null, 0, new V2TIMCallback() {
                         @Override
                         public void onError(int code, String desc) {
-                            TRTCLogger.e(TAG, "invite-->hangup callID: " + realCallModel.callId + ", error:" + code + " desc:" + desc);
+                            TRTCLogger.e(TAG, "invite-->hangup failed callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
                         }
 
                         @Override
@@ -1424,10 +1524,10 @@ public class TRTCCallingImpl extends TRTCCalling {
                 signallingData.setSwitchToAudioCall(CallModel.VALUE_CMD_SWITCH_TO_AUDIO);
                 signallingData.setData(switchAudioCallDataInfo);
                 String switchAudioCall = gsonBuilder.create().toJson(signallingData);
-                sendInvite(receiver, switchAudioCall, TIME_OUT_COUNT, new V2TIMCallback() {
+                sendInvite(receiver, switchAudioCall, null, TIME_OUT_COUNT, new V2TIMCallback() {
                     @Override
                     public void onError(int code, String desc) {
-                        TRTCLogger.e(TAG, "invite-->switchAudioCall callID: " + realCallModel.callId + ", error:" + code + " desc:" + desc);
+                        TRTCLogger.e(TAG, "invite-->switchAudioCall failed callID: " + realCallModel.callId + ", error:" + code + " desc:" + desc);
                     }
 
                     @Override
@@ -1447,7 +1547,7 @@ public class TRTCCallingImpl extends TRTCCalling {
                 acceptInvite(realCallModel.callId, acceptSwitchAudioDataStr, new V2TIMCallback() {
                     @Override
                     public void onError(int code, String desc) {
-                        TRTCLogger.e(TAG, "accept switch audio call callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
+                        TRTCLogger.e(TAG, "accept switch audio call failed callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
                     }
 
                     @Override
@@ -1469,7 +1569,7 @@ public class TRTCCallingImpl extends TRTCCalling {
                 rejectInvite(realCallModel.callId, rejectSwitchAudioMapStr, new V2TIMCallback() {
                     @Override
                     public void onError(int code, String desc) {
-                        TRTCLogger.e(TAG, "reject switch to audio callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
+                        TRTCLogger.e(TAG, "reject switch to audio failed callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
                     }
 
                     @Override
@@ -1489,6 +1589,7 @@ public class TRTCCallingImpl extends TRTCCalling {
                 model == null) {
             mLastCallModel = (CallModel) realCallModel.clone();
         }
+        TRTCLogger.d(TAG, "callID=" + callID);
         return callID;
     }
 
@@ -1521,8 +1622,9 @@ public class TRTCCallingImpl extends TRTCCalling {
         return random.nextInt(ROOM_ID_MAX - ROOM_ID_MIN + 1) + ROOM_ID_MIN;
     }
 
-    private String sendInvite(String receiver, String data, int timeout, final V2TIMCallback callback) {
-        return V2TIMManager.getSignalingManager().invite(receiver, data, true, null, timeout, new V2TIMCallback() {
+    private String sendInvite(String receiver, String data, V2TIMOfflinePushInfo info, int timeout, final V2TIMCallback callback) {
+        TRTCLogger.d(TAG, String.format("sendInvite, receiver=%s, data=%s", receiver, data));
+        return V2TIMManager.getSignalingManager().invite(receiver, data, false, info, timeout, new V2TIMCallback() {
             @Override
             public void onError(int code, String desc) {
                 if (callback != null) {
@@ -1540,7 +1642,8 @@ public class TRTCCallingImpl extends TRTCCalling {
     }
 
     private String sendGroupInvite(String groupId, List<String> inviteeList, String data, int timeout, final V2TIMCallback callback) {
-        return V2TIMManager.getSignalingManager().inviteInGroup(groupId, inviteeList, data, true, timeout, new V2TIMCallback() {
+        TRTCLogger.d(TAG, String.format("sendGroupInvite, groupId=%s, inviteeList=%s, data=%s", groupId, Arrays.toString(inviteeList.toArray()), data));
+        return V2TIMManager.getSignalingManager().inviteInGroup(groupId, inviteeList, data, false, timeout, new V2TIMCallback() {
             @Override
             public void onError(int code, String desc) {
                 if (callback != null) {
@@ -1558,6 +1661,7 @@ public class TRTCCallingImpl extends TRTCCalling {
     }
 
     private void acceptInvite(String inviteId, String data, final V2TIMCallback callback) {
+        TRTCLogger.d(TAG, String.format("acceptInvite, inviteId=%s, data=%s", inviteId, data));
         V2TIMManager.getSignalingManager().accept(inviteId, data, new V2TIMCallback() {
             @Override
             public void onError(int code, String desc) {
@@ -1576,6 +1680,7 @@ public class TRTCCallingImpl extends TRTCCalling {
     }
 
     private void rejectInvite(String inviteId, String data, final V2TIMCallback callback) {
+        TRTCLogger.d(TAG, String.format("rejectInvite, inviteId=%s, data=%s", inviteId, data));
         V2TIMManager.getSignalingManager().reject(inviteId, data, new V2TIMCallback() {
             @Override
             public void onError(int code, String desc) {
@@ -1594,6 +1699,7 @@ public class TRTCCallingImpl extends TRTCCalling {
     }
 
     private void cancelInvite(String inviteId, String data, final V2TIMCallback callback) {
+        TRTCLogger.d(TAG, String.format("cancelInvite, inviteId=%s, data=%s", inviteId, data));
         V2TIMManager.getSignalingManager().cancel(inviteId, data, new V2TIMCallback() {
             @Override
             public void onError(int code, String desc) {
@@ -1691,10 +1797,14 @@ public class TRTCCallingImpl extends TRTCCalling {
     }
 
     private void startRing() {
-        if (null == mMediaPlayHelper) {
+        if (null == mMediaPlayHelper || mEnableMuteMode) {
             return;
         }
-        mMediaPlayHelper.start(R.raw.phone_ringing);
+        if (TextUtils.isEmpty(mCallingBellPath)) {
+            mMediaPlayHelper.start(R.raw.phone_ringing);
+        } else {
+            mMediaPlayHelper.start(mCallingBellPath);
+        }
     }
 
     private void stopRing() {
@@ -1717,6 +1827,43 @@ public class TRTCCallingImpl extends TRTCCalling {
         if (resId != R.raw.phone_hangup) {
             mMediaPlayHelper.stop();
         }
+    }
+
+    private V2TIMOfflinePushInfo createV2TIMOfflinePushInfo(CallModel callModel, String userId, String nickname) {
+        OfflineMessageContainerBean containerBean = new OfflineMessageContainerBean();
+        OfflineMessageBean entity = new OfflineMessageBean();
+        entity.content = new Gson().toJson(callModel);
+        entity.sender = V2TIMManager.getInstance().getLoginUser(); // 发送者肯定是登录账号
+        entity.action = OfflineMessageBean.REDIRECT_ACTION_CALL;
+        entity.sendTime = System.currentTimeMillis() / 1000;
+        entity.nickname = nickname;
+        entity.faceUrl = mFaceUrl;
+        containerBean.entity = entity;
+        List<String> invitedList = new ArrayList<>();
+        invitedList.add(userId);
+        V2TIMOfflinePushInfo v2TIMOfflinePushInfo = new V2TIMOfflinePushInfo();
+        v2TIMOfflinePushInfo.setExt(new Gson().toJson(containerBean).getBytes());
+        // OPPO必须设置ChannelID才可以收到推送消息，这个channelID需要和控制台一致
+        v2TIMOfflinePushInfo.setAndroidOPPOChannelID("tuikit");
+        v2TIMOfflinePushInfo.setDesc(mContext.getString(R.string.trtccalling_title_have_a_call_invitation));
+        v2TIMOfflinePushInfo.setTitle(nickname);
+        return v2TIMOfflinePushInfo;
+    }
+
+    public boolean isAppRunningForeground(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> runningAppProcessInfos = activityManager.getRunningAppProcesses();
+        if (runningAppProcessInfos == null) {
+            return false;
+        }
+        String packageName = context.getPackageName();
+        for (ActivityManager.RunningAppProcessInfo appProcessInfo : runningAppProcessInfos) {
+            if (appProcessInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
+                    && appProcessInfo.processName.equals(packageName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void setFramework(int framework) {

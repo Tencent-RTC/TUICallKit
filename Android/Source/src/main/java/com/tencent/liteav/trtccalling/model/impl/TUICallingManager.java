@@ -42,9 +42,8 @@ public final class TUICallingManager implements TUICalling, TRTCCallingDelegate 
     private         TUICallingListener mTUICallingListener;
     protected final Handler            mMainHandler = new Handler(Looper.getMainLooper());
 
-    private boolean  mEnableMuteMode        = false;
-    private boolean  mEnableFloatWindow     = false;
-    private boolean  mEnableCustomViewRoute = false;
+    private boolean  mEnableFloatWindow     = false;  // 是否开启悬浮窗
+    private boolean  mEnableCustomViewRoute = false;  // 是否开启自定义视图
     private String[] mUserIDs;
     private Type     mType;
     private Role     mRole;
@@ -135,6 +134,10 @@ public final class TUICallingManager implements TUICalling, TRTCCallingDelegate 
         }
     }
 
+    void receiveOfflineCalled(String sender, String content) {
+        TRTCCalling.sharedInstance(mContext).receiveNewInvitation(sender, content);
+    }
+
     private boolean isGroupCall(String groupID, String[] userIDs, TUICalling.Role role, boolean isFromGroup) {
         if (!TextUtils.isEmpty(groupID)) {
             return true;
@@ -153,12 +156,12 @@ public final class TUICallingManager implements TUICalling, TRTCCallingDelegate 
 
     @Override
     public void setCallingBell(String filePath) {
-
+        TRTCCalling.sharedInstance(mContext).setCallingBell(filePath);
     }
 
     @Override
     public void enableMuteMode(boolean enable) {
-        mEnableMuteMode = enable;
+        TRTCCalling.sharedInstance(mContext).enableMuteMode(enable);
     }
 
     @Override

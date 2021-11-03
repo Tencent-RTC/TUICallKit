@@ -1,10 +1,7 @@
 package com.tencent.qcloud.tuicore.interfaces;
 
-import android.os.Bundle;
-import android.view.View;
-
-import java.util.List;
+import java.util.Map;
 
 public interface ITUIExtension {
-    List<Bundle> onGetInfo(String key, Bundle param);
+    Map<String, Object> onGetExtensionInfo(String key, Map<String, Object> param);
 }

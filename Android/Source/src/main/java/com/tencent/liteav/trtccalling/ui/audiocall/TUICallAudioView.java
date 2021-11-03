@@ -22,7 +22,6 @@ import com.tencent.liteav.trtccalling.model.TRTCCalling;
 import com.tencent.liteav.trtccalling.model.TUICalling;
 import com.tencent.liteav.trtccalling.model.impl.UserModel;
 import com.tencent.liteav.trtccalling.model.impl.base.CallingInfoManager;
-import com.tencent.liteav.trtccalling.model.util.AvatarConstant;
 import com.tencent.liteav.trtccalling.model.util.EventHandler;
 import com.tencent.liteav.trtccalling.model.util.ImageLoader;
 import com.tencent.liteav.trtccalling.ui.audiocall.audiolayout.TRTCAudioLayout;
@@ -34,7 +33,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 public class TUICallAudioView extends BaseTUICallView {
 
@@ -117,7 +115,6 @@ public class TUICallAudioView extends BaseTUICallView {
             if (!TextUtils.isEmpty(mSponsorID)) {
                 mSponsorUserInfo = new UserModel();
                 mSponsorUserInfo.userId = mSponsorID;
-                mSponsorUserInfo.userAvatar = AvatarConstant.USER_AVATAR_ARRAY[new Random().nextInt(AvatarConstant.USER_AVATAR_ARRAY.length)];
             }
             PermissionUtils.permission(PermissionConstants.MICROPHONE).callback(new PermissionUtils.FullCallback() {
                 @Override
@@ -200,11 +197,10 @@ public class TUICallAudioView extends BaseTUICallView {
                 } else {
                     UserModel model = new UserModel();
                     model.userId = userId;
-                    model.userName = userId;
                     model.userAvatar = "";
                     mCallUserInfoList.add(model);
                     mCallUserModelMap.put(model.userId, model);
-                    addUserToManager(model);
+                    loadUserInfo(model, addUserToManager(model));
                 }
             }
         });
@@ -487,7 +483,7 @@ public class TUICallAudioView extends BaseTUICallView {
         if (layout == null) {
             return null;
         }
-        layout.setUserId(TextUtils.isEmpty(userInfo.userName) ? userInfo.userId : userInfo.userName);
+        layout.setUserName(userInfo.userName);
         ImageLoader.loadImage(mContext, layout.getImageView(), userInfo.userAvatar, R.drawable.trtccalling_wait_background);
         return layout;
     }
@@ -500,7 +496,7 @@ public class TUICallAudioView extends BaseTUICallView {
         CallingInfoManager.getInstance().getUserInfoByUserId(userModel.userId, new CallingInfoManager.UserCallback() {
             @Override
             public void onSuccess(UserModel model) {
-                userModel.userName = TextUtils.isEmpty(model.userName) ? model.userId : model.userName;
+                userModel.userName = model.userName;
                 userModel.userAvatar = model.userAvatar;
                 runOnUiThread(new Runnable() {
                     @Override
@@ -508,7 +504,7 @@ public class TUICallAudioView extends BaseTUICallView {
                         if (isDestroyed()) {
                             return;
                         }
-                        layout.setUserId(userModel.userName);
+                        layout.setUserName(userModel.userName);
                         ImageLoader.loadImage(mContext, layout.getImageView(), userModel.userAvatar, R.drawable.trtccalling_groupcall_wait_background);
                     }
                 });

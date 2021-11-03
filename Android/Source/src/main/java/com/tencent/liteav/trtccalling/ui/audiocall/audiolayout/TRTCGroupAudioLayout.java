@@ -22,7 +22,6 @@ public class TRTCGroupAudioLayout extends RelativeLayout {
     private TextView             mTextName;
     private ImageView            mImageAudioInput;
     private FrameLayout          mLayoutShade;
-    private String               mUserId;
 
     public TRTCGroupAudioLayout(Context context) {
         this(context, null);
@@ -49,9 +48,8 @@ public class TRTCGroupAudioLayout extends RelativeLayout {
         }
     }
 
-    public void setUserId(String userId) {
-        mUserId = userId;
-        mTextName.setText(mUserId);
+    public void setUserName(String userName) {
+        mTextName.setText(userName);
     }
 
     public void setBitmap(Bitmap bitmap) {

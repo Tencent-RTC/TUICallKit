@@ -192,4 +192,8 @@ public class TUIConfig {
         }
     }
 
+    public static Context getAppContext() {
+        return appContext;
+    }
+
 }

@@ -477,7 +477,6 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
         mMuteLl.setVisibility(View.GONE);
         mSwitchCameraImg.setVisibility(View.GONE);
         mOpenCameraLl.setVisibility(View.GONE);
-        mViewSwitchAudioCall.setVisibility(View.VISIBLE);
         //3. 设置对应的listener
         mHangupLl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -544,7 +543,6 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
         mMuteLl.setVisibility(View.GONE);
         mSwitchCameraImg.setVisibility(View.GONE);
         mOpenCameraLl.setVisibility(View.GONE);
-        mViewSwitchAudioCall.setVisibility(View.VISIBLE);
         //3. 隐藏中间他们也在界面
         hideOtherInvitingUserView();
         //4. sponsor画面也隐藏
@@ -569,7 +567,6 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
         mMuteLl.setVisibility(View.VISIBLE);
         mSwitchCameraImg.setVisibility(mIsAudioMode ? View.GONE : View.VISIBLE);
         mOpenCameraLl.setVisibility(mIsAudioMode ? View.GONE : View.VISIBLE);
-        mViewSwitchAudioCall.setVisibility(mIsAudioMode ? View.GONE : View.VISIBLE);
         mHangupLl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -625,8 +622,8 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
         int squareWidth = getResources().getDimensionPixelOffset(R.dimen.trtccalling_small_image_size);
         int leftMargin = getResources().getDimensionPixelOffset(R.dimen.trtccalling_small_image_left_margin);
         for (int index = 0; index < mOtherInvitingUserInfoList.size() && index < MAX_SHOW_INVITING_USER; index++) {
-            UserModel userInfo = mOtherInvitingUserInfoList.get(index);
-            ImageView imageView = new ImageView(mContext);
+            final UserModel userInfo = mOtherInvitingUserInfoList.get(index);
+            final ImageView imageView = new ImageView(mContext);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(squareWidth, squareWidth);
             if (index != 0) {
                 layoutParams.leftMargin = leftMargin;
@@ -634,6 +631,24 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
             imageView.setLayoutParams(layoutParams);
             ImageLoader.loadImage(mContext, imageView, userInfo.userAvatar, R.drawable.trtccalling_ic_avatar);
             mImgContainerLl.addView(imageView);
+            CallingInfoManager.getInstance().getUserInfoByUserId(userInfo.userId, new CallingInfoManager.UserCallback() {
+                @Override
+                public void onSuccess(UserModel model) {
+                    userInfo.userName = model.userName;
+                    userInfo.userAvatar = model.userAvatar;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ImageLoader.loadImage(mContext, imageView, userInfo.userAvatar, R.drawable.trtccalling_groupcall_wait_background);
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailed(int code, String msg) {
+                    ToastUtils.showLong(mContext.getString(R.string.trtccalling_toast_search_fail, msg));
+                }
+            });
         }
     }
 
@@ -675,7 +690,7 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
             return null;
         }
         Log.d(TAG, String.format("addUserToManager, userId=%s, userName=%s, userAvatar=%s", userInfo.userId, userInfo.userName, userInfo.userAvatar));
-        layout.setUserId(TextUtils.isEmpty(userInfo.userName) ? userInfo.userId : userInfo.userName);
+        layout.setUserName(userInfo.userName);
         ImageLoader.loadImage(mContext, layout.getHeadImg(), userInfo.userAvatar, R.drawable.trtccalling_groupcall_wait_background);
         return layout;
     }
@@ -688,12 +703,12 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
         CallingInfoManager.getInstance().getUserInfoByUserId(userModel.userId, new CallingInfoManager.UserCallback() {
             @Override
             public void onSuccess(UserModel model) {
-                userModel.userName = TextUtils.isEmpty(model.userName) ? model.userId : model.userName;
+                userModel.userName = model.userName;
                 userModel.userAvatar = model.userAvatar;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        layout.setUserId(userModel.userName);
+                        layout.setUserName(userModel.userName);
                         ImageLoader.loadImage(mContext, layout.getHeadImg(), userModel.userAvatar, R.drawable.trtccalling_groupcall_wait_background);
                     }
                 });
@@ -712,7 +727,6 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
     }
 
     private void updateAudioCallView() {
-        mViewSwitchAudioCall.setVisibility(View.GONE);
         mOpenCameraLl.setVisibility(View.GONE);
         mSwitchCameraImg.setVisibility(View.GONE);
         ConstraintLayout.LayoutParams muteLayoutParams = new ConstraintLayout.LayoutParams(

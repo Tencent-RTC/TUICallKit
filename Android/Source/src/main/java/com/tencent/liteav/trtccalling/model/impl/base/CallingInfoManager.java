@@ -57,6 +57,9 @@ public class CallingInfoManager {
                         model.userAvatar = v2TIMUserFullInfos.get(i).getFaceUrl();
                         list.add(model);
                         Log.d(TAG, String.format("getUserInfoByUserId, userId=%s, userName=%s, userAvatar=%s", model.userId, model.userName, model.userAvatar));
+                        if (TextUtils.isEmpty(model.userName)) {
+                            model.userName = model.userId;
+                        }
                     }
                 }
                 if (callback != null) {

@@ -2,6 +2,7 @@ package com.tencent.qcloud.tuicore;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import com.tencent.imsdk.v2.V2TIMUserFullInfo;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.tencent.imsdk.v2.V2TIMManager.V2TIM_STATUS_LOGINED;
@@ -26,7 +28,7 @@ import static com.tencent.imsdk.v2.V2TIMManager.V2TIM_STATUS_LOGINED;
 public class TUILogin {
     private static final String TAG = TUILogin.class.getSimpleName();
     private static Context appContext;
-    private static int sdkAppId;
+    private static int sdkAppId = 0;
     private static String userId;
     private static String userSig;
 
@@ -40,10 +42,13 @@ public class TUILogin {
      * @return  true：成功；false：失败，如果 context 为空会返回失败
      */
     public static boolean init(@NonNull Context context, int sdkAppId, @Nullable V2TIMSDKConfig config, @Nullable V2TIMSDKListener listener) {
+        if (TUILogin.sdkAppId != 0 && sdkAppId != TUILogin.sdkAppId) {
+            logout(null);
+            unInit();
+        }
         TUILogin.appContext = context;
         TUILogin.sdkAppId = sdkAppId;
-
-        return V2TIMManager.getInstance().initSDK(context, sdkAppId, config, new V2TIMSDKListener() {
+        V2TIMSDKListener v2TIMSDKListener = new V2TIMSDKListener() {
             @Override
             public void onConnecting() {
                 if (listener != null) {
@@ -86,13 +91,14 @@ public class TUILogin {
             @Override
             public void onSelfInfoUpdated(V2TIMUserFullInfo info) {
                 if (listener != null) {
-                    listener.onUserSigExpired();
+                    listener.onSelfInfoUpdated(info);
                 }
 
                 TUIConfig.setSelfInfo(info);
                 notifyUserInfoChanged(info);
             }
-        });
+        };
+        return V2TIMManager.getInstance().initSDK(context, sdkAppId, config, v2TIMSDKListener);
     }
 
     /**
@@ -112,6 +118,12 @@ public class TUILogin {
      * @param callback 登录是否成功的回调
      */
     public static void login(@NonNull String userId, @NonNull String userSig, @Nullable V2TIMCallback callback) {
+        if (TextUtils.equals(userId, V2TIMManager.getInstance().getLoginUser()) && !TextUtils.isEmpty(userId)) {
+            if (callback != null) {
+                callback.onSuccess();
+            }
+            getUserInfo(userId);
+        }
         TUILogin.userId = userId;
         TUILogin.userSig = userSig;
         V2TIMManager.getInstance().login(userId, userSig, new V2TIMCallback() {
@@ -120,25 +132,7 @@ public class TUILogin {
                 if (callback != null) {
                     callback.onSuccess();
                 }
-                List<String> userIdList = new ArrayList<>();
-                userIdList.add(userId);
-                V2TIMManager.getInstance().getUsersInfo(userIdList, new V2TIMValueCallback<List<V2TIMUserFullInfo>>() {
-                    @Override
-                    public void onSuccess(List<V2TIMUserFullInfo> v2TIMUserFullInfos) {
-                        if (v2TIMUserFullInfos.isEmpty()) {
-                            Log.e(TAG, "get logined userInfo failed. list is empty");
-                            return;
-                        }
-                        V2TIMUserFullInfo userFullInfo = v2TIMUserFullInfos.get(0);
-                        TUIConfig.setSelfInfo(userFullInfo);
-                        notifyUserInfoChanged(userFullInfo);
-                    }
-
-                    @Override
-                    public void onError(int code, String desc) {
-                        Log.e(TAG, "get logined userInfo failed. code : " + code + " desc : " + desc);
-                    }
-                });
+                getUserInfo(userId);
             }
 
             @Override
@@ -150,20 +144,41 @@ public class TUILogin {
         });
     }
 
-    private static void notifyUserInfoChanged(V2TIMUserFullInfo userFullInfo) {
-        Bundle bundle = new Bundle();
-        bundle.putString(TUIConstants.TUILogin.SELF_ID, userFullInfo.getUserID());
-        bundle.putString(TUIConstants.TUILogin.SELF_SIGNATURE, userFullInfo.getSelfSignature());
-        bundle.putString(TUIConstants.TUILogin.SELF_NICK_NAME, userFullInfo.getNickName());
-        bundle.putString(TUIConstants.TUILogin.SELF_FACE_URL, userFullInfo.getFaceUrl());
-        bundle.putLong(TUIConstants.TUILogin.SELF_BIRTHDAY, userFullInfo.getBirthday());
-        bundle.putInt(TUIConstants.TUILogin.SELF_ROLE, userFullInfo.getRole());
-        bundle.putInt(TUIConstants.TUILogin.SELF_GENDER, userFullInfo.getGender());
-        bundle.putInt(TUIConstants.TUILogin.SELF_LEVEL, userFullInfo.getLevel());
-        bundle.putInt(TUIConstants.TUILogin.SELF_ALLOW_TYPE, userFullInfo.getAllowType());
+    private static void getUserInfo(String userId) {
+        List<String> userIdList = new ArrayList<>();
+        userIdList.add(userId);
+        V2TIMManager.getInstance().getUsersInfo(userIdList, new V2TIMValueCallback<List<V2TIMUserFullInfo>>() {
+            @Override
+            public void onSuccess(List<V2TIMUserFullInfo> v2TIMUserFullInfos) {
+                if (v2TIMUserFullInfos.isEmpty()) {
+                    Log.e(TAG, "get logined userInfo failed. list is empty");
+                    return;
+                }
+                V2TIMUserFullInfo userFullInfo = v2TIMUserFullInfos.get(0);
+                TUIConfig.setSelfInfo(userFullInfo);
+                notifyUserInfoChanged(userFullInfo);
+            }
 
+            @Override
+            public void onError(int code, String desc) {
+                Log.e(TAG, "get logined userInfo failed. code : " + code + " desc : " + desc);
+            }
+        });
+    }
+
+    private static void notifyUserInfoChanged(V2TIMUserFullInfo userFullInfo) {
+        HashMap<String, Object> param = new HashMap<>();
+        param.put(TUIConstants.TUILogin.SELF_ID, userFullInfo.getUserID());
+        param.put(TUIConstants.TUILogin.SELF_SIGNATURE, userFullInfo.getSelfSignature());
+        param.put(TUIConstants.TUILogin.SELF_NICK_NAME, userFullInfo.getNickName());
+        param.put(TUIConstants.TUILogin.SELF_FACE_URL, userFullInfo.getFaceUrl());
+        param.put(TUIConstants.TUILogin.SELF_BIRTHDAY, userFullInfo.getBirthday());
+        param.put(TUIConstants.TUILogin.SELF_ROLE, userFullInfo.getRole());
+        param.put(TUIConstants.TUILogin.SELF_GENDER, userFullInfo.getGender());
+        param.put(TUIConstants.TUILogin.SELF_LEVEL, userFullInfo.getLevel());
+        param.put(TUIConstants.TUILogin.SELF_ALLOW_TYPE, userFullInfo.getAllowType());
         TUICore.notifyEvent(TUIConstants.TUILogin.EVENT_LOGIN_STATE_CHANGED,
-                TUIConstants.TUILogin.EVENT_SUB_KEY_USER_INFO_UPDATED, bundle);
+                TUIConstants.TUILogin.EVENT_SUB_KEY_USER_INFO_UPDATED, param);
     }
 
     /**
@@ -214,6 +229,22 @@ public class TUILogin {
      */
     public static String getUserSig() {
         return userSig;
+    }
+
+    /**
+     * 获取当前登录用户昵称
+     * @return 当前登录用户昵称
+     */
+    public static String getNickName() {
+        return TUIConfig.getSelfNickName();
+    }
+
+    /**
+     * 获取当前登录用户头像
+     * @return 当前登录用户头像
+     */
+    public static String getFaceUrl() {
+        return TUIConfig.getSelfFaceUrl();
     }
 
     /**

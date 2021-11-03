@@ -8,10 +8,9 @@ import androidx.fragment.app.Fragment;
 
 import com.tencent.qcloud.tuicore.interfaces.ITUIExtension;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
-import com.tencent.qcloud.tuicore.interfaces.ITUIObject;
 import com.tencent.qcloud.tuicore.interfaces.ITUIService;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * TUI 插件核心类，主要负责 TUI 插件间数据的传递，通知的广播，功能的扩展等
@@ -36,18 +35,8 @@ public class TUICore {
      *  @param param 透传给服务方的数据
      *  @return 返回对象
      */
-    public static Object callService(String serviceName, String method, Bundle param) {
+    public static Object callService(String serviceName, String method, Map<String, Object> param) {
         return ServiceManager.getInstance().callService(serviceName, method, param);
-    }
-
-    /**
-     *  创建实例
-     *
-     *  @param className 类名, 该类必须实现 {@link ITUIObject} 接口
-     *  @param param 透传给 "class" 的数据
-     */
-    public static ITUIObject createObject(String className, Bundle param) {
-        return ObjectManager.getInstance().createObject(className, param);
     }
 
     /**
@@ -97,21 +86,21 @@ public class TUICore {
     /**
      *  移除指定 Key 和 subKey 的所有通知
      */
-    public static void removeEvent(String key, String subKey, ITUINotification notification) {
-        EventManager.getInstance().removeEvent(key, subKey, notification);
+    public static void unRegisterEvent(String key, String subKey, ITUINotification notification) {
+        EventManager.getInstance().unRegisterEvent(key, subKey, notification);
     }
 
     /**
      *  移除指定通知对象的所有通知
      */
-    public static void removeEvent(ITUINotification notification) {
-        EventManager.getInstance().removeEvent(notification);
+    public static void unRegisterEvent(ITUINotification notification) {
+        EventManager.getInstance().unRegisterEvent(notification);
     }
 
     /**
      *  发起通知
      */
-    public static void notifyEvent(String key, String subKey, Bundle param) {
+    public static void notifyEvent(String key, String subKey, Map<String, Object> param) {
         EventManager.getInstance().notifyEvent(key, subKey, param);
     }
 
@@ -125,15 +114,15 @@ public class TUICore {
     /**
      *  移除扩展
      */
-    public static void removeExtension(String key, ITUIExtension extension) {
-        ExtensionManager.getInstance().removeExtension(key, extension);
+    public static void unRegisterExtension(String key, ITUIExtension extension) {
+        ExtensionManager.getInstance().unRegisterExtension(key, extension);
     }
 
     /**
      *  获取扩展
      */
-    public static List<Bundle> getExtensionObjects(String key, Bundle param) {
-        return ExtensionManager.getInstance().getExtensionObjects(key, param);
+    public static Map<String, Object> getExtensionInfo(String key, Map<String, Object> param) {
+        return ExtensionManager.getInstance().getExtensionInfo(key, param);
     }
 
 }

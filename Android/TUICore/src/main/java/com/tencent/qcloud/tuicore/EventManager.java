@@ -1,7 +1,6 @@
 package com.tencent.qcloud.tuicore;
 
 
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 负责通知注册、移除和触发
@@ -47,7 +47,7 @@ class EventManager {
         }
     }
 
-    public void removeEvent(String key, String subKey, ITUINotification notification) {
+    public void unRegisterEvent(String key, String subKey, ITUINotification notification) {
         Log.i(TAG, "removeEvent : key : " + key + ", subKey : " + subKey + " notification : " + notification);
         if (TextUtils.isEmpty(key) || TextUtils.isEmpty(subKey) || notification == null) {
             return;
@@ -60,7 +60,7 @@ class EventManager {
         list.remove(notification);
     }
 
-    public void removeEvent(ITUINotification notification) {
+    public void unRegisterEvent(ITUINotification notification) {
         Log.i(TAG, "removeEvent : notification : " + notification);
         if (notification == null) {
             return;
@@ -81,7 +81,7 @@ class EventManager {
         }
     }
 
-    public void notifyEvent(String key, String subKey, Bundle param) {
+    public void notifyEvent(String key, String subKey, Map<String, Object> param) {
         Log.i(TAG, "notifyEvent : key : " + key + ", subKey : " + subKey);
         if (TextUtils.isEmpty(key) || TextUtils.isEmpty(subKey)) {
             return;

@@ -22,6 +22,7 @@ import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.tencent.trtc.TRTCCloudDef;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,7 +81,11 @@ public abstract class BaseTUICallView extends FrameLayout implements TRTCCalling
         super.onDetachedFromWindow();
         if (mNeedAutoHangup) {
             mTRTCCalling.removeDelegate(this);
-            mTRTCCalling.hangup();
+            if (TUICalling.Role.CALL == mRole) {
+                mTRTCCalling.hangup();
+            } else {
+                mTRTCCalling.reject();
+            }
         }
     }
 
@@ -228,7 +233,7 @@ public abstract class BaseTUICallView extends FrameLayout implements TRTCCalling
     private void initListener() {
         ITUINotification notification = new ITUINotification() {
             @Override
-            public void onNotifyEvent(String key, String subKey, Bundle param) {
+            public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
                 if (TUIConstants.TUILogin.EVENT_LOGIN_STATE_CHANGED.equals(key) && TUIConstants.TUILogin.EVENT_SUB_KEY_USER_KICKED_OFFLINE.equals(subKey)) {
                     ToastUtils.showShort(mContext.getString(R.string.trtccalling_user_kicked_offline));
                     mTRTCCalling.hangup();

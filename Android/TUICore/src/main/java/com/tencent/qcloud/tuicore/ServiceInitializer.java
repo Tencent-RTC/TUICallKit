@@ -12,13 +12,13 @@ import androidx.annotation.Nullable;
 /**
  * 各模块如果需要初始化，需要实现此类的 init 方法，并在 Manifest 文件中以 ContentProvider 的形式注册。
  */
-public abstract class ServiceInitializer extends ContentProvider {
+public class ServiceInitializer extends ContentProvider {
 
     /**
      * 应用启动时自动调起的初始化方法
      * @param context applicationContext
      */
-    public abstract void init(Context context);
+    public void init(Context context) {}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -28,9 +28,9 @@ public abstract class ServiceInitializer extends ContentProvider {
     @Override
     public boolean onCreate() {
         Context appContext = getContext().getApplicationContext();
-        init(appContext);
         TUIRouter.init(appContext);
         TUIConfig.init(appContext);
+        init(appContext);
         return false;
     }
 
