@@ -151,8 +151,7 @@
         case CallAction_End:
         {
             if (isGroup) {
-                //                param[SIGNALING_EXTRA_KEY_CALL_END] = @(0);  // 群通话不需要计算通话时长
-                //                NSString *data = [TRTCCallingUtils dictionary2JsonStr:param];
+                // 群通话不需要计算通话时长
                 NSMutableDictionary *dataDic = [TRTCSignalFactory packagingSignalingWithExtInfo:@"" roomID:realModel.roomid cmd:SIGNALING_CMD_HANGUP cmdInfo:@"0" message:@"" callType:realModel.calltype];
                 [dataDic setValue:@(0) forKey:SIGNALING_EXTRA_KEY_CALL_END];
                 NSString *data = [TRTCCallingUtils dictionary2JsonStr:dataDic];
@@ -166,19 +165,17 @@
                     };
                 }];
             } else {
-                if (self.startCallTS > 0) {
-                    NSDate *now = [NSDate date];
-                    NSMutableDictionary *dataDic = [TRTCSignalFactory packagingSignalingWithExtInfo:@"" roomID:realModel.roomid cmd:SIGNALING_CMD_HANGUP cmdInfo:[NSString stringWithFormat:@"%llu",(UInt64)[now timeIntervalSince1970] - self.startCallTS] message:@"" callType:realModel.calltype];
-                    [dataDic setValue:@((UInt64)[now timeIntervalSince1970] - self.startCallTS) forKey:SIGNALING_EXTRA_KEY_CALL_END];
-                    NSString *data = [TRTCCallingUtils dictionary2JsonStr:dataDic];
-                    @weakify(self)
-                    callID = [[V2TIMManager sharedInstance] invite:receiver data:data onlineUserOnly:self.onlineUserOnly offlinePushInfo:nil timeout:0 succ:nil fail:^(int code, NSString *desc) {
-                        @strongify(self)
-                        if ([self canDelegateRespondMethod:@selector(onError:msg:)]) {
-                            [self.delegate onError:code msg:desc];
-                        };
-                    }];
-                }
+                NSDate *now = [NSDate date];
+                NSMutableDictionary *dataDic = [TRTCSignalFactory packagingSignalingWithExtInfo:@"" roomID:realModel.roomid cmd:SIGNALING_CMD_HANGUP cmdInfo:[NSString stringWithFormat:@"%llu",(UInt64)[now timeIntervalSince1970] - self.startCallTS] message:@"" callType:realModel.calltype];
+                [dataDic setValue:@((UInt64)[now timeIntervalSince1970] - self.startCallTS) forKey:SIGNALING_EXTRA_KEY_CALL_END];
+                NSString *data = [TRTCCallingUtils dictionary2JsonStr:dataDic];
+                @weakify(self)
+                callID = [[V2TIMManager sharedInstance] invite:receiver data:data onlineUserOnly:self.onlineUserOnly offlinePushInfo:nil timeout:0 succ:nil fail:^(int code, NSString *desc) {
+                    @strongify(self)
+                    if ([self canDelegateRespondMethod:@selector(onError:msg:)]) {
+                        [self.delegate onError:code msg:desc];
+                    };
+                }];
                 self.startCallTS = 0;
             }
         }
@@ -441,6 +438,7 @@
         case CallAction_Cancel:
         {
             if ([self.curCallID isEqualToString:model.callid] && self.delegate) {
+                [self checkAutoHangUp];
                 self.isOnCalling = NO;
                 [self.delegate onCallingCancel:user];
             }
@@ -565,13 +563,14 @@
 }
 
 #pragma mark - utils
+
 - (CallModel *)generateModel:(CallAction)action {
     CallModel *model = [self.curLastModel copy];
     model.action = action;
     return model;
 }
 
-//检查是否能自动挂断
+// 检查是否能自动挂断
 - (void)checkAutoHangUp {
     if (self.isInRoom && self.curRoomList.count == 0) {
         if (self.curGroupID.length > 0) {
@@ -592,7 +591,7 @@
     }
 }
 
-//自动挂断
+// 自动挂断
 - (void)autoHangUp {
     [self quitRoom];
     self.isOnCalling = NO;

@@ -243,12 +243,22 @@
     [[TRTCCloud sharedInstance] setVideoEncoderParam:videoEncParam];
     
     [[TRTCCloud sharedInstance] setDelegate:self];
+    [self setFramework:5];
     [[TRTCCloud sharedInstance] enterRoom:param appScene:TRTCAppSceneVideoCall];
     [[TRTCCloud sharedInstance] startLocalAudio];
     [[TRTCCloud sharedInstance] enableAudioVolumeEvaluation:300];
     self.isMicMute = NO;
     self.isHandsFreeOn = YES;
     self.isInRoom = YES;
+}
+
+- (void)setFramework:(int)framework {
+    NSDictionary *jsonDic = @{@"api": @"setFramework",
+                              @"params":@{@"framework": @(framework)}};
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDic options:NSJSONWritingPrettyPrinted error:nil];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    TRTCLog(@"jsonString = %@",jsonString);
+    [[TRTCCloud sharedInstance] callExperimentalAPI: jsonString];
 }
 
 - (void)quitRoom {
