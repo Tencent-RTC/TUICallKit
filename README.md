@@ -53,7 +53,7 @@
 | iOS                           | Android                       | 小程序                         |
 | ----------------------------- | ----------------------------- | ----------------------------- |
 | [实时视频通话（iOS）](https://cloud.tencent.com/document/product/647/42044) | [实时视频通话（Android）](https://cloud.tencent.com/document/product/647/42045) |  [实时视频通话（小程序）](https://cloud.tencent.com/document/product/647/49379) |
-| [实时语音通话（iOS）](https://cloud.tencent.com/document/product/647/42046) | [实时语音通话（Android）](https://cloud.tencent.com/document/product/647/42047) | [实时视频通话（小程序）](https://cloud.tencent.com/document/product/647/49363) |
+| [实时语音通话（iOS）](https://cloud.tencent.com/document/product/647/42046) | [实时语音通话（Android）](https://cloud.tencent.com/document/product/647/42047) | [实时语音通话（小程序）](https://cloud.tencent.com/document/product/647/49363) |
 
 ## 其他
 
