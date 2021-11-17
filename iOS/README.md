@@ -1,28 +1,27 @@
 本文档主要介绍如何快速集成实时音视频（TRTC）SDK，运行 TRTC 场景化解决方案，实现实时视频/语音通话。
-    
+	
 ## 目录结构
-    
+	
 ```
 TUICalling
-├─ Example            // 视频/语音通话Demo工程
-    ├─ App            // 视频/语音通话主页UI代码以及用到的图片及国际化字符串资源文件夹
-    ├─ Debug        // 工程调试运行所需的关键业务代码文件夹
-    ├─ LoginMock    // 登录UI及业务逻辑代码文件夹
-    └─ TXAppBasic    // 工程依赖的基础组件
+├─ App              // 视频/语音通话主页UI代码以及用到的图片及国际化字符串资源文件夹
+├─ Debug            // 工程调试运行所需的关键业务代码文件夹
+├─ LoginMock        // 登录UI及业务逻辑代码文件夹
 ├─ Resources        // 视频/语音通话功能所需的图片、国际化字符串资源文件夹
-├─ Source            // 视频/语音通话核心业务逻辑代码文件夹
+├─ Source           // 视频/语音通话核心业务逻辑代码文件夹
+└─ TXAppBasic       // 工程依赖的基础组件
 ```
-    
+	
 ## 环境准备
 - Xcode 11.0及以上版本
 - 最低支持系统：iOS 13.0
 - 请确保您的项目已设置有效的开发者签名
-    
+	
 ## 运行示例
-    
+	
 ### 前提条件
 - 您已 [注册腾讯云](https://cloud.tencent.com/document/product/378/17985) 账号，并完成 [实名认证](https://cloud.tencent.com/document/product/378/3629)。
-    
+	
 ### 申请 SDKAPPID 和 SECRETKEY
 1. 登录实时音视频控制台，选择【开发辅助】>【[快速跑通Demo](https://console.cloud.tencent.com/trtc/quickstart)】。
 2. 单击【立即开始】，输入您的应用名称，例如`TestTRTC`，单击【创建应用】。
@@ -106,4 +105,4 @@ TRTC SDK 6.6 版本（2019年08月）开始启用新的签名算法 HMAC-SHA256�
 
 
 
-    
+	

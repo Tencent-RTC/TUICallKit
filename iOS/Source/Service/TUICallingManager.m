@@ -202,10 +202,8 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
             [self.listener callEnd:self.userIDs type:self.currentCallingType role:self.currentCallingRole totalTime:(CGFloat)self.totalTime];
         }
     } else if (self.callingView) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.callingView disMiss];
-            self.callingView = nil;
-        });
+        [self.callingView disMiss];
+        self.callingView = nil;
     }
     
     stopAudio();
