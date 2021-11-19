@@ -576,7 +576,8 @@ public class TRTCCallingImpl extends TRTCCalling {
 
         @Override
         public void onEnterRoom(long result) {
-            TRTCLogger.d(TAG, "onEnterRoom result:" + result + " , mCurSponsorForMe = " + mCurSponsorForMe);
+            TRTCLogger.d(TAG, "onEnterRoom result:" + result + " , mCurSponsorForMe = " + mCurSponsorForMe
+                    + " , mIsBeingCalled = " + mIsBeingCalled);
             if (result < 0) {
                 stopCall();
             } else {
@@ -682,6 +683,7 @@ public class TRTCCallingImpl extends TRTCCalling {
         TRTCLogger.d(TAG, "stopCall");
         isOnCalling = false;
         mIsInRoom = false;
+        mIsBeingCalled = true;  //挂断后,恢复被叫角色
         mEnterRoomTime = 0;
         mCurCallID = "";
         mCurRoomID = 0;
