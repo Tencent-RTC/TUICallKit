@@ -8,6 +8,9 @@ Pod::Spec.new do |spec|
         copyright 2017 tencent Ltd. All rights reserved.
         LICENSE
        }
+       
+       
+       
   spec.homepage     = 'https://cloud.tencent.com/document/product/647'
   spec.documentation_url = 'https://cloud.tencent.com/document/product/647'
   spec.authors      = 'tencent video cloud'
