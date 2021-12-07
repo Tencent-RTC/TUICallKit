@@ -58,6 +58,7 @@ typedef NS_ENUM(NSInteger, CallAction) {
 @interface CallUserModel : TRTCCallingUserModel
 
 @property(nonatomic, assign) BOOL isEnter;           // 是否进房
+@property(nonatomic, assign) BOOL isAudioAvaliable;  // 音频是否可用
 @property(nonatomic, assign) BOOL isVideoAvaliable;  // 视频是否可用
 @property(nonatomic, assign) float volume;           // 声音大小
 

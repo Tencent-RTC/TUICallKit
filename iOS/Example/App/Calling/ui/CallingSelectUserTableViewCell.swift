@@ -75,7 +75,7 @@ public class CallingSelectUserTableViewCell: UITableViewCell {
         
         userImageView.layer.masksToBounds = true
         userImageView.layer.cornerRadius = 25
-        nameLabel.text = model.nickName
+        nameLabel.text = model.nickName != "" ? model.nickName : model.userID
         buttonAction = action
     }
     

@@ -6,6 +6,27 @@
 //
 
 #import "TUICommonUtil.h"
+#import "TRTCCloud.h"
+
+@interface TRTCCloud (CallingLog)
+
+// 打印一些关键log到本地日志中
+- (void)apiLog:(NSString *)log;
+
+@end
+
+void TRTCCloudCallingAPILog(NSString *format, ...) {
+    if (!format || ![format isKindOfClass:[NSString class]] || format.length == 0) {
+           return;
+       }
+       va_list arguments;
+       va_start(arguments, format);
+       NSString *content = [[NSString alloc] initWithFormat:format arguments:arguments];
+       va_end(arguments);
+       if (content) {
+           [[TRTCCloud sharedInstance] apiLog:content];
+       }
+}
 
 @implementation TUICommonUtil
 

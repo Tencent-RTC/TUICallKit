@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICalling'
-  spec.version      = '9.2'
+  spec.version      = '9.4'
   spec.platform     = :ios
   spec.ios.deployment_target = '9.0'
   spec.license      = { :type => 'Proprietary',
@@ -16,10 +16,10 @@ Pod::Spec.new do |spec|
 
   spec.dependency 'Masonry'
   spec.dependency 'TUICore'
-  
+
   spec.requires_arc = true
   spec.static_framework = true
-  spec.source = { :git => '', :tag => "#{spec.version}" }
+  spec.source = { :git => 'https://github.com/tencentyun/TUICalling.git' }
   spec.pod_target_xcconfig = {
     'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
   }
@@ -41,6 +41,21 @@ Pod::Spec.new do |spec|
     }
   end
  
+  spec.subspec 'Enterprise' do |enterprise|
+    enterprise.dependency 'TXLiteAVSDK_Enterprise'
+    framework_path="../../SDK/TXLiteAVSDK_Enterprise.framework"
+    enterprise.pod_target_xcconfig={
+        'HEADER_SEARCH_PATHS'=>["$(PODS_TARGET_SRCROOT)/#{framework_path}/Headers"]
+    }
+    enterprise.xcconfig = { 'HEADER_SEARCH_PATHS' => '${SRCROOT}/../SDK/TXLiteAVSDK_Enterprise.framework/Headers/'}
+    enterprise.source_files = 'Source/localized/**/*.{h,m,mm}', 'Source/Model/**/*.{h,m,mm}', 'Source/Service/**/*.{h,m,mm}', 'Source/UI/**/*.{h,m,mm}', 'Source/TUICallingKit_Enterprise/*.{h,m,mm}'
+    enterprise.ios.framework = ['AVFoundation', 'Accelerate', 'AssetsLibrary']
+    enterprise.library = 'c++', 'resolv', 'sqlite3'
+    enterprise.resource_bundles = {
+      'TUICallingKitBundle' => ['Resources/Localized/**/*.strings', 'Resources/AudioFile', 'Resources/*.xcassets']
+    }
+  end
+  
   spec.subspec 'Professional' do |professional|
     professional.dependency 'TXLiteAVSDK_Professional'
     framework_path="../../SDK/TXLiteAVSDK_Professional.framework"
@@ -57,3 +72,4 @@ Pod::Spec.new do |spec|
   end
   
 end
+

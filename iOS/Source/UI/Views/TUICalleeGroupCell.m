@@ -9,6 +9,7 @@
 #import <Masonry/Masonry.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "UIColor+TUIHex.h"
+#import "TUICommonUtil.h"
 
 @interface TUICalleeGroupCell ()
 
@@ -20,7 +21,7 @@
 
 - (void)setModel:(CallUserModel *)model {
     _model = model;
-    [self.userIcon sd_setImageWithURL:[NSURL URLWithString:model.avatar] placeholderImage:[UIColor imageWithColor:[UIColor t_colorWithHexString:@"#999999"] andSize:CGSizeMake(1, 1)]];
+    [self.userIcon sd_setImageWithURL:[NSURL URLWithString:model.avatar] placeholderImage:[TUICommonUtil getBundleImageWithName:@"userIcon"]];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
