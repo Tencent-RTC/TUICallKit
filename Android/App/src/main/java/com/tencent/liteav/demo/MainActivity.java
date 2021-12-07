@@ -29,6 +29,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.tencent.imsdk.BaseConstants;
 import com.tencent.imsdk.v2.V2TIMCallback;
 import com.tencent.imsdk.v2.V2TIMSDKConfig;
 import com.tencent.imsdk.v2.V2TIMSDKListener;
@@ -50,25 +51,25 @@ import com.tencent.qcloud.tuicore.TUILogin;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private Toolbar              mToolbar;      //导航栏，主要负责监听导航栏返回按钮
-    private EditText             mEtSearchUser; //输入手机号码的编辑文本框
-    private ImageView            mIvClearSearch;//清除搜索框文本按钮
-    private TextView             mTvSearch;     //开始搜索用户的按钮
+    private Toolbar              mToolbar;       //导航栏，主要负责监听导航栏返回按钮
+    private EditText             mEtSearchUser;  //输入手机号码的编辑文本框
+    private ImageView            mIvClearSearch; //清除搜索框文本按钮
+    private TextView             mTvSearch;      //开始搜索用户的按钮
     private TextView             mTvSelfUserId;  //自己的userId
-    private LinearLayout         mLlContract;   //用来展示对方信息的layout
-    private RoundCornerImageView mIvAvatar;    //用来展示对方头像
-    private TextView             mTvUserName;   //用来展示对方昵称
-    private Button               mBtnStartCall; //开始呼叫按钮
-    private ConstraintLayout     mClTips;       //显示搜索提示信息
-    private ImageButton          mBtnLink;      //跳转官网链接
+    private LinearLayout         mLlContract;    //用来展示对方信息的layout
+    private RoundCornerImageView mIvAvatar;      //用来展示对方头像
+    private TextView             mTvUserName;    //用来展示对方昵称
+    private Button               mBtnStartCall;  //开始呼叫按钮
+    private ConstraintLayout     mClTips;        //显示搜索提示信息
+    private ImageButton          mBtnLink;       //跳转官网链接
 
-    private UserModel mSelfModel;    //表示当前用户的UserModel
-    private UserModel mSearchModel;  //表示当前搜索的usermodel
-    private int       mType; //表示当前是 videocall/audiocall
+    private UserModel mSelfModel;    //表示当前用户的 UserModel
+    private UserModel mSearchModel;  //表示当前搜索的 Usermodel
+    private int       mType;         //表示当前是 videocall/audiocall
 
     private View mCallingView;
 
-    private boolean mIsKickedOffline = false;
+    private boolean mIsKickedOffline  = false;
     private boolean mIsUserSigExpired = false;
 
     /**
@@ -106,14 +107,16 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCallStart(String[] userIDs, TUICalling.Type type, TUICalling.Role role, final View tuiCallingView) {
+            public void onCallStart(String[] userIDs, TUICalling.Type type, TUICalling.Role role,
+                                    final View tuiCallingView) {
                 if (!shouldShowOnCallView() || null == tuiCallingView) {
                     return;
                 }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+                        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
                         mCallingView = tuiCallingView;
                         addContentView(tuiCallingView, params);
                     }
@@ -126,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCallEvent(TUICalling.Event event, TUICalling.Type type, TUICalling.Role role, String message) {
+            public void onCallEvent(TUICalling.Event event, TUICalling.Type type, TUICalling.Role role, String msg) {
                 if (TUICalling.Event.CALL_FAILED == event) {
                     removeView();
                 }
@@ -187,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                showLogoutDialog();
             }
         });
         //呼叫选择
@@ -245,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
                 mEtSearchUser.setText("");
             }
         });
-        mTvSelfUserId.setText(getString(R.string.call_self_format, mSelfModel.phone));
+        mTvSelfUserId.setText(getString(R.string.call_self_format, mSelfModel.userId));
     }
 
     private void showChooseDialog() {
@@ -340,25 +343,34 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onKickedOffline() {
+                Log.d(TAG, "You have been kicked off the line. Please log in again!");
                 mIsKickedOffline = true;
                 checkUserStatus();
+                startLoginActivity();
             }
 
             @Override
             public void onUserSigExpired() {
                 mIsUserSigExpired = true;
+                Log.d(TAG, "Your user signature information has expired");
                 checkUserStatus();
+                startLoginActivity();
             }
         });
         TUILogin.login(userModel.userId, userModel.userSig, new V2TIMCallback() {
             @Override
             public void onError(int code, String msg) {
-                Log.d(TAG, "code: " + code + " msg:" + msg);
+                Log.d(TAG, "login fail code: " + code + " msg:" + msg);
+                //userSig过期,需要重新登录;userSig具有时效性,具体请查看GenerateTestUserSig.java文件
+                if (BaseConstants.ERR_USER_SIG_EXPIRED == code) {
+                    ToastUtils.showLong(R.string.user_sig_expired);
+                    startLoginActivity();
+                }
             }
 
             @Override
             public void onSuccess() {
-                Log.d(TAG, "onSuccess");
+                Log.d(TAG, "login onSuccess");
             }
         });
     }
@@ -373,4 +385,45 @@ public class MainActivity extends AppCompatActivity {
         return !mIsKickedOffline && !mIsUserSigExpired;
     }
 
+
+    private void showLogoutDialog() {
+        final Dialog dialog = new Dialog(this, R.style.logoutDialogStyle);
+        dialog.setContentView(R.layout.calling_logout_dialog);
+        Button btnPositive = (Button) dialog.findViewById(R.id.btn_positive);
+        Button btnNegative = (Button) dialog.findViewById(R.id.btn_negative);
+        btnPositive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout();
+                startLoginActivity();
+            }
+        });
+        btnNegative.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    private void logout() {
+        TUILogin.logout(new V2TIMCallback() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "logout success ");
+            }
+
+            @Override
+            public void onError(int code, String msg) {
+                Log.d(TAG, "logout fail : code = " + code + " , msg = " + msg);
+            }
+        });
+    }
+
+    private void startLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

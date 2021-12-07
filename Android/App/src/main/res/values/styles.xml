@@ -6,4 +6,12 @@
         <item name="android:windowBackground">@color/color_bg_dialog</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
+
+    <style name="logoutDialogStyle" parent="@android:style/Theme.Holo.Dialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:windowBackground">@color/color_bg_dialog</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
 </resources>

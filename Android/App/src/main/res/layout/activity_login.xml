@@ -5,6 +5,19 @@
     android:layout_height="match_parent"
     android:background="@color/color_white">
 
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="120dp"
+        android:text="@string/welcome_tips"
+        android:textColor="@color/color_black"
+        android:textSize="32sp"
+        app:layout_constraintBottom_toTopOf="@id/cl_edit"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_edit"
@@ -33,12 +46,12 @@
             android:id="@+id/et_userId"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:background="@null"
             android:hint="@string/hint_user_id"
             android:inputType="number"
             android:maxLength="11"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
             android:maxLines="1"
             android:singleLine="true"
             android:textColor="@color/color_black"
@@ -48,7 +61,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toRightOf="@id/tv_phone_number"
             app:layout_constraintStart_toEndOf="@+id/tv_phone_number" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -96,16 +96,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_inviting_tag" />
 
-    <ImageView
-        android:id="@+id/switch_camera"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="64dp"
-        android:src="@drawable/trtccalling_ic_switch_camera"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
@@ -290,6 +280,16 @@
             android:textSize="@dimen/trtccalling_text_size_hint" />
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/switch_camera"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/trtccalling_ic_switch_camera"
+        app:layout_constraintStart_toEndOf="@id/ll_hangup"
+        app:layout_constraintTop_toTopOf="@id/ll_hangup" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_horizontal_bottom"

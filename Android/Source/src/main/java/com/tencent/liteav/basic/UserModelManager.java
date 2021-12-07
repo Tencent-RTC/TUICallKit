@@ -17,7 +17,7 @@ public class UserModelManager {
 
     private static UserModelManager sInstance;
     private        UserModel        mUserModel;
-    private String                         mUserPubishVideoDate;
+    private        String           mUserPubishVideoDate;
 
     public static UserModelManager getInstance() {
         if (sInstance == null) {

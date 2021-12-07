@@ -8,4 +8,5 @@
     <color name="color_bg_dialog">#66000000</color>
     <color name="color_line">#DDDDDD</color>
     <color name="color_input_normal">#BBBBBB</color>
+    <color name="color_input_no_match">#FA585E</color>
 </resources>

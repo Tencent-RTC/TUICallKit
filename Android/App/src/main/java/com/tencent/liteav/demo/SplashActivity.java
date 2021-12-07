@@ -9,9 +9,7 @@ import android.util.Log;
 
 import com.tencent.liteav.basic.UserModelManager;
 
-
 public class SplashActivity extends Activity {
-
     private static final String TAG = "SplashActivity";
 
     @Override
