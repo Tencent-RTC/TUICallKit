@@ -9,6 +9,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+FOUNDATION_EXPORT void TRTCCloudCallingAPILog(NSString *format, ...);
+
 @interface TUICommonUtil : NSObject
 
 + (NSBundle *)callingBundle;

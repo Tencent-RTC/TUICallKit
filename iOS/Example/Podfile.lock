@@ -1,32 +1,34 @@
 PODS:
-  - Alamofire (5.4.4)
+  - Alamofire (5.4.3)
   - Kingfisher (6.3.1)
   - Masonry (1.1.0)
   - ReactiveObjC (3.1.1)
-  - SDWebImage (5.9.0):
-    - SDWebImage/Core (= 5.9.0)
-  - SDWebImage/Core (5.9.0)
+  - SDWebImage (5.12.1):
+    - SDWebImage/Core (= 5.12.1)
+  - SDWebImage/Core (5.12.1)
   - SnapKit (5.0.1)
   - Toast-Swift (5.0.1)
-  - TUICalling/TRTC (9.2):
+  - TUICalling/TRTC (9.3):
     - Masonry
     - TUICore
     - TXLiteAVSDK_TRTC
-  - TUICore (5.7.1435):
-    - ReactiveObjC (= 3.1.1)
-    - SDWebImage (= 5.9.0)
-    - TXIMSDK_Plus_iOS (= 5.7.1435)
+  - TUICore (1.0.0):
+    - ReactiveObjC
+    - SDWebImage
+    - TXIMSDK_Plus_iOS
   - TXAppBasic (1.0.0)
-  - TXIMSDK_Plus_iOS (5.7.1435)
-  - TXLiteAVSDK_TRTC (9.2.10637)
+  - TXIMSDK_Plus_iOS (5.8.1668)
+  - TXLiteAVSDK_TRTC (9.0.10433)
 
 DEPENDENCIES:
   - Alamofire
-  - Kingfisher (~> 6.3.1)
+  - Kingfisher
   - SnapKit
   - Toast-Swift
   - TUICalling/TRTC (from `../`)
+  - TUICore (from `../../TUICore`)
   - TXAppBasic (from `./TXAppBasic/`)
+  - TXLiteAVSDK_TRTC
 
 SPEC REPOS:
   trunk:
@@ -37,30 +39,31 @@ SPEC REPOS:
     - SDWebImage
     - SnapKit
     - Toast-Swift
-    - TUICore
     - TXIMSDK_Plus_iOS
     - TXLiteAVSDK_TRTC
 
 EXTERNAL SOURCES:
   TUICalling:
     :path: "../"
+  TUICore:
+    :path: "../../TUICore"
   TXAppBasic:
     :path: "./TXAppBasic/"
 
 SPEC CHECKSUMS:
-  Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
+  Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
   Kingfisher: 016c8b653a35add51dd34a3aba36b580041acc74
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   ReactiveObjC: 011caa393aa0383245f2dcf9bf02e86b80b36040
-  SDWebImage: 62ae4a18473520c67b79e9724c31a63599cc9423
+  SDWebImage: 4dc3e42d9ec0c1028b960a33ac6b637bb432207b
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
-  TUICalling: 05c6fa58c525ae059d854d19485b9ff59e094244
-  TUICore: dcee53bec38d891f1c541d13a55c0053f8fa30e2
+  TUICalling: 1f8780f599b957376fe2cee86eb9ff4c374b08d3
+  TUICore: 879aa43e30a73089deaa7bb5b86746321ebbfa45
   TXAppBasic: f72fd658cb2cec20f0368158752b82226cb6cdec
-  TXIMSDK_Plus_iOS: 4b7c1097ea9899f7bf95fa90e2cb4471389f93dd
-  TXLiteAVSDK_TRTC: 58e4dc8582a31c90deb3e8bf86242a7949a7903a
+  TXIMSDK_Plus_iOS: e61e34c3dc6606549bff41b2abd7e2575af3813e
+  TXLiteAVSDK_TRTC: fe934ce00eb1da7ab2c9f6b242b2f71b7048a3dd
 
-PODFILE CHECKSUM: 22784ca2904d04cd1612b31ecbbb8c6dcc5d71d2
+PODFILE CHECKSUM: 069139407fd9e5fd6c2efc49a91681e8ea2ff3e7
 
 COCOAPODS: 1.10.1

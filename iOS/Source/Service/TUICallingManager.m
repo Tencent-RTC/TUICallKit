@@ -84,6 +84,7 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
         _enableMuteMode = NO;
         _enableFloatWindow = NO;
         _currentCallingRole = NO;
+        _enableCustomViewRoute = NO;
         [[TRTCCalling shareInstance] addDelegate:self];
     }
     return self;
@@ -201,15 +202,14 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
         if (self.listener && [self.listener respondsToSelector:@selector(callEnd:type:role:totalTime:)]) {
             [self.listener callEnd:self.userIDs type:self.currentCallingType role:self.currentCallingRole totalTime:(CGFloat)self.totalTime];
         }
-    } else if (self.callingView) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.callingView disMiss];
-            self.callingView = nil;
-        });
+    } else {
+        [self.callingView disMiss];
+        self.callingView = nil;
     }
     
     stopAudio();
     [TRTCGCDTimer canelTimer:self.timerName];
+    [self enableAutoLockScreen:YES];
     self.timerName = nil;
     self.groupID = nil;
 }
@@ -222,6 +222,10 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
     }
 }
 
+- (void)enableAutoLockScreen:(BOOL)isEnable {
+    [UIApplication sharedApplication].idleTimerDisabled = !isEnable;
+}
+
 #pragma mark - TUIInvitedActionProtocal
 
 - (void)acceptCalling {
@@ -231,6 +235,7 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
     [self handleCallEvent:TUICallingEventCallSucceed message:CallingLocalize(@"Demo.TRTC.Calling.answer")];
     [self handleCallEvent:TUICallingEventCallStart message:CallingLocalize(@"Demo.TRTC.Calling.answer")];
     [self startTimer];
+    [self enableAutoLockScreen:NO];
 }
 
 - (void)refuseCalling {
@@ -360,9 +365,10 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
         V2TIMUserFullInfo *userInfo = [infoList firstObject];
         if (!userInfo) return;
         [weakSelf startTimer];
+        [weakSelf enableAutoLockScreen:NO];
         CallUserModel *userModel = [weakSelf covertUser:userInfo];
         [weakSelf.callingView enterUser:userModel];
-        [self.callingView makeToast: [NSString stringWithFormat:@"%@ %@", userModel.name,  CallingLocalize(@"Demo.TRTC.calling.callingbegan")] ];
+        [self.callingView makeToast: [NSString stringWithFormat:@"%@ %@", userModel.name ?:userModel.userId,  CallingLocalize(@"Demo.TRTC.calling.callingbegan")] ];
     } fail:nil];
 }
 
@@ -408,6 +414,14 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 
 - (void)onUserAudioAvailable:(NSString *)uid available:(BOOL)available {
     NSLog(@"log: onUserAudioAvailable: %@, available: %d",uid, available);
+    if (self.callingView) {
+        CallUserModel *userModel = [self.callingView getUserById:uid];
+        if (userModel) {
+            userModel.isEnter = YES;
+            userModel.isAudioAvaliable = available;
+            [self.callingView updateUser:userModel animated:NO];
+        }
+    }
 }
 
 - (void)onUserVoiceVolume:(NSString *)uid volume:(UInt32)volume {

@@ -34,6 +34,8 @@ public class TRTCCallingContactViewController: UIViewController, TUICallingListe
     /// 搜索结果model
     var searchResult: V2TIMUserFullInfo? = nil
     
+    var sheetVC: UIAlertController? = nil
+    
     let searchContainerView: UIView = {
         let view = UIView.init(frame: .zero)
         view.backgroundColor = .clear
@@ -289,15 +291,13 @@ extension TRTCCallingContactViewController {
     }
     
     func showChooseCallTypeSheet(users: [V2TIMUserFullInfo]) {
-        let sheetVC = UIAlertController.init(title: TRTCCallingLocalize("Demo.TRTC.calling.callType") , message: "", preferredStyle: .actionSheet)
+        sheetVC = UIAlertController.init(title: TRTCCallingLocalize("Demo.TRTC.calling.callType") , message: "", preferredStyle: .actionSheet)
         let audioAction = UIAlertAction.init(title: TRTCCallingLocalize("Audio Call"), style: .default) { [weak self] _ in
             guard let `self` = self else { return }
             self.callType = .audio
-            //            var list:[CallUserModel] = []
             var userIds: [String] = []
             
             for userModel in users {
-                //                list.append(self.covertUser(user: userModel))
                 userIds.append(userModel.userID)
             }
             
@@ -307,18 +307,23 @@ extension TRTCCallingContactViewController {
         let videoAction = UIAlertAction.init(title: TRTCCallingLocalize("Video Call"), style: .default) { [weak self] _ in
             guard let `self` = self else { return }
             self.callType = .video
-            //            var list:[CallUserModel] = []
             var userIds: [String] = []
             for userModel in users {
-                //                list.append(self.covertUser(user: userModel))
                 userIds.append(userModel.userID)
             }
             
             TUICallingManager.shareInstance().call(userIDs: userIds, type: .video)
         }
-        sheetVC.addAction(audioAction)
-        sheetVC.addAction(videoAction)
-        present(sheetVC, animated: true, completion: nil)
+        sheetVC!.addAction(audioAction)
+        sheetVC!.addAction(videoAction)
+        present(sheetVC!, animated: true) {
+            self.sheetVC!.view.superview?.subviews.first?.isUserInteractionEnabled = true
+            self.sheetVC!.view.superview?.subviews.first?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actionSheetBackgroundTapped)))
+        }
+    }
+    
+    @objc func actionSheetBackgroundTapped() {
+        sheetVC!.dismiss(animated: true, completion: nil)
     }
     
     @objc func hiddenNoMembersImg() {
