@@ -102,6 +102,7 @@ static CGFloat const kSmallVideoViewWidth = 100.0f;
 - (void)setupUI {
     self.backgroundColor = [UIColor t_colorWithHexString:@"#F4F5F9"];
     if (self.isVideo) {
+        self.backgroundColor = [UIColor t_colorWithHexString:@"#242424"];
         // 设置背景视频试图
         [[TRTCCalling shareInstance] closeCamara];
         [[TRTCCalling shareInstance] openCamera:self.isFrontCamera view:self.localPreView];
@@ -424,6 +425,8 @@ static CGFloat const kSmallVideoViewWidth = 100.0f;
 }
 
 - (void)updateUser:(CallUserModel *)user animated:(BOOL)animated {
+    self.remotePreView.hidden = !user.isVideoAvaliable;
+    
     if (self.remoteSponsor.userId == user.userId) {
         self.remoteSponsor = user;
     }
@@ -500,8 +503,10 @@ static CGFloat const kSmallVideoViewWidth = 100.0f;
     
     if (self.isCloseCamera) {
         [[TRTCCalling shareInstance] closeCamara];
+        self.localPreView.hidden = YES;
     } else {
         [[TRTCCalling shareInstance] openCamera:self.isFrontCamera view:self.localPreView];
+        self.localPreView.hidden = NO;
     }
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

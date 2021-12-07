@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICalling'
-  spec.version      = '9.2'
+  spec.version      = '9.3'
   spec.platform     = :ios
   spec.ios.deployment_target = '9.0'
   spec.license      = { :type => 'Proprietary',
@@ -8,9 +8,6 @@ Pod::Spec.new do |spec|
         copyright 2017 tencent Ltd. All rights reserved.
         LICENSE
        }
-       
-       
-       
   spec.homepage     = 'https://cloud.tencent.com/document/product/647'
   spec.documentation_url = 'https://cloud.tencent.com/document/product/647'
   spec.authors      = 'tencent video cloud'
@@ -22,11 +19,12 @@ Pod::Spec.new do |spec|
 
   spec.requires_arc = true
   spec.static_framework = true
-  spec.source = { :git => '', :tag => "#{spec.version}" }
+  spec.source = { :git => 'https://github.com/tencentyun/TUICalling.git' }
   spec.pod_target_xcconfig = {
     'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
   }
   spec.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+  spec.swift_version = '5.0'
   spec.default_subspec = 'TRTC'
 
   spec.subspec 'TRTC' do |trtc|
@@ -59,7 +57,7 @@ Pod::Spec.new do |spec|
   end
   
   spec.subspec 'Professional' do |professional|
-    professional.dependency 'TXLiteAVSDK_Professional', '9.2.10637'
+    professional.dependency 'TXLiteAVSDK_Professional'
     framework_path="../../SDK/TXLiteAVSDK_Professional.framework"
     professional.pod_target_xcconfig={
         'HEADER_SEARCH_PATHS'=>["$(PODS_TARGET_SRCROOT)/#{framework_path}/Headers"]

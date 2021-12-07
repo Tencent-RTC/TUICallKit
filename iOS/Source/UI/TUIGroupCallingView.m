@@ -102,6 +102,7 @@
     [self addSubview:self.handsfreeBtn];
     [self addSubview:self.closeCameraBtn];
     [self addSubview:self.hangupBtn];
+    [self addSubview:self.switchCameraBtn];
     // 视图约束
     [self.groupCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self).offset(StatusBar_Height);
@@ -127,6 +128,11 @@
         make.centerX.equalTo(self);
         make.bottom.equalTo(self.mas_top).offset(self.frame.size.height - Bottom_SafeHeight - 20);
         make.size.equalTo(@(kControlBtnSize));
+    }];
+    [self.switchCameraBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.hangupBtn);
+        make.left.equalTo(self.hangupBtn.mas_right).offset(20);
+        make.size.equalTo(@(CGSizeMake(36, 36)));
     }];
 }
 
@@ -181,7 +187,6 @@
         } break;
         case TUICallingStateCalling: {
             [self initUIForAudioCaller];
-            self.switchCameraBtn.hidden = NO;
             self.userContainerView.hidden = YES;
         } break;
         default:
@@ -218,6 +223,14 @@
     
     [self.delegateManager reloadCallingGroupWithModel:self.userList];
     [self.groupCollectionView reloadData];
+    [self.groupCollectionView layoutIfNeeded];
+    
+    if (self.isVideo) {
+        [self handleLocalRenderView];
+        self.switchCameraBtn.hidden = NO;
+    } else {
+        self.switchCameraBtn.hidden = YES;
+    }
 }
 
 - (void)enterUser:(CallUserModel *)user {
@@ -234,7 +247,6 @@
     if (self.isVideo) {
         UIView *renderView = [self.delegateManager getRenderViewFromUser:user.userId];
         [[TRTCCalling shareInstance] startRemoteView:user.userId view:renderView];
-        [self showLocalRenderView];
     }
 }
 
@@ -294,12 +306,16 @@
 
 #pragma mark - Private
 
-- (void)showLocalRenderView {
+- (void)handleLocalRenderView {
     UIView *localRenderView = [self.delegateManager getRenderViewFromUser:self.currentUser.userId];
     
     if (!self.isCloseCamera && localRenderView != nil) {
         [[TRTCCalling shareInstance] openCamera:self.isFrontCamera view:localRenderView];
     }
+    
+    self.currentUser.isEnter = YES;
+    self.currentUser.isAudioAvaliable = YES;
+    [self updateUser:self.currentUser animated:NO];
 }
 
 - (void)clearAllSubViews {
@@ -339,6 +355,8 @@
     [[TRTCCalling shareInstance] setMicMute:self.isMicMute];
     [self.muteBtn configBackgroundImage:[TUICommonUtil getBundleImageWithName:self.isMicMute ? @"ic_mute_on" : @"ic_mute"]];
     [self makeToast:self.isMicMute ? CallingLocalize(@"Demo.TRTC.calling.muteon") : CallingLocalize(@"Demo.TRTC.calling.muteoff")];
+    self.currentUser.isAudioAvaliable = !self.isMicMute;
+    [self updateUser:self.currentUser animated:NO];
 }
 
 - (void)hangupTouchEvent:(UIButton *)sender {
@@ -366,8 +384,10 @@
     
     if (self.isCloseCamera) {
         [[TRTCCalling shareInstance] closeCamara];
+        self.switchCameraBtn.hidden = YES;
     } else {
-        [self showLocalRenderView];
+        [self handleLocalRenderView];
+        self.switchCameraBtn.hidden = NO;
     }
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

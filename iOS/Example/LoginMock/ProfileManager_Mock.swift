@@ -108,7 +108,7 @@ import TUICore
     ///   - success: 成功
     ///   - failed: 失败
     @objc func IMLogin(userSig: String, success: @escaping ()->Void, failed: @escaping (_ error: String)->Void) {
-        TUILogin.`init`(Int32(SDKAPPID))
+        TUILogin.initWithSdkAppID(Int32(SDKAPPID))
         
         guard let userID = curUserModel?.userId else {
             failed("userID wrong")
