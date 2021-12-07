@@ -13,6 +13,8 @@ typedef enum : NSUInteger {
     CallingAudioTypeDial,       // 主动呼叫
 } CallingAudioType;
 
+extern BOOL playAudioWithFilePath(NSString *filePath);
+
 extern BOOL playAudio(CallingAudioType type);
 
 extern void stopAudio(void);

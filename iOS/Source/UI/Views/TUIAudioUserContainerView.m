@@ -11,6 +11,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "UIColor+TUIHex.h"
 #import "CallingLocalized.h"
+#import "TUICommonUtil.h"
 
 @interface TUIAudioUserContainerView ()
 
@@ -66,8 +67,8 @@
 }
 
 - (void)configUserInfoViewWith:(CallUserModel *)userModel showWaitingText:(NSString *)text {
-    [self.userHeadImageView sd_setImageWithURL:[NSURL URLWithString:userModel.avatar] placeholderImage:[UIColor imageWithColor:[UIColor t_colorWithHexString:@"#E3E3E3"] andSize:CGSizeMake(1, 1)]];
-    [_userNameLabel setText:userModel.name];
+    [self.userHeadImageView sd_setImageWithURL:[NSURL URLWithString:userModel.avatar] placeholderImage:[TUICommonUtil getBundleImageWithName:@"userIcon"]];
+    [_userNameLabel setText:userModel.name ?: userModel.userId];
     self.waitingInviteLabel.text = text;
 }
 

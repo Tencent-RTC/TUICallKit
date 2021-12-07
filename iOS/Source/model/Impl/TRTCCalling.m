@@ -14,8 +14,8 @@
 
 @interface TRTCCalling ()
 
-@property(nonatomic,assign) BOOL isMicMute;
-@property(nonatomic,assign) BOOL isHandsFreeOn;
+@property (nonatomic, assign) BOOL isMicMute;
+@property (nonatomic, assign) BOOL isHandsFreeOn;
 
 @end
 
@@ -24,7 +24,7 @@
     NSString *_curCallID;
 }
 
-+(TRTCCalling *)shareInstance {
++ (TRTCCalling *)shareInstance {
     static dispatch_once_t onceToken;
     static TRTCCalling * g_sharedInstance = nil;
     dispatch_once(&onceToken, ^{
@@ -42,6 +42,7 @@
         self.curRoomList = [NSMutableArray array];
         [self addSignalListener];
         self.isHandsFreeOn = YES;
+        self.isBeingCalled = YES;
     }
     return self;
 }
@@ -71,6 +72,7 @@
         self.curGroupID = groupID;
         self.curType = type;
         self.isOnCalling = YES;
+        self.isBeingCalled = NO;
         [self enterRoom];
     }
     // 不在当前邀请列表，新增加的邀请
@@ -89,11 +91,11 @@
             [rmRespList addObject:userID];
         }
     }
-    [self.curRespList removeObjectsInArray:rmRespList];
     
+    [self.curRespList removeObjectsInArray:rmRespList];
     self.currentCallingUserID = newInviteList.firstObject;
     
-    //通话邀请
+    // 通话邀请
     if (self.curGroupID.length > 0 && newInviteList.count > 0) {
         self.curCallID = [self invite:self.curGroupID action:CallAction_Call model:nil cmdInfo:nil];
     } else {
@@ -105,14 +107,14 @@
 
 // 接受当前通话
 - (void)accept {
+    TRTCLog(@"Calling - accept");
     [self enterRoom];
     self.currentCallingUserID = self.curGroupID.length > 0 ? self.curGroupID : self.curSponsorForMe;
-    [self invite:self.curGroupID.length > 0 ? self.curGroupID : self.curSponsorForMe action:CallAction_Accept model:nil cmdInfo:nil];
-    [self.curInvitingList removeObject:[TRTCCallingUtils loginUser]];
 }
 
 // 拒绝当前通话
 - (void)reject {
+    TRTCLog(@"Calling - reject");
     [self invite:self.curGroupID.length > 0 ? self.curGroupID : self.curSponsorForMe action:CallAction_Reject model:nil cmdInfo:nil];
     self.isOnCalling = NO;
     self.currentCallingUserID = nil;
@@ -120,24 +122,49 @@
 
 // 主动挂断通话
 - (void)hangup {
+    // 如果还没有在通话中，说明还没有接通，所以直接拒绝了
     if (!self.isOnCalling) {
-        return;
-    }
-    if (!self.isInRoom) {
         [self reject];
+        TRTCLog(@"Calling - Hangup -> Reject");
         return;
     }
-    // 没人在通话，取消通话
-    // 这个函数供界面主动挂断使用，主动挂断的群通话，不能发 end 事件，end 事件由最后一名成员发出(记录通话时长)
-    if (self.curRoomList.count == 0 && self.curInvitingList.count > 0) {
-        if (self.curGroupID.length > 0) {
-            [self invite:self.curGroupID action:CallAction_Cancel model:nil cmdInfo:nil];
-        } else {
-            [self invite:self.curInvitingList.firstObject action:CallAction_Cancel model:nil cmdInfo:nil];
+    
+    if (self.curGroupID.length > 0) {
+        [self groupHangup];
+    } else {
+        [self singleHangup];
+    }
+    
+    self.isOnCalling = NO;
+}
+
+- (void)groupHangup {
+    TRTCLog(@"Calling - GroupHangup");
+    __block BOOL hasCallUser = NO;
+    [self.curRoomList enumerateObjectsUsingBlock:^(NSString *user, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ((user && user.length > 0) && ![self.curInvitingList containsObject:user]) {
+            // 还有正在通话的用户
+            hasCallUser = YES;
+            *stop = YES;
         }
+    }];
+    
+    if (!hasCallUser) {
+        TRTCLog(@"Calling - GroupHangup Send CallAction_Cancel");
+        [self.curInvitingList enumerateObjectsUsingBlock:^(NSString *invitedId, NSUInteger idx, BOOL * _Nonnull stop) {
+            [self invite:@"" action:CallAction_Cancel model:nil cmdInfo:nil];
+        }];
+    }
+    
+    [self quitRoom];
+}
+
+- (void)singleHangup {
+    TRTCLog(@"Calling - SingleHangup curInvitingList: %@", self.curInvitingList);
+    if (self.curInvitingList.firstObject) {
+        [self invite:self.curInvitingList.firstObject action:CallAction_Cancel model:nil cmdInfo:nil];
     }
     [self quitRoom];
-    self.isOnCalling = NO;
 }
 
 - (void)switchToAudio {
@@ -159,16 +186,16 @@
     return 0;
 }
 
-#pragma mark data
+#pragma mark - Data
+
 - (void)setIsOnCalling:(BOOL)isOnCalling {
     if (isOnCalling && _isOnCalling != isOnCalling) {
-        //开始通话
-    } else if (!isOnCalling && _isOnCalling != isOnCalling) { //退出通话
+        // 开始通话
+    } else if (!isOnCalling && _isOnCalling != isOnCalling) { // 退出通话
         self.curCallID = @"";
         self.curRoomID = 0;
         self.curType = CallAction_Unknown;
         self.curSponsorForMe = @"";
-        self.isInRoom = NO;
         self.startCallTS = 0;
         self.curLastModel = [[CallModel alloc] init];
         self.curInvitingList = [NSMutableArray array];
@@ -223,7 +250,9 @@
 }
 
 #pragma mark - TRTC Delegate
+
 - (void)enterRoom {
+    TRTCLog(@"Calling - enterRoom");
     TXBeautyManager *beauty = [[TRTCCloud sharedInstance] getBeautyManager];
     [beauty setBeautyStyle:TXBeautyStyleNature];
     [beauty setBeautyLevel:6];
@@ -243,21 +272,29 @@
     [[TRTCCloud sharedInstance] setVideoEncoderParam:videoEncParam];
     
     [[TRTCCloud sharedInstance] setDelegate:self];
+    [self setFramework:5];
     [[TRTCCloud sharedInstance] enterRoom:param appScene:TRTCAppSceneVideoCall];
     [[TRTCCloud sharedInstance] startLocalAudio];
     [[TRTCCloud sharedInstance] enableAudioVolumeEvaluation:300];
     self.isMicMute = NO;
     self.isHandsFreeOn = YES;
-    self.isInRoom = YES;
+}
+
+- (void)setFramework:(int)framework {
+    NSDictionary *jsonDic = @{@"api": @"setFramework",
+                              @"params":@{@"framework": @(framework)}};
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDic options:NSJSONWritingPrettyPrinted error:nil];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    [[TRTCCloud sharedInstance] callExperimentalAPI: jsonString];
 }
 
 - (void)quitRoom {
+    TRTCLog(@"Calling - quitRoom");
     [[TRTCCloud sharedInstance] stopLocalAudio];
     [[TRTCCloud sharedInstance] stopLocalPreview];
     [[TRTCCloud sharedInstance] exitRoom];
     self.isMicMute = NO;
     self.isHandsFreeOn = YES;
-    self.isInRoom = NO;
     self.currentCallingUserID = nil;
 }
 
@@ -312,10 +349,19 @@
             [self.delegate onCallEnd];
         }
         [self hangup];
+    } else {
+        self.isInRoom = YES;
+        if (self.isBeingCalled) {
+            [self invite:self.curGroupID.length > 0 ? self.curGroupID : self.curSponsorForMe action:CallAction_Accept model:nil cmdInfo:nil];
+        }
     }
 }
 
-#pragma mark  TRTCCloudDelegate
+- (void)onExitRoom:(NSInteger)reason {
+    self.isInRoom = NO;
+}
+
+#pragma mark - TRTCCloudDelegate
 
 - (void)onNetworkQuality:(TRTCQualityInfo *)localQuality remoteQuality:(NSArray<TRTCQualityInfo *> *)remoteQuality {
     if ([self canDelegateRespondMethod:@selector(onNetworkQuality:remoteQuality:)]) {
@@ -325,6 +371,7 @@
 
 - (void)onError:(TXLiteAVError)errCode errMsg:(nullable NSString *)errMsg
         extInfo:(nullable NSDictionary*)extInfo {
+    TRTCLog(@"Calling - onRemoteUserLeaveRoom errCode: %ld errMsg: %@", errCode, errMsg);
     self.curLastModel.code = errCode;
     if ([self canDelegateRespondMethod:@selector(onCallEnd)]) {
         [self.delegate onCallEnd];
@@ -333,8 +380,9 @@
 }
 
 - (void)onRemoteUserEnterRoom:(NSString *)userID {
+    TRTCLog(@"Calling - onRemoteUserEnterRoom userID: %@", userID);
     // C2C curInvitingList 不要移除 userID，如果是自己邀请的对方，这里移除后，最后发结束信令的时候找不到人
-    if ([self.curInvitingList containsObject:userID] && self.curGroupID.length > 0) {
+    if ([self.curInvitingList containsObject:userID]) {
         [self.curInvitingList removeObject:userID];
     }
     if (![self.curRoomList containsObject:userID]) {
@@ -350,8 +398,9 @@
 }
 
 - (void)onRemoteUserLeaveRoom:(NSString *)userID reason:(NSInteger)reason {
+    TRTCLog(@"Calling - onRemoteUserLeaveRoom userID: %@ reason: %d", userID, reason);
     // C2C curInvitingList 不要移除 userID，如果是自己邀请的对方，这里移除后，最后发结束信令的时候找不到人
-    if ([self.curInvitingList containsObject:userID] && self.curGroupID.length > 0) {
+    if ([self.curInvitingList containsObject:userID]) {
         [self.curInvitingList removeObject:userID];
     }
     if ([self.curRoomList containsObject:userID]) {
@@ -364,12 +413,14 @@
 }
 
 - (void)onUserAudioAvailable:(NSString *)userID available:(BOOL)available {
+    TRTCLog(@"Calling - onUserAudioAvailable userID: %@ available: %d", userID, available);
     if ([self canDelegateRespondMethod:@selector(onUserAudioAvailable:available:)]) {
         [self.delegate onUserAudioAvailable:userID available:available];
     }
 }
 
 - (void)onUserVideoAvailable:(NSString *)userID available:(BOOL)available {
+    TRTCLog(@"Calling - onUserVideoAvailable userID: %@ available: %d", userID, available);
     if ([self canDelegateRespondMethod:@selector(onUserVideoAvailable:available:)]) {
         [self.delegate onUserVideoAvailable:userID available:available];
     }
@@ -387,7 +438,8 @@
     }
 }
 
-#pragma mark - private method
+#pragma mark - Private Method
+
 - (BOOL)canDelegateRespondMethod:(SEL)selector {
     return self.delegate && [self.delegate respondsToSelector:selector];
 }

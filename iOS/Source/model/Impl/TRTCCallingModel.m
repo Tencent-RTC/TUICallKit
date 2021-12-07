@@ -50,6 +50,7 @@ int SIGNALING_EXTRA_KEY_TIME_OUT = 30;
     model.avatar = self.avatar;
     model.isEnter = self.isEnter;
     model.isVideoAvaliable = self.isVideoAvaliable;
+    model.isAudioAvaliable = self.isAudioAvaliable;
     model.volume = self.volume;
     return model;
 }

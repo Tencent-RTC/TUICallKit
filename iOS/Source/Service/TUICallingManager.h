@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// +----------------------------+
 - (void)setCallingListener:(id<TUICallingListerner>)listener NS_SWIFT_NAME(setCallingListener(listener:));
 
-/// 设置铃声，建议在30s以内
+/// 设置铃声，建议在30s以内，只支持本地音频文件
 /// @param filePath 音频文件路径
 - (void)setCallingBell:(NSString *)filePath NS_SWIFT_NAME(setCallingBell(filePath:));
 

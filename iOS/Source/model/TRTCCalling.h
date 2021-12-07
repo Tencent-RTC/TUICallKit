@@ -55,28 +55,28 @@ NS_SWIFT_NAME(groupCall(userIDs:type:groupID:));
 
 - (int)checkAudioStatus;
 
-///开启远程用户视频渲染
+/// 开启远程用户视频渲染
 - (void)startRemoteView:(NSString *)userId view:(UIView *)view
 NS_SWIFT_NAME(startRemoteView(userId:view:));
 
-///关闭远程用户视频渲染
+/// 关闭远程用户视频渲染
 - (void)stopRemoteView:(NSString *)userId
 NS_SWIFT_NAME(stopRemoteView(userId:));
 
-///打开摄像头
+/// 打开摄像头
 - (void)openCamera:(BOOL)frontCamera view:(UIView *)view
 NS_SWIFT_NAME(openCamera(frontCamera:view:));
 
-///关闭摄像头
+/// 关闭摄像头
 - (void)closeCamara;
 
-///切换摄像头
+/// 切换摄像头
 - (void)switchCamera:(BOOL)frontCamera;
 
-///静音操作
+/// 静音操作
 - (void)setMicMute:(BOOL)isMute;
 
-///免提操作
+/// 免提操作
 - (void)setHandsFree:(BOOL)isHandsFree;
 
 @end
