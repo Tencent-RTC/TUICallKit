@@ -39,11 +39,11 @@
     </view>
     <view wx:if="{{callType === 1}}" class="TRTCCalling-call-audio-box {{playerList.length > 1 && 'mutil-img'}}">
         <view class="TRTCCalling-call-audio-img" wx:if="{{playerList.length > 1}}">
-            <image src="{{pusher.avatar || '../../static/default_avatar.png'}}" class="img-place-holder" data-value="{{pusher}}" binderror="handleConnectErrorImage"/>
+            <image src="{{pusher.avatar || '../../static/default_avatar.png'}}" class="img-place-holder avatar" data-value="{{pusher.userID}}" data-flag="pusher" binderror="handleConnectErrorImage"/>
             <text class="audio-name">{{pusher.nick || pusher.userID}}(自己)</text>
         </view>
         <view class="TRTCCalling-call-audio-img" wx:for="{{playerList}}" wx:key="userID">
-            <image src="{{item.avatar || '../../static/default_avatar.png'}}" class="img-place-holder" data-value="{{item}}" binderror="handleConnectErrorImage"/>
+            <image src="{{item.avatar || '../../static/default_avatar.png'}}" class="img-place-holder avatar" data-value="{{item.userID}}" data-flag="player" binderror="handleConnectErrorImage"/>
             <text class="audio-name">{{item.nick || item.userID}}</text>
         </view>
     </view>

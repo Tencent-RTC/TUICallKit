@@ -122,5 +122,8 @@ Component({
       }
       this.triggerEvent('connectedEvent', data)
     },
+    handleConnectErrorImage(e){
+
+    }
   },
 })

@@ -72,11 +72,6 @@
     width: 100%;
     height: 100%;
   }
-  
-  image {
-    width: 100%;
-    height: 100%;
-  }
 
   .btn-footer {
     position: relative;
@@ -184,4 +179,10 @@
 
 .btn-image-small {
   transform: scale(.7);
+}
+
+.avatar {
+	/* background: #dddddd; */
+  background: url('https://sdk-web-1252463788.cos.ap-hongkong.myqcloud.com/component/miniApp/resources/default_avatar.png') no-repeat;
+  background-size: 100% 100%;
 }

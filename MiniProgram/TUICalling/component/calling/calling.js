@@ -51,7 +51,7 @@ Component({
       }
       this.triggerEvent('callingEvent', data)
     },
-    handleErrorImage() {
+    handleErrorImage(e) {
 
     },
     toggleSwitchCamera(event) {

@@ -2,8 +2,9 @@
 
 本文档主要介绍如何快速集成TUICalling，实现实时视频/语音通话。
     
+
 ## 目录结构
-    
+
 ```
 TUICalling
 ├─ component        // UI 组件
@@ -12,6 +13,7 @@ TUICalling
 ├─ static         // UI icon 图片
 ├─ TRTCCalling    // TRTCCalling 逻辑文件
 ```
+
 1. ##### 复制 TUICalling 到 components 文件
 
 2. ##### 添加组件到对应page
@@ -91,7 +93,7 @@ config 参数
 | userID   | String | 是   | 用户 ID，可以由您的帐号体系指定。                            |
 | userSig  | String | 是   | 身份签名（即相当于登录密码），由 userID 计算得出，具体计算方法请参见 [如何计算 UserSig](https://cloud.tencent.com/document/product/647/17275)。 |
 | type     | Number | 是   | 指定通话类型。1：语音通话，2：视频通话。                     |
-| tim     | Object | 否   | 指定通话类型。1：语音通话，2：视频通话。                     |
+| tim      | object | 否   | tim 参数适用于业务中已存在 TIM 实例，为保证 TIM 实例唯一性   |
 
 ### 组件方法
 
