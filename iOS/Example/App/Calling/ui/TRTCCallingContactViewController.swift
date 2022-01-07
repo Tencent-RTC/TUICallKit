@@ -301,7 +301,7 @@ extension TRTCCallingContactViewController {
                 userIds.append(userModel.userID)
             }
             
-            TUICallingManager.shareInstance().call(userIDs: userIds, type: .audio)
+            TUICalling.shareInstance().call(userIDs: userIds, type: .audio)
         }
         
         let videoAction = UIAlertAction.init(title: TRTCCallingLocalize("Video Call"), style: .default) { [weak self] _ in
@@ -312,7 +312,7 @@ extension TRTCCallingContactViewController {
                 userIds.append(userModel.userID)
             }
             
-            TUICallingManager.shareInstance().call(userIDs: userIds, type: .video)
+            TUICalling.shareInstance().call(userIDs: userIds, type: .video)
         }
         sheetVC!.addAction(audioAction)
         sheetVC!.addAction(videoAction)

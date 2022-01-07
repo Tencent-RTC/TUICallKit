@@ -273,6 +273,7 @@ static CGFloat const kSmallVideoViewWidth = 100.0f;
 - (void)switchToAudio {
     self.isVideo = NO;
     self.isClearFlag = YES;
+    self.backgroundColor = [UIColor t_colorWithHexString:@"#F4F5F9"];
     
     [[TRTCCalling shareInstance] closeCamara];
     if (self.isHandsFreeOn) {
