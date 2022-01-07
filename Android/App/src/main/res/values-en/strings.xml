@@ -27,6 +27,8 @@
     <string name="app_text_user_name">Username</string>
     <string name="app_hint_user_name">Enter a username</string>
     <string name="app_tips_user_name">Chinese characters, letters, numbers and underscores, 2 – 20 words</string>
+    <string name="app_toast_register_success_and_logging_in">Registered successfully</string>
+    <string name="app_toast_failed_to_set">Failed: %s</string>
 
     <string name="app_custom_name_1">Martijn</string>
     <string name="app_custom_name_2">irfan</string>
@@ -40,7 +42,4 @@
     <string name="app_custom_name_10">ivet</string>
     <string name="app_custom_name_11">clinton</string>
     <string name="app_custom_name_12">virelai</string>
-	
-    <string name="app_toast_failed_to_set">Failed: %s</string>
-    <string name="app_toast_register_success_and_logging_in">Registered successfully</string>
 </resources>

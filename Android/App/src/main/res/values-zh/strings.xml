@@ -27,6 +27,8 @@
     <string name="app_text_user_name">用户名</string>
     <string name="app_hint_user_name">请输入用户名</string>
     <string name="app_tips_user_name">仅限中文、字母、数字和下划线，2–20个字</string>
+    <string name="app_toast_register_success_and_logging_in">注册成功</string>
+    <string name="app_toast_failed_to_set">设置失败: %s</string>
 
     <!--自定义随机登录名-->
     <string name="app_custom_name_1">路飞</string>
@@ -41,7 +43,4 @@
     <string name="app_custom_name_10">乔巴</string>
     <string name="app_custom_name_11">鸣人</string>
     <string name="app_custom_name_12">艾斯</string>
-	
-	<string name="app_toast_failed_to_set">设置失败: %s</string>
-	<string name="app_toast_register_success_and_logging_in">注册成功</string>
 </resources>

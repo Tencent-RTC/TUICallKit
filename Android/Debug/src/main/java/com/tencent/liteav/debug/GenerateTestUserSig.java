@@ -38,7 +38,7 @@ public class GenerateTestUserSig {
      * 进入腾讯云云通信[控制台](https://console.cloud.tencent.com/avc ) 创建应用，即可看到 SDKAppId，
      * 它是腾讯云用于区分客户的唯一标识。
      */
-    public static final int SDKAPPID = PLACEHOLDER;
+    public static final int SDKAPPID = 1400188366;
 
 
     /**
@@ -55,7 +55,7 @@ public class GenerateTestUserSig {
      * key：url_push         获取RTMP推流地址
      * key：url_play_flv     获取FLV播放地址
      */
-    public static final String URL_FETCH_PUSH_URL = PLACEHOLDER;
+    public static final String URL_FETCH_PUSH_URL = "https://lvb.qcloud.com/weapp/utils/get_test_pushurl";
 
     /**
      * 计算签名用的加密密钥，获取步骤如下：
@@ -67,7 +67,7 @@ public class GenerateTestUserSig {
      * 注意：该方案仅适用于调试Demo，正式上线前请将 UserSig 计算代码和密钥迁移到您的后台服务器上，以避免加密密钥泄露导致的流量盗用。
      * 文档：https://cloud.tencent.com/document/product/269/32688#Server
      */
-    private static final String SECRETKEY = PLACEHOLDER;
+    private static final String SECRETKEY = "217a9b4a174649a8a41ea7166faa8666e0973a3312ef9b20ad1ad52e9bbb5e94";
 
     /**
      * 计算 UserSig 签名

@@ -19,7 +19,6 @@ public class TRTCVideoCallActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //通话界面不黑屏
         mWindow = this.getWindow();
         mWindow.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -64,5 +63,10 @@ public class TRTCVideoCallActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         mWindow.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }

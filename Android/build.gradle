@@ -3,9 +3,12 @@
 buildscript {
 
     repositories {
-        jcenter()
-        google()
-        mavenCentral()
+        maven { url "https://mirrors.tencent.com/nexus/repository/maven-public/" }
+        maven { url "https://mirrors.tencent.com/repository/maven/liteavsdk" }
+        maven { url "https://mirrors.tencent.com/repository/maven/thirdparty" }
+        //jcenter()
+        //google()
+        //mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.3'
@@ -20,9 +23,12 @@ allprojects {
         flatDir {
             dirs project(':App').file('libs')
         }
-        jcenter()
-        google()
-        mavenCentral()
+        maven { url "https://mirrors.tencent.com/nexus/repository/maven-public/" }
+        maven { url "https://mirrors.tencent.com/repository/maven/liteavsdk" }
+        maven { url "https://mirrors.tencent.com/repository/maven/thirdparty" }
+        //jcenter()
+        //google()
+        //mavenCentral()
     }
 }
 
@@ -31,6 +37,6 @@ task clean(type: Delete) {
 }
 
 ext {
-    liteavSdk="com.tencent.liteav:LiteAVSDK_TRTC:latest.release"
+    liteavSdk = "com.tencent.liteav:LiteAVSDK_Enterprise:latest.release"
     imSdk = "com.tencent.imsdk:imsdk-plus:$IMSDK_VERSION"
 }
