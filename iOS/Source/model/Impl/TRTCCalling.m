@@ -38,7 +38,6 @@
     if (self) {
         self.curLastModel = [[CallModel alloc] init];
         self.curLastModel.invitedList = [NSMutableArray array];
-        self.curRespList = [NSMutableArray array];
         self.curRoomList = [NSMutableArray array];
         [self addSignalListener];
         self.isHandsFreeOn = YES;
@@ -75,31 +74,26 @@
         self.isBeingCalled = NO;
         [self enterRoom];
     }
-    // 不在当前邀请列表，新增加的邀请
+    
+    // 如果不在当前邀请列表，则新增
     NSMutableArray *newInviteList = [NSMutableArray array];
     for (NSString *userID in userIDs) {
         if (![self.curInvitingList containsObject:userID]) {
             [newInviteList addObject:userID];
         }
     }
+    
     [self.curInvitingList addObjectsFromArray:newInviteList];
+    if (!(self.curInvitingList && self.curInvitingList.count > 0)) return;
     
-    // 更新已经回复的列表，移除正在邀请的人
-    NSMutableArray *rmRespList = [NSMutableArray array];
-    for (NSString *userID in self.curRespList) {
-        if ([self.curInvitingList containsObject:userID]) {
-            [rmRespList addObject:userID];
-        }
-    }
-    
-    [self.curRespList removeObjectsInArray:rmRespList];
-    self.currentCallingUserID = newInviteList.firstObject;
-    
-    // 通话邀请
-    if (self.curGroupID.length > 0 && newInviteList.count > 0) {
+    //  处理通话邀请 存在GroupID
+    if (self.curGroupID.length > 0) {
         self.curCallID = [self invite:self.curGroupID action:CallAction_Call model:nil cmdInfo:nil];
     } else {
-        for (NSString *userID in newInviteList) {
+        // 1v1 使用，多人通话不使用，作用：音视频切换
+        self.currentCallingUserID = newInviteList.firstObject;
+        
+        for (NSString *userID in self.curInvitingList) {
             self.curCallID = [self invite:userID action:CallAction_Call model:nil cmdInfo:nil userIds:userIDs];
         }
     }
@@ -171,8 +165,7 @@
     int res = [self checkAudioStatus];
     if (res == 0) {
         self.switchToAudioCallID = [self invite:self.currentCallingUserID action:CallAction_SwitchToAudio model:nil cmdInfo:nil];
-    }
-    else {
+    } else {
         if ([self canDelegateRespondMethod:@selector(onSwitchToAudio:message:)]) {
             [self.delegate onSwitchToAudio:NO message:@"Local status error"];
         }
@@ -199,7 +192,6 @@
         self.startCallTS = 0;
         self.curLastModel = [[CallModel alloc] init];
         self.curInvitingList = [NSMutableArray array];
-        self.curRespList = [NSMutableArray array];
         self.curRoomList = [NSMutableArray array];
     }
     _isOnCalling = isOnCalling;
@@ -351,6 +343,11 @@
         [self hangup];
     } else {
         self.isInRoom = YES;
+        // 移除当前登录的用户UserId（如果存在）
+        if ([self.curInvitingList containsObject:[self currentLoginUserId]]) {
+            [self.curInvitingList removeObject:[self currentLoginUserId]];
+        }
+        
         if (self.isBeingCalled) {
             [self invite:self.curGroupID.length > 0 ? self.curGroupID : self.curSponsorForMe action:CallAction_Accept model:nil cmdInfo:nil];
         }
@@ -439,6 +436,10 @@
 }
 
 #pragma mark - Private Method
+
+- (NSString *)currentLoginUserId {
+    return [[V2TIMManager sharedInstance] getLoginUser];
+}
 
 - (BOOL)canDelegateRespondMethod:(SEL)selector {
     return self.delegate && [self.delegate respondsToSelector:selector];

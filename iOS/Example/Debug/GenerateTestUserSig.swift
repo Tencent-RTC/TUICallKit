@@ -16,7 +16,7 @@ import zlib
  * 进入腾讯云云通信[控制台](https://console.cloud.tencent.com/avc) 创建应用，即可看到 SDKAppId，
  * 它是腾讯云用于区分客户的唯一标识。
  */
-let SDKAPPID: Int = 1400188366;
+let SDKAPPID: Int = 0;
 
 /**
  *  签名过期时间，建议不要设置的过短
@@ -36,7 +36,7 @@ let EXPIRETIME: Int = 604800;
  * 注意：该方案仅适用于调试Demo，正式上线前请将 UserSig 计算代码和密钥迁移到您的后台服务器上，以避免加密密钥泄露导致的流量盗用。
  * 文档：https://cloud.tencent.com/document/product/269/32688#Server
  */
-let SECRETKEY = "217a9b4a174649a8a41ea7166faa8666e0973a3312ef9b20ad1ad52e9bbb5e94";
+let SECRETKEY = "";
 
 class GenerateTestUserSig {
     

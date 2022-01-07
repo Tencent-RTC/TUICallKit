@@ -1,5 +1,5 @@
 //
-//  TUICallingManager.h
+//  TUICalling.h
 //  TUICalling
 //
 //  Created by noah on 2021/8/28.
@@ -61,7 +61,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface TUICallingManager : NSObject
+@interface TUICalling : NSObject
 
 + (instancetype)shareInstance;
 

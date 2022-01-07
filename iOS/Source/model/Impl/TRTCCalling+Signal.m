@@ -11,6 +11,7 @@
 #import <ImSDK_Plus/ImSDK_Plus.h>
 #import "CallingLocalized.h"
 #import "TRTCSignalFactory.h"
+#import "TUICallingConstants.h"
 
 @implementation TRTCCalling (Signal)
 
@@ -242,7 +243,6 @@
         chatType = 1;
         groupid = @"";
     }
-    
     /**
      {"entity":{"version":1,"content":"{\"action\":1,\"call_type\":2,\"room_id\":804544637,\"call_id\":\"144115224095613335-1595234230-3304653590\",\"timeout\":30,\"version\":4,\"invited_list\":[\"2019\"],\"group_id\":\"@TGS#1PWYXLTGA\"}","sendTime":1595234231,"sender":"10457","chatType":2,"action":2}}
      */
@@ -444,6 +444,7 @@
                 self.curType = model.calltype;
                 self.curSponsorForMe = user;
                 syncInvitingList();
+                
                 if ([self canDelegateRespondMethod:@selector(onInvited:userIds:isFromGroup:callType:)]) {
                     NSMutableArray *userIdAry = model.invitedList;
                     [userIds enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -487,7 +488,7 @@
                     }
                 } else {
                     for (NSString *userID in model.invitedList) {
-                        if ([self.curInvitingList containsObject:userID] && ![self.curRespList containsObject:userID]) {
+                        if ([self.curInvitingList containsObject:userID]) {
                             if ([self canDelegateRespondMethod:@selector(onNoResp:)]) {
                                 [self.delegate onNoResp:userID];
                             }
@@ -497,6 +498,7 @@
                         }
                     }
                 }
+                // 每次超时都需要判断当前是否需要结束通话
                 [self checkAutoHangUp];
             }
         } break;
@@ -589,24 +591,39 @@
 
 // 检查是否能自动挂断
 - (void)checkAutoHangUp {
-    if (self.isInRoom && self.curRoomList.count == 0) {
-        if (self.curGroupID.length > 0) {
-            if (self.curInvitingList.count == 1) {
-                [self invite:self.curGroupID action:CallAction_End model:nil cmdInfo:nil];
+    if (!self.isInRoom) {
+        if (self.curGroupID.length > 0 ) {
+            // 多人通话，被邀请人已经都退出 -> 直接挂断
+            if (self.curInvitingList.count == 0) {
                 [self autoHangUp];
             }
         } else {
-            NSString *user = @"";
-            if (self.curSponsorForMe.length > 0) {
-                user = self.curSponsorForMe;
-            } else {
-                user = self.curLastModel.invitedList.firstObject;
-            }
-            [self invite:user action:CallAction_End model:nil cmdInfo:nil];
+            // 1v1 通话 忙线并且不在房间中 -> 直接挂断
             [self autoHangUp];
         }
+        return;
+    }
+    
+    // 当前房间中存在成员，不能自动退房
+    if (self.curRoomList.count > 0) return;
+    
+    if (self.curGroupID.length > 0) {
+        if (self.curInvitingList.count == 0) {
+            [self invite:self.curGroupID action:CallAction_End model:nil cmdInfo:nil];
+            [self autoHangUp];
+        }
+    } else {
+        NSString *user = @"";
+        if (self.curSponsorForMe.length > 0) {
+            user = self.curSponsorForMe;
+        } else {
+            user = self.curLastModel.invitedList.firstObject;
+        }
+        [self invite:user action:CallAction_End model:nil cmdInfo:nil];
+        [self autoHangUp];
     }
 }
+
 
 // 自动挂断
 - (void)autoHangUp {

@@ -11,8 +11,8 @@ import TUICalling
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
-    let LICENCEURL = "https://liteav.sdk.qcloud.com/app/res/licence/liteav/ios/TXLiveSDK_Enterprise_trtc.licence"
-    let LICENCEKEY = "9bc74ac7bfd07ea392e8fdff2ba5678a"
+    let LICENCEURL = ""
+    let LICENCEKEY = ""
     
     func setLicence() {
         TXLiveBase.setLicenceURL(LICENCEURL, key: LICENCEKEY)
