@@ -11,8 +11,8 @@ import TUICalling
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
-    let LICENCEURL = ""
-    let LICENCEKEY = ""
+    let LICENCEURL = "https://liteav.sdk.qcloud.com/app/res/licence/liteav/ios/TXLiveSDK_Enterprise_trtc.licence"
+    let LICENCEKEY = "9bc74ac7bfd07ea392e8fdff2ba5678a"
     
     func setLicence() {
         TXLiveBase.setLicenceURL(LICENCEURL, key: LICENCEKEY)
@@ -40,8 +40,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func showMainViewController() {
         let callingContactViewController = TRTCCallingContactViewController.init()
-        TUICallingManager.shareInstance().setCallingListener(listener: callingContactViewController)
-        TUICallingManager.shareInstance().enableCustomViewRoute(enable: true);
+        TUICalling.shareInstance().setCallingListener(listener: callingContactViewController)
+        TUICalling.shareInstance().enableCustomViewRoute(enable: true);
         let rootVC = UINavigationController.init(rootViewController: callingContactViewController)
         
         if let keyWindow = SceneDelegate.getCurrentWindow() {

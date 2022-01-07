@@ -8,7 +8,7 @@
 #import "TUICallingService.h"
 #import <TUICore/TUICore.h>
 #import <TUICore/TUIDefine.h>
-#import "TUICallingManager.h"
+#import "TUICalling.h"
 #import "TUICommonUtil.h"
 #import "TUIGlobalization.h"
 #import "NSDictionary+TUISafe.h"
@@ -38,18 +38,18 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        [TUICallingManager shareInstance];
+        [TUICalling shareInstance];
         self.extentions = [NSMutableArray array];
     }
     return self;
 }
 
 - (void)startCall:(NSString *)groupID userIDs:(NSArray *)userIDs callingType:(TUICallingType)callingType {
-    if ([[TUICallingManager shareInstance] respondsToSelector:@selector(setGroupID:onlineUserOnly:)]) {
-        [[TUICallingManager shareInstance] performSelector:@selector(setGroupID:onlineUserOnly:) withObject:groupID withObject:false];
+    if ([[TUICalling shareInstance] respondsToSelector:@selector(setGroupID:onlineUserOnly:)]) {
+        [[TUICalling shareInstance] performSelector:@selector(setGroupID:onlineUserOnly:) withObject:groupID withObject:false];
     }
     
-    [[TUICallingManager shareInstance] call:userIDs type:callingType];
+    [[TUICalling shareInstance] call:userIDs type:callingType];
 }
 
 #pragma mark - TUIServiceProtocol
@@ -69,8 +69,8 @@
         V2TIMSignalingInfo *signalingInfo = [param tui_objectForKey:TUICore_TUICallingService_ShowCallingViewMethod_SignalingInfo asClass:V2TIMSignalingInfo.class];
         NSString *groupID = signalingInfo.groupID;
         
-        if ([[TUICallingManager shareInstance] respondsToSelector:@selector(setGroupID:)]) {
-            [[TUICallingManager shareInstance] performSelector:@selector(setGroupID:) withObject:groupID];
+        if ([[TUICalling shareInstance] respondsToSelector:@selector(setGroupID:)]) {
+            [[TUICalling shareInstance] performSelector:@selector(setGroupID:) withObject:groupID];
         }
         
         [[TRTCCalling shareInstance] onReceiveGroupCallAPNs:signalingInfo];

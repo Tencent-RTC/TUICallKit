@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICalling'
-  spec.version      = '9.4'
+  spec.version      = '9.5'
   spec.platform     = :ios
   spec.ios.deployment_target = '9.0'
   spec.license      = { :type => 'Proprietary',
@@ -33,7 +33,7 @@ Pod::Spec.new do |spec|
     trtc.pod_target_xcconfig={
         'HEADER_SEARCH_PATHS'=>["$(PODS_TARGET_SRCROOT)/#{framework_path}/Headers"]
     }
-    trtc.source_files = 'Source/localized/**/*.{h,m,mm}', 'Source/Model/**/*.{h,m,mm}', 'Source/Service/**/*.{h,m,mm}', 'Source/UI/**/*.{h,m,mm}', 'Source/TUICallingKit_TRTC/*.{h,m,mm}'
+    trtc.source_files = 'Source/*.{h,m,mm}', 'Source/localized/**/*.{h,m,mm}', 'Source/Model/**/*.{h,m,mm}', 'Source/Service/**/*.{h,m,mm}', 'Source/UI/**/*.{h,m,mm}', 'Source/TUICallingKit_TRTC/*.{h,m,mm}'
     trtc.ios.framework = ['AVFoundation', 'Accelerate']
     trtc.library = 'c++', 'resolv'
     trtc.resource_bundles = {
@@ -48,7 +48,7 @@ Pod::Spec.new do |spec|
         'HEADER_SEARCH_PATHS'=>["$(PODS_TARGET_SRCROOT)/#{framework_path}/Headers"]
     }
     enterprise.xcconfig = { 'HEADER_SEARCH_PATHS' => '${SRCROOT}/../SDK/TXLiteAVSDK_Enterprise.framework/Headers/'}
-    enterprise.source_files = 'Source/localized/**/*.{h,m,mm}', 'Source/Model/**/*.{h,m,mm}', 'Source/Service/**/*.{h,m,mm}', 'Source/UI/**/*.{h,m,mm}', 'Source/TUICallingKit_Enterprise/*.{h,m,mm}'
+    enterprise.source_files = 'Source/*.{h,m,mm}', 'Source/localized/**/*.{h,m,mm}', 'Source/Model/**/*.{h,m,mm}', 'Source/Service/**/*.{h,m,mm}', 'Source/UI/**/*.{h,m,mm}', 'Source/TUICallingKit_Enterprise/*.{h,m,mm}'
     enterprise.ios.framework = ['AVFoundation', 'Accelerate', 'AssetsLibrary']
     enterprise.library = 'c++', 'resolv', 'sqlite3'
     enterprise.resource_bundles = {
@@ -63,7 +63,7 @@ Pod::Spec.new do |spec|
         'HEADER_SEARCH_PATHS'=>["$(PODS_TARGET_SRCROOT)/#{framework_path}/Headers"]
     }
     professional.xcconfig = { 'HEADER_SEARCH_PATHS' => '${SRCROOT}/../SDK/TXLiteAVSDK_Professional.framework/Headers/'}
-    professional.source_files = 'Source/localized/**/*.{h,m,mm}', 'Source/Model/**/*.{h,m,mm}', 'Source/Service/**/*.{h,m,mm}', 'Source/UI/**/*.{h,m,mm}', 'Source/TUICallingKit_Professional/*.{h,m,mm}'
+    professional.source_files = 'Source/*.{h,m,mm}', 'Source/localized/**/*.{h,m,mm}', 'Source/Model/**/*.{h,m,mm}', 'Source/Service/**/*.{h,m,mm}', 'Source/UI/**/*.{h,m,mm}', 'Source/TUICallingKit_Professional/*.{h,m,mm}'
     professional.ios.framework = ['AVFoundation', 'Accelerate', 'AssetsLibrary']
     professional.library = 'c++', 'resolv', 'sqlite3'
     professional.resource_bundles = {

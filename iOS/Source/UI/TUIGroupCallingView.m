@@ -188,6 +188,7 @@
         case TUICallingStateCalling: {
             [self initUIForAudioCaller];
             self.userContainerView.hidden = YES;
+            [self handleLocalRenderView];
         } break;
         default:
             break;
