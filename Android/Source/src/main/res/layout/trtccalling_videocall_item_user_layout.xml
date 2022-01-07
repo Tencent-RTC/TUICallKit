@@ -50,7 +50,6 @@
         android:visibility="gone"
         android:minHeight="3dp"
         android:progress="0" />
-
     <ImageView
         android:id="@+id/iv_audio_input"
         android:layout_width="20dp"

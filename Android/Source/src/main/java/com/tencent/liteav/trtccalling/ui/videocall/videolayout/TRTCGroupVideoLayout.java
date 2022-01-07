@@ -21,7 +21,6 @@ import com.tencent.rtmp.ui.TXCloudVideoView;
  */
 public class TRTCGroupVideoLayout extends RelativeLayout {
     private static final int MIN_AUDIO_VOLUME = 10;
-
     private boolean              mMoveAble;
     private TXCloudVideoView     mTCCloudViewTRTC;
     private ProgressBar          mProgressAudio;
@@ -98,7 +97,6 @@ public class TRTCGroupVideoLayout extends RelativeLayout {
     public void setUserName(String userName) {
         mTextUserName.setText(userName);
     }
-
     public void setAudioVolume(int vol) {
         if (mMuteAudio) {
             return;
@@ -109,7 +107,6 @@ public class TRTCGroupVideoLayout extends RelativeLayout {
             mImageAudioInput.setVisibility(GONE);
         }
     }
-
     public void muteMic(boolean mute) {
         mMuteAudio = mute;
         if (mMuteAudio) {

@@ -21,15 +21,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.blankj.utilcode.util.ToastUtils;
 import com.tencent.imsdk.v2.V2TIMCallback;
 import com.tencent.imsdk.v2.V2TIMManager;
-import com.tencent.imsdk.v2.V2TIMSDKConfig;
-import com.tencent.imsdk.v2.V2TIMSDKListener;
 import com.tencent.imsdk.v2.V2TIMUserFullInfo;
 import com.tencent.liteav.basic.AvatarConstant;
 import com.tencent.liteav.basic.ImageLoader;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
-import com.tencent.liteav.debug.GenerateTestUserSig;
-import com.tencent.qcloud.tuicore.TUILogin;
 
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -139,8 +135,8 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onError(int code, String desc) {
                 Log.e(TAG, "set profile failed errorCode : " + code + " errorMsg : " + desc);
-                ToastUtils.showLong(getString(R.string.app_toast_failed_to_set, desc));
                 //头像和昵称设置失败,也可以进入到主界面(头像和昵称都用默认值),不影响功能
+                ToastUtils.showLong(getString(R.string.app_toast_failed_to_set, desc));
                 startMainActivity();
                 finish();
             }

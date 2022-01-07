@@ -45,7 +45,6 @@
         android:visibility="gone"
         android:minHeight="3dp"
         android:progress="0" />
-
     <ImageView
         android:id="@+id/iv_audio_input"
         android:layout_width="20dp"
@@ -57,3 +56,4 @@
         android:visibility="gone"
         android:background="@drawable/trtccalling_ic_mutemic_enable" />
 </merge>
+
