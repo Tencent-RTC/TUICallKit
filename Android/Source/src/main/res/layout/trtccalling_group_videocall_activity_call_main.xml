@@ -96,6 +96,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_inviting_tag" />
 
+
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
@@ -290,7 +291,6 @@
         android:src="@drawable/trtccalling_ic_switch_camera"
         app:layout_constraintStart_toEndOf="@id/ll_hangup"
         app:layout_constraintTop_toTopOf="@id/ll_hangup" />
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_horizontal_bottom"
         android:layout_width="0dp"

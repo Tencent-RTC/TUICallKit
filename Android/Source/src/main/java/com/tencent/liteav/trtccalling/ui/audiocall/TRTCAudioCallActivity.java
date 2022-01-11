@@ -67,4 +67,9 @@ public class TRTCAudioCallActivity extends Activity {
         super.onDestroy();
         mWindow.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
+
+    @Override
+    public void onBackPressed() {
+
+    }
 }

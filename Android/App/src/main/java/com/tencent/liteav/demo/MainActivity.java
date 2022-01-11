@@ -37,7 +37,7 @@ import com.tencent.liteav.basic.ImageLoader;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.debug.GenerateTestUserSig;
-import com.tencent.liteav.trtccalling.model.TRTCCalling;
+import com.tencent.liteav.trtccalling.model.impl.TRTCCalling;
 import com.tencent.liteav.trtccalling.model.TUICalling;
 import com.tencent.liteav.trtccalling.model.impl.TUICallingManager;
 import com.tencent.liteav.trtccalling.model.impl.base.CallingInfoManager;
@@ -84,8 +84,7 @@ public class MainActivity extends AppCompatActivity {
             bundle.putString(TUICallingConstants.PARAM_NAME_TYPE, TUICallingConstants.TYPE_VIDEO);
             bundle.putStringArray(TUICallingConstants.PARAM_NAME_USERIDS, userIDs);
             bundle.putString(TUICallingConstants.PARAM_NAME_GROUPID, "");
-//            TUICore.callService(TUIConstants.Service.TUI_CALLING, TUICallingConstants.METHOD_NAME_CALL, bundle);
-            TUICallingManager.sharedInstance().call(userIDs, TUICalling.Type.VIDEO);
+            TUICallingManager.sharedInstance(this).call(userIDs, TUICalling.Type.VIDEO);
         } else if (mType == TRTCCalling.TYPE_AUDIO_CALL) {
             ToastUtils.showShort(getString(R.string.toast_voice_call, mSearchModel.userName));
             String[] userIDs = {mSearchModel.userId};
@@ -93,14 +92,13 @@ public class MainActivity extends AppCompatActivity {
             bundle.putString(TUICallingConstants.PARAM_NAME_TYPE, TUICallingConstants.TYPE_AUDIO);
             bundle.putStringArray(TUICallingConstants.PARAM_NAME_USERIDS, userIDs);
             bundle.putString(TUICallingConstants.PARAM_NAME_GROUPID, "");
-//            TUICore.callService(TUIConstants.Service.TUI_CALLING, TUICallingConstants.METHOD_NAME_CALL, bundle);
-            TUICallingManager.sharedInstance().call(userIDs, TUICalling.Type.AUDIO);
+            TUICallingManager.sharedInstance(this).call(userIDs, TUICalling.Type.AUDIO);
         }
     }
 
     private void custom() {
-        TUICallingManager.sharedInstance().enableCustomViewRoute(true);
-        TUICallingManager.sharedInstance().setCallingListener(new TUICalling.TUICallingListener() {
+        TUICallingManager.sharedInstance(this).enableCustomViewRoute(true);
+        TUICallingManager.sharedInstance(this).setCallingListener(new TUICalling.TUICallingListener() {
             @Override
             public boolean shouldShowOnCallView() {
                 return true;
@@ -336,6 +334,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData() {
+        // 初始化calling组件
+        TUICallingManager.sharedInstance(this);
         final UserModel userModel = UserModelManager.getInstance().getUserModel();
         V2TIMSDKConfig config = new V2TIMSDKConfig();
         config.setLogLevel(V2TIMSDKConfig.V2TIM_LOG_DEBUG);
