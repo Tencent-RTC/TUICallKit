@@ -9,6 +9,8 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.blankj.utilcode.util.ToastUtils;
+import com.tencent.liteav.trtccalling.R;
 import com.tencent.liteav.trtccalling.model.TRTCCallingDelegate;
 import com.tencent.liteav.trtccalling.model.TUICalling;
 import com.tencent.liteav.trtccalling.model.util.TUICallingConstants;
@@ -30,8 +32,8 @@ import java.util.Map;
  * TUICalling模块对外接口
  */
 public final class TUICallingManager implements TUICalling, TRTCCallingDelegate {
-
-    private static final String TAG = "TUICallingManager";
+    private static final String TAG       = "TUICallingManager";
+    private static final int    MAX_USERS = 8; //最大通话数为9(需包含自己)
 
     private static TUICallingManager sInstance;
 
@@ -88,6 +90,11 @@ public final class TUICallingManager implements TUICalling, TRTCCallingDelegate 
     }
 
     void internalCall(final String[] userIDs, final String sponsorID, final String groupID, final boolean isFromGroup, final Type type, final Role role) {
+        if (userIDs.length >= MAX_USERS) {
+            ToastUtils.showShort(mContext.getString(R.string.trtccalling_user_exceed_limit));
+            return;
+        }
+
         if (null == type || null == role) {
             Log.e(TAG, "param is error!!!");
             return;

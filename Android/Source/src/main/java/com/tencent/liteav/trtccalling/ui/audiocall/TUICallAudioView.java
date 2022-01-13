@@ -18,8 +18,8 @@ import com.blankj.utilcode.util.CollectionUtils;
 import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.tencent.liteav.trtccalling.R;
-import com.tencent.liteav.trtccalling.model.impl.TRTCCalling;
 import com.tencent.liteav.trtccalling.model.TUICalling;
+import com.tencent.liteav.trtccalling.model.impl.TRTCCalling;
 import com.tencent.liteav.trtccalling.model.impl.UserModel;
 import com.tencent.liteav.trtccalling.model.impl.base.CallingInfoManager;
 import com.tencent.liteav.trtccalling.model.util.ImageLoader;
@@ -63,7 +63,7 @@ public class TUICallAudioView extends BaseTUICallView {
     private Map<String, UserModel> mCallUserModelMap = new HashMap<>();
     private UserModel              mSponsorUserInfo;                      // 被叫方
     private List<UserModel>        mOtherInvitingUserInfoList;
-    private boolean                mIsHandsFree      = false;
+    private boolean                mIsHandsFree      = true;              //语音通话默认开启扬声器
     private boolean                mIsMuteMic        = false;
 
     public TUICallAudioView(Context context, TUICalling.Role role, String[] userIDs, String sponsorID, String groupID, boolean isFromGroup) {
@@ -175,6 +175,7 @@ public class TUICallAudioView extends BaseTUICallView {
         });
         mImageMute.setActivated(mIsMuteMic);
         mImageHandsFree.setActivated(mIsHandsFree);
+        mTRTCCalling.setHandsFree(mIsHandsFree);
     }
 
     @Override
@@ -466,8 +467,7 @@ public class TUICallAudioView extends BaseTUICallView {
                 layoutParams.leftMargin = leftMargin;
             }
             imageView.setLayoutParams(layoutParams);
-            ImageLoader.loadImage(mContext, imageView, mSponsorUserInfo.userAvatar,
-                    R.drawable.trtccalling_wait_background);
+            ImageLoader.loadImage(mContext, imageView, mSponsorUserInfo.userAvatar, R.drawable.trtccalling_ic_avatar);
             mLayoutImgContainer.addView(imageView);
         }
     }
@@ -482,7 +482,7 @@ public class TUICallAudioView extends BaseTUICallView {
             return null;
         }
         layout.setUserName(userInfo.userName);
-        ImageLoader.loadImage(mContext, layout.getImageView(), userInfo.userAvatar, R.drawable.trtccalling_wait_background);
+        ImageLoader.loadImage(mContext, layout.getImageView(), userInfo.userAvatar, R.drawable.trtccalling_ic_avatar);
         return layout;
     }
 
@@ -503,7 +503,7 @@ public class TUICallAudioView extends BaseTUICallView {
                             return;
                         }
                         layout.setUserName(userModel.userName);
-                        ImageLoader.loadImage(mContext, layout.getImageView(), userModel.userAvatar, R.drawable.trtccalling_groupcall_wait_background);
+                        ImageLoader.loadImage(mContext, layout.getImageView(), userModel.userAvatar, R.drawable.trtccalling_ic_avatar);
                     }
                 });
             }
