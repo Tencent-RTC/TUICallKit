@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tencent.liteav.trtccalling.R;
+import com.tencent.liteav.trtccalling.model.util.ImageLoader;
 import com.tencent.liteav.trtccalling.ui.common.RoundCornerImageView;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 
@@ -27,6 +28,7 @@ public class TRTCGroupVideoLayout extends RelativeLayout {
     private RoundCornerImageView mImageHead;
     private TextView             mTextUserName;
     private ImageView            mImageAudioInput;
+    private ImageView            mImgLoading;
 
     private boolean mMuteAudio = false; // 静音状态 true : 开启静音
 
@@ -84,6 +86,8 @@ public class TRTCGroupVideoLayout extends RelativeLayout {
         mImageHead = findViewById(R.id.img_head);
         mTextUserName = findViewById(R.id.tv_name);
         mImageAudioInput = findViewById(R.id.iv_audio_input);
+        mImgLoading = (ImageView) findViewById(R.id.img_loading);
+        ImageLoader.loadGifImage(getContext(), mImgLoading, R.drawable.trtccalling_loading);
     }
 
     public boolean isMoveAble() {
@@ -114,5 +118,11 @@ public class TRTCGroupVideoLayout extends RelativeLayout {
         }
         int resId = mute ? R.drawable.trtccalling_ic_mutemic_disable : R.drawable.trtccalling_ic_mutemic_enable;
         mImageAudioInput.setImageResource(resId);
+    }
+    public void startLoading() {
+        mImgLoading.setVisibility(VISIBLE);
+    }
+    public void stopLoading() {
+        mImgLoading.setVisibility(GONE);
     }
 }

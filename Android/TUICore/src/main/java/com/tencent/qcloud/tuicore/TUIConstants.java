@@ -270,7 +270,6 @@ public final class TUIConstants {
 
     public static final class Message {
         public static final String CUSTOM_BUSINESS_ID_KEY = "businessID";
-        public static final String CALLING_TYPE_KEY = "call_type";
     }
 
 }

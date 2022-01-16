@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/trtccalling_bg_floatwindow_left"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/trtccalling_bg_floatwindow"
+        android:orientation="vertical">
+
+        <com.tencent.rtmp.ui.TXCloudVideoView
+            android:id="@+id/float_videoview"
+            android:layout_width="100dp"
+            android:layout_height="120dp"
+            android:orientation="vertical"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/float_audioview"
+            android:layout_width="64dp"
+            android:layout_height="48dp"
+            android:layout_margin="4dp"
+            android:src="@drawable/trtccalling_ic_float" />
+
+        <TextView
+            android:id="@+id/tv_waiting_reponse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="4dp"
+            android:text="@string/trtccalling_wait_resonse"
+            android:textColor="@color/trtccalling_color_green"
+            android:textSize="12sp"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="4dp"
+            android:text="00:00"
+            android:textColor="@color/trtccalling_color_green"
+            android:textSize="12sp"
+            android:visibility="gone" />
+    </LinearLayout>
+</LinearLayout>
+
+

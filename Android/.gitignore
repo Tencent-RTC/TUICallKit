@@ -9,3 +9,5 @@ build/
 .cxx
 *.codecc/
 /build.yml
+tuicore/
+TUICalling/Source/

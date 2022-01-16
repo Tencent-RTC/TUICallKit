@@ -1,7 +1,6 @@
 package com.tencent.liteav.trtccalling.model.impl.base;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMUserFullInfo;
@@ -28,7 +27,7 @@ public class CallingInfoManager {
 
     public void getUserInfoByUserId(final String userId, final UserCallback callback) {
         if (TextUtils.isEmpty(userId)) {
-            Log.e(TAG, "get user info list fail, user list is empty.");
+            TRTCLogger.e(TAG, "get user info list fail, user list is empty.");
             if (callback != null) {
                 callback.onFailed(-1, "get user info list fail, user list is empty.");
             }
@@ -36,13 +35,13 @@ public class CallingInfoManager {
         }
         List<String> userList = new ArrayList<>();
         userList.add(userId);
-        Log.i(TAG, "get user info list " + userList);
+        TRTCLogger.i(TAG, "get user info list " + userList);
         V2TIMManager.getInstance().getUsersInfo(userList, new V2TIMValueCallback<List<V2TIMUserFullInfo>>() {
             @Override
-            public void onError(int i, String s) {
-                Log.e(TAG, "get user info list fail, code:" + i);
+            public void onError(int errorCode, String errorMsg) {
+                TRTCLogger.e(TAG, "getUsersInfo fail, code: " + errorCode + ", errorMsg: " + errorMsg);
                 if (callback != null) {
-                    callback.onFailed(i, s);
+                    callback.onFailed(errorCode, errorMsg);
                 }
             }
 
@@ -56,7 +55,8 @@ public class CallingInfoManager {
                         model.userId = v2TIMUserFullInfos.get(i).getUserID();
                         model.userAvatar = v2TIMUserFullInfos.get(i).getFaceUrl();
                         list.add(model);
-                        Log.d(TAG, String.format("getUserInfoByUserId, userId=%s, userName=%s, userAvatar=%s", model.userId, model.userName, model.userAvatar));
+                        TRTCLogger.d(TAG, String.format("getUserInfoByUserId, userId=%s, userName=%s, userAvatar=%s",
+                                model.userId, model.userName, model.userAvatar));
                         if (TextUtils.isEmpty(model.userName)) {
                             model.userName = model.userId;
                         }

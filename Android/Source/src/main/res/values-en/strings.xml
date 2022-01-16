@@ -11,7 +11,7 @@
     <string name="trtccalling_toast_user_not_response">%1$s didn’t answer.</string>
     <string name="trtccalling_toast_user_busy">%1$s is busy.</string>
     <string name="trtccalling_toast_user_cancel_call">%1$s cancelled the call.</string>
-    <string name="trtccalling_toast_user_timeout" >%1$s timed out.</string>
+    <string name="trtccalling_toast_user_timeout">%1$s timed out.</string>
     <string name="trtccalling_toast_enable_mute">Muted</string>
     <string name="trtccalling_toast_disable_mute">Unmuted</string>
     <string name="trtccalling_toast_use_speaker">Speaker</string>
@@ -42,4 +42,7 @@
     <string name="trtccalling_audio_call">Audio Call</string>
     <string name="trtccalling_user_kicked_offline">You have been kicked off the line. Please log in again!</string>
     <string name="trtccalling_user_sig_expired">Your user signature information has expired</string>
+    <string name="trtccalling_user_exceed_limit">TUICalling currently supports call with up to 9 people.For
+        larger conference calls,try using TUIRoom</string>
+    <string name="trtccalling_wait_resonse">Waiting</string>
 </resources>
