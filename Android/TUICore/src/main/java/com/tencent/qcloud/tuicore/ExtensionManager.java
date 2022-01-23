@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 页面扩展注册和获取
@@ -26,7 +24,7 @@ class ExtensionManager {
         return ExtensionManagerHolder.extensionManager;
     }
 
-    private final Map<String, List<ITUIExtension>>  extensionHashMap = new ConcurrentHashMap<>();
+    private final HashMap<String, List<ITUIExtension>>  extensionHashMap = new HashMap<>();
 
     private ExtensionManager() {}
 
@@ -37,7 +35,7 @@ class ExtensionManager {
         }
         List<ITUIExtension> list = extensionHashMap.get(key);
         if (list == null) {
-            list = new CopyOnWriteArrayList<>();
+            list = new ArrayList<>();
             extensionHashMap.put(key, list);
         }
         if (!list.contains(extension)) {

@@ -1,4 +1,4 @@
-package com.tencent.liteav.trtccalling.model;
+package com.tencent.liteav.trtccalling;
 
 import android.view.View;
 
@@ -22,11 +22,19 @@ public interface TUICalling {
         CALL_FAILED,	 // 通话失败
     }
 
+    /**
+     * 拨打电话
+     * @param userIDs 接听方用户userId数组
+     * @param type    呼叫类型
+     */
     void call(String[] userIDs, Type type);
-    
-    void receiveAPNSCalled(String[] userIDs, Type type);
 
+    /**
+     * 设置监听器
+     * @param listener 监听器
+     */
     void setCallingListener(TUICallingListener listener);
+
     /**
      * 设置铃声(建议在30s以内)
      *

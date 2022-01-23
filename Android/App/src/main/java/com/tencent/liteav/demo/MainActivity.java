@@ -1,302 +1,63 @@
 package com.tencent.liteav.demo;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ToastUtils;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.tencent.imsdk.BaseConstants;
 import com.tencent.imsdk.v2.V2TIMCallback;
 import com.tencent.imsdk.v2.V2TIMSDKConfig;
 import com.tencent.imsdk.v2.V2TIMSDKListener;
-import com.tencent.liteav.basic.ImageLoader;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.debug.GenerateTestUserSig;
-import com.tencent.liteav.trtccalling.model.impl.TRTCCalling;
-import com.tencent.liteav.trtccalling.model.TUICalling;
-import com.tencent.liteav.trtccalling.model.impl.TUICallingManager;
-import com.tencent.liteav.trtccalling.model.impl.base.CallingInfoManager;
-import com.tencent.liteav.trtccalling.model.util.TUICallingConstants;
-import com.tencent.liteav.trtccalling.ui.common.RoundCornerImageView;
+import com.tencent.liteav.trtccalling.ui.TUICallingImpl;
 import com.tencent.qcloud.tuicore.TUILogin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 联系人选择Activity，可以通过此界面搜索已注册用户，并发起通话；
+ * 音视频通话主界面,分别为:
+ * 语音通话,
+ * 视频通话,
+ * 多人语音通话,
+ * 多人视频通话
  */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private Toolbar              mToolbar;       //导航栏，主要负责监听导航栏返回按钮
-    private EditText             mEtSearchUser;  //输入手机号码的编辑文本框
-    private ImageView            mIvClearSearch; //清除搜索框文本按钮
-    private TextView             mTvSearch;      //开始搜索用户的按钮
-    private TextView             mTvSelfUserId;  //自己的userId
-    private LinearLayout         mLlContract;    //用来展示对方信息的layout
-    private RoundCornerImageView mIvAvatar;      //用来展示对方头像
-    private TextView             mTvUserName;    //用来展示对方昵称
-    private Button               mBtnStartCall;  //开始呼叫按钮
-    private ConstraintLayout     mClTips;        //显示搜索提示信息
-    private ImageButton          mBtnLink;       //跳转官网链接
-
-    private UserModel mSelfModel;    //表示当前用户的 UserModel
-    private UserModel mSearchModel;  //表示当前搜索的 Usermodel
-    private int       mType;         //表示当前是 videocall/audiocall
-
-    private View mCallingView;
-
-    private boolean mIsKickedOffline  = false;
-    private boolean mIsUserSigExpired = false;
-
-    /**
-     * 开始呼叫某人
-     */
-    private void startCallSomeone() {
-//        custom();
-        if (mType == TRTCCalling.TYPE_VIDEO_CALL) {
-            ToastUtils.showShort(getString(R.string.toast_video_call, mSearchModel.userName));
-            String[] userIDs = {mSearchModel.userId};
-            Bundle bundle = new Bundle();
-            bundle.putString(TUICallingConstants.PARAM_NAME_TYPE, TUICallingConstants.TYPE_VIDEO);
-            bundle.putStringArray(TUICallingConstants.PARAM_NAME_USERIDS, userIDs);
-            bundle.putString(TUICallingConstants.PARAM_NAME_GROUPID, "");
-            TUICallingManager.sharedInstance(this).call(userIDs, TUICalling.Type.VIDEO);
-        } else if (mType == TRTCCalling.TYPE_AUDIO_CALL) {
-            ToastUtils.showShort(getString(R.string.toast_voice_call, mSearchModel.userName));
-            String[] userIDs = {mSearchModel.userId};
-            Bundle bundle = new Bundle();
-            bundle.putString(TUICallingConstants.PARAM_NAME_TYPE, TUICallingConstants.TYPE_AUDIO);
-            bundle.putStringArray(TUICallingConstants.PARAM_NAME_USERIDS, userIDs);
-            bundle.putString(TUICallingConstants.PARAM_NAME_GROUPID, "");
-            TUICallingManager.sharedInstance(this).call(userIDs, TUICalling.Type.AUDIO);
-        }
-    }
-
-    private void custom() {
-        TUICallingManager.sharedInstance(this).enableCustomViewRoute(true);
-        TUICallingManager.sharedInstance(this).setCallingListener(new TUICalling.TUICallingListener() {
-            @Override
-            public boolean shouldShowOnCallView() {
-                return true;
-            }
-
-            @Override
-            public void onCallStart(String[] userIDs, TUICalling.Type type, TUICalling.Role role,
-                                    final View tuiCallingView) {
-                if (!shouldShowOnCallView() || null == tuiCallingView) {
-                    return;
-                }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-                        mCallingView = tuiCallingView;
-                        addContentView(tuiCallingView, params);
-                    }
-                });
-            }
-
-            @Override
-            public void onCallEnd(String[] userIDs, TUICalling.Type type, TUICalling.Role role, long totalTime) {
-                removeView();
-            }
-
-            @Override
-            public void onCallEvent(TUICalling.Event event, TUICalling.Type type, TUICalling.Role role, String msg) {
-                if (TUICalling.Event.CALL_FAILED == event) {
-                    removeView();
-                }
-            }
-
-            private void removeView() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (null != mCallingView) {
-                            ((FrameLayout) mCallingView.getParent()).removeView(mCallingView);
-                            mCallingView = null;
-                        }
-                    }
-                });
-            }
-        });
-    }
+    private Context                 mContext;
+    private List<TRTCItemEntity>    mTRTCItemEntityList;
+    private TRTCRecyclerViewAdapter mTRTCRecyclerViewAdapter;
+    private RecyclerView            mRvList;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        mSelfModel = UserModelManager.getInstance().getUserModel();
-        mType = getIntent().getIntExtra("TYPE", TRTCCalling.TYPE_VIDEO_CALL);
+        setContentView(R.layout.activity_trtc_main);
+        mContext = getApplicationContext();
         initStatusBar();
+        login();
         initView();
-        initData();
-    }
-
-    private void initView() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mEtSearchUser = (EditText) findViewById(R.id.et_search_user);
-        mIvClearSearch = (ImageView) findViewById(R.id.iv_clear_search);
-        mTvSearch = (TextView) findViewById(R.id.tv_search);
-        mTvSelfUserId = (TextView) findViewById(R.id.tv_self_userId);
-        mLlContract = (LinearLayout) findViewById(R.id.ll_contract);
-        mIvAvatar = (RoundCornerImageView) findViewById(R.id.img_avatar);
-        mTvUserName = (TextView) findViewById(R.id.tv_user_name);
-        mBtnStartCall = (Button) findViewById(R.id.btn_start_call);
-        mClTips = (ConstraintLayout) findViewById(R.id.cl_tips);
-        mBtnLink = (ImageButton) findViewById(R.id.btn_trtccalling_link);
-        mBtnLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                if (mType == TRTCCalling.TYPE_VIDEO_CALL) {
-                    intent.setData(Uri.parse("https://cloud.tencent.com/document/product/647/42045"));
-                    startActivity(intent);
-                } else if (mType == TRTCCalling.TYPE_AUDIO_CALL) {
-                    intent.setData(Uri.parse("https://cloud.tencent.com/document/product/647/42047"));
-                    startActivity(intent);
-                }
-            }
-        });
-
-        // 导航栏回退/设置
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showLogoutDialog();
-            }
-        });
-        //呼叫选择
-        mBtnStartCall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mSelfModel.userId.equals(mSearchModel.userId)) {
-                    ToastUtils.showShort(getString(R.string.toast_not_call_myself));
-                    return;
-                }
-                showChooseDialog();
-            }
-        });
-
-        mEtSearchUser.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    searchContactsByUserId(v.getText().toString());
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        mEtSearchUser.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence text, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence text, int start, int before, int count) {
-                if (text.length() == 0) {
-                    mIvClearSearch.setVisibility(View.GONE);
-                } else {
-                    mIvClearSearch.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        mTvSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchContactsByUserId(mEtSearchUser.getText().toString());
-            }
-        });
-
-        mIvClearSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEtSearchUser.setText("");
-            }
-        });
-        mTvSelfUserId.setText(getString(R.string.call_self_format, mSelfModel.userId));
-    }
-
-    private void showChooseDialog() {
-        final Dialog dialog = new BottomSheetDialog(this, R.style.BottomDialog);
-        dialog.setContentView(R.layout.calling_choose_dialog);
-        TextView tvAudio = (TextView) dialog.findViewById(R.id.tv_audio_type);
-        TextView tvVideo = (TextView) dialog.findViewById(R.id.tv_video_type);
-        TextView tvCancel = (TextView) dialog.findViewById(R.id.tv_cancel_call);
-
-        tvAudio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!checkUserStatus()) {
-                    return;
-                }
-                mType = TRTCCalling.TYPE_AUDIO_CALL;
-                startCallSomeone();
-                dialog.dismiss();
-            }
-        });
-        tvVideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!checkUserStatus()) {
-                    return;
-                }
-                mType = TRTCCalling.TYPE_VIDEO_CALL;
-                startCallSomeone();
-                dialog.dismiss();
-            }
-        });
-        tvCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
-
-    private void showSearchUserModel(UserModel model) {
-        if (model == null) {
-            mLlContract.setVisibility(View.GONE);
-            mClTips.setVisibility(View.VISIBLE);
-            return;
-        }
-        mClTips.setVisibility(View.GONE);
-        mLlContract.setVisibility(View.VISIBLE);
-        ImageLoader.loadImage(this, mIvAvatar, model.userAvatar, R.drawable.trtccalling_ic_avatar);
-        mTvUserName.setText(model.userName);
     }
 
     private void initStatusBar() {
@@ -312,30 +73,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void searchContactsByUserId(String userId) {
-        if (TextUtils.isEmpty(userId)) {
-            return;
-        }
-        CallingInfoManager.getInstance().getUserInfoByUserId(userId, new CallingInfoManager.UserCallback() {
-            @Override
-            public void onSuccess(com.tencent.liteav.trtccalling.model.impl.UserModel model) {
-                mSearchModel = new UserModel();
-                mSearchModel.userId = model.userId;
-                mSearchModel.userName = TextUtils.isEmpty(model.userName) ? model.userId : model.userName;
-                showSearchUserModel(mSearchModel);
-            }
-
-            @Override
-            public void onFailed(int code, String msg) {
-                showSearchUserModel(null);
-                ToastUtils.showLong(getString(R.string.trtccalling_toast_search_fail, msg));
-            }
-        });
-    }
-
-    private void initData() {
-        // 初始化calling组件
-        TUICallingManager.sharedInstance(this);
+    private void login() {
+        // 初始化并登录
+        TUICallingImpl.sharedInstance(this);
         final UserModel userModel = UserModelManager.getInstance().getUserModel();
         V2TIMSDKConfig config = new V2TIMSDKConfig();
         config.setLogLevel(V2TIMSDKConfig.V2TIM_LOG_DEBUG);
@@ -343,17 +83,15 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onKickedOffline() {
-                Log.d(TAG, "You have been kicked off the line. Please log in again!");
-                mIsKickedOffline = true;
-                checkUserStatus();
+                Log.d(TAG, "You have been kicked off the line. Please login again!");
+                ToastUtils.showLong(getString(R.string.trtccalling_user_kicked_offline));
                 startLoginActivity();
             }
 
             @Override
             public void onUserSigExpired() {
-                mIsUserSigExpired = true;
                 Log.d(TAG, "Your user signature information has expired");
-                checkUserStatus();
+                ToastUtils.showLong(getString(R.string.trtccalling_user_sig_expired));
                 startLoginActivity();
             }
         });
@@ -375,16 +113,72 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private boolean checkUserStatus() {
-        if (mIsKickedOffline) {
-            ToastUtils.showShort(getString(com.tencent.liteav.trtccalling.R.string.trtccalling_user_kicked_offline));
-        }
-        if (mIsUserSigExpired) {
-            ToastUtils.showShort(getString(com.tencent.liteav.trtccalling.R.string.trtccalling_user_sig_expired));
-        }
-        return !mIsKickedOffline && !mIsUserSigExpired;
+    private void initView() {
+        mRvList = (RecyclerView) findViewById(R.id.main_recycler_view);
+        mTRTCItemEntityList = createTRTCItems();
+        mTRTCRecyclerViewAdapter = new TRTCRecyclerViewAdapter(mContext, mTRTCItemEntityList,
+                new OnItemClickListener() {
+                    @Override
+                    public void onItemClick(int position) {
+                        TRTCItemEntity entity = mTRTCItemEntityList.get(position);
+                        Intent intent = new Intent(mContext, entity.mTargetClass);
+                        intent.putExtra("TITLE", entity.mTitle);
+                        intent.putExtra("TYPE", entity.mType);
+                        startActivity(intent);
+                    }
+                });
+        mRvList.setLayoutManager(new GridLayoutManager(mContext, 1));
+        mRvList.setAdapter(mTRTCRecyclerViewAdapter);
+        TextView logoutTv = (TextView) findViewById(R.id.tv_login_out);
+        logoutTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLogoutDialog();
+            }
+        });
     }
 
+    protected List<TRTCItemEntity> createTRTCItems() {
+        List<TRTCItemEntity> list = new ArrayList<>();
+        list.add(new TRTCItemEntity(getString(R.string.audio_call),
+                getString(R.string.app_tv_voice_call_tips),
+                R.drawable.ic_audio_call, TUICallingEntranceActivity.TYPE_AUDIO_CALL,
+                TUICallingEntranceActivity.class));
+        list.add(new TRTCItemEntity(getString(R.string.video_call),
+                getString(R.string.app_tv_video_call_tips),
+                R.drawable.ic_video_call, TUICallingEntranceActivity.TYPE_VIDEO_CALL,
+                TUICallingEntranceActivity.class));
+        list.add(new TRTCItemEntity(getString(R.string.app_item_multi_audio_call),
+                getString(R.string.app_tv_voice_call_tips),
+                R.drawable.ic_audio_call, TUICallingEntranceActivity.TYPE_MULTI_AUDIO_CALL,
+                TUICallingEntranceActivity.class));
+        list.add(new TRTCItemEntity(getString(R.string.app_item_multi_video_call),
+                getString(R.string.app_tv_video_call_tips),
+                R.drawable.ic_video_call, TUICallingEntranceActivity.TYPE_MULTI_VIDEO_CALL,
+                TUICallingEntranceActivity.class));
+        return list;
+    }
+
+    public class TRTCItemEntity {
+        public String mTitle;
+        public String mContent;
+        public int    mIconId;
+        public Class  mTargetClass;
+        public int    mType;
+
+        public TRTCItemEntity(String title, String content, int iconId, int type, Class targetClass) {
+            mTitle = title;
+            mContent = content;
+            mIconId = iconId;
+            mTargetClass = targetClass;
+            mType = type;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        showLogoutDialog();
+    }
 
     private void showLogoutDialog() {
         final Dialog dialog = new Dialog(this, R.style.logoutDialogStyle);
@@ -425,5 +219,81 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    public class TRTCRecyclerViewAdapter extends
+            RecyclerView.Adapter<TRTCRecyclerViewAdapter.ViewHolder> {
+        private Context              mContext;
+        private List<TRTCItemEntity> mItemEntities;
+        private OnItemClickListener  onItemClickListener;
+
+        public TRTCRecyclerViewAdapter(Context context, List<TRTCItemEntity> list,
+                                       OnItemClickListener onItemClickListener) {
+            this.mContext = context;
+            this.mItemEntities = list;
+            this.onItemClickListener = onItemClickListener;
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            private ImageView        mItemImg;
+            private TextView         mTitleTv;
+            private TextView         mDescription;
+            private ConstraintLayout mClItem;
+            private View             mBottomLine;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+                initView(itemView);
+            }
+
+            public void bind(final TRTCItemEntity model, final OnItemClickListener listener) {
+                mTitleTv.setText(model.mTitle);
+                mDescription.setText(model.mContent);
+                if (model.mIconId != 0) {
+                    mItemImg.setImageResource(model.mIconId);
+                }
+
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onItemClick(getLayoutPosition());
+                    }
+                });
+                boolean isShow = getLayoutPosition() == mItemEntities.size() - 1;
+                mBottomLine.setVisibility((isShow ? View.VISIBLE : View.GONE));
+            }
+
+            private void initView(final View itemView) {
+                mItemImg = (ImageView) itemView.findViewById(R.id.img_item);
+                mTitleTv = (TextView) itemView.findViewById(R.id.tv_title);
+                mClItem = (ConstraintLayout) itemView.findViewById(R.id.item_cl);
+                mDescription = (TextView) itemView.findViewById(R.id.tv_description);
+                mBottomLine = itemView.findViewById(R.id.bottom_line);
+            }
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            Context context = parent.getContext();
+            LayoutInflater inflater = LayoutInflater.from(context);
+            View view = inflater.inflate(R.layout.activity_entry_item, parent, false);
+            ViewHolder viewHolder = new ViewHolder(view);
+            return viewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            TRTCItemEntity item = mItemEntities.get(position);
+            holder.bind(item, onItemClickListener);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mItemEntities.size();
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 }

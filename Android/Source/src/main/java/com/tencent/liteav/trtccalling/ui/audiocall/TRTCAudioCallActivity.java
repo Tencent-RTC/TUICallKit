@@ -9,7 +9,7 @@ import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 
-import com.tencent.liteav.trtccalling.model.TUICalling;
+import com.tencent.liteav.trtccalling.TUICalling;
 import com.tencent.liteav.trtccalling.model.util.TUICallingConstants;
 import com.tencent.liteav.trtccalling.ui.base.BaseTUICallView;
 

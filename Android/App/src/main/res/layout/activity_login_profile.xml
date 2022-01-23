@@ -68,7 +68,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
         android:layout_marginRight="20dp"
-        android:background="@drawable/bg_login_button"
+        android:background="@drawable/btn_border"
         android:text="@string/app_title_register"
         android:textColor="@color/color_white"
         android:textSize="16sp"
