@@ -6,6 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 #import <Masonry/Masonry.h>
 #import <TUICore/UIView+TUIToast.h>
 #import "TRTCCalling.h"

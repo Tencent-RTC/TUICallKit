@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) CallUserModel *model;
 
-@property (nonatomic, weak) UIImageView *avatarImageView;
+@property (nonatomic, weak) UIView *renderView;
 
 @end
 

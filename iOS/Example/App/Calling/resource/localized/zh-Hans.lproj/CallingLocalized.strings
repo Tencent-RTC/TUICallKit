@@ -6,8 +6,8 @@
   
 */
 
-"Demo.TRTC.calling.youruserId" = "您的UserId: ";
-"Demo.TRTC.calling.searchUserId" = "搜索 UserId";
+"Demo.TRTC.calling.yourID" = "您的ID：";
+"Demo.TRTC.calling.searchID" = "搜索ID";
 "Demo.TRTC.calling.searching" = "搜索";
 "Demo.TRTC.calling.searchandcall" = "搜索添加已注册用户\n以发起通话";
 "Demo.TRTC.calling.callingbegan" = "进入通话";
@@ -19,11 +19,12 @@
 "Demo.TRTC.calling.callingbusy" = "忙线";
 "Demo.TRTC.calling.searchingfailed" = "查询失败";
 "Demo.TRTC.calling.cantinviteself" = "不能邀请自己";
+"Demo.TRTC.calling.add" = "添加";
+"Demo.TRTC.calling.delete" = "删除";
+"Demo.TRTC.calling.addedUser" = "已添加成员";
+"Demo.TRTC.calling.done" = "完成";
+"Demo.TRTC.calling.tips" = "未添加成员，请搜索添加成员";
 "Demo.TRTC.Streaming.call" = "呼叫";
-"App.PortalViewController.areyousureloginout" = "确定要退出登录吗？";
-"App.PortalViewController.cancel" = "取消";
-"App.PortalViewController.determine" = "确定";
-"Demo.TRTC.calling.calltitle" = "语音/视频通话";
-"Demo.TRTC.calling.callType" = "请选择通话方式";
-"Audio Call" = "语音通话";
-"Video Call" = "视频通话";
+
+"Demo.TRTC.Calling.othernetworkpoor" = "对方网络不佳";
+"Demo.TRTC.Calling.yournetworkpoor" = "己方网络不佳";

@@ -13,6 +13,7 @@
 #import "TUIGlobalization.h"
 #import "NSDictionary+TUISafe.h"
 #import "TRTCCalling+Signal.h"
+#import "TUICallingConstants.h"
 
 @interface TUICallingService () <TUIServiceProtocol, TUIExtensionProtocol>
 @property(nonatomic, strong) NSMutableArray *extentions;
@@ -58,7 +59,10 @@
     if (![TUICommonUtil checkDictionaryValid:param]) {
         return nil;
     }
-    
+    TUICallingConstants.component = TC_TIMCALLING_COMPONENT;
+    if (param && [param tui_objectForKey:@"component" asClass:NSNumber.class]) {
+        TUICallingConstants.component = [[param tui_objectForKey:@"component" asClass:NSNumber.class] intValue];
+    }
     if ([method isEqualToString:TUICore_TUICallingService_ShowCallingViewMethod]) {
         NSArray *userIDs = [param tui_objectForKey:TUICore_TUICallingService_ShowCallingViewMethod_UserIDsKey asClass:NSArray.class];
         TUICallingType callingType = (TUICallingType)[[param tui_objectForKey:TUICore_TUICallingService_ShowCallingViewMethod_CallTypeKey asClass:NSString.class] integerValue];
@@ -83,6 +87,10 @@
 - (NSDictionary *)getExtensionInfo:(NSString *)key param:(nullable NSDictionary *)param {
     if (!key || ![TUICommonUtil checkDictionaryValid:param]) {
         return nil;
+    }
+    TUICallingConstants.component = TC_TIMCALLING_COMPONENT;
+    if (param && [param tui_objectForKey:@"component" asClass:NSNumber.class]) {
+        TUICallingConstants.component = [[param tui_objectForKey:@"component" asClass:NSNumber.class] intValue];
     }
     NSString *call_groupID = [param tui_objectForKey:TUICore_TUIChatExtension_GetMoreCellInfo_GroupID asClass:NSString.class];
     NSString *call_userID = [param tui_objectForKey:TUICore_TUIChatExtension_GetMoreCellInfo_UserID asClass:NSString.class];

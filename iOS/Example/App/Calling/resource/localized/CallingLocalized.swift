@@ -7,8 +7,8 @@
 
 import Foundation
 
-//MARK: Calling
 let CallingLocalizeTableName = "CallingLocalized"
-func TRTCCallingLocalize(_ key: String) -> String {
+
+func CallingLocalize(_ key: String) -> String {
     return localizeFromTable(key: key, table: CallingLocalizeTableName)
 }

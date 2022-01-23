@@ -161,11 +161,11 @@ class TRTCRegisterRootView: UIView {
         }
         headImageView.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
-            make.top.equalTo(titleLabel.snp_bottom).offset(40)
+            make.top.equalTo(titleLabel.snp.bottom).offset(40)
             make.size.equalTo(CGSize(width: 100, height: 100))
         }
         textField.snp.makeConstraints { (make) in
-            make.top.equalTo(headImageView.snp_bottom).offset(convertPixel(h: 40))
+            make.top.equalTo(headImageView.snp.bottom).offset(convertPixel(h: 40))
             make.leading.equalToSuperview().offset(convertPixel(w: 40))
             make.trailing.equalToSuperview().offset(-convertPixel(w: 40))
             make.height.equalTo(convertPixel(h: 57))
@@ -175,12 +175,12 @@ class TRTCRegisterRootView: UIView {
             make.height.equalTo(1)
         }
         descLabel.snp.makeConstraints { (make) in
-            make.top.equalTo(textField.snp_bottom).offset(10)
+            make.top.equalTo(textField.snp.bottom).offset(10)
             make.leading.equalToSuperview().offset(convertPixel(w: 40))
             make.trailing.lessThanOrEqualToSuperview().offset(convertPixel(w: -40))
         }
         registBtn.snp.makeConstraints { (make) in
-            make.top.equalTo(descLabel.snp_bottom).offset(convertPixel(h: 40))
+            make.top.equalTo(descLabel.snp.bottom).offset(convertPixel(h: 40))
             make.leading.equalToSuperview().offset(convertPixel(w: 20))
             make.trailing.equalToSuperview().offset(-convertPixel(w: 20))
             make.height.equalTo(convertPixel(h: 52))
@@ -246,9 +246,9 @@ extension TRTCRegisterRootView : UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let maxCount = 20
         guard let textFieldText = textField.text,
-            let rangeOfTextToReplace = Range(range, in: textFieldText) else {
-                return false
-        }
+              let rangeOfTextToReplace = Range(range, in: textFieldText) else {
+                  return false
+              }
         let substringToReplace = textFieldText[rangeOfTextToReplace]
         let count = textFieldText.count - substringToReplace.count + string.count
         let res = count <= maxCount

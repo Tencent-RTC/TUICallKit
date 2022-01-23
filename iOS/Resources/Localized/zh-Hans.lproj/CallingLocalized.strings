@@ -18,7 +18,7 @@
 "Demo.TRTC.calling.searching" = "搜索";
 "Demo.TRTC.calling.searchandcall" = "搜索添加已注册用户\n以发起通话";
 "Demo.TRTC.calling.callingbegan" = "进入通话";
-"Demo.TRTC.calling.callingcancel" = "通话取消";
+"Demo.TRTC.calling.callingcancel" = "取消了通话";
 "Demo.TRTC.calling.callingtimeout" = "通话超时";
 "Demo.TRTC.calling.callingrefuse" = "拒绝了通话";
 "Demo.TRTC.calling.callingleave" = "离开了通话";

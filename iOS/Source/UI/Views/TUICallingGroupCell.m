@@ -18,7 +18,9 @@
 
 @property (nonatomic, strong) UIView *bgView;
 
-@property (nonatomic, strong) UIImageView * volumeImageView;
+@property (nonatomic, strong) UIImageView *avatarImageView;
+
+@property (nonatomic, strong) UIImageView *volumeImageView;
 
 @end
 
@@ -28,25 +30,20 @@
     _model = model;
     self.titleLabel.text = model.name ?: model.userId;
     [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:model.avatar] placeholderImage:[TUICommonUtil getBundleImageWithName:@"userIcon"]];
-    self.bgView.hidden = model.isEnter;
+    self.avatarImageView.hidden = model.isVideoAvaliable;
+    self.bgView.hidden = model.isEnter || model.isVideoAvaliable || model.isAudioAvaliable;
     
     // 处理麦克风图标问题
     if (model.isAudioAvaliable) {
         [self.volumeImageView setImage:[TUICommonUtil getBundleImageWithName:@"ic_mute"]];
         
-        if (model.volume >= 0.50) {
+        if (model.volume >= 0.30) {
             self.volumeImageView.hidden = NO;
         } else {
             self.volumeImageView.hidden = YES;
         }
-        return;
     } else {
-        if (model.isEnter) {
-            [self.volumeImageView setImage:[TUICommonUtil getBundleImageWithName:@"ic_mute_on"]];
-            self.volumeImageView.hidden = NO;
-        } else {
-            self.volumeImageView.hidden = YES;
-        }
+        self.volumeImageView.hidden = YES;
     }
 }
 
@@ -61,6 +58,10 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
+        // renderView
+        UIView *renderView = [[UIView alloc] initWithFrame:CGRectZero];
+        [self.contentView addSubview:renderView];
+        self.renderView = renderView;
         // avatarImageView
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         imageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -71,11 +72,22 @@
         bgView.backgroundColor = [UIColor t_colorWithHexString:@"#000000" alpha:0.3];
         [self.contentView addSubview:bgView];
         self.bgView = bgView;
+        
         // loadingImageView
+        NSMutableArray *imageArray = [NSMutableArray array];
+        for (int i = 1; i <= 8; i++) {
+            NSString *iamgeName = [NSString stringWithFormat:@"loading-%d", i];
+            [imageArray addObject:[TUICommonUtil getBundleImageWithName:iamgeName]];
+        }
+        
         UIImageView *loadingImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         loadingImageView.contentMode = UIViewContentModeScaleAspectFill;
-        loadingImageView.image = [TUICommonUtil getBundleImageWithName:@"calling_loading"];
+        loadingImageView.animationImages = [imageArray copy];
+        loadingImageView.animationDuration = 2;
+        loadingImageView.animationRepeatCount = 0;
+        [loadingImageView  startAnimating];
         [self.bgView addSubview:loadingImageView];
+        
         // titleLabel
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
         label.textColor = [UIColor t_colorWithHexString:@"#FFFFFF"];
@@ -90,6 +102,9 @@
         self.volumeImageView.hidden = YES;
         self.volumeImageView = volumeImageView;
         
+        [renderView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self.contentView);
+        }];
         [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.edges.equalTo(self.contentView);
         }];
@@ -102,7 +117,7 @@
         }];
         [label mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.equalTo(self.contentView).offset(10);
-            make.bottom.equalTo(self.contentView).offset(-10);
+            make.bottom.equalTo(self.contentView).offset(-5);
             make.right.equalTo(self.volumeImageView.mas_left).offset(-5);
         }];
         [volumeImageView mas_makeConstraints:^(MASConstraintMaker *make) {

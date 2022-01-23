@@ -277,7 +277,7 @@ static CGFloat const kSmallVideoViewWidth = 100.0f;
     
     [[TRTCCalling shareInstance] closeCamara];
     if (self.isHandsFreeOn) {
-        [self hangsfreeTouchEvent:nil isShowToast:NO];
+        [self hangsfreeTouchEvent:nil];
     }
     [self setCurCallingState:self.curCallingState];
 }
@@ -468,7 +468,6 @@ static CGFloat const kSmallVideoViewWidth = 100.0f;
     self.isMicMute = !self.isMicMute;
     [[TRTCCalling shareInstance] setMicMute:self.isMicMute];
     [self.muteBtn configBackgroundImage:[TUICommonUtil getBundleImageWithName:self.isMicMute ? @"ic_mute_on" : @"ic_mute"]];
-    [self makeToast:self.isMicMute ? CallingLocalize(@"Demo.TRTC.calling.muteon") : CallingLocalize(@"Demo.TRTC.calling.muteoff")];
 }
 
 - (void)hangupTouchEvent:(UIButton *)sender {
@@ -478,17 +477,9 @@ static CGFloat const kSmallVideoViewWidth = 100.0f;
 }
 
 - (void)hangsfreeTouchEvent:(UIButton *)sender {
-    [self hangsfreeTouchEvent:sender isShowToast:YES];
-}
-
-- (void)hangsfreeTouchEvent:(UIButton *)sender isShowToast:(BOOL)isShowToast {
     self.isHandsFreeOn = !self.isHandsFreeOn;
     [[TRTCCalling shareInstance] setHandsFree:self.isHandsFreeOn];
     [self.handsfreeBtn configBackgroundImage:[TUICommonUtil getBundleImageWithName:self.isHandsFreeOn ? @"ic_handsfree_on" : @"ic_handsfree"]];
-    
-    if (isShowToast) {
-        [self makeToast:self.isHandsFreeOn ? CallingLocalize(@"Demo.TRTC.calling.handsfreeon") : CallingLocalize(@"Demo.TRTC.calling.handsfreeoff")];
-    }
 }
 
 - (void)switchCameraTouchEvent:(UIButton *)sender {
@@ -566,10 +557,7 @@ static CGFloat const kSmallVideoViewWidth = 100.0f;
                 [self.localPreView setUserInteractionEnabled:NO];
                 [remoteView setUserInteractionEnabled:NO];
             } else {
-                if (self.localPreView.isHidden || remoteView.isHidden) {
-                    [self.localPreView setUserInteractionEnabled:YES];
-                    [remoteView setUserInteractionEnabled:YES];
-                }
+                [self.localPreView setUserInteractionEnabled:YES];
             }
         }];
     } else {
@@ -586,10 +574,7 @@ static CGFloat const kSmallVideoViewWidth = 100.0f;
                 [self.localPreView setUserInteractionEnabled:NO];
                 [remoteView setUserInteractionEnabled:NO];
             } else {
-                if (self.localPreView.isHidden || remoteView.isHidden) {
-                    [self.localPreView setUserInteractionEnabled:YES];
-                    [remoteView setUserInteractionEnabled:YES];
-                }
+                [remoteView setUserInteractionEnabled:YES];
             }
         }];
     }
