@@ -6,7 +6,7 @@
 **TUI组件化解决方案**是腾讯云TRTC针对直播、语聊、视频通话等推出的低代码解决方案，依托腾讯在音视频&通信领域的技术积累，帮助开发者快速实现相关业务场景，聚焦核心业务，助力业务起飞！
 
 - [视频互动直播-TUILiveRoom](https://github.com/tencentyun/TUILiveRoom/)
-- [多人视频会议-TUIMeeting](https://github.com/tencentyun/TUIMeeting/)
+- [多人音视频互动-TUIRoom](https://github.com/tencentyun/TUIRoom/)
 - [语音聊天室-TUIVoiceRoom](https://github.com/tencentyun/TUIVoiceRoom/)
 - [语音沙龙-TUIChatSalon](https://github.com/tencentyun/TUIChatSalon/)
 - [Karaoke-TUIKaraoke](https://github.com/tencentyun/TUIKaraoke/)
