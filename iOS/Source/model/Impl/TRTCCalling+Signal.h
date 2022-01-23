@@ -25,7 +25,11 @@
 - (void)onReceiveGroupCallAPNs:(V2TIMSignalingInfo *)signalingInfo;
 
 /// 检查是否满足自动挂断逻辑
-- (void)checkAutoHangUp;
+/// @param leaveUser 离开的房间的用户id
+- (void)preExitRoom:(NSString *)leaveUser;
+
+/// 发送 C2C 自定义（信令）消息
+- (void)sendInviteAction:(CallAction)action user:(NSString *)user model:(CallModel *)model;
 
 @end
 
@@ -34,8 +38,12 @@
 
 /// 邀请人 ID，如果邀请失败，为nil
 @property (nonatomic, copy) NSString *curCallID;
+/// 不存在GroupID的处理
+@property (nonatomic, strong) NSMutableDictionary *curCallIdDic;
 /// 群邀请的群 ID
 @property (nonatomic, copy) NSString *curGroupID;
+/// 被邀请的所有用户 ID
+@property (nonatomic, strong) NSMutableArray<NSString *> *calleeUserIDs;
 /// 记录当前正在邀请成员的列表(被叫：会拼接上主动呼叫者。。。    主叫：不包含主叫者)
 @property (nonatomic, strong) NSMutableArray *curInvitingList;
 /// 记录当前已经进入房间成功的成员列表

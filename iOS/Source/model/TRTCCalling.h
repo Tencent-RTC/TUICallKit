@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 typedef void(^CallingActionCallback)(void);
 typedef void(^ErrorCallback)(int code, NSString *des);
 
-@interface TRTCCalling : NSObject<TRTCCloudDelegate,V2TIMSignalingListener>
+@interface TRTCCalling : NSObject<TRTCCloudDelegate, V2TIMSignalingListener, V2TIMSimpleMsgListener>
 
 /// 单例对象
 + (TRTCCalling *)shareInstance;
@@ -51,6 +51,10 @@ NS_SWIFT_NAME(groupCall(userIDs:type:groupID:));
 /// 主动挂断通话
 - (void)hangup;
 
+/// 主动操作 - 忙线通话（发送忙线信令到主叫者）
+- (void)lineBusy;
+
+/// 切换到语音通话
 - (void)switchToAudio;
 
 - (int)checkAudioStatus;

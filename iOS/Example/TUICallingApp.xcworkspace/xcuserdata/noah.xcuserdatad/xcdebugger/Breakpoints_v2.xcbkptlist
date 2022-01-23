@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Bucket
-   uuid = "D32E7D7C-3EC9-4C6D-96FD-018715135BA5"
+   uuid = "FD40A4E3-6F86-422A-A0AA-AE747BD9F6EE"
    type = "0"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C31DEA33-CF36-4261-B01F-EE58412BF37D"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pods/SDWebImage/SDWebImage/Private/NSBezierPath+SDRoundedCorners.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
+            landmarkName = "+sd_bezierPathWithRoundedRect:byRoundingCorners:cornerRadius:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

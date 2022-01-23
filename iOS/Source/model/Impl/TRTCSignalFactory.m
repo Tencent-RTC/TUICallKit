@@ -13,21 +13,32 @@ static const NSUInteger SIGNALING_VERSION = 4;                  // 信令版本�
 
 @implementation TRTCSignalFactory
 
-+ (NSMutableDictionary *)packagingSignalingWithExtInfo:(NSString *)extInfo roomID:(NSUInteger)roomID cmd:(NSString *)cmd cmdInfo:(NSString *)cmdInfo message:(NSString *)message callType:(CallType)callType {
++ (NSMutableDictionary *)packagingSignalingWithExtInfo:(NSString *)extInfo
+                                                roomID:(NSUInteger)roomID
+                                                   cmd:(NSString *)cmd
+                                               cmdInfo:(NSString *)cmdInfo
+                                               message:(NSString *)message
+                                              callType:(CallType)callType {
     return [[self class] packagingSignalingWithExtInfo:extInfo roomID:roomID cmd:cmd cmdInfo:cmdInfo userIds:@[] message:message callType:callType];
 }
 
-+ (NSMutableDictionary *)packagingSignalingWithExtInfo:(NSString *)extInfo roomID:(NSUInteger)roomID cmd:(NSString *)cmd cmdInfo:(NSString *)cmdInfo userIds:(NSArray *)userIds message:(NSString *)message callType:(CallType)callType {
-    NSMutableDictionary *signalingDictionary = [NSMutableDictionary dictionaryWithDictionary:@{SIGNALING_EXTRA_KEY_VERSION:@(SIGNALING_VERSION),
-                                                                                               SIGNALING_EXTRA_KEY_BUSINESSID:SIGNALING_BUSINESSID,
-                                                                                               SIGNALING_EXTRA_KEY_PLATFORM:SIGNALING_PLATFORM,
-                                                                                               SIGNALING_EXTRA_KEY_EXTINFO:extInfo,
-                                                                                               SIGNALING_EXTRA_KEY_CALL_TYPE:@(callType),
-                                                                                               SIGNALING_EXTRA_KEY_DATA:@{SIGNALING_EXTRA_KEY_ROOMID:@(roomID),
-                                                                                                                          SIGNALING_EXTRA_KEY_CMD:cmd,
-                                                                                                                          SIGNALING_EXTRA_KEY_USERIDS:userIds,
-                                                                                                                          SIGNALING_EXTRA_KEY_CMDINFO:cmdInfo,
-                                                                                                                          SIGNALING_EXTRA_KEY_MESSAGE:message}}];
++ (NSMutableDictionary *)packagingSignalingWithExtInfo:(NSString *)extInfo
+                                                roomID:(NSUInteger)roomID
+                                                   cmd:(NSString *)cmd
+                                               cmdInfo:(NSString *)cmdInfo
+                                               userIds:(NSArray *)userIds
+                                               message:(NSString *)message
+                                              callType:(CallType)callType {
+    NSMutableDictionary *signalingDictionary = [@{SIGNALING_EXTRA_KEY_VERSION:@(SIGNALING_VERSION),
+                                                  SIGNALING_EXTRA_KEY_BUSINESSID:SIGNALING_BUSINESSID,
+                                                  SIGNALING_EXTRA_KEY_PLATFORM:SIGNALING_PLATFORM,
+                                                  SIGNALING_EXTRA_KEY_EXTINFO:extInfo,
+                                                  SIGNALING_EXTRA_KEY_CALL_TYPE:@(callType),
+                                                  SIGNALING_EXTRA_KEY_DATA:@{SIGNALING_EXTRA_KEY_ROOMID:@(roomID),
+                                                                             SIGNALING_EXTRA_KEY_CMD:cmd,
+                                                                             SIGNALING_EXTRA_KEY_USERIDS:userIds,
+                                                                             SIGNALING_EXTRA_KEY_CMDINFO:cmdInfo,
+                                                                             SIGNALING_EXTRA_KEY_MESSAGE:message}} mutableCopy];
     return signalingDictionary;
 }
 

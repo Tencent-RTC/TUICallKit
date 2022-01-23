@@ -7,6 +7,8 @@
 
 #import "TUICallingConstants.h"
 
+static int _component = TC_TUICALLING_COMPONENT;
+
 @implementation TUICallingConstants
 
 NSString *const SIGNALING_EXTRA_KEY_VERSION = @"version";       // 协议版本信息
@@ -37,6 +39,10 @@ NSString *const SIGNALING_CMD_SWITCHTOVOICECALL = @"switchToAudio";        // �
 
 NSString *const SIGNALING_MESSAGE_LINEBUSY = @"lineBusy";       // 拒绝忙线
 
+NSString *const SIGNALING_CUSTOM_CALL_ACTION = @"call_action";
+NSString *const SIGNALING_CUSTOM_CALLID = @"callid";
+NSString *const SIGNALING_CUSTOM_USER = @"user";
+
 // onCallEvent常用类型定义
 NSString *const EVENT_CALL_HANG_UP = @"Hangup";
 NSString *const EVENT_CALL_LINE_BUSY = @"LineBusy";
@@ -46,5 +52,16 @@ NSString *const EVENT_CALL_NO_RESP = @"NoResp";
 NSString *const EVENT_CALL_SUCCEED = @"Succeed";
 NSString *const EVENT_CALL_START = @"Start";
 NSString *const EVENT_CALL_DECLINE = @"Decline";
+
+// 如果头像为空的默认头像
+NSString *const DEFAULT_AVATETR = @"https://imgcache.qq.com/qcloud/public/static//avatar1_100.20191230.png";
+
++ (int)component {
+    return _component;
+}
+
++ (void)setComponent:(int)component {
+    _component = component;
+}
 
 @end

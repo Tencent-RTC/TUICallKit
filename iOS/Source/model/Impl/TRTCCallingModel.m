@@ -6,6 +6,7 @@
 //
 
 #import "TRTCCallingModel.h"
+#import "TUICallingConstants.h"
 
 int SIGNALING_EXTRA_KEY_TIME_OUT = 30;
 
@@ -27,7 +28,6 @@ int SIGNALING_EXTRA_KEY_TIME_OUT = 30;
 
 @end
 
-
 @implementation TRTCCallingUserModel
 
 - (id)copyWithZone:(NSZone *)zone {
@@ -38,8 +38,11 @@ int SIGNALING_EXTRA_KEY_TIME_OUT = 30;
     return model;
 }
 
-@end
+- (NSString *)avatar {
+    return _avatar ?: DEFAULT_AVATETR;
+}
 
+@end
 
 @implementation CallUserModel
 

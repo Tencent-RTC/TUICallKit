@@ -11,6 +11,7 @@
 #import "TRTCCallingHeader.h"
 #import "CallingLocalized.h"
 #import "TUILogin.h"
+#import "TUICallingConstants.h"
 
 @interface TRTCCalling ()
 
@@ -33,7 +34,7 @@
     return g_sharedInstance;
 }
 
-- (instancetype) init {
+- (instancetype)init {
     self = [super init];
     if (self) {
         self.curLastModel = [[CallModel alloc] init];
@@ -68,6 +69,8 @@
         self.curLastModel.action = CallAction_Call;
         self.curLastModel.calltype = type;
         self.curRoomID = [TRTCCallingUtils generateRoomID];
+        self.curCallIdDic = [NSMutableDictionary dictionary];
+        self.calleeUserIDs = [@[] mutableCopy];
         self.curGroupID = groupID;
         self.curType = type;
         self.isOnCalling = YES;
@@ -84,17 +87,24 @@
     }
     
     [self.curInvitingList addObjectsFromArray:newInviteList];
+    [self.calleeUserIDs addObjectsFromArray:newInviteList];
+    
     if (!(self.curInvitingList && self.curInvitingList.count > 0)) return;
     
     //  处理通话邀请 存在GroupID
-    if (self.curGroupID.length > 0) {
+    if ([self checkIsHasGroupIDCall]) {
         self.curCallID = [self invite:self.curGroupID action:CallAction_Call model:nil cmdInfo:nil];
-    } else {
-        // 1v1 使用，多人通话不使用，作用：音视频切换
-        self.currentCallingUserID = newInviteList.firstObject;
+        return;
+    }
+    
+    // 1v1 使用，多人通话不使用，作用：音视频切换
+    self.currentCallingUserID = newInviteList.firstObject;
+    
+    for (NSString *userID in self.curInvitingList) {
+        NSString *callID = [self invite:userID action:CallAction_Call model:nil cmdInfo:nil userIds:userIDs];
         
-        for (NSString *userID in self.curInvitingList) {
-            self.curCallID = [self invite:userID action:CallAction_Call model:nil cmdInfo:nil userIds:userIDs];
+        if (callID && callID.length > 0) {
+            [self.curCallIdDic setValue:callID forKey:userID];
         }
     }
 }
@@ -103,13 +113,13 @@
 - (void)accept {
     TRTCLog(@"Calling - accept");
     [self enterRoom];
-    self.currentCallingUserID = self.curGroupID.length > 0 ? self.curGroupID : self.curSponsorForMe;
+    self.currentCallingUserID = [self checkIsHasGroupIDCall] ? self.curGroupID : self.curSponsorForMe;
 }
 
 // 拒绝当前通话
 - (void)reject {
     TRTCLog(@"Calling - reject");
-    [self invite:self.curGroupID.length > 0 ? self.curGroupID : self.curSponsorForMe action:CallAction_Reject model:nil cmdInfo:nil];
+    [self invite:[self checkIsHasGroupIDCall] ? self.curGroupID : self.curSponsorForMe action:CallAction_Reject model:nil cmdInfo:nil];
     self.isOnCalling = NO;
     self.currentCallingUserID = nil;
 }
@@ -123,17 +133,6 @@
         return;
     }
     
-    if (self.curGroupID.length > 0) {
-        [self groupHangup];
-    } else {
-        [self singleHangup];
-    }
-    
-    self.isOnCalling = NO;
-}
-
-- (void)groupHangup {
-    TRTCLog(@"Calling - GroupHangup");
     __block BOOL hasCallUser = NO;
     [self.curRoomList enumerateObjectsUsingBlock:^(NSString *user, NSUInteger idx, BOOL * _Nonnull stop) {
         if ((user && user.length > 0) && ![self.curInvitingList containsObject:user]) {
@@ -143,22 +142,24 @@
         }
     }];
     
-    if (!hasCallUser) {
+    // 非GroupID 组通话处理，主叫需要取消未接通的通话
+    if (![self checkIsHasGroupIDCall] || hasCallUser == NO) {
         TRTCLog(@"Calling - GroupHangup Send CallAction_Cancel");
         [self.curInvitingList enumerateObjectsUsingBlock:^(NSString *invitedId, NSUInteger idx, BOOL * _Nonnull stop) {
-            [self invite:@"" action:CallAction_Cancel model:nil cmdInfo:nil];
+            NSString *receiver = [self checkIsHasGroupIDCall] ? @"" : invitedId;
+            [self invite:receiver action:CallAction_Cancel model:nil cmdInfo:nil];
         }];
     }
     
     [self quitRoom];
+    self.isOnCalling = NO;
 }
 
-- (void)singleHangup {
-    TRTCLog(@"Calling - SingleHangup curInvitingList: %@", self.curInvitingList);
-    if (self.curInvitingList.firstObject) {
-        [self invite:self.curInvitingList.firstObject action:CallAction_Cancel model:nil cmdInfo:nil];
-    }
-    [self quitRoom];
+- (void)lineBusy {
+    TRTCLog(@"Calling - lineBusy");
+    [self invite:[self checkIsHasGroupIDCall] ? self.curGroupID : self.curSponsorForMe action:CallAction_Linebusy model:nil cmdInfo:nil];
+    self.isOnCalling = NO;
+    self.currentCallingUserID = nil;
 }
 
 - (void)switchToAudio {
@@ -193,6 +194,8 @@
         self.curLastModel = [[CallModel alloc] init];
         self.curInvitingList = [NSMutableArray array];
         self.curRoomList = [NSMutableArray array];
+        self.curCallIdDic = [NSMutableDictionary dictionary];
+        self.calleeUserIDs = [@[] mutableCopy];
     }
     _isOnCalling = isOnCalling;
 }
@@ -264,7 +267,7 @@
     [[TRTCCloud sharedInstance] setVideoEncoderParam:videoEncParam];
     
     [[TRTCCloud sharedInstance] setDelegate:self];
-    [self setFramework:5];
+    [self setFramework];
     [[TRTCCloud sharedInstance] enterRoom:param appScene:TRTCAppSceneVideoCall];
     [[TRTCCloud sharedInstance] startLocalAudio];
     [[TRTCCloud sharedInstance] enableAudioVolumeEvaluation:300];
@@ -272,9 +275,10 @@
     self.isHandsFreeOn = YES;
 }
 
-- (void)setFramework:(int)framework {
+- (void)setFramework {
     NSDictionary *jsonDic = @{@"api": @"setFramework",
-                              @"params":@{@"framework": @(framework)}};
+                              @"params":@{@"framework": @(TC_TRTC_FRAMEWORK),
+                                          @"component": @(TUICallingConstants.component)}};
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDic options:NSJSONWritingPrettyPrinted error:nil];
     NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     [[TRTCCloud sharedInstance] callExperimentalAPI: jsonString];
@@ -349,7 +353,7 @@
         }
         
         if (self.isBeingCalled) {
-            [self invite:self.curGroupID.length > 0 ? self.curGroupID : self.curSponsorForMe action:CallAction_Accept model:nil cmdInfo:nil];
+            [self invite:[self checkIsHasGroupIDCall] ? self.curGroupID : self.curSponsorForMe action:CallAction_Accept model:nil cmdInfo:nil];
         }
     }
 }
@@ -370,6 +374,9 @@
         extInfo:(nullable NSDictionary*)extInfo {
     TRTCLog(@"Calling - onRemoteUserLeaveRoom errCode: %ld errMsg: %@", errCode, errMsg);
     self.curLastModel.code = errCode;
+    if ([self canDelegateRespondMethod:@selector(onError:msg:)]) {
+        [self.delegate onError:errCode msg:errMsg];
+    };
     if ([self canDelegateRespondMethod:@selector(onCallEnd)]) {
         [self.delegate onCallEnd];
     }
@@ -396,6 +403,9 @@
 
 - (void)onRemoteUserLeaveRoom:(NSString *)userID reason:(NSInteger)reason {
     TRTCLog(@"Calling - onRemoteUserLeaveRoom userID: %@ reason: %d", userID, reason);
+    // C2C 多人通话添加 - A呼叫B、C， B接通后挂断，C接听，C需要知道B的Accept 和 Reject回调。
+    [self sendInviteAction:CallAction_Reject user:userID model:nil];
+    
     // C2C curInvitingList 不要移除 userID，如果是自己邀请的对方，这里移除后，最后发结束信令的时候找不到人
     if ([self.curInvitingList containsObject:userID]) {
         [self.curInvitingList removeObject:userID];
@@ -406,7 +416,7 @@
     if ([self canDelegateRespondMethod:@selector(onUserLeave:)]) {
         [self.delegate onUserLeave:userID];
     }
-    [self checkAutoHangUp];
+    [self preExitRoom:userID];
 }
 
 - (void)onUserAudioAvailable:(NSString *)userID available:(BOOL)available {
@@ -436,6 +446,11 @@
 }
 
 #pragma mark - Private Method
+
+// 检查是否为存在GroupID的群通话
+- (BOOL)checkIsHasGroupIDCall {
+    return (self.curGroupID.length > 0);
+}
 
 - (NSString *)currentLoginUserId {
     return [[V2TIMManager sharedInstance] getLoginUser];
