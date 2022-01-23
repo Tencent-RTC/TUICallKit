@@ -20,6 +20,7 @@
 #import "TRTCGCDTimer.h"
 #import "TUICallingAudioPlayer.h"
 #import "TUICallingConstants.h"
+#import <TUICore/TUIDefine.h>
 
 typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
     TUICallingUserRemoveReasonLeave,
@@ -32,37 +33,26 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 
 /// 存储监听者对象
 @property (nonatomic, weak) id<TUICallingListerner> listener;
-
 ///Calling 主视图
 @property (nonatomic, strong) TUICallingBaseView *callingView;
-
 /// 记录当前的呼叫类型  语音、视频
 @property (nonatomic, assign) TUICallingType currentCallingType;
-
 /// 记录当前的呼叫用户类型  主动、被动
 @property (nonatomic, assign) TUICallingRole currentCallingRole;
-
 /// 铃声的资源地址
 @property (nonatomic, copy) NSString *bellFilePath;
-
 /// 记录是否开启静音模式     需考虑恢复默认页面
 @property (nonatomic, assign) BOOL enableMuteMode;
-
 /// 记录是否开启悬浮窗
 @property (nonatomic, assign) BOOL enableFloatWindow;
-
 /// 记录是否自定义视图
 @property (nonatomic, assign) BOOL enableCustomViewRoute;
-
 /// 记录IM专属 groupID
 @property (nonatomic, copy) NSString *groupID;
-
 /// 记录原始userIDs数据（不包括自己）
 @property (nonatomic, strong) NSArray<NSString *> *userIDs;
-
 /// 记录计时器名称
 @property (nonatomic, copy) NSString *timerName;
-
 /// 记录通话时间 单位：秒
 @property (nonatomic, assign) NSInteger totalTime;
 
@@ -97,14 +87,6 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
     if (![TUICommonUtil checkArrayValid:userIDs]) return;
     
     self.userIDs = [NSArray arrayWithArray:userIDs];
-    
-    if (self.listener && [self.listener respondsToSelector:@selector(shouldShowOnCallView)]) {
-        if (![self.listener shouldShowOnCallView]) {
-            [self onLineBusy:@""]; // 仅仅提示用户忙线，不做calling处理
-            return;
-        }
-    }
-    
     self.currentCallingType = type;
     self.currentCallingRole = TUICallingRoleCall;
     
@@ -254,6 +236,12 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 
 -(void)onError:(int)code msg:(NSString * _Nullable)msg {
     NSLog(@"onError: code %d, msg %@", code, msg);
+    NSString *toast = [NSString stringWithFormat:@"Error code: %d, Message: %@", code, msg];
+    if (code == ERR_ROOM_ENTER_FAIL) {
+        [self makeToast:toast duration:3 position:TUICSToastPositionCenter];
+    } else if (code != ERR_INVALID_PARAMETERS) {
+        [self makeToast:toast];
+    }
     [self handleCallEvent:TUICallingEventCallFailed message:msg];
 }
 
@@ -281,6 +269,14 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
     NSLog(@"log: onInvited sponsor:%@ userIds:%@", sponsor, userIDs);
     
     if (![TUICommonUtil checkArrayValid:userIDs]) return;
+    
+    if (self.listener && [self.listener respondsToSelector:@selector(shouldShowOnCallView)]) {
+        if (![self.listener shouldShowOnCallView]) {
+            [[TRTCCalling shareInstance] lineBusy];
+            [self onLineBusy:@""]; // 仅仅提示用户忙线，不做calling处理
+            return;
+        }
+    }
     
     self.userIDs = [NSArray arrayWithArray:userIDs];
     self.currentCallingRole = TTUICallingRoleCalled;
@@ -367,7 +363,6 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
         [weakSelf enableAutoLockScreen:NO];
         CallUserModel *userModel = [weakSelf covertUser:userInfo];
         [weakSelf.callingView enterUser:userModel];
-        [weakSelf makeToast: [NSString stringWithFormat:@"%@ %@", userModel.name ?:userModel.userId,  CallingLocalize(@"Demo.TRTC.calling.callingbegan")] ];
     } fail:nil];
 }
 
@@ -393,7 +388,7 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 
 - (void)onCallingCancel:(NSString *)uid {
     NSLog(@"log: onCallingCancel: %@", uid);
-    [self makeToast:CallingLocalize(@"Demo.TRTC.calling.callingcancel")];
+    [self makeToast:CallingLocalize(@"Demo.TRTC.calling.callingcancel") uid:uid];
     [self handleCallEnd];
     [self handleCallEvent:TUICallingEventCallFailed message:EVENT_CALL_CNACEL];
 }
@@ -429,6 +424,7 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
     
     if (user) {
         CallUserModel *newUser = user;
+        newUser.isEnter = YES;
         newUser.volume = (CGFloat)volume / 100;
         [self.callingView updateUserVolume:newUser];
     }
@@ -464,29 +460,32 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
         
         CallUserModel *callUserModel = [weakSelf covertUser:userInfo];
         [weakSelf.callingView leaveUser:callUserModel];
-        NSString *toast = callUserModel.name ?: @"";
         
+        NSString *toast = @"";
         switch (removeReason) {
-            case TUICallingUserRemoveReasonLeave:
-                toast = [NSString stringWithFormat:@"%@%@", toast, CallingLocalize(@"Demo.TRTC.calling.callingleave")];
-                break;
             case TUICallingUserRemoveReasonReject:
-                toast = [NSString stringWithFormat:@"%@%@", toast, CallingLocalize(@"Demo.TRTC.calling.callingrefuse")];
-                [self handleCallEvent:TUICallingEventCallFailed message:EVENT_CALL_HANG_UP];
+                if (![TRTCCalling shareInstance].isBeingCalled) {
+                    toast = CallingLocalize(@"Demo.TRTC.calling.callingrefuse");
+                }
+                [weakSelf handleCallEvent:TUICallingEventCallFailed message:EVENT_CALL_HANG_UP];
                 break;
             case TUICallingUserRemoveReasonNoresp:
-                toast = [NSString stringWithFormat:@"%@%@", toast, CallingLocalize(@"Demo.TRTC.calling.callingnoresponse")];
-                [self handleCallEvent:TUICallingEventCallFailed message:EVENT_CALL_NO_RESP];
+                toast = CallingLocalize(@"Demo.TRTC.calling.callingnoresponse");
+                [weakSelf handleCallEvent:TUICallingEventCallFailed message:EVENT_CALL_NO_RESP];
                 break;
             case TUICallingUserRemoveReasonBusy:
-                toast = [NSString stringWithFormat:@"%@%@", toast, CallingLocalize(@"Demo.TRTC.calling.callingbusy")];
-                [self handleCallEvent:TUICallingEventCallFailed message:EVENT_CALL_LINE_BUSY];
+                toast = CallingLocalize(@"Demo.TRTC.calling.callingbusy");
+                [weakSelf handleCallEvent:TUICallingEventCallFailed message:EVENT_CALL_LINE_BUSY];
                 break;
             default:
                 break;
         }
         
-        [self makeToast:toast];
+        if (toast && toast.length > 0) {
+            NSString *userStr = callUserModel.name ?: callUserModel.userId;
+            toast = [NSString stringWithFormat:@"%@ %@", userStr, toast];
+            [weakSelf makeToast:toast];
+        }
     } fail:nil];
 }
 
@@ -506,9 +505,30 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 
 #pragma mark - Private method
 
+- (void)makeToast:(NSString *)toast uid:(NSString *)uid {
+    if (uid && uid.length > 0) {
+        __weak typeof(self) weakSelf = self;
+        [[V2TIMManager sharedInstance] getUsersInfo:@[uid] succ:^(NSArray<V2TIMUserFullInfo *> *infoList) {
+            V2TIMUserFullInfo *userFullInfo = [infoList firstObject];
+            NSString *toastStr = [NSString stringWithFormat:@"%@ %@", userFullInfo.nickName ?: userFullInfo.userID, toast];
+            [weakSelf makeToast:toastStr duration:3 position:nil];
+        } fail:nil];
+        return;
+    }
+    [self makeToast:toast duration:3 position:nil];
+}
+
 - (void)makeToast:(NSString *)toast {
-    if (self.enableCustomViewRoute && toast && toast.length > 0) {
-        [[TUICommonUtil getRootWindow] makeToast:toast];
+    [self makeToast:toast duration:3 position:nil];
+}
+
+- (void)makeToast:(NSString *)toast duration:(NSTimeInterval)duration position:(id)position {
+    if (!toast || toast.length <= 0)  return;
+    
+    if (self.callingView) {
+        [self.callingView makeToast:toast duration:duration position:position];
+    } else {
+        [[TUICommonUtil getRootWindow] makeToast:toast duration:duration position:position];
     }
 }
 

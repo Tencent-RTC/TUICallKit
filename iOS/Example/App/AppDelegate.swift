@@ -39,10 +39,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func showMainViewController() {
-        let callingContactViewController = TRTCCallingContactViewController.init()
-        TUICalling.shareInstance().setCallingListener(listener: callingContactViewController)
-        TUICalling.shareInstance().enableCustomViewRoute(enable: true);
-        let rootVC = UINavigationController.init(rootViewController: callingContactViewController)
+        let mainViewController = MainViewController.init()
+        let rootVC = UINavigationController.init(rootViewController: mainViewController)
         
         if let keyWindow = SceneDelegate.getCurrentWindow() {
             keyWindow.rootViewController = rootVC

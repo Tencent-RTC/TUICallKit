@@ -13,12 +13,10 @@
 		470EB6F8266A49170072071F /* LaunchImage_en@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 470EB6F4266A49170072071F /* LaunchImage_en@3x.png */; };
 		470EB6FB266A49200072071F /* LaunchScreen_en.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 470EB6F9266A49200072071F /* LaunchScreen_en.storyboard */; };
 		470EB6FE266A49380072071F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 470EB700266A49380072071F /* InfoPlist.strings */; };
-		4739C7D126574DAD00CA7C45 /* CallingSelectUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4739C7D026574DAD00CA7C45 /* CallingSelectUserTableViewCell.swift */; };
 		4739C7DB2657507900CA7C45 /* CallingLocalized.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4739C7D52657507800CA7C45 /* CallingLocalized.strings */; };
 		4739C7DC2657507900CA7C45 /* CallingLocalized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4739C7D82657507800CA7C45 /* CallingLocalized.swift */; };
 		4739C7DD2657507900CA7C45 /* CallingContact.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4739C7DA2657507900CA7C45 /* CallingContact.xcassets */; };
 		4739C7DF265750A800CA7C45 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 47D9D36226521A7A0007EE1F /* Assets.xcassets */; };
-		47C495B92653BF9000B95452 /* TRTCCallingContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C495B82653BF9000B95452 /* TRTCCallingContactViewController.swift */; };
 		47D9D36A26521A7A0007EE1F /* LaunchScreen.strings in Resources */ = {isa = PBXBuildFile; fileRef = 47D9D35D26521A7A0007EE1F /* LaunchScreen.strings */; };
 		47D9D36B26521A7A0007EE1F /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 47D9D35F26521A7A0007EE1F /* Main.strings */; };
 		47D9D36C26521A7A0007EE1F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D9D36126521A7A0007EE1F /* ViewController.swift */; };
@@ -38,6 +36,18 @@
 		4F3F7CB126D65D38002912DE /* UserAgreementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA626D65D38002912DE /* UserAgreementViewController.swift */; };
 		4F3F7CB226D65D38002912DE /* LayoutDefine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA726D65D38002912DE /* LayoutDefine.swift */; };
 		4F3F7CB526D65DE3002912DE /* GenerateTestUserSig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CB426D65DE3002912DE /* GenerateTestUserSig.swift */; };
+		4F84BEB127798B4500BE13C5 /* CallingSelectUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEAC27798B4500BE13C5 /* CallingSelectUserTableViewCell.swift */; };
+		4F84BEB227798B4500BE13C5 /* TRTCGroupCallingContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEAD27798B4500BE13C5 /* TRTCGroupCallingContactViewController.swift */; };
+		4F84BEB327798B4500BE13C5 /* TRTCCallingContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEAE27798B4500BE13C5 /* TRTCCallingContactViewController.swift */; };
+		4F84BEB427798B4500BE13C5 /* TRTCCallingContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEAF27798B4500BE13C5 /* TRTCCallingContactView.swift */; };
+		4F84BEB527798B4500BE13C5 /* TRTCCallingCountryCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEB027798B4500BE13C5 /* TRTCCallingCountryCodeView.swift */; };
+		4F84BECD2779A28100BE13C5 /* MainCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEBA2779A28100BE13C5 /* MainCollectionViewCell.swift */; };
+		4F84BED02779A28100BE13C5 /* MainMenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEBE2779A28100BE13C5 /* MainMenuCell.m */; };
+		4F84BED12779A28100BE13C5 /* MainMenuItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEC12779A28100BE13C5 /* MainMenuItemModel.swift */; };
+		4F84BED22779A28100BE13C5 /* MainLocalized.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4F84BEC42779A28100BE13C5 /* MainLocalized.strings */; };
+		4F84BED42779A28100BE13C5 /* MainLocalized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEC92779A28100BE13C5 /* MainLocalized.swift */; };
+		4F84BED52779A28100BE13C5 /* MainAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4F84BECB2779A28100BE13C5 /* MainAssets.xcassets */; };
+		4F84BED72779AB6800BE13C5 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BED62779AB6800BE13C5 /* MainViewController.swift */; };
 		72398BB45AF374832D94AB71 /* Pods_TUICallingApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 382519A4D3CD8356970B4F9A /* Pods_TUICallingApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -53,13 +63,11 @@
 		470EB6FA266A49200072071F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen_en.storyboard; sourceTree = "<group>"; };
 		470EB6FF266A49380072071F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		470EB701266A493E0072071F /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
-		4739C7D026574DAD00CA7C45 /* CallingSelectUserTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallingSelectUserTableViewCell.swift; sourceTree = "<group>"; };
 		4739C7D62657507800CA7C45 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/CallingLocalized.strings"; sourceTree = "<group>"; };
 		4739C7D72657507800CA7C45 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CallingLocalized.strings; sourceTree = "<group>"; };
 		4739C7D82657507800CA7C45 /* CallingLocalized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallingLocalized.swift; sourceTree = "<group>"; };
 		4739C7DA2657507900CA7C45 /* CallingContact.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = CallingContact.xcassets; sourceTree = "<group>"; };
 		474E0FE52644DFAE002AFADB /* TUICallingApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TUICallingApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		47C495B82653BF9000B95452 /* TRTCCallingContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TRTCCallingContactViewController.swift; sourceTree = "<group>"; };
 		47D9D35E26521A7A0007EE1F /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		47D9D36026521A7A0007EE1F /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		47D9D36126521A7A0007EE1F /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -82,6 +90,21 @@
 		4F3F7CA626D65D38002912DE /* UserAgreementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAgreementViewController.swift; sourceTree = "<group>"; };
 		4F3F7CA726D65D38002912DE /* LayoutDefine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutDefine.swift; sourceTree = "<group>"; };
 		4F3F7CB426D65DE3002912DE /* GenerateTestUserSig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateTestUserSig.swift; sourceTree = "<group>"; };
+		4F84BEAC27798B4500BE13C5 /* CallingSelectUserTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallingSelectUserTableViewCell.swift; sourceTree = "<group>"; };
+		4F84BEAD27798B4500BE13C5 /* TRTCGroupCallingContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TRTCGroupCallingContactViewController.swift; sourceTree = "<group>"; };
+		4F84BEAE27798B4500BE13C5 /* TRTCCallingContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TRTCCallingContactViewController.swift; sourceTree = "<group>"; };
+		4F84BEAF27798B4500BE13C5 /* TRTCCallingContactView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TRTCCallingContactView.swift; sourceTree = "<group>"; };
+		4F84BEB027798B4500BE13C5 /* TRTCCallingCountryCodeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TRTCCallingCountryCodeView.swift; sourceTree = "<group>"; };
+		4F84BEB92779A28100BE13C5 /* MainMenuCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuCell.h; sourceTree = "<group>"; };
+		4F84BEBA2779A28100BE13C5 /* MainCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainCollectionViewCell.swift; sourceTree = "<group>"; };
+		4F84BEBE2779A28100BE13C5 /* MainMenuCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuCell.m; sourceTree = "<group>"; };
+		4F84BEBF2779A28100BE13C5 /* ColorMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorMacro.h; sourceTree = "<group>"; };
+		4F84BEC12779A28100BE13C5 /* MainMenuItemModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenuItemModel.swift; sourceTree = "<group>"; };
+		4F84BEC52779A28100BE13C5 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/MainLocalized.strings"; sourceTree = "<group>"; };
+		4F84BEC62779A28100BE13C5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/MainLocalized.strings; sourceTree = "<group>"; };
+		4F84BEC92779A28100BE13C5 /* MainLocalized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainLocalized.swift; sourceTree = "<group>"; };
+		4F84BECB2779A28100BE13C5 /* MainAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = MainAssets.xcassets; sourceTree = "<group>"; };
+		4F84BED62779AB6800BE13C5 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		8F5D6C3B9ADE64ED3C2FC330 /* Pods-TRTCCallingApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRTCCallingApp.debug.xcconfig"; path = "Target Support Files/Pods-TRTCCallingApp/Pods-TRTCCallingApp.debug.xcconfig"; sourceTree = "<group>"; };
 		9932A0F6A2E0F892B8A8DE24 /* Pods-TRTCCalling.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRTCCalling.debug.xcconfig"; path = "Target Support Files/Pods-TRTCCalling/Pods-TRTCCalling.debug.xcconfig"; sourceTree = "<group>"; };
 		C5B5B8F206D4592A066F3950 /* Pods-TRTCCalling.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRTCCalling.release.xcconfig"; path = "Target Support Files/Pods-TRTCCalling/Pods-TRTCCalling.release.xcconfig"; sourceTree = "<group>"; };
@@ -164,8 +187,11 @@
 		47C495AB2653BF4000B95452 /* ui */ = {
 			isa = PBXGroup;
 			children = (
-				4739C7D026574DAD00CA7C45 /* CallingSelectUserTableViewCell.swift */,
-				47C495B82653BF9000B95452 /* TRTCCallingContactViewController.swift */,
+				4F84BEAC27798B4500BE13C5 /* CallingSelectUserTableViewCell.swift */,
+				4F84BEAF27798B4500BE13C5 /* TRTCCallingContactView.swift */,
+				4F84BEAE27798B4500BE13C5 /* TRTCCallingContactViewController.swift */,
+				4F84BEB027798B4500BE13C5 /* TRTCCallingCountryCodeView.swift */,
+				4F84BEAD27798B4500BE13C5 /* TRTCGroupCallingContactViewController.swift */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -179,6 +205,7 @@
 				470EB6F1266A49170072071F /* LaunchImage@2x.png */,
 				470EB6F3266A49170072071F /* LaunchImage@3x.png */,
 				4F3F7C9926D65D38002912DE /* LoginMock */,
+				4F84BEB62779A28100BE13C5 /* Main */,
 				47C495AA2653BF3400B95452 /* Calling */,
 				47D9D35D26521A7A0007EE1F /* LaunchScreen.strings */,
 				47D9D35F26521A7A0007EE1F /* Main.strings */,
@@ -226,6 +253,62 @@
 				4F3F7CB426D65DE3002912DE /* GenerateTestUserSig.swift */,
 			);
 			path = Debug;
+			sourceTree = "<group>";
+		};
+		4F84BEB62779A28100BE13C5 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				4F84BEB72779A28100BE13C5 /* ui */,
+				4F84BEC02779A28100BE13C5 /* model */,
+				4F84BEC22779A28100BE13C5 /* resource */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		4F84BEB72779A28100BE13C5 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				4F84BED62779AB6800BE13C5 /* MainViewController.swift */,
+				4F84BEBA2779A28100BE13C5 /* MainCollectionViewCell.swift */,
+				4F84BEBF2779A28100BE13C5 /* ColorMacro.h */,
+				4F84BEB92779A28100BE13C5 /* MainMenuCell.h */,
+				4F84BEBE2779A28100BE13C5 /* MainMenuCell.m */,
+			);
+			path = ui;
+			sourceTree = "<group>";
+		};
+		4F84BEC02779A28100BE13C5 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				4F84BEC12779A28100BE13C5 /* MainMenuItemModel.swift */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
+		4F84BEC22779A28100BE13C5 /* resource */ = {
+			isa = PBXGroup;
+			children = (
+				4F84BEC32779A28100BE13C5 /* localized */,
+				4F84BECA2779A28100BE13C5 /* assets */,
+			);
+			path = resource;
+			sourceTree = "<group>";
+		};
+		4F84BEC32779A28100BE13C5 /* localized */ = {
+			isa = PBXGroup;
+			children = (
+				4F84BEC42779A28100BE13C5 /* MainLocalized.strings */,
+				4F84BEC92779A28100BE13C5 /* MainLocalized.swift */,
+			);
+			path = localized;
+			sourceTree = "<group>";
+		};
+		4F84BECA2779A28100BE13C5 /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				4F84BECB2779A28100BE13C5 /* MainAssets.xcassets */,
+			);
+			path = assets;
 			sourceTree = "<group>";
 		};
 		914460EA7D352CBA688E2356 /* Pods */ = {
@@ -287,6 +370,7 @@
 				en,
 				Base,
 				"zh-Hans",
+				English,
 			);
 			mainGroup = 474E0FDC2644DFAE002AFADB;
 			productRefGroup = 474E0FE62644DFAE002AFADB /* Products */;
@@ -306,8 +390,10 @@
 				47D9D36A26521A7A0007EE1F /* LaunchScreen.strings in Resources */,
 				470EB6FE266A49380072071F /* InfoPlist.strings in Resources */,
 				470EB6F5266A49170072071F /* LaunchImage@2x.png in Resources */,
+				4F84BED22779A28100BE13C5 /* MainLocalized.strings in Resources */,
 				470EB6F7266A49170072071F /* LaunchImage@3x.png in Resources */,
 				4F3F7CAB26D65D38002912DE /* LoginLocalized.strings in Resources */,
+				4F84BED52779A28100BE13C5 /* MainAssets.xcassets in Resources */,
 				47D9D36F26521A7A0007EE1F /* Main.storyboard in Resources */,
 				47D9D36E26521A7A0007EE1F /* LaunchScreen.storyboard in Resources */,
 				470EB6FB266A49200072071F /* LaunchScreen_en.storyboard in Resources */,
@@ -386,19 +472,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F84BEB527798B4500BE13C5 /* TRTCCallingCountryCodeView.swift in Sources */,
+				4F84BED12779A28100BE13C5 /* MainMenuItemModel.swift in Sources */,
+				4F84BED42779A28100BE13C5 /* MainLocalized.swift in Sources */,
 				47D9D37026521A7A0007EE1F /* AppDelegate.swift in Sources */,
-				47C495B92653BF9000B95452 /* TRTCCallingContactViewController.swift in Sources */,
+				4F84BEB427798B4500BE13C5 /* TRTCCallingContactView.swift in Sources */,
 				4F3F7CAC26D65D38002912DE /* LoginLocalized.swift in Sources */,
 				4739C7DC2657507900CA7C45 /* CallingLocalized.swift in Sources */,
+				4F84BEB327798B4500BE13C5 /* TRTCCallingContactViewController.swift in Sources */,
+				4F84BECD2779A28100BE13C5 /* MainCollectionViewCell.swift in Sources */,
 				47D9D36C26521A7A0007EE1F /* ViewController.swift in Sources */,
 				4F3F7CAF26D65D38002912DE /* AppUtils.swift in Sources */,
 				4F3F7CB526D65DE3002912DE /* GenerateTestUserSig.swift in Sources */,
 				4F3F7CB126D65D38002912DE /* UserAgreementViewController.swift in Sources */,
 				4F3F7CAD26D65D38002912DE /* TRTCLoginViewController.swift in Sources */,
+				4F84BED72779AB6800BE13C5 /* MainViewController.swift in Sources */,
+				4F84BED02779A28100BE13C5 /* MainMenuCell.m in Sources */,
 				4F3F7CB026D65D38002912DE /* TRTCRegisterViewController.swift in Sources */,
 				4F3F7CB226D65D38002912DE /* LayoutDefine.swift in Sources */,
-				4739C7D126574DAD00CA7C45 /* CallingSelectUserTableViewCell.swift in Sources */,
 				4F3F7CA826D65D38002912DE /* TRTCRegisterRootView.swift in Sources */,
+				4F84BEB127798B4500BE13C5 /* CallingSelectUserTableViewCell.swift in Sources */,
+				4F84BEB227798B4500BE13C5 /* TRTCGroupCallingContactViewController.swift in Sources */,
 				4F3F7CA926D65D38002912DE /* TRTCLoginRootView.swift in Sources */,
 				4F3F7CAA26D65D38002912DE /* UserAgreementViewController+UI.swift in Sources */,
 				47D9D37226521A7A0007EE1F /* SceneDelegate.swift in Sources */,
@@ -474,6 +568,15 @@
 				4F3F7CA026D65D38002912DE /* en */,
 			);
 			name = LoginLocalized.strings;
+			sourceTree = "<group>";
+		};
+		4F84BEC42779A28100BE13C5 /* MainLocalized.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4F84BEC52779A28100BE13C5 /* zh-Hans */,
+				4F84BEC62779A28100BE13C5 /* en */,
+			);
+			name = MainLocalized.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

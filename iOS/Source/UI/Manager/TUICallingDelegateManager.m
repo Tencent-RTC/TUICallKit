@@ -30,7 +30,7 @@
     }];
     if (index >= 0) {
         TUICallingGroupCell *cell = (TUICallingGroupCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:index inSection:0]];
-        return cell.avatarImageView;
+        return cell.renderView;
     }
     return nil;
 }

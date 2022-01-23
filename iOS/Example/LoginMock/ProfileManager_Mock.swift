@@ -79,7 +79,7 @@ import TUICore
             let cacheData = try JSONEncoder().encode(curUserModel)
             UserDefaults.standard.set(cacheData, forKey: tokenKey)
         } catch {
-          print("Save Failed")
+            print("Save Failed")
         }
         success()
     }
@@ -91,7 +91,7 @@ import TUICore
     ///   - failed: 失败回调
     ///   - error: 错误信息
     @objc public func setNickName(name: String, success: @escaping ()->Void,
-                        failed: @escaping (_ error: String)->Void) {
+                                  failed: @escaping (_ error: String)->Void) {
         let userInfo = V2TIMUserFullInfo()
         userInfo.nickName = name
         V2TIMManager.sharedInstance()?.setSelfInfo(userInfo, succ: {
@@ -151,7 +151,7 @@ import TUICore
     }
     
     @objc public func curUserSig() -> String {
-           return curUserModel?.userSig ?? ""
+        return curUserModel?.userSig ?? ""
     }
     
     @objc func synchronizUserInfo() {

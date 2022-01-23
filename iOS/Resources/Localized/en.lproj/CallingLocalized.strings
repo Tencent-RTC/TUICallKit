@@ -18,7 +18,7 @@
 "Demo.TRTC.calling.searching" = "Search";
 "Demo.TRTC.calling.searchandcall" = "Search for a registered user\n to start a call";
 "Demo.TRTC.calling.callingbegan" = "Joined call";
-"Demo.TRTC.calling.callingcancel" = "Call cancelled";
+"Demo.TRTC.calling.callingcancel" = "Cancelled the call";
 "Demo.TRTC.calling.callingtimeout" = "Call timed out";
 "Demo.TRTC.calling.callingrefuse" = "declined the call";
 "Demo.TRTC.calling.callingleave" = "left the call";

@@ -162,7 +162,7 @@ class TRTCLoginRootView: UIView {
     func activateConstraints() {
         bgView.snp.makeConstraints { (make) in
             make.top.leading.trailing.equalToSuperview()
-            make.height.equalTo(bgView.snp_width)
+            make.height.equalTo(bgView.snp.width)
         }
         titleLabel.snp.makeConstraints { (make) in
             make.top.equalToSuperview().offset(convertPixel(h: 86) + kDeviceSafeTopHeight)

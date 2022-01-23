@@ -41,6 +41,9 @@
 /// 接听控制视图
 @property (nonatomic, strong) TUIInvitedContainerView *invitedContainerView;
 
+/// 通话时间按钮
+@property (nonatomic, strong) UILabel *callingTime;
+
 /// 关闭麦克风按钮
 @property (nonatomic, strong) TUICallingControlButton *muteBtn;
 
@@ -95,9 +98,53 @@
     _curCallingState = self.isCallee ? TUICallingStateOnInvitee : TUICallingStateDailing;
 }
 
+- (void)initUIForCaller {
+    if (self.isVideo) {
+        [self initUIForVideoCaller];
+    } else {
+        [self initUIForAudioCaller];
+    }
+}
+
 /// 多人通话，主叫方/接听后 UI初始化
 - (void)initUIForAudioCaller {
     [self addSubview:self.groupCollectionView];
+    [self addSubview:self.callingTime];
+    [self addSubview:self.muteBtn];
+    [self addSubview:self.hangupBtn];
+    [self addSubview:self.handsfreeBtn];
+    // 视图约束
+    [self.groupCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self).offset(StatusBar_Height);
+        make.centerX.equalTo(self);
+        make.width.height.mas_equalTo(self.bounds.size.width);
+    }];
+    [self.callingTime mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self);
+        make.bottom.equalTo(self.hangupBtn.mas_top).offset(-10);
+        make.height.equalTo(@(30));
+    }];
+    [self.muteBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.hangupBtn.mas_left).offset(-5);
+        make.centerY.equalTo(self.hangupBtn);
+        make.size.equalTo(@(kControlBtnSize));
+    }];
+    [self.hangupBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self);
+        make.bottom.equalTo(self.mas_top).offset(self.frame.size.height - Bottom_SafeHeight - 20);
+        make.size.equalTo(@(kControlBtnSize));
+    }];
+    [self.handsfreeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.hangupBtn.mas_right).offset(5);
+        make.centerY.equalTo(self.hangupBtn);
+        make.size.equalTo(@(kControlBtnSize));
+    }];
+}
+
+/// 多人通话，主叫方/接听后 UI初始化
+- (void)initUIForVideoCaller {
+    [self addSubview:self.groupCollectionView];
+    [self addSubview:self.callingTime];
     [self addSubview:self.muteBtn];
     [self addSubview:self.handsfreeBtn];
     [self addSubview:self.closeCameraBtn];
@@ -108,6 +155,11 @@
         make.top.equalTo(self).offset(StatusBar_Height);
         make.centerX.equalTo(self);
         make.width.height.mas_equalTo(self.bounds.size.width);
+    }];
+    [self.callingTime mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self);
+        make.bottom.equalTo(self.handsfreeBtn.mas_top).offset(-10);
+        make.height.equalTo(@(30));
     }];
     [self.muteBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.handsfreeBtn.mas_left);
@@ -182,11 +234,13 @@
             [self.userContainerView configUserInfoViewWith:self.curSponsor showWaitingText:waitingText];
         } break;
         case TUICallingStateDailing: {
-            [self initUIForAudioCaller];
+            [self initUIForCaller];
+            self.callingTime.hidden = YES;
             [self.userContainerView configUserInfoViewWith:self.curSponsor showWaitingText:CallingLocalize(@"Demo.TRTC.calling.waitaccept")];
         } break;
         case TUICallingStateCalling: {
-            [self initUIForAudioCaller];
+            [self initUIForCaller];
+            self.callingTime.hidden = NO;
             self.userContainerView.hidden = YES;
             [self handleLocalRenderView];
         } break;
@@ -225,13 +279,8 @@
     [self.delegateManager reloadCallingGroupWithModel:self.userList];
     [self.groupCollectionView reloadData];
     [self.groupCollectionView layoutIfNeeded];
-    
-    if (self.isVideo) {
-        [self handleLocalRenderView];
-        self.switchCameraBtn.hidden = NO;
-    } else {
-        self.switchCameraBtn.hidden = YES;
-    }
+    self.switchCameraBtn.hidden = !self.isVideo;
+    [self handleLocalRenderView];
 }
 
 - (void)enterUser:(CallUserModel *)user {
@@ -241,6 +290,7 @@
     if (index < 0) return;
     
     self.curCallingState = TUICallingStateCalling;
+    user.isEnter = YES;
     self.userList[index] = user;
     [self.delegateManager reloadCallingGroupWithModel:self.userList];
     [self.delegateManager reloadGroupCellWithIndex:index];
@@ -305,15 +355,24 @@
     self.curCallingState = TUICallingStateCalling;
 }
 
+- (void)setCallingTimeStr:(NSString *)timeStr {
+    if (timeStr && timeStr.length > 0) {
+        self.callingTime.text = timeStr;
+    }
+}
+
 #pragma mark - Private
 
 - (void)handleLocalRenderView {
+    if (!self.isVideo) return;
+    
     UIView *localRenderView = [self.delegateManager getRenderViewFromUser:self.currentUser.userId];
     
     if (!self.isCloseCamera && localRenderView != nil) {
         [[TRTCCalling shareInstance] openCamera:self.isFrontCamera view:localRenderView];
     }
     
+    self.currentUser.isVideoAvaliable = !self.isCloseCamera;
     self.currentUser.isEnter = YES;
     self.currentUser.isAudioAvaliable = YES;
     [self updateUser:self.currentUser animated:NO];
@@ -355,7 +414,6 @@
     self.isMicMute = !self.isMicMute;
     [[TRTCCalling shareInstance] setMicMute:self.isMicMute];
     [self.muteBtn configBackgroundImage:[TUICommonUtil getBundleImageWithName:self.isMicMute ? @"ic_mute_on" : @"ic_mute"]];
-    [self makeToast:self.isMicMute ? CallingLocalize(@"Demo.TRTC.calling.muteon") : CallingLocalize(@"Demo.TRTC.calling.muteoff")];
     self.currentUser.isAudioAvaliable = !self.isMicMute;
     [self updateUser:self.currentUser animated:NO];
 }
@@ -370,7 +428,6 @@
     self.isHandsFreeOn = !self.isHandsFreeOn;
     [[TRTCCalling shareInstance] setHandsFree:self.isHandsFreeOn];
     [self.handsfreeBtn configBackgroundImage:[TUICommonUtil getBundleImageWithName:self.isHandsFreeOn ? @"ic_handsfree_on" : @"ic_handsfree"]];
-    [self makeToast:self.isHandsFreeOn ? CallingLocalize(@"Demo.TRTC.calling.handsfreeon") : CallingLocalize(@"Demo.TRTC.calling.handsfreeoff")];
 }
 
 - (void)switchCameraTouchEvent:(UIButton *)sender {
@@ -387,10 +444,10 @@
         [[TRTCCalling shareInstance] closeCamara];
         self.switchCameraBtn.hidden = YES;
     } else {
-        [self handleLocalRenderView];
         self.switchCameraBtn.hidden = NO;
     }
     
+    [self handleLocalRenderView];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self.closeCameraBtn setUserInteractionEnabled:YES];
     });
@@ -404,6 +461,19 @@
         [_userContainerView setUserNameTextColor:[UIColor t_colorWithHexString:@"#FFFFFF"]];
     }
     return _userContainerView;
+}
+
+- (UILabel *)callingTime {
+    if (!_callingTime) {
+        _callingTime = [[UILabel alloc] initWithFrame:CGRectZero];
+        _callingTime.font = [UIFont boldSystemFontOfSize:14.0f];
+        [_callingTime setTextColor:[UIColor t_colorWithHexString:@"#FFFFFF"]];
+        [_callingTime setBackgroundColor:[UIColor clearColor]];
+        [_callingTime setText:@"00:00"];
+        _callingTime.hidden = YES;
+        [_callingTime setTextAlignment:NSTextAlignmentCenter];
+    }
+    return _callingTime;
 }
 
 - (TUICallingControlButton *)muteBtn {
