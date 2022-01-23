@@ -1,16 +1,18 @@
-package com.tencent.liteav.trtccalling.model.impl;
+package com.tencent.liteav.trtccalling.ui;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.blankj.utilcode.util.ToastUtils;
+import com.tencent.liteav.trtccalling.R;
+import com.tencent.liteav.trtccalling.TUICalling;
+import com.tencent.liteav.trtccalling.model.TRTCCalling;
 import com.tencent.liteav.trtccalling.model.TRTCCallingDelegate;
-import com.tencent.liteav.trtccalling.model.TUICalling;
 import com.tencent.liteav.trtccalling.model.util.TUICallingConstants;
 import com.tencent.liteav.trtccalling.ui.audiocall.TRTCAudioCallActivity;
 import com.tencent.liteav.trtccalling.ui.audiocall.TUICallAudioView;
@@ -29,11 +31,12 @@ import java.util.Map;
 /**
  * TUICalling模块对外接口
  */
-public final class TUICallingManager implements TUICalling, TRTCCallingDelegate {
+public final class TUICallingImpl implements TUICalling, TRTCCallingDelegate {
+    private static final String TAG = "TUICallingImpl";
 
-    private static final String TAG = "TUICallingManager";
+    private static final int MAX_USERS             = 8; //最大通话数为9(需包含自己)
 
-    private static TUICallingManager sInstance;
+    private static TUICallingImpl sInstance;
 
     private         Context            mContext;
     private         TUICallingListener mTUICallingListener;
@@ -54,22 +57,22 @@ public final class TUICallingManager implements TUICalling, TRTCCallingDelegate 
 
     public static final TUICalling sharedInstance(Context context) {
         if (null == sInstance) {
-            synchronized (TUICallingManager.class) {
+            synchronized (TUICallingImpl.class) {
                 if (null == sInstance) {
-                    sInstance = new TUICallingManager(context);
+                    sInstance = new TUICallingImpl(context);
                 }
             }
         }
         return sInstance;
     }
 
-    private TUICallingManager(Context context) {
+    private TUICallingImpl(Context context) {
         mContext = context.getApplicationContext();
         TRTCCalling.sharedInstance(mContext).addDelegate(this);
         Log.d(TAG, "init success.");
     }
 
-    void setCallingManagerListener(CallingManagerListener listener) {
+    public void setCallingManagerListener(CallingManagerListener listener) {
         mCallingManagerListener = listener;
     }
 
@@ -78,22 +81,22 @@ public final class TUICallingManager implements TUICalling, TRTCCallingDelegate 
         internalCall(userIDs, "", "", false, type, Role.CALL);
     }
 
-    @Override
-    public void receiveAPNSCalled(final String[] userIDs, final Type type) {
-        internalCall(userIDs, "", "", false, type, Role.CALLED);
-    }
-
-    void internalCall(final String[] userIDs, String groupID, final Type type, final Role role) {
+    public void internalCall(final String[] userIDs, String groupID, final Type type, final Role role) {
         internalCall(userIDs, "", groupID, !TextUtils.isEmpty(groupID), type, role);
     }
 
     void internalCall(final String[] userIDs, final String sponsorID, final String groupID, final boolean isFromGroup, final Type type, final Role role) {
+        if (userIDs.length > MAX_USERS) {
+            ToastUtils.showShort(mContext.getString(R.string.trtccalling_user_exceed_limit));
+            return;
+        }
+
         if (null == type || null == role) {
             Log.e(TAG, "param is error!!!");
             return;
         }
         Log.d(TAG, String.format("internalCall, userIDs=%s, sponsorID=%s, groupID=%s, type=%s, role=%s", Arrays.toString(userIDs), sponsorID, groupID, type, role));
-        mStartTime = SystemClock.uptimeMillis();
+        mStartTime = System.currentTimeMillis();
         mUserIDs = null == userIDs ? new String[0] : userIDs;
         mGroupID = groupID;
         mIsFromGroup = isFromGroup;
@@ -117,7 +120,7 @@ public final class TUICallingManager implements TUICalling, TRTCCallingDelegate 
                 mTUICallingListener.onCallStart(userIDs, type, role, mCallView);
             }
         } else {
-            mMainHandler.post(new Runnable() {
+            Runnable task = new Runnable() {
                 @Override
                 public void run() {
                     Intent intent = Type.AUDIO == type ? new Intent(mContext, TRTCAudioCallActivity.class) : new Intent(mContext, TRTCVideoCallActivity.class);
@@ -131,14 +134,15 @@ public final class TUICallingManager implements TUICalling, TRTCCallingDelegate 
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
                 }
-            });
+            };
+            mMainHandler.post(task);
             if (null != mTUICallingListener) {
                 mTUICallingListener.onCallStart(userIDs, type, role, null);
             }
         }
     }
 
-    void receiveOfflineCalled(String sender, String content) {
+    public void receiveOfflineCalled(String sender, String content) {
         TRTCCalling.sharedInstance(mContext).receiveNewInvitation(sender, content);
     }
 
@@ -309,7 +313,7 @@ public final class TUICallingManager implements TUICalling, TRTCCallingDelegate 
             @Override
             public void run() {
                 if (null != mTUICallingListener) {
-                    mTUICallingListener.onCallEnd(mUserIDs, mType, mRole, SystemClock.uptimeMillis() - mStartTime);
+                    mTUICallingListener.onCallEnd(mUserIDs, mType, mRole, System.currentTimeMillis() - mStartTime);
                 }
             }
         });

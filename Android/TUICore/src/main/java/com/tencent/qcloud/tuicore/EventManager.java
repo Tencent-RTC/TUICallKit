@@ -12,8 +12,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 负责通知注册、移除和触发
@@ -29,7 +27,7 @@ class EventManager {
         return EventManagerHolder.eventManager;
     }
 
-    private final Map<Pair<String, String>, List<ITUINotification>> eventMap = new ConcurrentHashMap<>();
+    private final HashMap<Pair<String, String>, List<ITUINotification>> eventMap = new HashMap<>();
 
     private EventManager() {}
 
@@ -41,7 +39,7 @@ class EventManager {
         Pair<String, String> keyPair = new Pair<>(key, subKey);
         List<ITUINotification> list = eventMap.get(keyPair);
         if (list == null) {
-            list = new CopyOnWriteArrayList<>();
+            list = new ArrayList<>();
             eventMap.put(keyPair, list);
         }
         if (!list.contains(notification)) {

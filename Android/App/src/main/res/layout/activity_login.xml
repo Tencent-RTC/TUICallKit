@@ -70,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:background="@drawable/bg_login_button"
+        android:background="@drawable/btn_border"
         android:text="@string/btn_login"
         android:textColor="@color/color_white"
         android:textSize="16sp"

@@ -30,6 +30,23 @@
     <string name="app_toast_register_success_and_logging_in">注册成功</string>
     <string name="app_toast_failed_to_set">设置失败: %s</string>
 
+    <string name="app_item_multi_audio_call">多人语音通话</string>
+    <string name="app_item_multi_video_call">多人视频通话</string>
+    <string name="app_added_member">已添加成员</string>
+    <string name="app_toast_no_member">无通话成员</string>
+    <string name="app_toast_multi_call_num_exceed">添加失败,人数超出限制</string>
+    <string name="app_toast_user_added">用户已添加</string>
+    <string name="app_tips_search">搜索添加已注册用户\n\t\t\t以发起通话</string>
+    <string name="app_self_userid">您的ID:</string>
+    <string name="app_search">搜索</string>
+    <string name="app_start_call">呼叫</string>
+    <string name="app_user_not_exist">用户不存在</string>
+    <string name="app_add">添加</string>
+    <string name="app_remove">移除</string>
+    <string name="app_tv_voice_call_tips">丢包率>70%可正常语音通话</string>
+    <string name="app_tv_video_call_tips">丢包率>50%可正常视频通话</string>
+    <string name="app_login_out">退出登录</string>
+
     <!--自定义随机登录名-->
     <string name="app_custom_name_1">路飞</string>
     <string name="app_custom_name_2">山治</string>

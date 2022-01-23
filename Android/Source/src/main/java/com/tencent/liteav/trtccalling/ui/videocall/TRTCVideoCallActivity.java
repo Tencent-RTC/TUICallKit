@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.tencent.liteav.trtccalling.model.TUICalling;
+import com.tencent.liteav.trtccalling.TUICalling;
 import com.tencent.liteav.trtccalling.model.util.TUICallingConstants;
 import com.tencent.liteav.trtccalling.ui.base.BaseTUICallView;
 
