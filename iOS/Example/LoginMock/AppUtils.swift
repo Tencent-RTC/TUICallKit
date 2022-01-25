@@ -10,27 +10,32 @@
 import UIKit
 import ImSDK_Plus
 
+//推送证书 ID
+#if DEBUG
+    let timSdkBusiId: UInt32 = 18069
+#else
+    let timSdkBusiId: UInt32 = 18070
+#endif
+
 class AppUtils: NSObject {
     @objc public static let shared = AppUtils()
     private override init() {}
     
-    var deviceToken: Data? = nil
-    
     @objc var appDelegate: AppDelegate {
         return UIApplication.shared.delegate as! AppDelegate
     }
-    
+
     @objc var curUserId: String {
-        get {
-#if NOT_LOGIN
+         get {
+        #if NOT_LOGIN
             return ""
-#else
+        #else
             return V2TIMManager.sharedInstance()?.getLoginUser() ?? ""
-#endif
+        #endif
         }
     }
-    
-    // MARK: - UI
+
+    //MARK: - UI
     @objc func showMainController() {
         appDelegate.showMainViewController()
     }

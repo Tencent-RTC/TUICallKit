@@ -371,7 +371,6 @@
     V2TIMOfflinePushInfo *info = [[V2TIMOfflinePushInfo alloc] init];
     info.desc = CallingLocalize(@"Demo.TRTC.calling.callingrequest");
     info.ext = [TRTCCallingUtils dictionary2JsonStr:extParam];
-    info.iOSSound = @"phone_ringing.mp3";
     return info;
 }
 

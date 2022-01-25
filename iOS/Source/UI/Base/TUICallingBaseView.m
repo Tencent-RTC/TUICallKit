@@ -24,6 +24,7 @@
 }
 
 - (void)show {
+    self.disableCustomView = YES;
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.windowLevel = UIWindowLevelAlert + 1;
     self.window.backgroundColor = [UIColor clearColor];
@@ -42,9 +43,11 @@
 }
 
 - (void)disMiss {
-    [self removeFromSuperview];
-    self.window.hidden = YES;
-    self.window = nil;
+    if (self.disableCustomView) {
+        [self removeFromSuperview];
+        self.window.hidden = YES;
+        self.window = nil;
+    }
 }
 
 - (void)configViewWithUserList:(NSArray<CallUserModel *> *)userList sponsor:(CallUserModel *)sponsor {
