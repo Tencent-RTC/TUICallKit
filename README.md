@@ -14,6 +14,22 @@
 
 更多组件化方案，敬请期待，也欢迎加入我们的QQ交流群：592465424，期待一起交流&学习！
 
+## 发布日志
+### Version 9.5 @ 2022.01.24
+#### 功能新增
+- Android&iOS：Demo工程增加多人通话场景，完善多人通话功能，优化UI展示；
+- Android&iOS：最新接入腾讯云推送服务[TPNS](https://cloud.tencent.com/document/product/548)，优化离线推送相关逻辑；
+#### 问题修复
+- Android：视频通话】发起视频通话邀请后，切换到语音通话，声音外放问题；
+- iOS：修复`shouldShowOnCallView`接口处理逻辑错误问题；
+#### 功能优化
+- Android&iOS：优化提示策略，让提示更友好；
+#### 特别说明
+- Android：优化代码目录结构，主要包含如下两处变更：
+  - 将原有的TUICallingManager重命名为TUICallingImpl，并迁移至`com.tencent.liteav.trtccalling`下；
+  - 将原有的TUICalling迁移至`com.tencent.liteav.trtccalling`下；
+
+更早期的版本更新历史请点击  [More](./ReleaseNote.md)...
 ## 效果演示
 
 ### 实时视频通话
@@ -29,24 +45,11 @@
 </tr>
 </table>
 
-### 实时语音通话
-
-<table>
-<tr>
-   <th>主动呼叫</th>
-   <th>被叫接听</th>
- </tr>
-<tr>
-<td><img src="audio1.gif" width="300px" height="640px"/></td>
-<td><img src="audio2.gif" width="300px" height="640px"/></td>
-</tr>
-</table>
-
 ## Demo 体验
 
 | iOS                           | Android                       | 小程序                         |
 | ----------------------------- | ----------------------------- | ----------------------------- |
-| ![](https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/app_download_ios.png) | ![](https://main.qcloudimg.com/raw/8a603ced0a61983018c794df842f7029.png) | ![](https://sdk-web-1252463788.cos.ap-hongkong.myqcloud.com/component/miniApp/QRcode/tencentTRTC.jpg) |
+| ![](https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/app_download_ios.png) | ![](https://qcloudimg.tencent-cloud.cn/raw/1027a02e38ae4aeb1ec9ef17ac1a953d.png) | ![](https://qcloudimg.tencent-cloud.cn/raw/d45617eb310ec3af51436e6b5ecbaa51.jpg) |
 
 ## 文档资源
 
