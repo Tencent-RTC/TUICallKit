@@ -56,6 +56,9 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 /// 记录通话时间 单位：秒
 @property (nonatomic, assign) NSInteger totalTime;
 
+/// 记录是否需要继续播放来电铃声
+@property (nonatomic, assign) BOOL needContinuePlaying;
+
 @end
 
 @implementation TUICalling
@@ -77,8 +80,13 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
         _currentCallingRole = NO;
         _enableCustomViewRoute = NO;
         [[TRTCCalling shareInstance] addDelegate:self];
+        [self registerNotifications];
     }
     return self;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Public method
@@ -145,6 +153,25 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 
 #pragma mark - Private method
 
+- (void)registerNotifications {
+    if (@available(iOS 13.0, *)) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(appWillEnterForeground)
+                                                     name:UISceneWillEnterForegroundNotification object:nil];
+    } else {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(appWillEnterForeground)
+                                                     name:UIApplicationWillEnterForegroundNotification object:nil];
+    }
+}
+
+- (void)appWillEnterForeground {
+    if (self.needContinuePlaying) {
+        [self playAudioToCalled];
+    }
+    self.needContinuePlaying = NO;
+}
+
 - (void)setGroupID:(NSString *)groupID onlineUserOnly:(NSNumber *)onlineUserOnly {
     self.groupID = groupID;
     [TRTCCalling shareInstance].onlineUserOnly = [onlineUserOnly boolValue];
@@ -155,13 +182,11 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 }
 
 - (void)callStartWithUserIDs:(NSArray *)userIDs type:(TUICallingType)type role:(TUICallingRole)role {
-    if (self.enableCustomViewRoute) {
-        if (self.listener && [self.listener respondsToSelector:@selector(callStart:type:role:viewController:)]) {
-            UIViewController *callVC = [[UIViewController alloc] init];
-            callVC.view.backgroundColor = [UIColor clearColor];
-            [callVC.view addSubview:self.callingView];
-            [self.listener callStart:userIDs type:type role:role viewController:callVC];
-        }
+    if (self.enableCustomViewRoute && self.listener && [self.listener respondsToSelector:@selector(callStart:type:role:viewController:)]) {
+        UIViewController *callVC = [[UIViewController alloc] init];
+        callVC.view.backgroundColor = [UIColor clearColor];
+        [callVC.view addSubview:self.callingView];
+        [self.listener callStart:userIDs type:type role:role viewController:callVC];
     } else {
         [self.callingView show];
     }
@@ -169,10 +194,22 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
     if (self.enableMuteMode) {
         return;
     }
+    
     if (role == TUICallingRoleCall) {
         playAudio(CallingAudioTypeDial);
         return;
     }
+    
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
+        self.needContinuePlaying = YES;
+        return;
+    }
+    
+    [self playAudioToCalled];
+}
+
+
+- (void)playAudioToCalled {
     if (self.bellFilePath) {
         playAudioWithFilePath(self.bellFilePath);
     } else {
@@ -180,17 +217,19 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
     }
 }
 
+- (void)handleStopAudio {
+    stopAudio();
+    self.needContinuePlaying = NO;
+}
+
 - (void)handleCallEnd {
-    if (self.enableCustomViewRoute) {
-        if (self.listener && [self.listener respondsToSelector:@selector(callEnd:type:role:totalTime:)]) {
-            [self.listener callEnd:self.userIDs type:self.currentCallingType role:self.currentCallingRole totalTime:(CGFloat)self.totalTime];
-        }
-    } else {
-        [self.callingView disMiss];
-        self.callingView = nil;
+    if (self.enableCustomViewRoute && self.listener && [self.listener respondsToSelector:@selector(callEnd:type:role:totalTime:)]) {
+        [self.listener callEnd:self.userIDs type:self.currentCallingType role:self.currentCallingRole totalTime:(CGFloat)self.totalTime];
     }
     
-    stopAudio();
+    [self.callingView disMiss];
+    self.callingView = nil;
+    [self handleStopAudio];
     [TRTCGCDTimer canelTimer:self.timerName];
     [self enableAutoLockScreen:YES];
     self.timerName = nil;
@@ -198,10 +237,8 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 }
 
 - (void)handleCallEvent:(TUICallingEvent)event message:(NSString *)message {
-    if (self.enableCustomViewRoute) {
-        if (self.listener && [self.listener respondsToSelector:@selector(onCallEvent:type:role:message:)]) {
-            [self.listener onCallEvent:event type:self.currentCallingType role:self.currentCallingRole message:message];
-        }
+    if (self.enableCustomViewRoute && self.listener && [self.listener respondsToSelector:@selector(onCallEvent:type:role:message:)]) {
+        [self.listener onCallEvent:event type:self.currentCallingType role:self.currentCallingRole message:message];
     }
 }
 
@@ -212,7 +249,7 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 #pragma mark - TUIInvitedActionProtocal
 
 - (void)acceptCalling {
-    stopAudio();
+    [self handleStopAudio];
     [[TRTCCalling shareInstance] accept];
     [self.callingView acceptCalling];
     [self startTimer];
@@ -354,7 +391,7 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 
 - (void)onUserEnter:(NSString *)uid {
     NSLog(@"log: onUserEnter: %@", uid);
-    stopAudio();
+    [self handleStopAudio];
     __weak typeof(self) weakSelf = self;
     [[V2TIMManager sharedInstance] getUsersInfo:@[uid] succ:^(NSArray<V2TIMUserFullInfo *> *infoList) {
         V2TIMUserFullInfo *userInfo = [infoList firstObject];

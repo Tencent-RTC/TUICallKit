@@ -41,9 +41,6 @@ typedef NS_ENUM(NSUInteger, TUICallingState) {
 /// 是否是被呼叫方
 @property (nonatomic, assign) BOOL isCallee;
 
-/// 是否是自定义视图
-@property (nonatomic, assign) BOOL disableCustomView;
-
 @property (nonatomic, weak) id<TUIInvitedActionProtocal> actionDelegate;
 
 /// 页面相关处理

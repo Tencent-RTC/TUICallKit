@@ -1,6 +1,6 @@
 PODS:
-  - Alamofire (5.4.3)
-  - Kingfisher (6.3.1)
+  - Alamofire (5.5.0)
+  - Kingfisher (7.1.2)
   - Masonry (1.1.0)
   - ReactiveObjC (3.1.1)
   - SDWebImage (5.12.2):
@@ -18,7 +18,7 @@ PODS:
     - TXIMSDK_Plus_iOS (= 6.0.1975)
   - TXAppBasic (1.0.0)
   - TXIMSDK_Plus_iOS (6.0.1975)
-  - TXLiteAVSDK_TRTC (9.5.11004)
+  - TXLiteAVSDK_TRTC (9.5.11230)
 
 DEPENDENCIES:
   - Alamofire
@@ -48,8 +48,8 @@ EXTERNAL SOURCES:
     :path: "./TXAppBasic/"
 
 SPEC CHECKSUMS:
-  Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
-  Kingfisher: 016c8b653a35add51dd34a3aba36b580041acc74
+  Alamofire: 1c4fb5369c3fe93d2857c780d8bbe09f06f97e7c
+  Kingfisher: 44ed6a8504763f27bab46163adfac83f5deb240c
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   ReactiveObjC: 011caa393aa0383245f2dcf9bf02e86b80b36040
   SDWebImage: 240e5c12b592fb1268c1d03b8c90d90e8c2ffe82
@@ -59,7 +59,7 @@ SPEC CHECKSUMS:
   TUICore: 51f89fc1fc066f73c4cc47a1dfbcefa9a1ed5437
   TXAppBasic: f72fd658cb2cec20f0368158752b82226cb6cdec
   TXIMSDK_Plus_iOS: b4938e8a26865ddf81fcff413236d99f6fbae39c
-  TXLiteAVSDK_TRTC: 49d2f320fbb99c040a3d7287fe983cbbcc94f28b
+  TXLiteAVSDK_TRTC: 86935a22a17027bf96616433e315646408431d15
 
 PODFILE CHECKSUM: 4216d083465ac59f48a164f67e7caefe5e54114e
 

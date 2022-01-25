@@ -39,10 +39,10 @@ class TRTCLoginViewController: UIViewController {
                     self.loginSucc()
                 }
             }
-            }, failed: { [weak self] (err) in
-                guard let self = self else {return}
-                self.loading.stopAnimating()
-                self.view.makeToast(err)
+        }, failed: { [weak self] (err) in
+            guard let self = self else {return}
+            self.loading.stopAnimating()
+            self.view.makeToast(err)
         }) {
             loading.startAnimating()
             if let rootView = view as? TRTCLoginRootView {
@@ -65,12 +65,6 @@ class TRTCLoginViewController: UIViewController {
             }
         }
     }
-    
-    #if DEBUG
-    let SdkBusiId: Int32 = 18069
-    #else
-    let SdkBusiId: Int32 = 18070
-    #endif
     
     func loginIM(complete: @escaping (_ success: Bool)->Void) {
         guard let userID = ProfileManager.shared.curUserID() else { return }

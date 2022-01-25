@@ -48,6 +48,7 @@
 		4F84BED42779A28100BE13C5 /* MainLocalized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEC92779A28100BE13C5 /* MainLocalized.swift */; };
 		4F84BED52779A28100BE13C5 /* MainAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4F84BECB2779A28100BE13C5 /* MainAssets.xcassets */; };
 		4F84BED72779AB6800BE13C5 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BED62779AB6800BE13C5 /* MainViewController.swift */; };
+		4FE7A785275E3A89009CCB09 /* phone_ringing.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4FE7A784275E3A89009CCB09 /* phone_ringing.mp3 */; };
 		72398BB45AF374832D94AB71 /* Pods_TUICallingApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 382519A4D3CD8356970B4F9A /* Pods_TUICallingApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -77,6 +78,7 @@
 		47D9D36726521A7A0007EE1F /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		47D9D36826521A7A0007EE1F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		47D9D36926521A7A0007EE1F /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		4F09F32C27587C1400B5F5FE /* TUICallingApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TUICallingApp.entitlements; sourceTree = "<group>"; };
 		4F3F7C9A26D65D38002912DE /* TRTCRegisterRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TRTCRegisterRootView.swift; sourceTree = "<group>"; };
 		4F3F7C9B26D65D38002912DE /* TRTCLoginRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TRTCLoginRootView.swift; sourceTree = "<group>"; };
 		4F3F7C9C26D65D38002912DE /* UserAgreementViewController+UI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserAgreementViewController+UI.swift"; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 		4F84BEC92779A28100BE13C5 /* MainLocalized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainLocalized.swift; sourceTree = "<group>"; };
 		4F84BECB2779A28100BE13C5 /* MainAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = MainAssets.xcassets; sourceTree = "<group>"; };
 		4F84BED62779AB6800BE13C5 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		4FE7A784275E3A89009CCB09 /* phone_ringing.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = phone_ringing.mp3; sourceTree = "<group>"; };
 		8F5D6C3B9ADE64ED3C2FC330 /* Pods-TRTCCallingApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRTCCallingApp.debug.xcconfig"; path = "Target Support Files/Pods-TRTCCallingApp/Pods-TRTCCallingApp.debug.xcconfig"; sourceTree = "<group>"; };
 		9932A0F6A2E0F892B8A8DE24 /* Pods-TRTCCalling.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRTCCalling.debug.xcconfig"; path = "Target Support Files/Pods-TRTCCalling/Pods-TRTCCalling.debug.xcconfig"; sourceTree = "<group>"; };
 		C5B5B8F206D4592A066F3950 /* Pods-TRTCCalling.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRTCCalling.release.xcconfig"; path = "Target Support Files/Pods-TRTCCalling/Pods-TRTCCalling.release.xcconfig"; sourceTree = "<group>"; };
@@ -133,6 +136,7 @@
 		4739C7D32657507800CA7C45 /* resource */ = {
 			isa = PBXGroup;
 			children = (
+				4FE7A784275E3A89009CCB09 /* phone_ringing.mp3 */,
 				4739C7D42657507800CA7C45 /* localized */,
 				4739C7D92657507900CA7C45 /* assets */,
 			);
@@ -159,6 +163,7 @@
 		474E0FDC2644DFAE002AFADB = {
 			isa = PBXGroup;
 			children = (
+				4F09F32C27587C1400B5F5FE /* TUICallingApp.entitlements */,
 				4F3F7CB326D65DE3002912DE /* Debug */,
 				45BC76B78942804520FA6869 /* Frameworks */,
 				914460EA7D352CBA688E2356 /* Pods */,
@@ -402,6 +407,7 @@
 				4739C7DD2657507900CA7C45 /* CallingContact.xcassets in Resources */,
 				4739C7DF265750A800CA7C45 /* Assets.xcassets in Resources */,
 				47D9D36B26521A7A0007EE1F /* Main.strings in Resources */,
+				4FE7A785275E3A89009CCB09 /* phone_ringing.mp3 in Resources */,
 				470EB6F8266A49170072071F /* LaunchImage_en@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -709,6 +715,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = TUICallingApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEFINES_MODULE = YES;
@@ -782,6 +789,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = TUICallingApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEFINES_MODULE = YES;

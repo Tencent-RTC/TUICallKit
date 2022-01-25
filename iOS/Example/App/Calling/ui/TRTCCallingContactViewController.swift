@@ -74,23 +74,7 @@ public class TRTCCallingContactViewController: UIViewController, TUICallingListe
         if let vc = viewController {
             callingVC = vc;
             vc.modalPresentationStyle = .fullScreen
-            
-            if var topController = UIApplication.shared.keyWindow?.rootViewController {
-                while let presentedViewController = topController.presentedViewController {
-                    topController = presentedViewController
-                }
-                if let navigationVC = topController as? UINavigationController {
-                    if navigationVC.viewControllers.contains(self) {
-                        present(vc, animated: false, completion: nil)
-                    } else {
-                        navigationVC.popToRootViewController(animated: false)
-                        navigationVC.pushViewController(self, animated: false)
-                        navigationVC.present(vc, animated: false, completion: nil)
-                    }
-                } else {
-                    topController.present(vc, animated: false, completion: nil)
-                }
-            }
+            self.present(vc, animated: false, completion: nil)
         }
     }
     

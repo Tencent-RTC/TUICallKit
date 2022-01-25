@@ -118,6 +118,16 @@ import TUICore
         
         TUILogin.login(user, userSig: userSig) {
             debugPrint("login success")
+            // IM登录成功后，处理离线推送相关
+            let config = V2TIMAPNSConfig()
+            // 苹果后台请求的 deviceToken
+            config.token = AppUtils.shared.deviceToken
+            V2TIMManager.sharedInstance()?.setAPNS(config, succ: {
+                debugPrint("setAPNS success")
+            }, fail: { code, msg in
+                debugPrint("setAPNS error code:\(code), error: \(msg ?? "nil")")
+            })
+            
             V2TIMManager.sharedInstance()?.getUsersInfo([userID], succ: { [weak self] (infos) in
                 guard let `self` = self else { return }
                 if let info = infos?.first {

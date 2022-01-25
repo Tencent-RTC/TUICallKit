@@ -207,7 +207,7 @@ class TRTCLoginRootView: UIView {
     }
     
     @objc func getVerifyCodeBtnClick() {
-       
+        
     }
 }
 
@@ -240,9 +240,9 @@ extension TRTCLoginRootView: UITextFieldDelegate {
             maxCount = 6
         }
         guard let textFieldText = textField.text,
-            let rangeOfTextToReplace = Range(range, in: textFieldText) else {
-                return false
-        }
+              let rangeOfTextToReplace = Range(range, in: textFieldText) else {
+                  return false
+              }
         let substringToReplace = textFieldText[rangeOfTextToReplace]
         let count = textFieldText.count - substringToReplace.count + string.count
         let res = count <= maxCount
