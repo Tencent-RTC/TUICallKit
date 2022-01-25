@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.text.TextUtils;
-import android.util.Pair;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -44,6 +43,7 @@ import com.tencent.liteav.trtccalling.model.impl.base.TRTCInternalListenerManage
 import com.tencent.liteav.trtccalling.model.impl.base.TRTCLogger;
 import com.tencent.liteav.trtccalling.model.util.MediaPlayHelper;
 import com.tencent.liteav.trtccalling.model.util.TUICallingConstants;
+import com.tencent.liteav.trtccalling.ui.common.PermissionUtil;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.rtmp.TXLiveBase;
 import com.tencent.rtmp.ui.TXCloudVideoView;
@@ -148,8 +148,6 @@ public class TRTCCalling {
 
     private boolean mIsUseFrontCamera;
 
-    private boolean mWaitingLastActivityFinished;
-
     private MediaPlayHelper mMediaPlayHelper;        // 音效
 
     private SensorManager       mSensorManager;
@@ -163,8 +161,9 @@ public class TRTCCalling {
     public static final int TYPE_AUDIO_CALL = 1;
     public static final int TYPE_VIDEO_CALL = 2;
 
-    private final Map<Integer, Pair<String, Boolean>> mInviteIdMap = new HashMap<>(); // 存储结构roomId-inviteId-valid，valid为是否有效（false表示邀请已取消）
-    private final Handler                             mMainHandler = new Handler(Looper.getMainLooper());
+    //通话邀请缓存,便于查询通话是否有效
+    private final Map<String, CallModel> mInviteMap   = new HashMap<>();
+    private final Handler                mMainHandler = new Handler(Looper.getMainLooper());
 
     private static final int CHECK_INVITE_PERIOD   = 10; //邀请信令的检测周期（毫秒）
     private static final int CHECK_INVITE_DURATION = 100; //邀请信令的检测总时长（毫秒）
@@ -196,14 +195,6 @@ public class TRTCCalling {
                 sInstance = null;
             }
         }
-    }
-
-    public boolean isWaitingLastActivityFinished() {
-        return mWaitingLastActivityFinished;
-    }
-
-    public void setWaitingLastActivityFinished(boolean waiting) {
-        mWaitingLastActivityFinished = waiting;
     }
 
     /**
@@ -402,7 +393,7 @@ public class TRTCCalling {
                 TRTCLogger.d(TAG, "this is not the calling scene ");
                 return;
             }
-            mInviteIdMap.put(signallingData.getRoomId(), new Pair<>(inviteID, Boolean.FALSE));
+
             String curCallId;
             if (checkIsHasGroupIDCall()) {
                 curCallId = getCallIDWithUserID(inviter);
@@ -423,6 +414,9 @@ public class TRTCCalling {
                     mTRTCInternalListenerManager.onCallingCancel();
                 }
             }
+            //移除缓存数据
+            mInviteMap.remove(inviteID);
+            stopRing();
         }
 
         //C2C多人通话超时逻辑:
@@ -437,6 +431,9 @@ public class TRTCCalling {
         public void onInvitationTimeout(String inviteID, List<String> inviteeList) {
             TRTCLogger.d(TAG, "onInvitationTimeout inviteID : " + inviteID + " , mCurCallID : " + mCurCallID
                     + " ,inviteeList: " + inviteeList);
+            //移除缓存数据
+            mInviteMap.remove(inviteID);
+
             String curCallId;
             if (checkIsHasGroupIDCall()) {
                 curCallId = getCallIDWithUserID(inviteeList.get(0));
@@ -508,6 +505,31 @@ public class TRTCCalling {
         }
     };
 
+    //应用在后台且没有拉起应用的权限时,上层主动调用该方法,查询有效的通话请求,拉起界面
+    public void queryOfflineCallingInfo() {
+        if (mInviteMap.size() == 0) {
+            TRTCLogger.d(TAG, "queryOfflineCalledInfo: no offline call request");
+            return;
+        }
+        //有权限时,直接在onReceiveNewInvitation邀请回调中处理,这里不再重复处理
+        if (PermissionUtil.hasPermission(mContext)) {
+            TRTCLogger.d(TAG, "queryOfflineCalledInfo: call request has processed");
+            return;
+        }
+        String inviteId = "";
+        CallModel model = null;
+        for (Map.Entry<String, CallModel> entry : mInviteMap.entrySet()) {
+            inviteId = entry.getKey();
+            model = entry.getValue();
+        }
+        if (null == model) {
+            return;
+        }
+        TRTCLogger.d(TAG, "queryOfflineCalledInfo: inviteId = " + inviteId + " ,model = " + model);
+        mTIMSignallingListener.onReceiveNewInvitation(inviteId, model.sender,
+                model.groupId, model.invitedList, model.data);
+    }
+
     private void handleRecvCallModel(String inviteID, String inviter, String groupID,
                                      List<String> inviteeList, String data) {
         SignallingData signallingData = convert2CallingData(data);
@@ -515,17 +537,23 @@ public class TRTCCalling {
             TRTCLogger.d(TAG, "this is not the calling scene ");
             return;
         }
-        Pair<String, Boolean> pair = mInviteIdMap.get(signallingData.getRoomId());
-        if (null == pair) {
-            mInviteIdMap.put(signallingData.getRoomId(), new Pair<>(inviteID, Boolean.TRUE));
-        } else if (Boolean.FALSE.equals(pair.second)) {
-            TRTCLogger.d(TAG, "this invitation is canceled");
-            return;
-        }
-        if (!isAppRunningForeground(mContext)) {
+
+        //被叫端缓存收到的通话请求
+        CallModel callModel = new CallModel();
+        callModel.sender = inviter;
+        callModel.groupId = groupID;
+        callModel.invitedList = inviteeList;
+        callModel.data = data;
+        mInviteMap.put(inviteID, callModel);
+
+        //如果应用在后台,且没有允许后台拉起应用的权限时返回
+        if (!isAppRunningForeground(mContext) && !PermissionUtil.hasPermission(mContext)) {
             TRTCLogger.d(TAG, "isAppRunningForeground is false");
+            //后台播被叫铃声
+            startRing();
             return;
         }
+
         if (null != inviteeList && !inviteeList.contains(TUILogin.getUserId())) {
             TRTCLogger.d(TAG, "this invitation is not for me");
             return;
@@ -937,6 +965,7 @@ public class TRTCCalling {
         mLastCallModel.version = CallModel.VALUE_VERSION;
         V2TIMManager.getSignalingManager().addSignalingListener(mTIMSignallingListener);
         V2TIMManager.getInstance().addSimpleMsgListener(mTIMSimpleMsgListener);
+        mMediaPlayHelper = new MediaPlayHelper(mContext);
     }
 
     private void printVersionLog() {
@@ -944,7 +973,6 @@ public class TRTCCalling {
     }
 
     private void startCall() {
-        mMediaPlayHelper = new MediaPlayHelper(mContext);
         isOnCalling = true;
         registerSensorEventListener();
     }
@@ -954,7 +982,7 @@ public class TRTCCalling {
      */
     public void stopCall() {
         TRTCLogger.d(TAG, "stopCall");
-        mInviteIdMap.clear();
+        mInviteMap.clear();
         isOnCalling = false;
         mIsInRoom = false;
         mIsBeingCalled = true;
@@ -1329,7 +1357,7 @@ public class TRTCCalling {
     }
 
     public void receiveNewInvitation(String sender, String content) {
-        TRTCLogger.d(TAG, "receiveNewInvitation, content=" + content);
+        TRTCLogger.d(TAG, "receiveNewInvitation sender: " + sender + " , content: " + content);
         if (TextUtils.isEmpty(sender) || TextUtils.isEmpty(content)) {
             return;
         }
@@ -1379,14 +1407,9 @@ public class TRTCCalling {
             callDataInfo.setUserIDs(invitedList);
         }
         String json = gsonBuilder.create().toJson(data);
-        Pair<String, Boolean> pair = mInviteIdMap.get(roomId);
-        if (TextUtils.isEmpty(inviteID) && null != pair) {
-            // App退后台时C2C通话，从缓存中获取真实inviteID。
-            inviteID = pair.first;
-        }
-        if (TextUtils.isEmpty(inviteID) || (null != pair && Boolean.FALSE.equals(pair.second))) {
+        if (TextUtils.isEmpty(inviteID)) {
             // inviteID为空或者invite被取消了，终止流程。
-            TRTCLogger.w(TAG, "inviteID=" + inviteID + " valid=" + pair.second);
+            TRTCLogger.w(TAG, "receiveNewInvitation: the call request has cancelled");
             return;
         }
         mTIMSignallingListener.onReceiveNewInvitation(inviteID, sender, groupId, invitedList, json);
@@ -1439,8 +1462,9 @@ public class TRTCCalling {
     private void sendOnlineMessageWithOfflinePushInfo(String userId, String nickname, CallModel model) {
         OfflineMessageContainerBean containerBean = new OfflineMessageContainerBean();
         OfflineMessageBean entity = new OfflineMessageBean();
+        model.sender = TUILogin.getLoginUser();
         entity.content = new Gson().toJson(model);
-        entity.sender = V2TIMManager.getInstance().getLoginUser(); // 发送者肯定是登录账号
+        entity.sender = TUILogin.getLoginUser(); // 发送者肯定是登录账号
         entity.action = OfflineMessageBean.REDIRECT_ACTION_CALL;
         entity.sendTime = System.currentTimeMillis() / 1000;
         entity.nickname = nickname;
@@ -1590,6 +1614,9 @@ public class TRTCCalling {
                     @Override
                     public void onError(int code, String desc) {
                         TRTCLogger.e(TAG, "accept failed callID:" + realCallModel.callId + ", error:" + code + " desc:" + desc);
+                        if (null != mTRTCInternalListenerManager) {
+                            mTRTCInternalListenerManager.onError(code, desc);
+                        }
                     }
 
                     @Override
@@ -2004,14 +2031,16 @@ public class TRTCCalling {
     private V2TIMOfflinePushInfo createV2TIMOfflinePushInfo(CallModel callModel, String userId, String nickname) {
         OfflineMessageContainerBean containerBean = new OfflineMessageContainerBean();
         OfflineMessageBean entity = new OfflineMessageBean();
+        callModel.sender = TUILogin.getLoginUser();
         entity.content = new Gson().toJson(callModel);
-        entity.sender = V2TIMManager.getInstance().getLoginUser(); // 发送者肯定是登录账号
+        entity.sender = TUILogin.getLoginUser(); // 发送者肯定是登录账号
         entity.action = OfflineMessageBean.REDIRECT_ACTION_CALL;
         entity.sendTime = System.currentTimeMillis() / 1000;
         entity.nickname = nickname;
         entity.faceUrl = mFaceUrl;
         containerBean.entity = entity;
         List<String> invitedList = new ArrayList<>();
+        TRTCLogger.d(TAG, "createV2TIMOfflinePushInfo: entity = " + entity);
         invitedList.add(userId);
         V2TIMOfflinePushInfo v2TIMOfflinePushInfo = new V2TIMOfflinePushInfo();
         v2TIMOfflinePushInfo.setExt(new Gson().toJson(containerBean).getBytes());
@@ -2019,6 +2048,8 @@ public class TRTCCalling {
         v2TIMOfflinePushInfo.setAndroidOPPOChannelID("tuikit");
         v2TIMOfflinePushInfo.setDesc(mContext.getString(R.string.trtccalling_title_have_a_call_invitation));
         v2TIMOfflinePushInfo.setTitle(nickname);
+        //设置自定义铃声
+        v2TIMOfflinePushInfo.setIOSSound("phone_ringing.mp3");
         return v2TIMOfflinePushInfo;
     }
 
@@ -2039,12 +2070,13 @@ public class TRTCCalling {
     }
 
     public boolean isValidInvite() {
-        for (Pair<String, Boolean> p : mInviteIdMap.values()) {
-            if (null != p && TextUtils.equals(p.first, mCurCallID) && Boolean.TRUE.equals(p.second)) {
-                return true;
-            }
+        if (mInviteMap.isEmpty() || null == mCurCallID) {
+            TRTCLogger.d(TAG, "isValidInvite: mInviteMap = " + mInviteMap);
+            return false;
         }
-        return false;
+        TRTCLogger.d(TAG, "isValidInvite mCurCallID = " + mCurCallID + " ,mInviteMap = " + mInviteMap);
+        CallModel model = mInviteMap.get(mCurCallID);
+        return model != null;
     }
 
     private void setFramework() {

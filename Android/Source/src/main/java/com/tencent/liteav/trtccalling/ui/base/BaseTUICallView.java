@@ -1,6 +1,7 @@
 package com.tencent.liteav.trtccalling.ui.base;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -77,6 +78,10 @@ public abstract class BaseTUICallView extends FrameLayout implements TRTCCalling
             TRTCLogger.w(TAG, "this invitation is invalid");
             onCallingCancel();
         }
+        //开启界面后,清除通知栏消息
+        NotificationManager notificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
     }
 
     @Override

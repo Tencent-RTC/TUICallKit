@@ -32,7 +32,7 @@ import com.tencent.liteav.basic.ImageLoader;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.trtccalling.TUICalling;
-import com.tencent.liteav.trtccalling.ui.TUICallingImpl;
+import com.tencent.liteav.trtccalling.TUICallingImpl;
 import com.tencent.liteav.trtccalling.model.impl.base.CallingInfoManager;
 import com.tencent.liteav.trtccalling.ui.common.RoundCornerImageView;
 

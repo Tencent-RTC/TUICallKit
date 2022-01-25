@@ -13,7 +13,7 @@ import com.tencent.imsdk.v2.V2TIMConversation;
 import com.tencent.liteav.trtccalling.R;
 import com.tencent.liteav.trtccalling.TUICalling;
 import com.tencent.liteav.trtccalling.model.util.TUICallingConstants;
-import com.tencent.liteav.trtccalling.ui.TUICallingImpl;
+import com.tencent.liteav.trtccalling.TUICallingImpl;
 import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUIExtension;
@@ -58,7 +58,7 @@ final class TUICallingService implements ITUINotification, ITUIService, ITUIExte
             TUICallingConstants.component = (int) param.get("component");
         }
         if (null == mCallingImpl) {
-            Log.e(TAG, "mCallingManager is null!!!");
+            Log.e(TAG, "mCallingImpl is null!!!");
             return null;
         }
         if (null != param && TextUtils.equals(TUIConstants.TUICalling.METHOD_NAME_CALL, method)) {
@@ -119,7 +119,7 @@ final class TUICallingService implements ITUINotification, ITUIService, ITUIExte
                 @Override
                 public void onClick(View v) {
                     if (null == mCallingImpl) {
-                        Log.e(TAG, "mCallingManager is null!!!");
+                        Log.e(TAG, "mCallingImpl is null!!!");
                         return;
                     }
                     if (key.equals(TUIConstants.TUIChat.EXTENSION_INPUT_MORE_AUDIO_CALL)) {

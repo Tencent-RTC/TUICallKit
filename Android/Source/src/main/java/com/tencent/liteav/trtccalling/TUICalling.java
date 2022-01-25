@@ -62,6 +62,13 @@ public interface TUICalling {
      */
     void enableCustomViewRoute(boolean enable);
 
+    /**
+     * 平台：目前仅Android需要此接口
+     * 应用场景：Android端由于厂商系统版本区别,部分手机应用在后台时需要"悬浮窗"权限或"后台拉起应用"权限,否则无法拉起应用;
+     * 针对无权限拉不起应用的场景,增加以下接口;
+     * 当应用在后台收到请求且无权限时,响铃,用户点击通知栏消息或者桌面icon进入应用时,查询通话请求,拉起通话界面
+     */
+    void queryOfflineCalling();
 
     interface TUICallingListener {
 
@@ -82,10 +89,10 @@ public interface TUICalling {
         void onCallStart(String[] userIDs, TUICalling.Type type, TUICalling.Role role, View tuiCallingView);
 
         /**
-         * @param userIDs 本次通话用户id（自己除外）
-         * @param type    通话类型:视频\音频
-         * @param role    通话角色:主叫\被叫
-         * @param totalTime   通话时长
+         * @param userIDs   本次通话用户id（自己除外）
+         * @param type      通话类型:视频\音频
+         * @param role      通话角色:主叫\被叫
+         * @param totalTime 通话时长
          */
         void onCallEnd(String[] userIDs, TUICalling.Type type, TUICalling.Role role, long totalTime);
 

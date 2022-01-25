@@ -125,9 +125,9 @@ public class MediaPlayHelper {
             public void run() {
                 if (mMediaPlayer.isPlaying()) {
                     mMediaPlayer.stop();
-                    mResId = -1;
-                    mResPath = "";
                 }
+                mResId = -1;
+                mResPath = "";
             }
         });
     }
