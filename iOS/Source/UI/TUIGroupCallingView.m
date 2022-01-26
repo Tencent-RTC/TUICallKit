@@ -334,7 +334,7 @@
     if (!user) return -1;
     __block NSInteger index = -1;
     [self.userList enumerateObjectsUsingBlock:^(CallUserModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (obj.userId == user.userId) {
+        if ([obj.userId isEqualToString:user.userId]) {
             index = idx;
             *stop = YES;
         }
