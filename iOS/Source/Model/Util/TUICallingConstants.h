@@ -57,6 +57,8 @@ extern NSString *const EVENT_CALL_START;
 extern NSString *const EVENT_CALL_DECLINE;
 extern NSString *const DEFAULT_AVATETR;
 
+extern NSString *const CALLING_BELL_KEY;
+
 @property (class, nonatomic, assign) int component;
 
 @end

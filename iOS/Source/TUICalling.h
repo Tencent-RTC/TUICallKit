@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 typedef NS_ENUM(NSUInteger, TUICallingType) {
     TUICallingTypeAudio, // 语音呼叫
@@ -27,6 +28,8 @@ typedef NS_ENUM(NSUInteger, TUICallingEvent) {
     // 3、其他原因
     TUICallingEventCallFailed = 400,
 };
+
+typedef void (^TUICallingCallback)(int code, NSString * _Nonnull desc);
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -78,6 +81,17 @@ NS_ASSUME_NONNULL_BEGIN
 /// 设置铃声，建议在30s以内，只支持本地音频文件
 /// @param filePath 音频文件路径
 - (void)setCallingBell:(NSString *)filePath NS_SWIFT_NAME(setCallingBell(filePath:));
+
+/// 设置用户昵称
+/// @param nickname  用户昵称 (长度不得超过500个字节)
+/// @param callback 结果回调   code = 0 代表成功，否则为错误码
+- (void)setUserNickname:(NSString *)nickname callback:(TUICallingCallback)callback  NS_SWIFT_NAME(setUserNickname(nickname:callback:));
+
+/// 设置用户头像
+/// @param avatar 用户头像, 头像必须是URL格式 (长度不得超过500个字节)
+///        例如: https://liteav.sdk.qcloud.com/app/res/picture/voiceroom/avatar/user_avatar1.png
+/// @param callback 结果回调   code = 0 代表成功，否则为错误码
+- (void)setUserAvatar:(NSString *)avatar callback:(TUICallingCallback)callback  NS_SWIFT_NAME(setUserAvatar(avatar:callback:));
 
 /// 开启静音模式（默认关）
 - (void)enableMuteMode:(BOOL)enable NS_SWIFT_NAME(enableMuteMode(enable:));

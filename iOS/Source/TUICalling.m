@@ -9,8 +9,6 @@
 #import "TRTCCallingUtils.h"
 #import "TRTCCallingDelegate.h"
 #import "TRTCCalling.h"
-#import <TUICore/UIView+TUIToast.h>
-#import "TUICommonUtil.h"
 #import <ImSDK_Plus/ImSDK_Plus.h>
 #import "CallingLocalized.h"
 #import "TRTCCalling+Signal.h"
@@ -20,7 +18,9 @@
 #import "TRTCGCDTimer.h"
 #import "TUICallingAudioPlayer.h"
 #import "TUICallingConstants.h"
+#import "TRTCCallingHeader.h"
 #import <TUICore/TUIDefine.h>
+#import <TUICore/TUILogin.h>
 
 typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
     TUICallingUserRemoveReasonLeave,
@@ -39,8 +39,6 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 @property (nonatomic, assign) TUICallingType currentCallingType;
 /// 记录当前的呼叫用户类型  主动、被动
 @property (nonatomic, assign) TUICallingRole currentCallingRole;
-/// 铃声的资源地址
-@property (nonatomic, copy) NSString *bellFilePath;
 /// 记录是否开启静音模式     需考虑恢复默认页面
 @property (nonatomic, assign) BOOL enableMuteMode;
 /// 记录是否开启悬浮窗
@@ -133,9 +131,40 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 }
 
 - (void)setCallingBell:(NSString *)filePath {
-    if (filePath && ![filePath hasPrefix:@"http"]) {
-        self.bellFilePath = filePath;
+    if(!(filePath && [filePath isKindOfClass:NSString.class] && filePath.length > 0)) {
+        return;
     }
+    
+    if ([filePath hasPrefix:@"http"]) {
+        NSURLSession *session = [NSURLSession sharedSession];
+        NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithURL:[NSURL URLWithString:filePath] completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            if (error != nil) {
+                TRTCLog(@"SetCallingBell Error: %@", error.localizedDescription);
+                return;
+            }
+            
+            if (location != nil) {
+                NSString *oldBellFilePath = [NSUserDefaults.standardUserDefaults objectForKey:CALLING_BELL_KEY];
+                [[NSFileManager defaultManager] removeItemAtPath:oldBellFilePath error:nil];
+                NSString *filePathStr = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:response.suggestedFilename];
+                [[NSFileManager defaultManager] moveItemAtURL:location toURL:[NSURL fileURLWithPath:filePathStr] error:nil];
+                [NSUserDefaults.standardUserDefaults setObject:filePathStr ?: @"" forKey:CALLING_BELL_KEY];
+                [NSUserDefaults.standardUserDefaults synchronize];
+            }
+        }];
+        [downloadTask resume];
+    } else {
+        [NSUserDefaults.standardUserDefaults setObject:filePath forKey:CALLING_BELL_KEY];
+        [NSUserDefaults.standardUserDefaults synchronize];
+    }
+}
+
+- (void)setUserNickname:(NSString *)nickname callback:(TUICallingCallback)callback {
+    [self setUserNickname:nickname avatar:nil callback:callback];
+}
+
+- (void)setUserAvatar:(NSString *)avatar callback:(TUICallingCallback)callback {
+    [self setUserNickname:nil avatar:avatar callback:callback];
 }
 
 - (void)enableMuteMode:(BOOL)enable {
@@ -210,11 +239,11 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 
 
 - (void)playAudioToCalled {
-    if (self.bellFilePath) {
-        playAudioWithFilePath(self.bellFilePath);
-    } else {
-        playAudio(CallingAudioTypeCalled);
+    NSString *bellFilePath = [NSUserDefaults.standardUserDefaults objectForKey:CALLING_BELL_KEY];
+    if (bellFilePath && playAudioWithFilePath(bellFilePath)) {
+        return;
     }
+    playAudio(CallingAudioTypeCalled);
 }
 
 - (void)handleStopAudio {
@@ -244,6 +273,32 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 
 - (void)enableAutoLockScreen:(BOOL)isEnable {
     [UIApplication sharedApplication].idleTimerDisabled = !isEnable;
+}
+
+- (void)setUserNickname:(NSString *)nickname avatar:(NSString *)avatar callback:(TUICallingCallback)callback {
+    [[V2TIMManager sharedInstance] getUsersInfo:@[TUILogin.getUserID ?: @""] succ:^(NSArray<V2TIMUserFullInfo *> *infoList) {
+        V2TIMUserFullInfo *info = infoList.firstObject;
+        
+        if ((nickname && [nickname isKindOfClass:NSString.class] && [nickname isEqualToString:info.nickName]) ||
+            (avatar && [avatar isKindOfClass:NSString.class] && [avatar isEqualToString:info.faceURL])) {
+            callback(0, @"success");
+            return;
+        }
+        if ([nickname isKindOfClass:NSString.class] && nickname.length > 0) {
+            info.nickName = nickname;
+        }
+        if ([avatar isKindOfClass:NSString.class] && avatar.length > 0) {
+            info.faceURL = avatar;
+        }
+        
+        [[V2TIMManager sharedInstance] setSelfInfo:info succ:^{
+            callback(0, @"success");
+        } fail:^(int code, NSString *desc) {
+            callback(code, desc);
+        }];
+    } fail:^(int code, NSString *desc) {
+        callback(code, desc);
+    }];
 }
 
 #pragma mark - TUIInvitedActionProtocal
