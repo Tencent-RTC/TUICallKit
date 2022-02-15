@@ -47,16 +47,16 @@
 
 ## Demo 体验
 
-| iOS                           | Android                       | 小程序                         |
-| ----------------------------- | ----------------------------- | ----------------------------- |
-| ![](https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/app_download_ios.png) | ![](https://qcloudimg.tencent-cloud.cn/raw/1027a02e38ae4aeb1ec9ef17ac1a953d.png) | ![](https://qcloudimg.tencent-cloud.cn/raw/d45617eb310ec3af51436e6b5ecbaa51.jpg) |
+| iOS                           | Android                       | 小程序                         |   Web                         |
+| ----------------------------- | ----------------------------- | ----------------------------- | ----------------------------- |
+| ![](https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/app_download_ios.png) | ![](https://qcloudimg.tencent-cloud.cn/raw/1027a02e38ae4aeb1ec9ef17ac1a953d.png) | ![](https://web.sdk.qcloud.com/component/miniApp/QRcode/tencentTRTC.jpg) |  [1v1音视频通话](https://web.sdk.qcloud.com/component/trtccalling/demo/web/latest/index.html#/login) |
 
 ## 文档资源
 
-| iOS                           | Android                       | 小程序                         |
-| ----------------------------- | ----------------------------- | ----------------------------- |
-| [实时视频通话（iOS）](https://cloud.tencent.com/document/product/647/42044) | [实时视频通话（Android）](https://cloud.tencent.com/document/product/647/42045) |  [实时视频通话（小程序）](https://cloud.tencent.com/document/product/647/49379) |
-| [实时语音通话（iOS）](https://cloud.tencent.com/document/product/647/42046) | [实时语音通话（Android）](https://cloud.tencent.com/document/product/647/42047) | [实时语音通话（小程序）](https://cloud.tencent.com/document/product/647/49363) |
+| iOS                           | Android                       | 小程序                         |   Web                         |
+| ----------------------------- | ----------------------------- | ----------------------------- | ----------------------------- |
+| [实时视频通话（iOS）](https://cloud.tencent.com/document/product/647/42044) | [实时视频通话（Android）](https://cloud.tencent.com/document/product/647/42045) |  [实时视频通话（小程序）](https://cloud.tencent.com/document/product/647/49379) |  [实时视频通话（Web）](https://cloud.tencent.com/document/product/647/49789) |
+| [实时语音通话（iOS）](https://cloud.tencent.com/document/product/647/42046) | [实时语音通话（Android）](https://cloud.tencent.com/document/product/647/42047) | [实时语音通话（小程序）](https://cloud.tencent.com/document/product/647/49363) |  [实时语音通话（Web）](https://cloud.tencent.com/document/product/647/49795) |
 
 ## 其他
 
