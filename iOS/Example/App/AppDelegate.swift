@@ -27,7 +27,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         V2TIMManager.sharedInstance().setAPNSListener(self)
         // 监听会话的未读数
         V2TIMManager.sharedInstance().addConversationListener(listener: self)
-        
         // 设置 SDK 的 Licence 下载 url 和 key
         setLicence()
         

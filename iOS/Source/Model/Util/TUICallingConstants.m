@@ -53,6 +53,8 @@ NSString *const EVENT_CALL_SUCCEED = @"Succeed";
 NSString *const EVENT_CALL_START = @"Start";
 NSString *const EVENT_CALL_DECLINE = @"Decline";
 
+NSString *const CALLING_BELL_KEY = @"CallingBell";
+
 // 如果头像为空的默认头像
 NSString *const DEFAULT_AVATETR = @"https://imgcache.qq.com/qcloud/public/static//avatar1_100.20191230.png";
 
