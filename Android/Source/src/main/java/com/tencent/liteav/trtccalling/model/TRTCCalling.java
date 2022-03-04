@@ -21,6 +21,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.tencent.imsdk.BaseConstants;
 import com.tencent.imsdk.v2.V2TIMCallback;
 import com.tencent.imsdk.v2.V2TIMConversation;
 import com.tencent.imsdk.v2.V2TIMManager;
@@ -34,6 +35,7 @@ import com.tencent.imsdk.v2.V2TIMUserInfo;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.liteav.beauty.TXBeautyManager;
 import com.tencent.liteav.trtccalling.R;
+import com.tencent.liteav.trtccalling.model.impl.TRTCCallingCallback;
 import com.tencent.liteav.trtccalling.model.impl.base.CallModel;
 import com.tencent.liteav.trtccalling.model.impl.base.MessageCustom;
 import com.tencent.liteav.trtccalling.model.impl.base.OfflineMessageBean;
@@ -42,8 +44,8 @@ import com.tencent.liteav.trtccalling.model.impl.base.SignallingData;
 import com.tencent.liteav.trtccalling.model.impl.base.TRTCInternalListenerManager;
 import com.tencent.liteav.trtccalling.model.impl.base.TRTCLogger;
 import com.tencent.liteav.trtccalling.model.util.MediaPlayHelper;
+import com.tencent.liteav.trtccalling.model.util.PermissionUtil;
 import com.tencent.liteav.trtccalling.model.util.TUICallingConstants;
-import com.tencent.liteav.trtccalling.ui.common.PermissionUtil;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.rtmp.TXLiveBase;
 import com.tencent.rtmp.ui.TXCloudVideoView;
@@ -1066,12 +1068,13 @@ public class TRTCCalling {
                     mMainHandler.removeCallbacks(this);
                     mTRTCInternalListenerManager.onInvited(user, onInvitedUserListParam,
                             !TextUtils.isEmpty(curGroupId), callType);
+                    startRing();
                 }
             };
             mMainHandler.post(task);
         }
         mCurRoomRemoteUserSet.add(user);
-        startRing();
+
     }
 
     private void handleSwitchToAudio(CallModel callModel, String user) {
@@ -1413,6 +1416,66 @@ public class TRTCCalling {
             return;
         }
         mTIMSignallingListener.onReceiveNewInvitation(inviteID, sender, groupId, invitedList, json);
+    }
+
+    //设置头像
+    public void setUserNickname(String nickname, TRTCCallingCallback callback) {
+        if (TextUtils.isEmpty(nickname)) {
+            TRTCLogger.d(TAG, "setUserNickname failed: invalid params");
+            if (null != callback) {
+                callback.onCallback(BaseConstants.ERR_INVALID_PARAMETERS, "invalid params");
+            }
+            return;
+        }
+        V2TIMUserFullInfo v2TIMUserFullInfo = new V2TIMUserFullInfo();
+        v2TIMUserFullInfo.setNickname(nickname);
+        V2TIMManager.getInstance().setSelfInfo(v2TIMUserFullInfo, new V2TIMCallback() {
+            @Override
+            public void onError(int code, String desc) {
+                TRTCLogger.e(TAG, "setUserNickname failed code:" + code + " msg:" + desc);
+                if (callback != null) {
+                    callback.onCallback(code, desc);
+                }
+            }
+
+            @Override
+            public void onSuccess() {
+                TRTCLogger.i(TAG, "setUserNickname success.");
+                if (callback != null) {
+                    callback.onCallback(BaseConstants.ERR_SUCC, "setUserNickname success");
+                }
+            }
+        });
+    }
+
+    //设置昵称
+    public void setUserAvatar(String avatar, TRTCCallingCallback callback) {
+        if (TextUtils.isEmpty(avatar)) {
+            TRTCLogger.d(TAG, "setUserAvatar failed: invalid params");
+            if (null != callback) {
+                callback.onCallback(BaseConstants.ERR_INVALID_PARAMETERS, "invalid param");
+            }
+            return;
+        }
+        V2TIMUserFullInfo v2TIMUserFullInfo = new V2TIMUserFullInfo();
+        v2TIMUserFullInfo.setFaceUrl(avatar);
+        V2TIMManager.getInstance().setSelfInfo(v2TIMUserFullInfo, new V2TIMCallback() {
+            @Override
+            public void onError(int code, String desc) {
+                TRTCLogger.e(TAG, "setUserAvatar failed code:" + code + " msg:" + desc);
+                if (callback != null) {
+                    callback.onCallback(code, desc);
+                }
+            }
+
+            @Override
+            public void onSuccess() {
+                TRTCLogger.i(TAG, "setUserAvatar success.");
+                if (callback != null) {
+                    callback.onCallback(BaseConstants.ERR_SUCC, "setUserAvatar success");
+                }
+            }
+        });
     }
 
     public void setCallingBell(String filePath) {

@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tencent.liteav.trtccalling.model.impl.base.TRTCLogger;
-import com.tencent.liteav.trtccalling.ui.common.BrandUtil;
+import com.tencent.liteav.trtccalling.model.util.BrandUtil;
 
 public class OfflineMessageDispatcher {
     private static final String TAG = "OfflineMessageDispatcher";

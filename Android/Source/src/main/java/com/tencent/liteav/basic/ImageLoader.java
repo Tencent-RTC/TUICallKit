@@ -8,10 +8,11 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.RawRes;
 import android.text.TextUtils;
 import android.widget.ImageView;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.RawRes;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
@@ -27,6 +28,10 @@ public class ImageLoader {
 
     public static void clear(Context context, ImageView imageView) {
         Glide.with(context).clear(imageView);
+    }
+
+    public static void clear(Context context) {
+        Glide.with(context).pauseRequests();
     }
 
     public static void loadImage(Context context, ImageView imageView, String url) {
@@ -123,7 +128,7 @@ public class ImageLoader {
             }
 
             Canvas canvas = new Canvas(result);
-            Paint  paint  = new Paint();
+            Paint paint = new Paint();
             paint.setShader(new BitmapShader(source, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
             paint.setAntiAlias(true);
             RectF rectF = new RectF(0f, 0f, source.getWidth(), source.getHeight());

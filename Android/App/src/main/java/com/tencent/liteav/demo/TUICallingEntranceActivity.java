@@ -29,6 +29,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.tencent.liteav.basic.ImageLoader;
+import com.tencent.liteav.basic.IntentUtils;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.trtccalling.TUICalling;
@@ -166,11 +167,11 @@ public class TUICallingEntranceActivity extends Activity {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 if (mType == TYPE_VIDEO_CALL) {
                     intent.setData(Uri.parse("https://cloud.tencent.com/document/product/647/42045"));
-                    startActivity(intent);
+                    IntentUtils.safeStartActivity(TUICallingEntranceActivity.this, intent);
                 }
                 if (mType == TYPE_AUDIO_CALL) {
                     intent.setData(Uri.parse("https://cloud.tencent.com/document/product/647/42047"));
-                    startActivity(intent);
+                    IntentUtils.safeStartActivity(TUICallingEntranceActivity.this, intent);
                 }
             }
         });
