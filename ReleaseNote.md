@@ -1,5 +1,24 @@
 ## 发布日志
 
+### Version 9.5 @ 2022.03.07
+
+#### 功能新增
+
+- Android & iOS：增加悬浮窗功能
+
+#### 问题修复
+
+- Android：本地及网络铃声播放异常问题；
+ 
+#### 功能优化
+
+- Android：优化代码结构，主要包含以下变动
+
+  - 将BrandUtil和PermissionUtil迁移至com.tencent.liteav.trtccalling.model.utils下；
+  - 将TRTCCallAudioActivity和TRTCCallVideoActivity合并为BaseCallActivity；
+  
+- iOS：优化设置铃声功能，支持在线资源。
+
 ### Version 9.5 @ 2022.01.24
 
 #### 功能新增
