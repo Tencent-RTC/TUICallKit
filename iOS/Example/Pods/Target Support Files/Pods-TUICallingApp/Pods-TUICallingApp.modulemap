@@ -1,0 +1,6 @@
+framework module Pods_TUICallingApp {
+  umbrella header "Pods-TUICallingApp-umbrella.h"
+
+  export *
+  module * { export * }
+}

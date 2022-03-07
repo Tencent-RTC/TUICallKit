@@ -1,0 +1,166 @@
+{
+  "name": "TUICalling",
+  "version": "9.5",
+  "platforms": {
+    "ios": "9.0"
+  },
+  "license": {
+    "type": "Proprietary",
+    "text": "        copyright 2017 tencent Ltd. All rights reserved.\n"
+  },
+  "homepage": "https://cloud.tencent.com/document/product/647",
+  "documentation_url": "https://cloud.tencent.com/document/product/647",
+  "authors": "tencent video cloud",
+  "summary": "TUICalling",
+  "xcconfig": {
+    "VALID_ARCHS": "armv7 arm64 x86_64"
+  },
+  "dependencies": {
+    "Masonry": [
+
+    ],
+    "TUICore": [
+
+    ]
+  },
+  "requires_arc": true,
+  "static_framework": true,
+  "source": {
+    "git": "https://github.com/tencentyun/TUICalling.git"
+  },
+  "pod_target_xcconfig": {
+    "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "arm64"
+  },
+  "user_target_xcconfig": {
+    "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "arm64"
+  },
+  "swift_versions": "5.0",
+  "default_subspecs": "TRTC",
+  "subspecs": [
+    {
+      "name": "TRTC",
+      "dependencies": {
+        "TXLiteAVSDK_TRTC": [
+
+        ]
+      },
+      "pod_target_xcconfig": {
+        "HEADER_SEARCH_PATHS": [
+          "$(PODS_TARGET_SRCROOT)/../../SDK/TXLiteAVSDK_TRTC.framework/Headers"
+        ]
+      },
+      "source_files": [
+        "Source/*.{h,m,mm}",
+        "Source/localized/**/*.{h,m,mm}",
+        "Source/Model/**/*.{h,m,mm}",
+        "Source/Service/**/*.{h,m,mm}",
+        "Source/UI/**/*.{h,m,mm}",
+        "Source/TUICallingKit_TRTC/*.{h,m,mm}"
+      ],
+      "ios": {
+        "frameworks": [
+          "AVFoundation",
+          "Accelerate"
+        ]
+      },
+      "libraries": [
+        "c++",
+        "resolv"
+      ],
+      "resource_bundles": {
+        "TUICallingKitBundle": [
+          "Resources/Localized/**/*.strings",
+          "Resources/AudioFile",
+          "Resources/*.xcassets"
+        ]
+      }
+    },
+    {
+      "name": "Enterprise",
+      "dependencies": {
+        "TXLiteAVSDK_Enterprise": [
+
+        ]
+      },
+      "pod_target_xcconfig": {
+        "HEADER_SEARCH_PATHS": [
+          "$(PODS_TARGET_SRCROOT)/../../SDK/TXLiteAVSDK_Enterprise.framework/Headers"
+        ]
+      },
+      "xcconfig": {
+        "HEADER_SEARCH_PATHS": "${SRCROOT}/../SDK/TXLiteAVSDK_Enterprise.framework/Headers/"
+      },
+      "source_files": [
+        "Source/*.{h,m,mm}",
+        "Source/localized/**/*.{h,m,mm}",
+        "Source/Model/**/*.{h,m,mm}",
+        "Source/Service/**/*.{h,m,mm}",
+        "Source/UI/**/*.{h,m,mm}",
+        "Source/TUICallingKit_Enterprise/*.{h,m,mm}"
+      ],
+      "ios": {
+        "frameworks": [
+          "AVFoundation",
+          "Accelerate",
+          "AssetsLibrary"
+        ]
+      },
+      "libraries": [
+        "c++",
+        "resolv",
+        "sqlite3"
+      ],
+      "resource_bundles": {
+        "TUICallingKitBundle": [
+          "Resources/Localized/**/*.strings",
+          "Resources/AudioFile",
+          "Resources/*.xcassets"
+        ]
+      }
+    },
+    {
+      "name": "Professional",
+      "dependencies": {
+        "TXLiteAVSDK_Professional": [
+
+        ]
+      },
+      "pod_target_xcconfig": {
+        "HEADER_SEARCH_PATHS": [
+          "$(PODS_TARGET_SRCROOT)/../../SDK/TXLiteAVSDK_Professional.framework/Headers"
+        ]
+      },
+      "xcconfig": {
+        "HEADER_SEARCH_PATHS": "${SRCROOT}/../SDK/TXLiteAVSDK_Professional.framework/Headers/"
+      },
+      "source_files": [
+        "Source/*.{h,m,mm}",
+        "Source/localized/**/*.{h,m,mm}",
+        "Source/Model/**/*.{h,m,mm}",
+        "Source/Service/**/*.{h,m,mm}",
+        "Source/UI/**/*.{h,m,mm}",
+        "Source/TUICallingKit_Professional/*.{h,m,mm}"
+      ],
+      "ios": {
+        "frameworks": [
+          "AVFoundation",
+          "Accelerate",
+          "AssetsLibrary"
+        ]
+      },
+      "libraries": [
+        "c++",
+        "resolv",
+        "sqlite3"
+      ],
+      "resource_bundles": {
+        "TUICallingKitBundle": [
+          "Resources/Localized/**/*.strings",
+          "Resources/AudioFile",
+          "Resources/*.xcassets"
+        ]
+      }
+    }
+  ],
+  "swift_version": "5.0"
+}

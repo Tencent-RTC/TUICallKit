@@ -15,6 +15,12 @@ static const int TC_TRTC_FRAMEWORK       = 1;
 
 @interface TUICallingConstants : NSObject
 
+typedef NS_ENUM(NSUInteger, TUICallingState) {
+    TUICallingStateDailing = 0, // 正在拨打中（主动）
+    TUICallingStateOnInvitee,   // 等待接听状态（被动）
+    TUICallingStateCalling      // 正在通话中状态(已接听)
+};
+
 extern NSString *const SIGNALING_EXTRA_KEY_VERSION;
 extern NSString *const SIGNALING_EXTRA_KEY_BUSINESSID;
 extern NSString *const SIGNALING_EXTRA_KEY_PLATFORM;
@@ -56,6 +62,8 @@ extern NSString *const EVENT_CALL_SUCCEED;
 extern NSString *const EVENT_CALL_START;
 extern NSString *const EVENT_CALL_DECLINE;
 extern NSString *const DEFAULT_AVATETR;
+
+extern NSString *const CALLING_BELL_KEY;
 
 @property (class, nonatomic, assign) int component;
 

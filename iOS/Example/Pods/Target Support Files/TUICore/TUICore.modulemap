@@ -1,0 +1,6 @@
+framework module TUICore {
+  umbrella header "TUICore-umbrella.h"
+
+  export *
+  module * { export * }
+}

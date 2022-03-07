@@ -16,55 +16,38 @@
 
 /// 记录Calling当前的状态
 @property (nonatomic, assign) TUICallingState curCallingState;
-
 /// 存储用户数据
 @property (nonatomic, strong) NSMutableArray<CallUserModel *> *userList;
-
 /// 组通话视图
 @property (nonatomic, strong) UICollectionView *groupCollectionView;
-
 /// 所有接收者提示文本
 @property (nonatomic, strong) UILabel *calleeTipLabel;
-
 /// 所有接收者视图
 @property (nonatomic, strong) UICollectionView *calleeCollectionView;
-
 /// UICollectionView 代理对象
 @property (nonatomic, strong) TUICallingDelegateManager *delegateManager;
-
 /// 所有接收者视图代理对象
 @property (nonatomic, strong) TUICalleeDelegateManager *calleeDelegateManager;
-
 /// 远程音频用户信息视图
 @property (nonatomic, strong) TUIAudioUserContainerView *userContainerView;
-
 /// 接听控制视图
 @property (nonatomic, strong) TUIInvitedContainerView *invitedContainerView;
-
 /// 通话时间按钮
 @property (nonatomic, strong) UILabel *callingTime;
-
 /// 关闭麦克风按钮
 @property (nonatomic, strong) TUICallingControlButton *muteBtn;
-
 /// 挂断按钮
 @property (nonatomic, strong) TUICallingControlButton *hangupBtn;
-
 /// 免提按钮
 @property (nonatomic, strong) TUICallingControlButton *handsfreeBtn;
-
 /// 关闭摄像头
 @property (nonatomic, strong) TUICallingControlButton *closeCameraBtn;
-
 /// 切换摄像头
 @property (nonatomic, strong) UIButton *switchCameraBtn;
-
 /// 记录本地用户
 @property (nonatomic, strong) CallUserModel *currentUser;
-
 /// 记录发起通话着
 @property (nonatomic, strong) CallUserModel *curSponsor;
-
 // 记录是否为前置相机,麦克风,听筒,摄像头开关
 @property (nonatomic, assign) BOOL isFrontCamera;
 @property (nonatomic, assign) BOOL isMicMute;
@@ -115,14 +98,14 @@
     [self addSubview:self.handsfreeBtn];
     // 视图约束
     [self.groupCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self).offset(StatusBar_Height);
+        make.top.equalTo(self).offset(StatusBar_Height + 38);
         make.centerX.equalTo(self);
         make.width.height.mas_equalTo(self.bounds.size.width);
     }];
     [self.callingTime mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self);
         make.bottom.equalTo(self.hangupBtn.mas_top).offset(-10);
-        make.height.equalTo(@(30));
+        make.height.equalTo(@(20));
     }];
     [self.muteBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.hangupBtn.mas_left).offset(-5);
@@ -139,6 +122,7 @@
         make.centerY.equalTo(self.hangupBtn);
         make.size.equalTo(@(kControlBtnSize));
     }];
+    [self bringSubviewToFront:self.floatingWindowBtn];
 }
 
 /// 多人通话，主叫方/接听后 UI初始化
@@ -152,14 +136,14 @@
     [self addSubview:self.switchCameraBtn];
     // 视图约束
     [self.groupCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self).offset(StatusBar_Height);
+        make.top.equalTo(self).offset(StatusBar_Height + 38);
         make.centerX.equalTo(self);
         make.width.height.mas_equalTo(self.bounds.size.width);
     }];
     [self.callingTime mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self);
-        make.bottom.equalTo(self.handsfreeBtn.mas_top).offset(-10);
-        make.height.equalTo(@(30));
+        make.bottom.equalTo(self.handsfreeBtn.mas_top).offset(5);
+        make.height.equalTo(@(20));
     }];
     [self.muteBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.handsfreeBtn.mas_left);
@@ -186,6 +170,7 @@
         make.left.equalTo(self.hangupBtn.mas_right).offset(20);
         make.size.equalTo(@(CGSizeMake(36, 36)));
     }];
+    [self bringSubviewToFront:self.floatingWindowBtn];
 }
 
 /// 多人通话，被呼叫方UI初始化
@@ -218,6 +203,7 @@
         make.height.equalTo(@(94));
         make.bottom.equalTo(self).offset(-Bottom_SafeHeight - 20);
     }];
+    [self bringSubviewToFront:self.floatingWindowBtn];
 }
 
 - (void)setCurCallingState:(TUICallingState)curCallingState {
@@ -246,6 +232,10 @@
         } break;
         default:
             break;
+    }
+    
+    if ([TUICallingFloatingWindowManager shareInstance].isFloating) {
+        [[TUICallingFloatingWindowManager shareInstance] updateMicroWindowText:@"" callingState:self.curCallingState];
     }
 }
 
@@ -358,6 +348,10 @@
 - (void)setCallingTimeStr:(NSString *)timeStr {
     if (timeStr && timeStr.length > 0) {
         self.callingTime.text = timeStr;
+        
+        if ([TUICallingFloatingWindowManager shareInstance].isFloating) {
+            [[TUICallingFloatingWindowManager shareInstance] updateMicroWindowText:timeStr callingState:self.curCallingState];
+        }
     }
 }
 
@@ -451,6 +445,10 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self.closeCameraBtn setUserInteractionEnabled:YES];
     });
+}
+
+- (void)floatingWindowTouchEvent:(UIButton *)sender {
+    [self showMicroFloatingWindow:self.curCallingState];
 }
 
 #pragma mark - Lazy
