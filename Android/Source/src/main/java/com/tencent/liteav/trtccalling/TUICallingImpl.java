@@ -11,14 +11,15 @@ import android.util.Log;
 import com.blankj.utilcode.util.ToastUtils;
 import com.tencent.liteav.trtccalling.model.TRTCCalling;
 import com.tencent.liteav.trtccalling.model.TRTCCallingDelegate;
+import com.tencent.liteav.trtccalling.model.impl.TRTCCallingCallback;
 import com.tencent.liteav.trtccalling.model.impl.base.TRTCLogger;
 import com.tencent.liteav.trtccalling.model.util.TUICallingConstants;
-import com.tencent.liteav.trtccalling.ui.audiocall.TRTCAudioCallActivity;
 import com.tencent.liteav.trtccalling.ui.audiocall.TUICallAudioView;
 import com.tencent.liteav.trtccalling.ui.audiocall.TUIGroupCallAudioView;
+import com.tencent.liteav.trtccalling.ui.base.BaseCallActivity;
 import com.tencent.liteav.trtccalling.ui.base.BaseTUICallView;
+import com.tencent.liteav.trtccalling.ui.base.Status;
 import com.tencent.liteav.trtccalling.ui.service.TUICallService;
-import com.tencent.liteav.trtccalling.ui.videocall.TRTCVideoCallActivity;
 import com.tencent.liteav.trtccalling.ui.videocall.TUICallVideoView;
 import com.tencent.liteav.trtccalling.ui.videocall.TUIGroupCallVideoView;
 import com.tencent.trtc.TRTCCloudDef;
@@ -78,6 +79,32 @@ public final class TUICallingImpl implements TUICalling, TRTCCallingDelegate {
     }
 
     @Override
+    public void setUserNickname(String nickname, TUICallingCallback callback) {
+        TRTCCalling.sharedInstance(mContext).setUserNickname(nickname, new TRTCCallingCallback() {
+            @Override
+            public void onCallback(int code, String msg) {
+                TRTCLogger.d(TAG, "setUserNickname code:" + code + " , msg:" + msg);
+                if (null != callback) {
+                    callback.onCallback(code, msg);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void setUserAvatar(String avatar, TUICallingCallback callback) {
+        TRTCCalling.sharedInstance(mContext).setUserAvatar(avatar, new TRTCCallingCallback() {
+            @Override
+            public void onCallback(int code, String msg) {
+                TRTCLogger.d(TAG, "setUserAvatar code:" + code + " , msg:" + msg);
+                if (null != callback) {
+                    callback.onCallback(code, msg);
+                }
+            }
+        });
+    }
+
+    @Override
     public void call(final String[] userIDs, final Type type) {
         internalCall(userIDs, "", "", false, type, Role.CALL);
     }
@@ -87,6 +114,13 @@ public final class TUICallingImpl implements TUICalling, TRTCCallingDelegate {
     }
 
     void internalCall(final String[] userIDs, final String sponsorID, final String groupID, final boolean isFromGroup, final Type type, final Role role) {
+        //当前悬浮窗显示,说明在通话流程中,不能再发起通话
+        if (Status.mIsShowFloatWindow) {
+            ToastUtils.showShort(mContext.getString(R.string.trtccalling_is_calling));
+            return;
+        }
+
+        //最大支持9人,超过9人,不能发起通话
         if (userIDs.length > MAX_USERS) {
             ToastUtils.showShort(mContext.getString(R.string.trtccalling_user_exceed_limit));
             return;
@@ -114,7 +148,7 @@ public final class TUICallingImpl implements TUICalling, TRTCCallingDelegate {
                 if (isGroupCall(groupID, userIDs, role, isFromGroup)) {
                     mCallView = new TUIGroupCallVideoView(mContext, role, userIDs, sponsorID, groupID, isFromGroup);
                 } else {
-                    mCallView = new TUICallVideoView(mContext, role, userIDs, sponsorID, groupID, isFromGroup);
+                    mCallView = new TUICallVideoView(mContext, role, userIDs, sponsorID, groupID, isFromGroup, null);
                 }
             }
             if (null != mTUICallingListener) {
@@ -124,7 +158,8 @@ public final class TUICallingImpl implements TUICalling, TRTCCallingDelegate {
             Runnable task = new Runnable() {
                 @Override
                 public void run() {
-                    Intent intent = Type.AUDIO == type ? new Intent(mContext, TRTCAudioCallActivity.class) : new Intent(mContext, TRTCVideoCallActivity.class);
+                    Intent intent = new Intent(mContext, BaseCallActivity.class);
+                    intent.putExtra(TUICallingConstants.PARAM_NAME_TYPE, type);
                     intent.putExtra(TUICallingConstants.PARAM_NAME_ROLE, role);
                     if (Role.CALLED == role) {
                         intent.putExtra(TUICallingConstants.PARAM_NAME_SPONSORID, sponsorID);
@@ -337,12 +372,10 @@ public final class TUICallingImpl implements TUICalling, TRTCCallingDelegate {
 
     @Override
     public void onUserVoiceVolume(Map<String, Integer> volumeMap) {
-//        Log.d(TAG, "onUserVoiceVolume enter");
     }
 
     @Override
     public void onNetworkQuality(TRTCCloudDef.TRTCQuality localQuality, ArrayList<TRTCCloudDef.TRTCQuality> remoteQuality) {
-        Log.d(TAG, "onNetworkQuality enter");
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.tencent.liteav.trtccalling.ui.common;
+package com.tencent.liteav.trtccalling.model.util;
 
 import android.text.TextUtils;
 

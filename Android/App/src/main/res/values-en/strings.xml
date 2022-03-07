@@ -7,10 +7,10 @@
     <string name="self_userId">your userId:</string>
     <string name="tips_search">"Search for a registered user\n\t\t\t\t\t\t to start a call."</string>
     <string name="toast_video_call">Video Call:%s</string>
-    <string name="toast_voice_call">Audio Call:%s</string>
+    <string name="toast_voice_call">Voice Call:%s</string>
     <string name="toast_not_call_myself">You cannot call yourself.</string>
     <string name="call_self_format">Your userId: %s</string>
-    <string name="audio_call">Audio Call</string>
+    <string name="audio_call">Voice Call</string>
     <string name="video_call">Video Call</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_confirm">Confirm</string>
@@ -30,7 +30,7 @@
     <string name="app_toast_register_success_and_logging_in">Registered successfully</string>
     <string name="app_toast_failed_to_set">Failed: %s</string>
 
-    <string name="app_item_multi_audio_call">Multi Audio Call</string>
+    <string name="app_item_multi_audio_call">Multi Voice Call</string>
     <string name="app_item_multi_video_call">Multi Video Call</string>
     <string name="app_added_member">Added Member</string>
     <string name="app_toast_no_member">No Member To Call</string>
@@ -43,9 +43,10 @@
     <string name="app_user_not_exist">User does not exist</string>
     <string name="app_add">Add</string>
     <string name="app_remove">Remove</string>
-    <string name="app_tv_voice_call_tips">Audio call still available with 70% packet loss</string>
+    <string name="app_tv_voice_call_tips">Voice call still available with 70% packet loss</string>
     <string name="app_tv_video_call_tips">Video call still available with 50% packet loss</string>
     <string name="app_login_out">Log out</string>
+    <string name="app_permission_hint">please open “Display pop-up window while running in the background” permission to respond to call request</string>
 
     <string name="app_custom_name_1">Martijn</string>
     <string name="app_custom_name_2">irfan</string>

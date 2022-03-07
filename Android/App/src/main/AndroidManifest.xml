@@ -56,6 +56,10 @@
                     android:path="/detail"
                     android:scheme="pushscheme" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.tencent.trtc.tuicalling" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <activity
@@ -100,7 +104,7 @@
             android:name="XG_SERVER_SUFFIX"
             android:value="tpns.sh.tencent.com" />
         <!-- tpns离线推送配置 end -->
-        
+
     </application>
 
 </manifest>

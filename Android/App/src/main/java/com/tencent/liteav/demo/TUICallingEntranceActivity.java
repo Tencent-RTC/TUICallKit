@@ -1,11 +1,13 @@
 package com.tencent.liteav.demo;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -24,16 +26,20 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.tencent.liteav.basic.ImageLoader;
+import com.tencent.liteav.basic.IntentUtils;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.trtccalling.TUICalling;
 import com.tencent.liteav.trtccalling.TUICallingImpl;
 import com.tencent.liteav.trtccalling.model.impl.base.CallingInfoManager;
+import com.tencent.liteav.trtccalling.model.util.BrandUtil;
+import com.tencent.liteav.trtccalling.model.util.PermissionUtil;
 import com.tencent.liteav.trtccalling.ui.common.RoundCornerImageView;
 
 import java.util.ArrayList;
@@ -67,6 +73,7 @@ public class TUICallingEntranceActivity extends Activity {
 
     private static final int MULTI_CALL_MAX_NUM        = 8; //C2C多人通话最大人数是9(需包含自己)
     private static final int ERROR_CODE_USER_NOT_EXIST = 206;
+    private static final int PERMISSION_RESULT_CODE    = 1100;
 
     private final List<UserModel> mUserModelList = new ArrayList<>();
 
@@ -96,6 +103,9 @@ public class TUICallingEntranceActivity extends Activity {
         initStatusBar();
         initView();
         initListener();
+        if (!PermissionUtil.mHasPermissionOrHasHinted) {
+            checkAndRequestPermission();
+        }
     }
 
     private void initStatusBar() {
@@ -166,11 +176,11 @@ public class TUICallingEntranceActivity extends Activity {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 if (mType == TYPE_VIDEO_CALL) {
                     intent.setData(Uri.parse("https://cloud.tencent.com/document/product/647/42045"));
-                    startActivity(intent);
+                    IntentUtils.safeStartActivity(TUICallingEntranceActivity.this, intent);
                 }
                 if (mType == TYPE_AUDIO_CALL) {
                     intent.setData(Uri.parse("https://cloud.tencent.com/document/product/647/42047"));
-                    startActivity(intent);
+                    IntentUtils.safeStartActivity(TUICallingEntranceActivity.this, intent);
                 }
             }
         });
@@ -329,5 +339,74 @@ public class TUICallingEntranceActivity extends Activity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PERMISSION_RESULT_CODE) {
+            if (PermissionUtil.hasPermission(this)) {
+                PermissionUtil.mHasPermissionOrHasHinted = true;
+            } else {
+                PermissionUtil.mHasPermissionOrHasHinted = false;
+                ToastUtils.showLong("Cannot open CallView when app is in background");
+            }
+        }
+    }
+
+    /**
+     * 申请后台打开应用的权限
+     * 不同厂商的权限名称不一致,例如小米:后台弹出界面; 华为:悬浮窗; 其他:锁屏界面弹框控制等.
+     */
+    private void checkAndRequestPermission() {
+        if (!PermissionUtil.hasPermission(this)) {
+            //vivo的后台权限界面跳转
+            if (BrandUtil.isBrandVivo()) {
+                Intent localIntent;
+                if (((Build.MODEL.contains("Y85")) && (!Build.MODEL.contains("Y85A")))
+                        || (Build.MODEL.contains("vivo Y53L"))) {
+                    localIntent = new Intent();
+                    localIntent.setClassName("com.vivo.permissionmanager",
+                            "com.vivo.permissionmanager.activity.PurviewTabActivity");
+                    localIntent.putExtra("packagename", getPackageName());
+                    localIntent.putExtra("tabId", "1");
+                    IntentUtils.safeStartActivity(TUICallingEntranceActivity.this, localIntent);
+                } else {
+                    localIntent = new Intent();
+                    localIntent.setClassName("com.vivo.permissionmanager",
+                            "com.vivo.permissionmanager.activity.SoftPermissionDetailActivity");
+                    localIntent.setAction("secure.intent.action.softPermissionDetail");
+                    localIntent.putExtra("packagename", getPackageName());
+                    IntentUtils.safeStartActivity(TUICallingEntranceActivity.this, localIntent);
+                }
+                return;
+            } else if (BrandUtil.isBrandXiaoMi()) {
+                final Dialog dialog = new Dialog(this, R.style.logoutDialogStyle);
+                dialog.setContentView(R.layout.app_show_tip_dialog_confirm);
+                TextView tvMessage = dialog.findViewById(R.id.tv_message);
+                Button btnOk = dialog.findViewById(R.id.btn_negative);
+                tvMessage.setText(R.string.app_permission_hint);
+                btnOk.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setCancelable(false);
+                dialog.show();
+                //弹出一次提示后,应用未杀死前不再进行提示了
+                PermissionUtil.mHasPermissionOrHasHinted = true;
+                return;
+            }
+            //其他厂商
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, PERMISSION_RESULT_CODE);
+            }
+        } else {
+            //已经有权限
+            PermissionUtil.mHasPermissionOrHasHinted = true;
+        }
     }
 }

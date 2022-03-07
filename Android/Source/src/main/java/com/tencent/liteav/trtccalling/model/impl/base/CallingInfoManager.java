@@ -47,19 +47,24 @@ public class CallingInfoManager {
 
             @Override
             public void onSuccess(List<V2TIMUserFullInfo> v2TIMUserFullInfos) {
+                if (v2TIMUserFullInfos == null || v2TIMUserFullInfos.size() <= 0) {
+                    TRTCLogger.d(TAG, "getUserInfoByUserId result ignored");
+                    if (null != callback) {
+                        callback.onFailed(-1, "getUserInfoByUserId result ignored");
+                    }
+                    return;
+                }
                 List<UserModel> list = new ArrayList<>();
-                if (v2TIMUserFullInfos != null && v2TIMUserFullInfos.size() != 0) {
-                    for (int i = 0; i < v2TIMUserFullInfos.size(); i++) {
-                        UserModel model = new UserModel();
-                        model.userName = v2TIMUserFullInfos.get(i).getNickName();
-                        model.userId = v2TIMUserFullInfos.get(i).getUserID();
-                        model.userAvatar = v2TIMUserFullInfos.get(i).getFaceUrl();
-                        list.add(model);
-                        TRTCLogger.d(TAG, String.format("getUserInfoByUserId, userId=%s, userName=%s, userAvatar=%s",
-                                model.userId, model.userName, model.userAvatar));
-                        if (TextUtils.isEmpty(model.userName)) {
-                            model.userName = model.userId;
-                        }
+                for (int i = 0; i < v2TIMUserFullInfos.size(); i++) {
+                    UserModel model = new UserModel();
+                    model.userName = v2TIMUserFullInfos.get(i).getNickName();
+                    model.userId = v2TIMUserFullInfos.get(i).getUserID();
+                    model.userAvatar = v2TIMUserFullInfos.get(i).getFaceUrl();
+                    list.add(model);
+                    TRTCLogger.d(TAG, String.format("getUserInfoByUserId, userId=%s, userName=%s, userAvatar=%s",
+                            model.userId, model.userName, model.userAvatar));
+                    if (TextUtils.isEmpty(model.userName)) {
+                        model.userName = model.userId;
                     }
                 }
                 if (callback != null) {
@@ -69,11 +74,10 @@ public class CallingInfoManager {
         });
     }
 
-
-
     // 通过userid/phone获取用户信息回调
     public interface UserCallback {
         void onSuccess(UserModel model);
+
         void onFailed(int code, String msg);
     }
 }

@@ -46,6 +46,7 @@
     <string name="app_tv_voice_call_tips">丢包率>70%可正常语音通话</string>
     <string name="app_tv_video_call_tips">丢包率>50%可正常视频通话</string>
     <string name="app_login_out">退出登录</string>
+    <string name="app_permission_hint">为了应用在后台时响应通话请求,请到设置中打开应用“后台拉起界面”权限</string>
 
     <!--自定义随机登录名-->
     <string name="app_custom_name_1">路飞</string>
