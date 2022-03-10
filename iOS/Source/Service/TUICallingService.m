@@ -108,7 +108,7 @@
     [view addSubview:imageView];
 
     UILabel *titleLabel = [[UILabel alloc] init];
-    [titleLabel setFont:[UIFont systemFontOfSize:10]];
+    [titleLabel setFont:[UIFont systemFontOfSize:14]];
     [titleLabel setTextColor:[UIColor grayColor]];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.frame = CGRectMake(0, imageView.frame.origin.y + imageView.frame.size.height, imageView.frame.size.width + 10, TMoreCell_Title_Height);

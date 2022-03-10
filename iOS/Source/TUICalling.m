@@ -53,6 +53,7 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 @property (nonatomic, copy) NSString *timerName;
 /// 记录通话时间 单位：秒
 @property (nonatomic, assign) NSInteger totalTime;
+
 /// 记录是否需要继续播放来电铃声
 @property (nonatomic, assign) BOOL needContinuePlaying;
 
@@ -94,11 +95,6 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
     self.userIDs = [NSArray arrayWithArray:userIDs];
     self.currentCallingType = type;
     self.currentCallingRole = TUICallingRoleCall;
-    
-    if ([[TUICallingFloatingWindowManager shareInstance] isFloating]) {
-        [self makeToast:CallingLocalize(@"Demo.TRTC.Calling.UnableToRestartTheCall")];
-        return;
-    }
     
     if ([self checkAuthorizationStatusIsDenied]) return;
     if (!self.currentUserId) return;
@@ -221,7 +217,7 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
         [callVC.view addSubview:self.callingView];
         [self.listener callStart:userIDs type:type role:role viewController:callVC];
     } else {
-        [self.callingView showCalingViewEnableFloatWindow:self.enableFloatWindow];
+        [self.callingView show];
     }
     
     if (self.enableMuteMode) {
@@ -260,7 +256,7 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
         [self.listener callEnd:self.userIDs type:self.currentCallingType role:self.currentCallingRole totalTime:(CGFloat)self.totalTime];
     }
     
-    [self.callingView disMissCalingView];
+    [self.callingView disMiss];
     self.callingView = nil;
     [self handleStopAudio];
     [TRTCGCDTimer canelTimer:self.timerName];
@@ -351,7 +347,6 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 - (void)onSwitchToAudio:(BOOL)success
                 message:(NSString *)message {
     if (success) {
-        self.currentCallingType = TUICallingTypeAudio;
         [self.callingView switchToAudio];
     }
     if (message && message.length > 0) {
