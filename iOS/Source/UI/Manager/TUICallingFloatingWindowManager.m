@@ -69,6 +69,7 @@
             completion(finished);
         }
         callingWindow.hidden = YES;
+        
         if (renderView) {
             self.floatWindow.frame = [self getFloatingWindowFrame:TUICallingFloatingWindowTypeVideo];
             [self.floatWindow updateMicroWindowWithRenderView:renderView];

@@ -89,19 +89,21 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 #pragma mark - Public method
 
 - (void)call:(NSArray<NSString *> *)userIDs type:(TUICallingType)type {
-    if (![TUICommonUtil checkArrayValid:userIDs]) return;
-    
-    self.userIDs = [NSArray arrayWithArray:userIDs];
-    self.currentCallingType = type;
-    self.currentCallingRole = TUICallingRoleCall;
-    
+    if (![TUICommonUtil checkArrayValid:userIDs]) {
+        return;
+    }
     if ([[TUICallingFloatingWindowManager shareInstance] isFloating]) {
         [self makeToast:CallingLocalize(@"Demo.TRTC.Calling.UnableToRestartTheCall")];
         return;
     }
     
-    if ([self checkAuthorizationStatusIsDenied]) return;
-    if (!self.currentUserId) return;
+    self.userIDs = [NSArray arrayWithArray:userIDs];
+    self.currentCallingType = type;
+    self.currentCallingRole = TUICallingRoleCall;
+    
+    if ([self checkAuthorizationStatusIsDenied] || !self.currentUserId) {
+        return;
+    }
     
     [[TRTCCalling shareInstance] groupCall:userIDs type:[self transformCallingType:type] groupID:self.groupID ?: nil];
     __weak typeof(self)weakSelf = self;
@@ -365,7 +367,9 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
          callType:(CallType)callType {
     NSLog(@"log: onInvited sponsor:%@ userIds:%@", sponsor, userIDs);
     
-    if (![TUICommonUtil checkArrayValid:userIDs]) return;
+    if (![TUICommonUtil checkArrayValid:userIDs]) {
+        return;
+    }
     
     if (self.listener && [self.listener respondsToSelector:@selector(shouldShowOnCallView)]) {
         if (![self.listener shouldShowOnCallView]) {
@@ -379,7 +383,9 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
     self.currentCallingRole = TTUICallingRoleCalled;
     self.currentCallingType = [self transformCallType:callType];
     
-    if ([self checkAuthorizationStatusIsDenied]) return;
+    if ([self checkAuthorizationStatusIsDenied]) {
+        return;
+    }
     
     NSMutableArray *userIds = [NSMutableArray arrayWithArray:userIDs];
     
