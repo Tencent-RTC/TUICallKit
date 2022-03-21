@@ -1,5 +1,5 @@
 本文档主要介绍Android离线推送TPNS接入常见问题。
-## 前提条件
+## 前提
 Android端移动推送TPNS接入需要进行以下步骤：
 ### 1. 创建产品和应用
 请参考：[创建产品和应用](https://cloud.tencent.com/document/product/548/37241)
@@ -12,7 +12,8 @@ Android端移动推送TPNS接入需要进行以下步骤：
 [移动推送TPNS-Android快速接入](https://cloud.tencent.com/document/product/548/43211)  
 [SDK集成](https://cloud.tencent.com/document/product/548/36652)
 
-1. 找到并打开`TUICalling/Debug/src/main/java/com/tencent/liteav/debug/GenerateTestUserSig.java`文件，设置文件中的相关参数：
+1. 修改账号信息   
+ 找到并打开`Android/Debug/src/main/java/com/tencent/liteav/debug/GenerateTestUserSig.java`文件，设置文件中的相关参数：
 <ul style="margin:0"><li/>SDKAPPID：默认为占位符（PLACEHOLDER），请设置为实际的 SDKAppID。
 <li/>SECRETKEY：默认为占位符（PLACEHOLDER），请设置为实际的密钥信息。</ul>
 
@@ -21,22 +22,21 @@ Android端移动推送TPNS接入需要进行以下步骤：
 2. 在TPNS控制台点击快速接入，下载`tpns-config.json`文件，替换工程中的同名文件
   ![#600px](https://qcloudimg.tencent-cloud.cn/raw/77a1fdbb89d0c93595441a2380ab2bb3.png)
 
-3. 修改应用包名为自己的包名   
+3. 修改`App/build.gradle`中的应用包名为自己的包名   
 
-TUICalling/ App/build.gradle 修改包名为腾讯云控制台注册的应用包名。
-```
-applicationId '应用包名'
-```
-4. 修改TPNS接入的`XG_ACCESS_ID`和`XG_ACCESS_KEY`。  
+     修改包名为腾讯云控制台注册的应用包名。
+   ```
+   applicationId '应用包名'
+   ```
+4. 修改`App/build.gradle`中的TPNS接入参数`XG_ACCESS_ID`和`XG_ACCESS_KEY`。  
    这两个值在上述第2步下载的`tpns-config.json`中获取。
-```
-TUICalling/ App/build.gradle
-manifestPlaceholders = [
-        // TPNS 推送服务 accessId、accessKey
-        XG_ACCESS_ID : "",
-        XG_ACCESS_KEY: ""
-]
-```
+   ```
+   manifestPlaceholders = [
+         // TPNS 推送服务 accessId、accessKey
+         XG_ACCESS_ID : "",
+         XG_ACCESS_KEY: ""
+   ]
+   ```
 ## 常见问题
 ### 遇到问题请先查阅以下文档   
 [Android 常见问题](https://cloud.tencent.com/document/product/548/36674)    
@@ -122,5 +122,13 @@ com.tencent.trtc D/ThirdPushTokenMgr: setOfflinePushToken failed errorCode = 220
 1. 小米
    在小米控制台申请通知channelID，填写自定义铃声链接。在Android8.0及以上的版本可支持自定义铃声。低版本经测试，暂不支持。
 
+### 版本更新导致编译异常问题
+1. 如无需更新最新版本，则修改`tpns-config.json`文件，将`upgrade`设置为`false`；
+2. 如需依赖最新版本，则修改`tpns-config.json`文件，将`Version`设置为最新([TPNS发布动态](https://cloud.tencent.com/document/product/548/44520))；   
+同时修改App目录下的`build.gradle`文件，将TPNS依赖修改为最新,例如：
+```
+implementation 'com.tencent.tpns:tpns:1.3.2.1-release'
+```
+
 ### 其他问题:
-如有其他问题，欢迎加入 `TUI组件交流群:592465424` 一起交流及学习~。
+如有其他问题，欢迎加入 `TUI组件交流群:592465424` 一起交流及学习~

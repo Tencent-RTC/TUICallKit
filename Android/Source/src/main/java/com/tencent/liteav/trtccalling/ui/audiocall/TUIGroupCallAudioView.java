@@ -46,9 +46,9 @@ public class TUIGroupCallAudioView extends BaseTUICallView {
     private TextView                    mInvitedTag;
     private TextView                    mTvHangup;
 
-    public TUIGroupCallAudioView(Context context, TUICalling.Role role, String[] userIDs,
+    public TUIGroupCallAudioView(Context context, TUICalling.Role role, TUICalling.Type type, String[] userIDs,
                                  String sponsorID, String groupID, boolean isFromGroup) {
-        super(context, role, userIDs, sponsorID, groupID, isFromGroup);
+        super(context, role, type, userIDs, sponsorID, groupID, isFromGroup);
     }
 
     @Override

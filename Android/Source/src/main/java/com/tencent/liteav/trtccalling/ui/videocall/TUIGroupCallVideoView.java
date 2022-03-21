@@ -57,9 +57,9 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
     private View                        mViewSwitchAudioCall;
     private View                        mShadeSponsor;
 
-    public TUIGroupCallVideoView(Context context, TUICalling.Role role, String[] userIDs,
+    public TUIGroupCallVideoView(Context context, TUICalling.Role role, TUICalling.Type type, String[] userIDs,
                                  String sponsorID, String groupID, boolean isFromGroup) {
-        super(context, role, userIDs, sponsorID, groupID, isFromGroup);
+        super(context, role, type, userIDs, sponsorID, groupID, isFromGroup);
     }
 
     @Override
@@ -348,7 +348,7 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
     public void onSwitchToAudio(boolean success, String message) {
         if (success) {
             updateAudioCallView();
-            mIsAudioMode = true;
+            mCallType = TUICalling.Type.AUDIO;
             if (mIsCalledClick && mRole == TUICalling.Role.CALLED) {
                 mTRTCCalling.accept();
             }
@@ -490,8 +490,9 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
         mDialingLl.setVisibility(View.GONE);
         mHandsfreeLl.setVisibility(View.VISIBLE);
         mMuteLl.setVisibility(View.VISIBLE);
-        mSwitchCameraImg.setVisibility(mIsAudioMode ? View.GONE : View.VISIBLE);
-        mOpenCameraLl.setVisibility(mIsAudioMode ? View.GONE : View.VISIBLE);
+        boolean isAudioMode = TUICalling.Type.AUDIO == mCallType;
+        mSwitchCameraImg.setVisibility(isAudioMode ? View.GONE : View.VISIBLE);
+        mOpenCameraLl.setVisibility(isAudioMode ? View.GONE : View.VISIBLE);
         mHangupLl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

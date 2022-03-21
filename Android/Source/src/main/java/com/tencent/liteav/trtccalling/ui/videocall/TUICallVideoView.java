@@ -60,9 +60,9 @@ public class TUICallVideoView extends BaseTUICallView {
     private TextView               mTextInviteWait;
     private View                   mRootView;
 
-    public TUICallVideoView(Context context, TUICalling.Role role, String[] userIDs,
+    public TUICallVideoView(Context context, TUICalling.Role role, TUICalling.Type type, String[] userIDs,
                             String sponsorID, String groupID, boolean isFromGroup, VideoLayoutFactory factory) {
-        super(context, role, userIDs, sponsorID, groupID, isFromGroup);
+        super(context, role, type, userIDs, sponsorID, groupID, isFromGroup);
         mLayoutManagerTRTC.initVideoFactory(factory);
     }
 
@@ -221,8 +221,9 @@ public class TUICallVideoView extends BaseTUICallView {
                 if (null == videoLayout) {
                     videoLayout = addUserToManager(userModel);
                 }
-                videoLayout.setVideoAvailable(!mIsAudioMode);
-                videoLayout.setRemoteIconAvailable(mIsAudioMode);
+                boolean isAudioMode = (TUICalling.Type.AUDIO == mCallType);
+                videoLayout.setVideoAvailable(!isAudioMode);
+                videoLayout.setRemoteIconAvailable(isAudioMode);
                 loadUserInfo(userModel, videoLayout);
             }
         });
@@ -305,7 +306,7 @@ public class TUICallVideoView extends BaseTUICallView {
     public void onSwitchToAudio(boolean success, String message) {
         if (success) {
             updateAudioCallView();
-            mIsAudioMode = true;
+            mCallType = TUICalling.Type.AUDIO;
             if (mIsCalledClick && mRole == TUICalling.Role.CALLED) {
                 mTRTCCalling.accept();
             }
@@ -473,9 +474,10 @@ public class TUICallVideoView extends BaseTUICallView {
         mDialingLl.setVisibility(View.GONE);
         mHandsfreeLl.setVisibility(View.VISIBLE);
         mMuteLl.setVisibility(View.VISIBLE);
-        mSwitchCameraImg.setVisibility(mIsAudioMode ? View.GONE : View.VISIBLE);
-        mOpenCameraLl.setVisibility(mIsAudioMode ? View.GONE : View.VISIBLE);
-        mViewSwitchAudioCall.setVisibility(mIsAudioMode ? View.GONE : View.VISIBLE);
+        boolean isAudioMode = (TUICalling.Type.AUDIO == mCallType);
+        mSwitchCameraImg.setVisibility(isAudioMode ? View.GONE : View.VISIBLE);
+        mOpenCameraLl.setVisibility(isAudioMode ? View.GONE : View.VISIBLE);
+        mViewSwitchAudioCall.setVisibility(isAudioMode ? View.GONE : View.VISIBLE);
         mHangupLl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -536,7 +538,7 @@ public class TUICallVideoView extends BaseTUICallView {
                 TRTCVideoLayout layout = mLayoutManagerTRTC.findCloudView(model.userId);
                 if (layout != null) {
                     layout.setUserName(model.userName);
-                    if (mIsAudioMode) {
+                    if (TUICalling.Type.AUDIO == mCallType) {
                         layout.setUserNameColor(getResources().getColor(R.color.trtccalling_color_black));
                     }
                     ImageLoader.loadImage(mContext, layout.getHeadImg(), model.userAvatar,

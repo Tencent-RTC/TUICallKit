@@ -140,15 +140,15 @@ public final class TUICallingImpl implements TUICalling, TRTCCallingDelegate {
         if (mEnableCustomViewRoute) {
             if (Type.AUDIO == type) {
                 if (isGroupCall(groupID, userIDs, role, isFromGroup)) {
-                    mCallView = new TUIGroupCallAudioView(mContext, role, userIDs, sponsorID, groupID, isFromGroup);
+                    mCallView = new TUIGroupCallAudioView(mContext, role, type, userIDs, sponsorID, groupID, isFromGroup);
                 } else {
-                    mCallView = new TUICallAudioView(mContext, role, userIDs, sponsorID, groupID, isFromGroup);
+                    mCallView = new TUICallAudioView(mContext, role, type, userIDs, sponsorID, groupID, isFromGroup);
                 }
             } else if (Type.VIDEO == type) {
                 if (isGroupCall(groupID, userIDs, role, isFromGroup)) {
-                    mCallView = new TUIGroupCallVideoView(mContext, role, userIDs, sponsorID, groupID, isFromGroup);
+                    mCallView = new TUIGroupCallVideoView(mContext, role, type, userIDs, sponsorID, groupID, isFromGroup);
                 } else {
-                    mCallView = new TUICallVideoView(mContext, role, userIDs, sponsorID, groupID, isFromGroup, null);
+                    mCallView = new TUICallVideoView(mContext, role, type, userIDs, sponsorID, groupID, isFromGroup, null);
                 }
             }
             if (null != mTUICallingListener) {

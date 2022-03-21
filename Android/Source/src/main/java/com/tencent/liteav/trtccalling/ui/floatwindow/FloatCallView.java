@@ -48,7 +48,7 @@ public class FloatCallView extends BaseTUICallView {
 
     public FloatCallView(Context context, TUICalling.Role role, TUICalling.Type type, String[] userIDs,
                          String sponsorID, String groupID, boolean isFromGroup, VideoLayoutFactory factory) {
-        super(context, role, userIDs, sponsorID, groupID, isFromGroup);
+        super(context, role, type, userIDs, sponsorID, groupID, isFromGroup);
         mCallType = type;
         mVideoFactory = factory;
     }
@@ -104,9 +104,11 @@ public class FloatCallView extends BaseTUICallView {
 
     //更新显示
     private void updateView(String userId) {
+        TRTCLogger.i(TAG, "updateView userId : " + userId + " , mCallType : " + mCallType);
         if (TUICalling.Type.VIDEO.equals(mCallType)) {
             if (isGroupCall()) {
                 mRemoteTxCloudView.setVisibility(GONE);
+                mLocalTxCloudView.setVisibility(GONE);
                 mAudioView.setVisibility(View.VISIBLE);
             } else {
                 mAudioView.setVisibility(View.GONE);
@@ -117,6 +119,7 @@ public class FloatCallView extends BaseTUICallView {
             }
         } else if (TUICalling.Type.AUDIO.equals(mCallType)) {
             mRemoteTxCloudView.setVisibility(GONE);
+            mLocalTxCloudView.setVisibility(GONE);
             mAudioView.setVisibility(View.VISIBLE);
         }
         //更新当前悬浮窗状态
@@ -232,6 +235,42 @@ public class FloatCallView extends BaseTUICallView {
             }
         } else {
             mTRTCCalling.stopRemoteView(userId);
+        }
+    }
+
+    @Override
+    public void onSwitchToAudio(boolean success, String message) {
+        super.onSwitchToAudio(success, message);
+        if (!Status.mIsShowFloatWindow) {
+            return;
+        }
+        TRTCLogger.i(TAG, "onSwitchToAudio: success = " + success + " ,message = " + message);
+        if (success) {
+            //1.悬浮窗状态下,主叫端视频切语音,主叫端收到该回调,更新mCallStatus为ACCEPT;
+            // 若被叫拒接,这直接挂断,走挂断流程,mCallStatus重置为NONE;
+            // 若被叫接听,则表明是通话中,mCallStatus为ACCEPT.
+            //2.悬浮窗状态下,被叫端视频切语音,被叫切语音后会默认进房,因此主叫收到该回调,表明在通话中.
+            if (TUICalling.Role.CALL == mRole) {
+                Status.mCallStatus = Status.CALL_STATUS.ACCEPT;
+            }
+            updateSwitchToAudioView();
+        } else {
+            TRTCLogger.e(TAG, "onSwitchToAudio failed ,message: " + message);
+        }
+    }
+
+    //视频切语音后,更新悬浮窗的显示
+    private void updateSwitchToAudioView() {
+        mLocalTxCloudView.setVisibility(GONE);
+        mRemoteTxCloudView.setVisibility(GONE);
+        mAudioView.setVisibility(VISIBLE);
+        if (Status.CALL_STATUS.ACCEPT == Status.mCallStatus) {
+            mTextViewTimeCount.setVisibility(VISIBLE);
+            showTimeCount(mTextViewTimeCount);
+        } else if (Status.CALL_STATUS.WAITING == Status.mCallStatus) {
+            mTextViewWaiting.setVisibility(VISIBLE);
+        } else {
+            TRTCLogger.i(TAG, "CallStatus is NONE");
         }
     }
 
