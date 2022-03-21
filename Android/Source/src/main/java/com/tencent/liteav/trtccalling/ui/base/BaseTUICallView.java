@@ -42,6 +42,7 @@ public abstract class BaseTUICallView extends FrameLayout implements TRTCCalling
     protected TRTCCalling     mTRTCCalling;
     protected UserModel       mSelfModel;
     protected TUICalling.Role mRole;
+    protected TUICalling.Type mCallType;
     protected String[]        mUserIDs;
     protected String          mSponsorID;
     protected String          mGroupID;
@@ -70,14 +71,13 @@ public abstract class BaseTUICallView extends FrameLayout implements TRTCCalling
     //视频相关字段
     protected boolean mIsFrontCamera = true;
     protected boolean mIsCameraOpen  = true;
-    protected boolean mIsAudioMode   = false; // 是否在语音通话状态下
     protected boolean mIsCalledClick = false; // 被叫方点击转换语音
     protected boolean mIsCalling     = false; // 正在通话中
 
     //公共视图
     private ImageView mImageBack;          // 返回按钮,展示悬浮窗
 
-    public BaseTUICallView(Context context, TUICalling.Role role, String[] userIDs,
+    public BaseTUICallView(Context context, TUICalling.Role role, TUICalling.Type type, String[] userIDs,
                            String sponsorID, String groupID, boolean isFromGroup) {
         super(context);
         mContext = context;
@@ -86,6 +86,7 @@ public abstract class BaseTUICallView extends FrameLayout implements TRTCCalling
         mSelfModel.userId = TUILogin.getUserId();
         mSelfModel.userName = TUILogin.getLoginUser();
         mRole = role;
+        mCallType = type;
         mUserIDs = userIDs;
         mSponsorID = sponsorID;
         mGroupID = groupID;
@@ -179,6 +180,10 @@ public abstract class BaseTUICallView extends FrameLayout implements TRTCCalling
 
     protected ImageView getImageBackView() {
         return mImageBack;
+    }
+
+    protected TUICalling.Type getCallType() {
+        return mCallType;
     }
 
     protected abstract void initView();
