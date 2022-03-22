@@ -1,6 +1,0 @@
-framework module TXAppBasic {
-  umbrella header "TXAppBasic-umbrella.h"
-
-  export *
-  module * { export * }
-}
