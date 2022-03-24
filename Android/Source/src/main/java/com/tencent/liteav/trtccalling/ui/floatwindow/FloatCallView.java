@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tencent.liteav.renderer.TXCGLSurfaceView;
 import com.tencent.liteav.trtccalling.R;
 import com.tencent.liteav.trtccalling.TUICalling;
 import com.tencent.liteav.trtccalling.model.impl.base.TRTCLogger;
@@ -150,28 +149,23 @@ public class FloatCallView extends BaseTUICallView {
             TRTCLogger.d(TAG, "video renderView is empty");
             return;
         }
-
+        TextureView mTextureView = renderView.getVideoView();
+        if (null == mTextureView) {
+            return;
+        }
+        if (null != mTextureView.getParent()) {
+            ((ViewGroup) mTextureView.getParent()).removeView(mTextureView);
+        }
         if (userId.equals(TUILogin.getLoginUser())) {
-            TXCGLSurfaceView mTXCGLSurfaceView = renderView.getGLSurfaceView();
-            if (mTXCGLSurfaceView != null && mTXCGLSurfaceView.getParent() != null) {
-                ((ViewGroup) mTXCGLSurfaceView.getParent()).removeView(mTXCGLSurfaceView);
-                mRemoteTxCloudView.setVisibility(GONE);
-                mLocalTxCloudView.setVisibility(VISIBLE);
-                mLocalTxCloudView.removeAllViews();
-                mLocalTxCloudView.addVideoView(mTXCGLSurfaceView);
-            }
+            mRemoteTxCloudView.setVisibility(GONE);
+            mLocalTxCloudView.setVisibility(VISIBLE);
+            mLocalTxCloudView.removeAllViews();
+            mLocalTxCloudView.addVideoView(mTextureView);
         } else {
-            TextureView mTextureView = renderView.getVideoView();
-            TRTCLogger.i(TAG, "updateVideoFloatWindow: mTextureView = " + mTextureView);
-            if (null != mTextureView) {
-                if (null != mTextureView.getParent()) {
-                    ((ViewGroup) mTextureView.getParent()).removeView(mTextureView);
-                }
-                mLocalTxCloudView.setVisibility(GONE);
-                mRemoteTxCloudView.setVisibility(VISIBLE);
-                mRemoteTxCloudView.removeAllViews();
-                mRemoteTxCloudView.addVideoView(mTextureView);
-            }
+            mLocalTxCloudView.setVisibility(GONE);
+            mRemoteTxCloudView.setVisibility(VISIBLE);
+            mRemoteTxCloudView.removeAllViews();
+            mRemoteTxCloudView.addVideoView(mTextureView);
         }
     }
 

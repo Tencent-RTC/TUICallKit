@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.blankj.utilcode.util.ToastUtils;
-import com.tencent.liteav.renderer.TXCGLSurfaceView;
 import com.tencent.liteav.trtccalling.R;
 import com.tencent.liteav.trtccalling.TUICalling;
 import com.tencent.liteav.trtccalling.model.impl.base.TRTCLogger;
@@ -176,11 +175,11 @@ public class BaseCallActivity extends Activity {
             //悬浮窗状态变化,自己的图像可能被冲掉了,因此需要重置自己的图像
             if (Status.CALL_STATUS.ACCEPT == Status.mCallStatus) {
                 resetRemoteView(mVideoFactory, userId);
-                resetLocalView(mVideoFactory);
+                resetRemoteView(mVideoFactory, TUILogin.getLoginUser());
                 return;
             }
             if (userId.equals(TUILogin.getUserId())) {
-                resetLocalView(mVideoFactory);
+                resetRemoteView(mVideoFactory, TUILogin.getLoginUser());
             } else {
                 resetRemoteView(mVideoFactory, userId);
             }
@@ -188,23 +187,7 @@ public class BaseCallActivity extends Activity {
 
     }
 
-    //重置本地图像
-    private void resetLocalView(VideoLayoutFactory layoutFactory) {
-        TRTCVideoLayout localLayout = layoutFactory.findUserLayout(TUILogin.getUserId());
-        if (localLayout == null) {
-            localLayout = layoutFactory.allocUserLayout(TUILogin.getUserId(), new TRTCVideoLayout(this));
-        }
-        TXCloudVideoView videoView = localLayout.getVideoView();
-        TXCGLSurfaceView glSurfaceView = videoView.getGLSurfaceView();
-        if (null != glSurfaceView) {
-            if (null != glSurfaceView.getParent()) {
-                ((ViewGroup) glSurfaceView.getParent()).removeView(glSurfaceView);
-            }
-            videoView.addVideoView(glSurfaceView);
-        }
-    }
-
-    //重置远端用户图像
+    //重置用户图像
     private void resetRemoteView(VideoLayoutFactory layoutFactory, String userId) {
         TRTCVideoLayout videoLayout = layoutFactory.findUserLayout(userId);
         if (null == videoLayout) {

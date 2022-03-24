@@ -1,5 +1,11 @@
 ## 发布日志
 
+### Version 9.6 @ 2022.03.24
+
+#### 编译修复
+Android：更新悬浮窗功能调用接口，`FloatCallView.java`和`BaseCallActivity.java`类中 ，`TXCGLSurfaceView`不再支持调用，变更为 `TextureView`
+
+
 ### Version 9.5 @ 2022.03.07
 
 #### 功能新增
