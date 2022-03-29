@@ -44,6 +44,6 @@ dependencies {
 	    api rootProject.ext.liteavSdk
 	
     api project(':TUICore')
-		api project(':Debug')
-	
+    api project(':debug')
+
 }

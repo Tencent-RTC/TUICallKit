@@ -22,7 +22,7 @@ buildscript {
 allprojects {
     repositories {
         flatDir {
-            dirs project(':App').file('libs')
+            dirs project(':app').file('libs')
         }
         jcenter()
         google()
