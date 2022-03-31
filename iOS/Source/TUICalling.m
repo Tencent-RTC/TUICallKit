@@ -96,6 +96,11 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
         [self makeToast:CallingLocalize(@"Demo.TRTC.Calling.UnableToRestartTheCall")];
         return;
     }
+    // 最大支持9人超过9人不能发起通话
+    if (userIDs.count > MAX_USERS) {
+        [self makeToast:CallingLocalize(@"Demo.TRTC.Calling.User.Exceed.Limit")];
+        return;
+    }
     
     self.userIDs = [NSArray arrayWithArray:userIDs];
     self.currentCallingType = type;
