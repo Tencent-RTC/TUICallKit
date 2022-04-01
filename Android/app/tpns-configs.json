@@ -26,5 +26,5 @@
     },
     "debug": true,
     "version": "1.3.2.1-release",
-    "upgrade": true
+    "upgrade": false
 }
