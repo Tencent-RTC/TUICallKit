@@ -41,9 +41,9 @@ dependencies {
     api "de.hdodenhof:circleimageview:3.1.0"
     api "com.google.code.gson:gson:2.3.1"
     api "com.blankj:utilcode:1.25.9"
-	    api rootProject.ext.liteavSdk
-	
-    api project(':TUICore')
+    api rootProject.ext.liteavSdk
+
+    api project(':tuicore')
     api project(':debug')
 
 }
