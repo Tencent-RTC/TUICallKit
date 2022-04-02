@@ -70,16 +70,6 @@ final class TUICallingService implements ITUINotification, ITUIService, ITUIExte
             } else if (TUIConstants.TUICalling.TYPE_VIDEO.equals(typeString)) {
                 mCallingImpl.internalCall(userIDs, groupID, TUICalling.Type.VIDEO, TUICalling.Role.CALL);
             }
-        } else if (null != param && TextUtils.equals(TUIConstants.TUICalling.METHOD_START_CALL, method)) {
-            if (!param.containsKey(TUIConstants.TUICalling.SENDER) || !param.containsKey(TUIConstants.TUICalling.PARAM_NAME_CALLMODEL)) {
-                return null;
-            }
-            String sender = (String) param.get(TUIConstants.TUICalling.SENDER);
-            String content = (String) param.get(TUIConstants.TUICalling.PARAM_NAME_CALLMODEL);
-            if (TextUtils.isEmpty(sender) || TextUtils.isEmpty(content)) {
-                return null;
-            }
-            mCallingImpl.receiveOfflineCalled(sender, content);
         }
         return null;
     }

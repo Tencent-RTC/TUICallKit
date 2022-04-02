@@ -30,8 +30,6 @@ public class PermissionUtil {
             return isXiaomiBgStartPermissionAllowed(context);
         } else if (BrandUtil.isBrandVivo()) {
             return isVivoBgStartPermissionAllowed(context);
-        } else if (BrandUtil.isBrandOppo()) {
-            return true;
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 return Settings.canDrawOverlays(context);

@@ -2,15 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: "com.tencent.android.tpns"
 
 android {
-    compileSdkVersion COMPILE_SDK_VERSION as Integer
-    buildToolsVersion BUILD_TOOLS_VERSION
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
 
     defaultConfig {
         applicationId "com.tencent.trtc"
-        versionName VERSION_NAME
-        versionCode VERSION_CODE as Integer
-        minSdkVersion MIN_SDK_VERSION as Integer
-        targetSdkVersion TARGET_SDK_VERSION as Integer
+        versionName "1.0"
+        versionCode 1
+        minSdkVersion 17
+        targetSdkVersion 26
         multiDexEnabled true
         //tpns接入添加
         ndk {
@@ -35,6 +35,7 @@ android {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api project(':tuicalling')
+    api project(':debug')
     // TPNS SDK 主工程依赖包
     implementation 'com.tencent.tpns:tpns:1.3.2.1-release'
 }

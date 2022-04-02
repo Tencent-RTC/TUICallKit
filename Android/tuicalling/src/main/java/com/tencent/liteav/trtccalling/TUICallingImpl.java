@@ -43,7 +43,7 @@ public final class TUICallingImpl implements TUICalling, TRTCCallingDelegate {
     private         TUICallingListener mTUICallingListener;
     protected final Handler            mMainHandler = new Handler(Looper.getMainLooper());
 
-    private boolean  mEnableFloatWindow     = false;  // 是否开启悬浮窗
+    private boolean  mEnableFloatWindow     = false;  // 是否开启悬浮窗,默认关闭,用户决定是否开启
     private boolean  mEnableCustomViewRoute = false;  // 是否开启自定义视图
     private String[] mUserIDs;
     private Type     mType;
@@ -151,6 +151,8 @@ public final class TUICallingImpl implements TUICalling, TRTCCallingDelegate {
                     mCallView = new TUICallVideoView(mContext, role, type, userIDs, sponsorID, groupID, isFromGroup, null);
                 }
             }
+            //用户自加载CallView时,不支持悬浮窗功能
+            mCallView.enableFloatWindow(false);
             if (null != mTUICallingListener) {
                 mTUICallingListener.onCallStart(userIDs, type, role, mCallView);
             }
@@ -167,6 +169,7 @@ public final class TUICallingImpl implements TUICalling, TRTCCallingDelegate {
                     }
                     intent.putExtra(TUICallingConstants.PARAM_NAME_USERIDS, userIDs);
                     intent.putExtra(TUICallingConstants.PARAM_NAME_GROUPID, groupID);
+                    intent.putExtra(TUICallingConstants.PARAM_NAME_FLOATWINDOW, mEnableFloatWindow);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
                 }
@@ -176,10 +179,6 @@ public final class TUICallingImpl implements TUICalling, TRTCCallingDelegate {
                 mTUICallingListener.onCallStart(userIDs, type, role, null);
             }
         }
-    }
-
-    public void receiveOfflineCalled(String sender, String content) {
-        TRTCCalling.sharedInstance(mContext).receiveNewInvitation(sender, content);
     }
 
     private boolean isGroupCall(String groupID, String[] userIDs, TUICalling.Role role, boolean isFromGroup) {

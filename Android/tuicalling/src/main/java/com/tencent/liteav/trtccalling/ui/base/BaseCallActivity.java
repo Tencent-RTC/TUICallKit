@@ -40,6 +40,7 @@ public class BaseCallActivity extends Activity {
     private String          mGroupID;
     private boolean         mIsFromGroup;
     private HomeWatcher     mHomeWatcher;
+    private boolean         mEnableFloatWindow; //用户是否支持显示悬浮窗
 
     private VideoLayoutFactory mVideoFactory;
 
@@ -56,6 +57,7 @@ public class BaseCallActivity extends Activity {
         mSponsorID = intent.getExtras().getString(TUICallingConstants.PARAM_NAME_SPONSORID);
         mGroupID = intent.getExtras().getString(TUICallingConstants.PARAM_NAME_GROUPID);
         mIsFromGroup = intent.getExtras().getBoolean(TUICallingConstants.PARAM_NAME_ISFROMGROUP);
+        mEnableFloatWindow = intent.getExtras().getBoolean(TUICallingConstants.PARAM_NAME_FLOATWINDOW);
         if (isGroupCall(mGroupID, mUserIds, mRole, mIsFromGroup)) {
             if (TUICalling.Type.AUDIO == mType) {
                 mCallView = createGroupAudioView(mRole, mType, mUserIds, mSponsorID, mGroupID, mIsFromGroup);
@@ -73,6 +75,7 @@ public class BaseCallActivity extends Activity {
         setContentView(mCallView);
         initHomeWatcher();
 
+        mCallView.enableFloatWindow(mEnableFloatWindow);
         //点击返回键,拉起悬浮窗,隐藏当前界面
         ImageView imageBack = mCallView.getImageBackView();
         if (null != imageBack) {
@@ -174,21 +177,21 @@ public class BaseCallActivity extends Activity {
             }
             //悬浮窗状态变化,自己的图像可能被冲掉了,因此需要重置自己的图像
             if (Status.CALL_STATUS.ACCEPT == Status.mCallStatus) {
-                resetRemoteView(mVideoFactory, userId);
-                resetRemoteView(mVideoFactory, TUILogin.getLoginUser());
+                resetView(mVideoFactory, userId);
+                resetView(mVideoFactory, TUILogin.getLoginUser());
                 return;
             }
             if (userId.equals(TUILogin.getUserId())) {
-                resetRemoteView(mVideoFactory, TUILogin.getLoginUser());
+                resetView(mVideoFactory, TUILogin.getLoginUser());
             } else {
-                resetRemoteView(mVideoFactory, userId);
+                resetView(mVideoFactory, userId);
             }
         }
 
     }
 
     //重置用户图像
-    private void resetRemoteView(VideoLayoutFactory layoutFactory, String userId) {
+    private void resetView(VideoLayoutFactory layoutFactory, String userId) {
         TRTCVideoLayout videoLayout = layoutFactory.findUserLayout(userId);
         if (null == videoLayout) {
             videoLayout = layoutFactory.allocUserLayout(userId, new TRTCVideoLayout(this));
@@ -221,6 +224,10 @@ public class BaseCallActivity extends Activity {
 
     //开启悬浮窗
     private void startFloatService() {
+        //不支持悬浮窗功能,则直接返回
+        if (!mEnableFloatWindow) {
+            return;
+        }
         if (mActivity.isFinishing() || mActivity.isDestroyed()) {
             return;
         }

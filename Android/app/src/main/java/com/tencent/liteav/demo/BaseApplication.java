@@ -14,7 +14,6 @@ import com.tencent.imsdk.v2.V2TIMConversationListener;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.liteav.demo.tpnspush.OfflineMessageDispatcher;
-import com.tencent.liteav.trtccalling.TUICallingImpl;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -82,10 +81,6 @@ public class BaseApplication extends MultiDexApplication {
                 });
 
                 V2TIMManager.getConversationManager().removeConversationListener(unreadListener);
-
-                //应用回到前台,需要主动去查询是否有未处理的通话请求
-                //例如应用在后台时没有拉起应用的权限,当用户听到铃声,从桌面或通知栏进入应用时,主动查询,拉起通话
-                TUICallingImpl.sharedInstance(getApplicationContext()).queryOfflineCalling();
             }
             isChangingConfiguration = false;
         }

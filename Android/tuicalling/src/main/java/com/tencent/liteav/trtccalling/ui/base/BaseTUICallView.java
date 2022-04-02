@@ -97,6 +97,11 @@ public abstract class BaseTUICallView extends FrameLayout implements TRTCCalling
         initListener();
     }
 
+    //用户是否支持显示悬浮窗:
+    public void enableFloatWindow(boolean enable) {
+        mImageBack.setVisibility(enable ? VISIBLE : GONE);
+    }
+
     private void initTimeHandler() {
         // 初始化计时线程
         mTimeHandlerThread = new HandlerThread("time-count-thread");

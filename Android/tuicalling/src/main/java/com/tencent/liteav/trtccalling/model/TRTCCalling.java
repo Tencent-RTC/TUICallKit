@@ -12,14 +12,11 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.text.TextUtils;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.tencent.imsdk.BaseConstants;
 import com.tencent.imsdk.v2.V2TIMCallback;
@@ -159,6 +156,9 @@ public class TRTCCalling {
     private boolean mEnableMuteMode  = false;  // 是否开启静音模式
     private String  mCallingBellPath = "";     // 被叫铃音路径
 
+    private static final String PROFILE_TUICALLING = "per_profile_tuicalling";
+    private static final String PROFILE_CALL_BELL  = "per_call_bell";
+
     public static final int TYPE_UNKNOWN    = 0;
     public static final int TYPE_AUDIO_CALL = 1;
     public static final int TYPE_VIDEO_CALL = 2;
@@ -169,6 +169,9 @@ public class TRTCCalling {
 
     private static final int CHECK_INVITE_PERIOD   = 10; //邀请信令的检测周期（毫秒）
     private static final int CHECK_INVITE_DURATION = 100; //邀请信令的检测总时长（毫秒）
+
+    //多端登录增加字段:用于标记当前是否是自己发给自己的请求(多端触发),以及自己是否处理了该请求.
+    private boolean mIsProcessedBySelf = false; // 被叫方: 主动操作后标记是否自己处理了请求或回调
 
     private static TRTCCalling sInstance;
 
@@ -319,6 +322,10 @@ public class TRTCCalling {
 
         @Override
         public void onInviteeAccepted(String inviteID, String invitee, String data) {
+            if (!isOnCalling) {
+                TRTCLogger.d(TAG, "onInviteeAccepted isOnCalling : " + isOnCalling);
+                return;
+            }
             TRTCLogger.d(TAG, "onInviteeAccepted inviteID:" + inviteID
                     + ", invitee:" + invitee + " data:" + data);
             SignallingData signallingData = convert2CallingData(data);
@@ -330,6 +337,14 @@ public class TRTCCalling {
                 realSwitchToAudioCall();
                 return;
             }
+
+            //多端登录:A1,A2登录同一账号,账户B呼叫A,A1接听正常处理,A2退出界面
+            if (!mIsProcessedBySelf && !TextUtils.isEmpty(invitee) && invitee.equals(TUILogin.getLoginUser())) {
+                stopCall();
+                preExitRoom(null);
+                return;
+            }
+
             if (checkIsHasGroupIDCall()) {
                 for (String id : mCurRoomRemoteUserSet) {
                     if (!invitee.equals(id)) {
@@ -344,6 +359,10 @@ public class TRTCCalling {
         public void onInviteeRejected(String inviteID, String invitee, String data) {
             TRTCLogger.d(TAG, "onInviteeRejected inviteID:" + inviteID
                     + ", invitee:" + invitee + " data:" + data);
+            if (!isOnCalling) {
+                TRTCLogger.d(TAG, "onInviteeRejected isOnCalling : " + isOnCalling);
+                return;
+            }
             SignallingData signallingData = convert2CallingData(data);
             if (!isCallingData(signallingData)) {
                 TRTCLogger.d(TAG, "this is not the calling scene ");
@@ -367,11 +386,21 @@ public class TRTCCalling {
                 curCallID = mCurCallID;
             }
 
+            TRTCLogger.d(TAG, "onInviteeRejected: curCallID = " + curCallID);
             if (TextUtils.isEmpty(curCallID) || !inviteID.equals(curCallID)) {
                 return;
             }
             mCurInvitedList.remove(invitee);
             mCurRoomRemoteUserSet.remove(invitee);
+
+            //多端登录增加逻辑:如果是自己的话,不在处理后续
+            if (!TextUtils.isEmpty(invitee) && invitee.equals(TUILogin.getLoginUser())) {
+                stopCall();
+                preExitRoom(null);
+                stopRing();
+                return;
+            }
+
             if (isLineBusy(signallingData)) {
                 if (mTRTCInternalListenerManager != null) {
                     mTRTCInternalListenerManager.onLineBusy(invitee);
@@ -540,6 +569,15 @@ public class TRTCCalling {
             return;
         }
 
+        if (null != inviteeList && !inviteeList.contains(TUILogin.getUserId())) {
+            TRTCLogger.d(TAG, "this invitation is not for me");
+            return;
+        }
+        if (!TextUtils.isEmpty(inviter) && inviter.equals(TUILogin.getLoginUser())) {
+            TRTCLogger.d(TAG, "this is MultiTerminal invitation ,ignore");
+            return;
+        }
+
         //被叫端缓存收到的通话请求
         CallModel callModel = new CallModel();
         callModel.sender = inviter;
@@ -553,11 +591,6 @@ public class TRTCCalling {
             TRTCLogger.d(TAG, "isAppRunningForeground is false");
             //后台播被叫铃声
             startRing();
-            return;
-        }
-
-        if (null != inviteeList && !inviteeList.contains(TUILogin.getUserId())) {
-            TRTCLogger.d(TAG, "this invitation is not for me");
             return;
         }
         processInvite(inviteID, inviter, groupID, inviteeList, signallingData);
@@ -1003,6 +1036,7 @@ public class TRTCCalling {
         stopDialingMusic();
         stopRing();
         unregisterSensorEventListener();
+        mIsProcessedBySelf = false;
     }
 
     private void realSwitchToAudioCall() {
@@ -1078,6 +1112,10 @@ public class TRTCCalling {
     }
 
     private void handleSwitchToAudio(CallModel callModel, String user) {
+        //如果不是在等待接听或通话过程中,不处理视频切语音事件
+        if (!isOnCalling) {
+            return;
+        }
         if (mCurCallType != TYPE_VIDEO_CALL) {
             sendModel(user, CallModel.VIDEO_CALL_ACTION_REJECT_SWITCH_TO_AUDIO, callModel,
                     "reject, remote user call type is not video call");
@@ -1126,16 +1164,15 @@ public class TRTCCalling {
      * @param groupId    群组通话的group id，如果是C2C需要传 ""
      */
     private void internalCall(final List<String> userIdList, int type, String groupId) {
-        final boolean isGroupCall = !TextUtils.isEmpty(groupId);
         if (!isOnCalling) {
             // 首次拨打电话，生成id，并进入trtc房间
             mCurRoomID = generateRoomID();
             mCurGroupId = groupId;
             mCurCallType = type;
+            mIsBeingCalled = false;
             TRTCLogger.d(TAG, "First calling, generate room id " + mCurRoomID);
             enterTRTCRoom();
             startCall();
-            mIsBeingCalled = false;
             startDialingMusic();
         }
         // 非首次拨打，不能发起新的groupId通话
@@ -1197,7 +1234,9 @@ public class TRTCCalling {
                 }
             }
             playHangupMusic();
-            exitRoom();
+            if (mIsInRoom) {
+                exitRoom();
+            }
             stopCall();
             if (mTRTCInternalListenerManager != null) {
                 mTRTCInternalListenerManager.onCallEnd();
@@ -1215,6 +1254,7 @@ public class TRTCCalling {
     }
 
     public void accept() {
+        mIsProcessedBySelf = true;
         enterTRTCRoom();
         stopRing();
     }
@@ -1354,68 +1394,10 @@ public class TRTCCalling {
             onSwitchToAudio(false, "remote user is empty");
             return;
         }
+        mIsProcessedBySelf = true;
         for (final String userId : mCurRoomRemoteUserSet) {
             mSwitchToAudioCallID = sendModel(userId, CallModel.VIDEO_CALL_SWITCH_TO_AUDIO_CALL);
         }
-    }
-
-    public void receiveNewInvitation(String sender, String content) {
-        TRTCLogger.d(TAG, "receiveNewInvitation sender: " + sender + " , content: " + content);
-        if (TextUtils.isEmpty(sender) || TextUtils.isEmpty(content)) {
-            return;
-        }
-        List<String> invitedList = new ArrayList<>();
-        JsonObject contentJson = (JsonObject) new JsonParser().parse(content);
-        if (!contentJson.has(TUICallingConstants.KEY_GROUP_ID)) {
-            return;
-        }
-        String groupId = contentJson.get(TUICallingConstants.KEY_GROUP_ID).getAsString();
-        if (!contentJson.has(TUICallingConstants.KEY_INVITED_LIST)) {
-            return;
-        }
-        JsonArray invitedArray = contentJson.getAsJsonArray(TUICallingConstants.KEY_INVITED_LIST);
-        if (null != invitedArray) {
-            for (JsonElement element : invitedArray) {
-                invitedList.add(element.getAsString());
-            }
-        }
-        if (!contentJson.has(TUICallingConstants.KEY_CALL_ID)) {
-            return;
-        }
-        String inviteID = contentJson.get(TUICallingConstants.KEY_CALL_ID).getAsString();
-        if (!contentJson.has(TUICallingConstants.KEY_CALL_TYPE)) {
-            return;
-        }
-        int callType = contentJson.get(TUICallingConstants.KEY_CALL_TYPE).getAsInt();
-        if (!contentJson.has(TUICallingConstants.KEY_ROOM_ID)) {
-            return;
-        }
-        int roomId = contentJson.get(TUICallingConstants.KEY_ROOM_ID).getAsInt();
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        SignallingData data = createSignallingData();
-        data.setCallType(callType);
-        data.setRoomId(roomId);
-        SignallingData.DataInfo callDataInfo = new SignallingData.DataInfo();
-        if (callType == TYPE_AUDIO_CALL) {
-            callDataInfo.setCmd(CallModel.VALUE_CMD_AUDIO_CALL);
-        } else if (callType == TYPE_VIDEO_CALL) {
-            callDataInfo.setCmd(CallModel.VALUE_CMD_VIDEO_CALL);
-        } else {
-            return;
-        }
-        callDataInfo.setRoomID(roomId);
-        data.setData(callDataInfo);
-        addFilterKey(gsonBuilder, CallModel.SIGNALING_EXTRA_KEY_CALL_END);
-        if (TextUtils.isEmpty(groupId)) {
-            callDataInfo.setUserIDs(invitedList);
-        }
-        String json = gsonBuilder.create().toJson(data);
-        if (TextUtils.isEmpty(inviteID)) {
-            // inviteID为空或者invite被取消了，终止流程。
-            TRTCLogger.w(TAG, "receiveNewInvitation: the call request has cancelled");
-            return;
-        }
-        mTIMSignallingListener.onReceiveNewInvitation(inviteID, sender, groupId, invitedList, json);
     }
 
     //设置头像
@@ -1480,6 +1462,8 @@ public class TRTCCalling {
 
     public void setCallingBell(String filePath) {
         mCallingBellPath = filePath;
+        //保存到本地
+        SPUtils.getInstance(PROFILE_TUICALLING).put(PROFILE_CALL_BELL, filePath);
     }
 
     public void enableMuteMode(boolean enable) {
@@ -2063,6 +2047,10 @@ public class TRTCCalling {
             return;
         }
         if (TextUtils.isEmpty(mCallingBellPath)) {
+            mCallingBellPath = SPUtils.getInstance(PROFILE_TUICALLING).getString(PROFILE_CALL_BELL, "");
+        }
+        TRTCLogger.d(TAG, "mCallingBellPath : " + mCallingBellPath);
+        if (TextUtils.isEmpty(mCallingBellPath)) {
             mMediaPlayHelper.start(R.raw.phone_ringing);
         } else {
             mMediaPlayHelper.start(mCallingBellPath);
@@ -2085,10 +2073,7 @@ public class TRTCCalling {
             return;
         }
         final int resId = mMediaPlayHelper.getResId();
-        // 挂断音效很短，播放完即可；主叫铃音和被叫铃音需主动stop
-        if (resId != R.raw.phone_hangup) {
-            mMediaPlayHelper.stop();
-        }
+        mMediaPlayHelper.stop();
     }
 
     private V2TIMOfflinePushInfo createV2TIMOfflinePushInfo(CallModel callModel, String userId, String nickname) {

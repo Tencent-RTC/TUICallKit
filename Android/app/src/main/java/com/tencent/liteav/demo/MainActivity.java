@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         initStatusBar();
         login();
         initView();
+        initData();
     }
 
     private void initStatusBar() {
@@ -152,6 +153,10 @@ public class MainActivity extends AppCompatActivity {
                 showLogoutDialog();
             }
         });
+    }
+
+    private void initData() {
+        TUICallingImpl.sharedInstance(this).enableFloatWindow(true);
     }
 
     protected List<TRTCItemEntity> createTRTCItems() {
