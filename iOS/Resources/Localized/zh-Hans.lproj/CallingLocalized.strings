@@ -57,4 +57,5 @@
 "Demo.TRTC.Calling.FloatingWindow.waitaccept" = "等待接听";
 "Demo.TRTC.Calling.FloatingWindow.dailing" = "呼叫中…";
 
+"Demo.TRTC.Calling.User.Exceed.Limit" = "暂支持最多9人通话。如需多人会议，请使用TUIRoom";
 "Demo.TRTC.Calling.UnableToRestartTheCall" = "正在通话中，无法再次发起";

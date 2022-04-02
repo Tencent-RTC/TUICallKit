@@ -65,7 +65,7 @@
 
 - (void)call:(NSArray *)userIDs groupID:(NSString *)groupID type:(CallType)type {
     if (!self.isOnCalling) {
-        self.curLastModel.inviter = [TRTCCallingUtils loginUser];
+        self.curLastModel.inviter = TUILogin.getUserID;
         self.curLastModel.action = CallAction_Call;
         self.curLastModel.calltype = type;
         self.curRoomID = [TRTCCallingUtils generateRoomID];
@@ -113,6 +113,7 @@
 - (void)accept {
     TRTCLog(@"Calling - accept");
     [self enterRoom];
+    self.isProcessedBySelf = YES;
     self.currentCallingUserID = [self checkIsHasGroupIDCall] ? self.curGroupID : self.curSponsorForMe;
 }
 
@@ -163,7 +164,9 @@
 }
 
 - (void)switchToAudio {
+    self.isProcessedBySelf = YES;
     int res = [self checkAudioStatus];
+    
     if (res == 0) {
         self.switchToAudioCallID = [self invite:self.currentCallingUserID action:CallAction_SwitchToAudio model:nil cmdInfo:nil];
     } else {
@@ -196,6 +199,7 @@
         self.curRoomList = [NSMutableArray array];
         self.curCallIdDic = [NSMutableDictionary dictionary];
         self.calleeUserIDs = [@[] mutableCopy];
+        self.isProcessedBySelf = NO;
     }
     _isOnCalling = isOnCalling;
 }
@@ -436,11 +440,7 @@
 - (void)onUserVoiceVolume:(NSArray <TRTCVolumeInfo *> *)userVolumes totalVolume:(NSInteger)totalVolume {
     if ([self canDelegateRespondMethod:@selector(onUserVoiceVolume:volume:)]) {
         for (TRTCVolumeInfo *info in userVolumes) {
-            if (info.userId) {
-                [self.delegate onUserVoiceVolume:info.userId volume:(UInt32)info.volume];
-            } else {
-                [self.delegate onUserVoiceVolume:[TRTCCallingUtils loginUser] volume:(UInt32)info.volume];
-            }
+            [self.delegate onUserVoiceVolume:info.userId ?: TUILogin.getUserID volume:(UInt32)info.volume];
         }
     }
 }

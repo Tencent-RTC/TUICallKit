@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 static const int TC_TUICALLING_COMPONENT = 3;
 static const int TC_TIMCALLING_COMPONENT = 10;
 static const int TC_TRTC_FRAMEWORK       = 1;
+static const int MAX_USERS = 8; // 最大通话数为9 (需包含自己)
 
 @interface TUICallingConstants : NSObject
 
