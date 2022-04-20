@@ -395,7 +395,7 @@ static CGFloat const kSmallVideoViewWidth = 100.0f;
 }
 
 - (void)setRemotePreViewWith:(CallUserModel *)user{
-    if (user.userId != [[V2TIMManager sharedInstance] getLoginUser]) {
+    if (![user.userId isEqualToString:[[V2TIMManager sharedInstance] getLoginUser]]) {
         self.remotePreView.hidden = NO;
         [self.remotePreView configViewWithUserModel:user];
         [[TRTCCalling shareInstance] startRemoteView:user.userId view:self.remotePreView];
@@ -416,22 +416,22 @@ static CGFloat const kSmallVideoViewWidth = 100.0f;
 - (void)updateUser:(CallUserModel *)user animated:(BOOL)animated {
     self.remotePreView.hidden = !user.isVideoAvaliable;
     
-    if (self.remoteSponsor.userId == user.userId) {
+    if ([self.remoteSponsor.userId isEqualToString:user.userId]) {
         self.remoteSponsor = user;
     }
 }
 
 - (void)updateUserVolume:(CallUserModel *)user {
-    if (self.remoteSponsor.userId == user.userId) {
+    if ([self.remoteSponsor.userId isEqualToString:user.userId]) {
         [self.remotePreView configViewWithUserModel:user];
     }
 }
 
 - (CallUserModel *)getUserById:(NSString *)userId {
-    if (self.remoteSponsor.userId == userId) {
+    if ([self.remoteSponsor.userId isEqualToString:userId]) {
         return self.remoteSponsor;
     }
-    return Nil;
+    return nil;
 }
 
 - (void)acceptCalling {

@@ -598,7 +598,7 @@
             
             if (model.groupid != nil && ![model.invitedList containsObject:TUILogin.getUserID]
                 ) { // 群聊但是邀请不包含自己不处理
-                if (self.curCallID == model.callid) { // 在房间中更新列表
+                if ([self.curCallID isEqualToString:model.callid]) { // 在房间中更新列表
                     syncInvitingList();
                     if (self.curInvitingList.count > 0) {
                         if ([self canDelegateRespondMethod:@selector(onGroupCallInviteeListUpdate:)]) {
