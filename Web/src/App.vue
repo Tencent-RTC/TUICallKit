@@ -31,7 +31,6 @@ export default {
       if (newIsLogin !== oldIsLogin) {
         if (newIsLogin) {
           if (this.$router.history.current.path === "/login") {
-            // 防止已在 '/' 路由下再次 push
             this.$router.push("/");
           }
         } else {

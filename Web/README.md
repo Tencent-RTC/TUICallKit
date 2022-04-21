@@ -4,6 +4,7 @@
 
 \- 视频通话：视频通话，面向在线客服等需要面对面交流的沟通场景。
 
+_[English](README.en.md) | 中文_
 ### 环境要求
 * 请使用最新版本的 Chrome 浏览器。
 * TRTCCalling 依赖以下端口进行数据传输，请将其加入防火墙白名单，配置完成后，您可以通过访问并体验 [官网 Demo](https://web.sdk.qcloud.com/component/trtccalling/demo/web/latest/index.html) 检查配置是否生效。

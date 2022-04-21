@@ -8,9 +8,8 @@ function createStore () {
     state: {
       isLogin: false,
       loginUserInfo: null,
-      // trtc 相关
       callStatus: '', // 状态, idle, calling, connected
-      isInviter: false, // c2c 通话，说不定一开始不是 inviter, 后面邀请了别人就是 inviter 了
+      isInviter: false, 
       isAccepted: false,
       meetingUserIdList: [],
       muteVideoUserIdList: [],
