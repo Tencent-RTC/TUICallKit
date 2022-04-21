@@ -9,8 +9,6 @@
 #import "TRTCCallingUtils.h"
 #import "TRTCCallingDelegate.h"
 #import "TRTCCalling.h"
-#import <TUICore/UIView+TUIToast.h>
-#import "TUICommonUtil.h"
 #import <ImSDK_Plus/ImSDK_Plus.h>
 #import "CallingLocalized.h"
 #import "TRTCCalling+Signal.h"
@@ -20,7 +18,9 @@
 #import "TRTCGCDTimer.h"
 #import "TUICallingAudioPlayer.h"
 #import "TUICallingConstants.h"
+#import "TRTCCallingHeader.h"
 #import <TUICore/TUIDefine.h>
+#import <TUICore/TUILogin.h>
 
 typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
     TUICallingUserRemoveReasonLeave,
@@ -39,8 +39,6 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 @property (nonatomic, assign) TUICallingType currentCallingType;
 /// 记录当前的呼叫用户类型  主动、被动
 @property (nonatomic, assign) TUICallingRole currentCallingRole;
-/// 铃声的资源地址
-@property (nonatomic, copy) NSString *bellFilePath;
 /// 记录是否开启静音模式     需考虑恢复默认页面
 @property (nonatomic, assign) BOOL enableMuteMode;
 /// 记录是否开启悬浮窗
@@ -55,7 +53,6 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 @property (nonatomic, copy) NSString *timerName;
 /// 记录通话时间 单位：秒
 @property (nonatomic, assign) NSInteger totalTime;
-
 /// 记录是否需要继续播放来电铃声
 @property (nonatomic, assign) BOOL needContinuePlaying;
 
@@ -92,14 +89,26 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 #pragma mark - Public method
 
 - (void)call:(NSArray<NSString *> *)userIDs type:(TUICallingType)type {
-    if (![TUICommonUtil checkArrayValid:userIDs]) return;
+    if (![TUICommonUtil checkArrayValid:userIDs]) {
+        return;
+    }
+    if ([[TUICallingFloatingWindowManager shareInstance] isFloating]) {
+        [self makeToast:CallingLocalize(@"Demo.TRTC.Calling.UnableToRestartTheCall")];
+        return;
+    }
+    // 最大支持9人超过9人不能发起通话
+    if (userIDs.count > MAX_USERS) {
+        [self makeToast:CallingLocalize(@"Demo.TRTC.Calling.User.Exceed.Limit")];
+        return;
+    }
     
     self.userIDs = [NSArray arrayWithArray:userIDs];
     self.currentCallingType = type;
     self.currentCallingRole = TUICallingRoleCall;
     
-    if ([self checkAuthorizationStatusIsDenied]) return;
-    if (!self.currentUserId) return;
+    if ([self checkAuthorizationStatusIsDenied] || !self.currentUserId) {
+        return;
+    }
     
     [[TRTCCalling shareInstance] groupCall:userIDs type:[self transformCallingType:type] groupID:self.groupID ?: nil];
     __weak typeof(self)weakSelf = self;
@@ -133,9 +142,40 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 }
 
 - (void)setCallingBell:(NSString *)filePath {
-    if (filePath && ![filePath hasPrefix:@"http"]) {
-        self.bellFilePath = filePath;
+    if(!(filePath && [filePath isKindOfClass:NSString.class] && filePath.length > 0)) {
+        return;
     }
+    
+    if ([filePath hasPrefix:@"http"]) {
+        NSURLSession *session = [NSURLSession sharedSession];
+        NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithURL:[NSURL URLWithString:filePath] completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            if (error != nil) {
+                TRTCLog(@"SetCallingBell Error: %@", error.localizedDescription);
+                return;
+            }
+            
+            if (location != nil) {
+                NSString *oldBellFilePath = [NSUserDefaults.standardUserDefaults objectForKey:CALLING_BELL_KEY];
+                [[NSFileManager defaultManager] removeItemAtPath:oldBellFilePath error:nil];
+                NSString *filePathStr = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:response.suggestedFilename];
+                [[NSFileManager defaultManager] moveItemAtURL:location toURL:[NSURL fileURLWithPath:filePathStr] error:nil];
+                [NSUserDefaults.standardUserDefaults setObject:filePathStr ?: @"" forKey:CALLING_BELL_KEY];
+                [NSUserDefaults.standardUserDefaults synchronize];
+            }
+        }];
+        [downloadTask resume];
+    } else {
+        [NSUserDefaults.standardUserDefaults setObject:filePath forKey:CALLING_BELL_KEY];
+        [NSUserDefaults.standardUserDefaults synchronize];
+    }
+}
+
+- (void)setUserNickname:(NSString *)nickname callback:(TUICallingCallback)callback {
+    [self setUserNickname:nickname avatar:nil callback:callback];
+}
+
+- (void)setUserAvatar:(NSString *)avatar callback:(TUICallingCallback)callback {
+    [self setUserNickname:nil avatar:avatar callback:callback];
 }
 
 - (void)enableMuteMode:(BOOL)enable {
@@ -188,7 +228,7 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
         [callVC.view addSubview:self.callingView];
         [self.listener callStart:userIDs type:type role:role viewController:callVC];
     } else {
-        [self.callingView show];
+        [self.callingView showCalingViewEnableFloatWindow:self.enableFloatWindow];
     }
     
     if (self.enableMuteMode) {
@@ -210,11 +250,11 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 
 
 - (void)playAudioToCalled {
-    if (self.bellFilePath) {
-        playAudioWithFilePath(self.bellFilePath);
-    } else {
-        playAudio(CallingAudioTypeCalled);
+    NSString *bellFilePath = [NSUserDefaults.standardUserDefaults objectForKey:CALLING_BELL_KEY];
+    if (bellFilePath && playAudioWithFilePath(bellFilePath)) {
+        return;
     }
+    playAudio(CallingAudioTypeCalled);
 }
 
 - (void)handleStopAudio {
@@ -227,7 +267,7 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
         [self.listener callEnd:self.userIDs type:self.currentCallingType role:self.currentCallingRole totalTime:(CGFloat)self.totalTime];
     }
     
-    [self.callingView disMiss];
+    [self.callingView disMissCalingView];
     self.callingView = nil;
     [self handleStopAudio];
     [TRTCGCDTimer canelTimer:self.timerName];
@@ -244,6 +284,32 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 
 - (void)enableAutoLockScreen:(BOOL)isEnable {
     [UIApplication sharedApplication].idleTimerDisabled = !isEnable;
+}
+
+- (void)setUserNickname:(NSString *)nickname avatar:(NSString *)avatar callback:(TUICallingCallback)callback {
+    [[V2TIMManager sharedInstance] getUsersInfo:@[TUILogin.getUserID ?: @""] succ:^(NSArray<V2TIMUserFullInfo *> *infoList) {
+        V2TIMUserFullInfo *info = infoList.firstObject;
+        
+        if ((nickname && [nickname isKindOfClass:NSString.class] && [nickname isEqualToString:info.nickName]) ||
+            (avatar && [avatar isKindOfClass:NSString.class] && [avatar isEqualToString:info.faceURL])) {
+            callback(0, @"success");
+            return;
+        }
+        if ([nickname isKindOfClass:NSString.class] && nickname.length > 0) {
+            info.nickName = nickname;
+        }
+        if ([avatar isKindOfClass:NSString.class] && avatar.length > 0) {
+            info.faceURL = avatar;
+        }
+        
+        [[V2TIMManager sharedInstance] setSelfInfo:info succ:^{
+            callback(0, @"success");
+        } fail:^(int code, NSString *desc) {
+            callback(code, desc);
+        }];
+    } fail:^(int code, NSString *desc) {
+        callback(code, desc);
+    }];
 }
 
 #pragma mark - TUIInvitedActionProtocal
@@ -292,6 +358,7 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 - (void)onSwitchToAudio:(BOOL)success
                 message:(NSString *)message {
     if (success) {
+        self.currentCallingType = TUICallingTypeAudio;
         [self.callingView switchToAudio];
     }
     if (message && message.length > 0) {
@@ -305,7 +372,9 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
          callType:(CallType)callType {
     NSLog(@"log: onInvited sponsor:%@ userIds:%@", sponsor, userIDs);
     
-    if (![TUICommonUtil checkArrayValid:userIDs]) return;
+    if (![TUICommonUtil checkArrayValid:userIDs]) {
+        return;
+    }
     
     if (self.listener && [self.listener respondsToSelector:@selector(shouldShowOnCallView)]) {
         if (![self.listener shouldShowOnCallView]) {
@@ -319,7 +388,9 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
     self.currentCallingRole = TTUICallingRoleCalled;
     self.currentCallingType = [self transformCallType:callType];
     
-    if ([self checkAuthorizationStatusIsDenied]) return;
+    if ([self checkAuthorizationStatusIsDenied]) {
+        return;
+    }
     
     NSMutableArray *userIds = [NSMutableArray arrayWithArray:userIDs];
     

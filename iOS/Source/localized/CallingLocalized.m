@@ -6,12 +6,14 @@
 //
 
 #import "CallingLocalized.h"
+#import "TUIGlobalization.h"
 
 #pragma mark - Base
 
 NSBundle *CallingBundle(void) {
     NSURL *callingKitBundleURL = [[NSBundle mainBundle] URLForResource:@"TUICallingKitBundle" withExtension:@"bundle"];
-    return [NSBundle bundleWithURL:callingKitBundleURL];
+    NSString *path = [[NSBundle bundleWithURL:callingKitBundleURL] pathForResource:[TUIGlobalization tk_localizableLanguageKey] ofType:@"lproj"];
+    return [NSBundle bundleWithPath:path];
 }
 
 NSString *TCLLocalizeFromTable(NSString *key, NSString *table) {
