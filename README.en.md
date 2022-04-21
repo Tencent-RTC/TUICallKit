@@ -59,7 +59,7 @@ For earlier version update history, please click [More](./ReleaseNote.md)...
 <tr>
 <td><img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/app_download_ios.png" width="260px"/></td>
 <td><img src="https://qcloudimg.tencent-cloud.cn/raw/1027a02e38ae4aeb1ec9ef17ac1a953d.png" width="260px" /></td>
-<td> <a href="https://web.sdk.qcloud .com/component/trtcccalling/demo/web/latest/index.html#/login">1v1 audio and video call</a></td>
+<td> <a href="https://web.sdk.qcloud.com/component/trtccalling/demo/web/latest/index.html#/login">1v1 audio and video call</a></td>
 </tr>
 </table>
 
