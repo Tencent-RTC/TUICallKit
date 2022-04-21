@@ -1,10 +1,12 @@
+# Quick Run of TUICalling Demo for web
+
+_[中文](README.md) | English_
+
 This document describes how to quickly run the TRTCCalling demo for web, which contains the audio call and video call scenarios:
 
 \- Audio call: Refers to audio-only interaction and supports multi-person interactive audio chat.
 
 \- Video call: Refers to video call used in video communication scenarios such as online customer service.
-
-_[中文](README.md) | English_
 
 ### Environment requirements
 * Use the latest version of Chrome.

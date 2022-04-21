@@ -1,10 +1,12 @@
+# TUICalling web 示例工程快速跑通
+
+_[English](README.en.md) | 中文_
+
 本文主要介绍如何快速跑通 Web 版本的 TRTCCalling Demo，Demo 中包括语音通话和视频通话场景：
 
 \- 语音通话：纯语音交互，支持多人互动语音聊天。
 
 \- 视频通话：视频通话，面向在线客服等需要面对面交流的沟通场景。
-
-_[English](README.en.md) | 中文_
 ### 环境要求
 * 请使用最新版本的 Chrome 浏览器。
 * TRTCCalling 依赖以下端口进行数据传输，请将其加入防火墙白名单，配置完成后，您可以通过访问并体验 [官网 Demo](https://web.sdk.qcloud.com/component/trtccalling/demo/web/latest/index.html) 检查配置是否生效。
