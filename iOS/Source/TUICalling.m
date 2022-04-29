@@ -222,13 +222,17 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 }
 
 - (void)callStartWithUserIDs:(NSArray *)userIDs type:(TUICallingType)type role:(TUICallingRole)role {
-    if (self.enableCustomViewRoute && self.listener && [self.listener respondsToSelector:@selector(callStart:type:role:viewController:)]) {
-        UIViewController *callVC = [[UIViewController alloc] init];
+    UIViewController *callVC = nil;
+    if (self.enableCustomViewRoute) {
+        callVC = [[UIViewController alloc] init];
         callVC.view.backgroundColor = [UIColor clearColor];
         [callVC.view addSubview:self.callingView];
-        [self.listener callStart:userIDs type:type role:role viewController:callVC];
     } else {
         [self.callingView showCalingViewEnableFloatWindow:self.enableFloatWindow];
+    }
+    
+    if (self.listener && [self.listener respondsToSelector:@selector(callStart:type:role:viewController:)]) {
+        [self.listener callStart:userIDs type:type role:role viewController:callVC];
     }
     
     if (self.enableMuteMode) {
@@ -263,7 +267,7 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 }
 
 - (void)handleCallEnd {
-    if (self.enableCustomViewRoute && self.listener && [self.listener respondsToSelector:@selector(callEnd:type:role:totalTime:)]) {
+    if (self.listener && [self.listener respondsToSelector:@selector(callEnd:type:role:totalTime:)]) {
         [self.listener callEnd:self.userIDs type:self.currentCallingType role:self.currentCallingRole totalTime:(CGFloat)self.totalTime];
     }
     
@@ -277,7 +281,7 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 }
 
 - (void)handleCallEvent:(TUICallingEvent)event message:(NSString *)message {
-    if (self.enableCustomViewRoute && self.listener && [self.listener respondsToSelector:@selector(onCallEvent:type:role:message:)]) {
+    if (self.listener && [self.listener respondsToSelector:@selector(onCallEvent:type:role:message:)]) {
         [self.listener onCallEvent:event type:self.currentCallingType role:self.currentCallingRole message:message];
     }
 }
