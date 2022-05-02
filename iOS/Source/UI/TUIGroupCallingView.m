@@ -44,8 +44,6 @@
 @property (nonatomic, strong) TUICallingControlButton *closeCameraBtn;
 /// 切换摄像头
 @property (nonatomic, strong) UIButton *switchCameraBtn;
-/// 记录本地用户
-@property (nonatomic, strong) CallUserModel *currentUser;
 /// 记录发起通话着
 @property (nonatomic, strong) CallUserModel *curSponsor;
 // 记录是否为前置相机,麦克风,听筒,摄像头开关
@@ -58,11 +56,10 @@
 
 @implementation TUIGroupCallingView
 
-- (instancetype)initWithUser:(CallUserModel *)user isVideo:(BOOL)isVideo isCallee:(BOOL)isCallee {
+- (instancetype)initWithIsVideo:(BOOL)isVideo isCallee:(BOOL)isCallee {
     self = [super initWithFrame:[UIScreen mainScreen].bounds];
     if (self) {
-        self.currentUser = user;
-        self.userList = [NSMutableArray arrayWithObject:user];
+        self.userList = [NSMutableArray array];
         self.isVideo = isVideo;
         self.isCallee = isCallee;
         self.isFrontCamera = YES;
@@ -452,6 +449,14 @@
 }
 
 #pragma mark - Lazy
+
+- (void)setCurrentUser:(CallUserModel *)currentUser {
+    [super setCurrentUser:currentUser];
+    
+    if (currentUser) {
+        [self.userList insertObject:currentUser atIndex:0];
+    }
+}
 
 - (TUIAudioUserContainerView *)userContainerView {
     if (!_userContainerView) {
