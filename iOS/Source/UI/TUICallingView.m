@@ -13,7 +13,7 @@
 static CGFloat const kSmallVideoViewWidth = 100.0f;
 #define kCallingViewMicroRenderFrame CGRectMake(self.frame.size.width - kSmallVideoViewWidth - 18, StatusBar_Height + 20, kSmallVideoViewWidth, kSmallVideoViewWidth / 9.0 * 16.0)
 
-@interface TUICallingView()
+@interface TUICallingView()<TUICallingVideoRenderViewDelegete>
 
 /// 记录Calling当前的状态
 @property (nonatomic, assign) TUICallingState curCallingState;
@@ -399,12 +399,6 @@ static CGFloat const kSmallVideoViewWidth = 100.0f;
         self.remotePreView.hidden = NO;
         [self.remotePreView configViewWithUserModel:user];
         [[TRTCCalling shareInstance] startRemoteView:user.userId view:self.remotePreView];
-        
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
-        UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesture:)];
-        [self.remotePreView addGestureRecognizer:tap];
-        [pan requireGestureRecognizerToFail:tap];
-        [self.remotePreView addGestureRecognizer:pan];
     }
 }
 
@@ -461,15 +455,58 @@ static CGFloat const kSmallVideoViewWidth = 100.0f;
         self.remotePreView.userInteractionEnabled = YES;
         self.remotePreView.frame = kCallingViewMicroRenderFrame;
         self.localPreView.frame = [UIScreen mainScreen].bounds;
-        
         [self.localPreView removeFromSuperview];
-        [self insertSubview:self.localPreView belowSubview:self.remotePreView];
+        [self.remotePreView removeFromSuperview];
+        [self insertSubview:self.localPreView atIndex:0];
+        [self insertSubview:self.remotePreView aboveSubview:self.localPreView];
     } else {
         self.localPreView.userInteractionEnabled = YES;
         self.remotePreView.frame = [UIScreen mainScreen].bounds;
         self.localPreView.frame = kCallingViewMicroRenderFrame ;
         [self.remotePreView removeFromSuperview];
-        [self insertSubview:self.remotePreView belowSubview:self.localPreView];
+        [self.localPreView removeFromSuperview];
+        [self insertSubview:self.remotePreView atIndex:0];
+        [self insertSubview:self.localPreView aboveSubview:self.remotePreView];
+    }
+}
+
+#pragma mark - TUICallingVideoRenderViewDelegete
+
+- (void)tapGestureAction:(UITapGestureRecognizer *)tapGesture {
+    if (tapGesture.view.frame.size.width == kSmallVideoViewWidth) {
+        [self switchPreView];
+    }
+}
+
+- (void)panGestureAction:(UIPanGestureRecognizer *)panGesture {
+    if (!(panGesture.view && panGesture.view.superview && [panGesture.view.superview isKindOfClass:[TUICallingVideoRenderView class]])) {
+        return;
+    }
+    
+    UIView *smallView = panGesture.view.superview;
+    
+    if (smallView.frame.size.width != kSmallVideoViewWidth) {
+        return;
+    }
+    
+    if (panGesture.state == UIGestureRecognizerStateChanged) {
+        CGPoint translation = [panGesture translationInView:self];
+        CGFloat newCenterX = translation.x + (smallView.center.x);
+        CGFloat newCenterY = translation.y + (smallView.center.y);
+        
+        if ((newCenterX < (smallView.bounds.size.width / 2.0)) || (newCenterX > self.bounds.size.width - (smallView.bounds.size.width) / 2.0)) {
+            return;
+        }
+        
+        if ((newCenterY < (smallView.bounds.size.height) / 2.0) ||
+            (newCenterY > self.bounds.size.height - (smallView.bounds.size.height) / 2.0))  {
+            return;
+        }
+        
+        [UIView animateWithDuration:0.1 animations:^{
+            smallView.center = CGPointMake(newCenterX, newCenterY);
+        }];
+        [panGesture setTranslation:CGPointZero inView:self];
     }
 }
 
@@ -608,43 +645,6 @@ static CGFloat const kSmallVideoViewWidth = 100.0f;
     self.isLocalPreViewLarge = !_isLocalPreViewLarge;
 }
 
-- (void)handleTapGesture:(UITapGestureRecognizer *)tapGesture {
-    if ([tapGesture view].frame.size.width == kSmallVideoViewWidth) {
-        [self switchPreView];
-    }
-}
-
-- (void)handlePanGesture:(UIPanGestureRecognizer *)panGesture {
-    if (!panGesture || !panGesture.view) {
-        return;
-    }
-    
-    UIView *smallView = panGesture.view;
-    
-    if (smallView.frame.size.width == kSmallVideoViewWidth) {
-        if (panGesture.state == UIGestureRecognizerStateChanged) {
-            CGPoint translation = [panGesture translationInView:self];
-            CGFloat newCenterX = translation.x + (smallView.center.x);
-            CGFloat newCenterY = translation.y + (smallView.center.y);
-            
-            if ((newCenterX < (smallView.bounds.size.width / 2.0)) || (newCenterX > self.bounds.size.width - (smallView.bounds.size.width) / 2)) {
-                return;
-            }
-            
-            if ((newCenterY < (smallView.bounds.size.height) / 2) ||
-                (newCenterY > self.bounds.size.height - (smallView.bounds.size.height) / 2))  {
-                return;
-            }
-            
-            [UIView animateWithDuration:0.1 animations:^{
-                smallView.center = CGPointMake(newCenterX, newCenterY);
-            }];
-            
-            [panGesture setTranslation:CGPointZero inView:self];
-        }
-    }
-}
-
 - (void)bringFloatingWindowWhiteButtonToFront:(BOOL)isWhiteIcon {
     [self bringSubviewToFront:self.floatingWindowBtn];
     [self.floatingWindowBtn setBackgroundImage:[TUICommonUtil getBundleImageWithName:isWhiteIcon? @"ic_min_window_white": @"ic_min_window_dark"]
@@ -720,12 +720,8 @@ static CGFloat const kSmallVideoViewWidth = 100.0f;
         _localPreView = [[TUICallingVideoRenderView alloc] initWithFrame:self.bounds];
         _localPreView.backgroundColor = [UIColor t_colorWithHexString:@"#242424"];
         _localPreView.frame = self.bounds;
+        _localPreView.delegate = self;
         [_localPreView setUserInteractionEnabled:NO];
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
-        UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesture:)];
-        [_localPreView addGestureRecognizer:tap];
-        [pan requireGestureRecognizerToFail:tap];
-        [_localPreView addGestureRecognizer:pan];
     }
     return _localPreView;
 }
@@ -735,6 +731,7 @@ static CGFloat const kSmallVideoViewWidth = 100.0f;
         _remotePreView = [[TUICallingVideoRenderView alloc] initWithFrame:CGRectMake(self.bounds.size.width - 120, 74 + 20, 100, 216)];
         _remotePreView.backgroundColor = [UIColor t_colorWithHexString:@"#242424"];
         _remotePreView.hidden = YES;
+        _remotePreView.delegate = self;
     }
     return _remotePreView;
 }
