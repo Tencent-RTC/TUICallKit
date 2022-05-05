@@ -17,16 +17,13 @@ _[English](README.en.md) | 中文_
 更多组件化方案，敬请期待，也欢迎加入我们的QQ交流群：592465424，期待一起交流&学习！
 
 ## 发布日志
-### Version 9.5 @ 2022.03.07
-#### 功能新增
-- Android & iOS：增加悬浮窗功能
+### Version 9.9 @ 2022.05.05
 #### 问题修复
-- Android：本地及网络铃声播放异常问题；
+- Android：修复被叫端接听后，主叫无法显示被叫视频画面问题。
 #### 功能优化
-- Android：优化代码结构，主要包含以下变动
-  - 将BrandUtil和PermissionUtil迁移至com.tencent.liteav.trtccalling.model.utils下；
-  - 将TRTCCallAudioActivity和TRTCCallVideoActivity合并为BaseCallActivity；  
-- iOS：优化设置铃声功能，支持在线资源。
+- Android：去除tuicore源码依赖，tuicore通过aar方式引入，不再提供源码目录。
+- Android：优化保活机制：通话开始时开启保活，通话结束时关闭保活。
+- Android：扬声器和麦克风切换权限`MODIFY_AUDIO_SETTINGS`移植到组件tuicalling下
 
 更早期的版本更新历史请点击  [More](./ReleaseNote.md)...
 ## 效果演示

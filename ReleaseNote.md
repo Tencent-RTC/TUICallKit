@@ -1,5 +1,15 @@
 ## 发布日志
 
+### Version 9.9 @ 2022.05.05
+  
+#### 问题修复
+- Android：修复被叫端接听后，主叫无法显示被叫视频画面问题。
+  
+#### 功能优化
+- Android：去除tuicore源码依赖，tuicore通过aar方式引入，不再提供源码目录。
+- Android：优化保活机制：通话开始时开启保活，通话结束时关闭保活。
+- Android：扬声器和麦克风切换权限`MODIFY_AUDIO_SETTINGS`移植到组件tuicalling下。
+
 ### Version 9.6 @ 2022.03.24
 
 #### 编译修复
