@@ -1,4 +1,3 @@
-include ':tuicore'
 include ':app'
 include ':tuicalling'
 include ':debug'

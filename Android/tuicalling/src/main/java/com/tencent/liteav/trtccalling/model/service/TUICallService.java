@@ -1,4 +1,4 @@
-package com.tencent.liteav.trtccalling.ui.service;
+package com.tencent.liteav.trtccalling.model.service;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -68,6 +68,11 @@ public class TUICallService extends Service {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, notificationChannelId);
         //创建通知并返回
         return builder.build();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_NOT_STICKY;
     }
 
     @Override

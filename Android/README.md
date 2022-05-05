@@ -9,8 +9,7 @@ _中文 | [English](README.en.md)_
 TUICalling
 ├─ app          // 主面板，音视频通话场景入口
 ├─ debug        // 调试相关
-├─ tuicalling   // 实时语音/视频通话业务逻辑
-└─ tuicore      // 基础通信组件
+└─ tuicalling   // 实时语音/视频通话业务逻辑
 ```
 
 ## 环境准备

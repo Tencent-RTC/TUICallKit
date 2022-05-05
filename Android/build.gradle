@@ -7,7 +7,7 @@ buildscript {
         google()
         mavenCentral()
         //tpns接入
-        maven { url 'http://developer.huawei.com/repo/' }
+        maven { url 'https://developer.huawei.com/repo/' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.3'
@@ -27,7 +27,7 @@ allprojects {
         jcenter()
         google()
         mavenCentral()
-        maven { url 'http://developer.huawei.com/repo/' } // 华为仓，如果不集成华为可以不加
+        maven { url 'https://developer.huawei.com/repo/' } // 华为仓，如果不集成华为可以不加
     }
 }
 

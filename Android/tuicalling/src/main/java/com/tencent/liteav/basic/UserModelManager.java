@@ -14,10 +14,13 @@ public class UserModelManager {
     private static final String PER_DATA       = "per_profile_manager";
     private static final String PER_USER_MODEL = "per_user_model";
     private static final String PER_USER_DATE  = "per_user_publish_video_date";
+    private static final String USAGE_MODEL    = "usage_model";
+    private static final String HAVE_BACKSTAGE = "have_backstage";
 
     private static UserModelManager sInstance;
     private        UserModel        mUserModel;
     private        String           mUserPubishVideoDate;
+    private        Boolean          mHaveBackstage;
 
     public static UserModelManager getInstance() {
         if (sInstance == null) {
@@ -67,6 +70,22 @@ public class UserModelManager {
             SPUtils.getInstance(PER_DATA).put(PER_USER_DATE, mUserPubishVideoDate);
         } catch (Exception e) {
         }
+    }
+
+    public void setUsageModel(boolean haveBackstage) {
+        mHaveBackstage = haveBackstage;
+        try {
+            SPUtils.getInstance(USAGE_MODEL).put(HAVE_BACKSTAGE, mHaveBackstage);
+        } catch (Exception e) {
+            Log.d(TAG, "setUsageModel failed");
+        }
+    }
+
+    public boolean haveBackstage() {
+        if (mHaveBackstage == null) {
+            mHaveBackstage = SPUtils.getInstance(USAGE_MODEL).getBoolean(HAVE_BACKSTAGE, true);
+        }
+        return mHaveBackstage;
     }
 
     // 首次TRTC打开摄像头提示"Demo特别配置了无限期云端存储"

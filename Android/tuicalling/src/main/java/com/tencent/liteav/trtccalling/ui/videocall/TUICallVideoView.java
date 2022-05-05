@@ -1,6 +1,7 @@
 package com.tencent.liteav.trtccalling.ui.videocall;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -219,12 +220,14 @@ public class TUICallVideoView extends BaseTUICallView {
                 mCallUserModelMap.put(userId, userModel);
                 TRTCVideoLayout videoLayout = mLayoutManagerTRTC.findCloudView(userId);
                 if (null == videoLayout) {
-                    videoLayout = addUserToManager(userModel);
+                    videoLayout = addUserToManager(userModel.userId);
                 }
                 boolean isAudioMode = (TUICalling.Type.AUDIO == mCallType);
-                videoLayout.setVideoAvailable(!isAudioMode);
-                videoLayout.setRemoteIconAvailable(isAudioMode);
-                loadUserInfo(userModel, videoLayout);
+                if (null != videoLayout) {
+                    videoLayout.setVideoAvailable(!isAudioMode);
+                    videoLayout.setRemoteIconAvailable(isAudioMode);
+                    loadUserInfo(userModel, videoLayout);
+                }
             }
         });
     }
@@ -281,6 +284,9 @@ public class TUICallVideoView extends BaseTUICallView {
     public void onUserVideoAvailable(final String userId, final boolean isVideoAvailable) {
         //有用户的视频开启了
         TRTCVideoLayout layout = mLayoutManagerTRTC.findCloudView(userId);
+        if (null == layout) {
+            layout = addUserToManager(userId);
+        }
         if (layout != null) {
             layout.setVideoAvailable(isVideoAvailable);
             if (isVideoAvailable) {
@@ -329,7 +335,7 @@ public class TUICallVideoView extends BaseTUICallView {
         super.showWaitingResponseView();
         //1. 展示自己的画面
         mLayoutManagerTRTC.setMySelfUserId(mSelfModel.userId);
-        final TRTCVideoLayout videoLayout = addUserToManager(mSelfModel);
+        final TRTCVideoLayout videoLayout = addUserToManager(mSelfModel.userId);
         if (videoLayout == null) {
             return;
         }
@@ -409,7 +415,7 @@ public class TUICallVideoView extends BaseTUICallView {
         super.showInvitingView();
         //1. 展示自己的界面
         mLayoutManagerTRTC.setMySelfUserId(mSelfModel.userId);
-        final TRTCVideoLayout videoLayout = addUserToManager(mSelfModel);
+        final TRTCVideoLayout videoLayout = addUserToManager(mSelfModel.userId);
         if (videoLayout == null) {
             return;
         }
@@ -525,7 +531,7 @@ public class TUICallVideoView extends BaseTUICallView {
         String userId = remoteUser.userId;
         TRTCVideoLayout videoLayout = mLayoutManagerTRTC.findCloudView(userId);
         if (videoLayout == null) {
-            videoLayout = addUserToManager(remoteUser);
+            videoLayout = addUserToManager(remoteUser.userId);
         }
         videoLayout.setVideoAvailable(false);
         videoLayout.setRemoteIconAvailable(true);
@@ -553,12 +559,11 @@ public class TUICallVideoView extends BaseTUICallView {
         });
     }
 
-    private TRTCVideoLayout addUserToManager(UserModel userInfo) {
-        TRTCVideoLayout layout = mLayoutManagerTRTC.allocCloudVideoView(userInfo.userId);
-        if (layout == null) {
+    private TRTCVideoLayout addUserToManager(String userId) {
+        if (TextUtils.isEmpty(userId)) {
             return null;
         }
-        return layout;
+        return mLayoutManagerTRTC.allocCloudVideoView(userId);
     }
 
     //查询昵称和头像

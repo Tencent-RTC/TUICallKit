@@ -214,12 +214,17 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
             public void run() {
                 showCallingView();
                 UserModel userModel = mCallUserModelMap.get(userId);
+                if (null == userModel) {
+                    return;
+                }
                 TRTCGroupVideoLayout layout = mLayoutManagerTRTC.findVideoCallLayout(userId);
                 if (null == layout) {
-                    layout = addUserToManager(userModel);
+                    layout = addUserToManager(userModel.userId);
                 }
-                layout.stopLoading();
-                loadUserInfo(userModel, layout);
+                if (null != layout) {
+                    layout.stopLoading();
+                    loadUserInfo(userModel, layout);
+                }
                 //C2C多人通话:有被叫用户接听了通话,从被叫列表中移除
                 if (null != userModel && mOtherInviteeList.contains(userModel)) {
                     mOtherInviteeList.remove(userModel);
@@ -312,6 +317,9 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
     public void onUserVideoAvailable(final String userId, final boolean isVideoAvailable) {
         //有用户的视频开启了
         TRTCGroupVideoLayout layout = mLayoutManagerTRTC.findVideoCallLayout(userId);
+        if (null == layout) {
+            layout = addUserToManager(userId);
+        }
         if (layout != null) {
             layout.setVideoAvailable(isVideoAvailable);
             if (isVideoAvailable) {
@@ -375,10 +383,10 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
         //2. 展示对方的头像和蒙层
         if (null == mSponsorUserInfo) {
             for (UserModel userModel : mOtherInviteeList) {
-                loadUserInfo(userModel, addUserToManager(userModel));
+                loadUserInfo(userModel, addUserToManager(userModel.userId));
             }
         } else {
-            loadUserInfo(mSponsorUserInfo, addUserToManager(mSponsorUserInfo));
+            loadUserInfo(mSponsorUserInfo, addUserToManager(mSponsorUserInfo.userId));
         }
 
         //3. 展示电话对应界面
@@ -433,14 +441,15 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
         super.showInvitingView();
         //1. 展示自己的界面
         mLayoutManagerTRTC.setMySelfUserId(mSelfModel.userId);
-        final TRTCGroupVideoLayout videoLayout = addUserToManager(mSelfModel);
+        final TRTCGroupVideoLayout videoLayout = addUserToManager(mSelfModel.userId);
         if (videoLayout != null) {
             videoLayout.setVideoAvailable(true);
         }
+        loadUserInfo(mSelfModel, videoLayout);
         //2. 展示其他用户的画面
         for (int i = 0; i < mCallUserInfoList.size(); i++) {
             final UserModel userModel = mCallUserInfoList.get(i);
-            TRTCGroupVideoLayout layout = addUserToManager(userModel);
+            TRTCGroupVideoLayout layout = addUserToManager(userModel.userId);
             layout.startLoading();
             loadUserInfo(userModel, layout);
         }
@@ -479,7 +488,7 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
         mLayoutManagerTRTC.setMySelfUserId(mSelfModel.userId);
         TRTCGroupVideoLayout videoLayout = mLayoutManagerTRTC.findVideoCallLayout(mSelfModel.userId);
         if (null == videoLayout) {
-            videoLayout = addUserToManager(mSelfModel);
+            videoLayout = addUserToManager(mSelfModel.userId);
             loadUserInfo(mSelfModel, videoLayout);
         }
         videoLayout.setVideoAvailable(true);
@@ -516,7 +525,7 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
                     TRTCGroupVideoLayout layout = mLayoutManagerTRTC.findVideoCallLayout(model.userId);
                     TRTCLogger.d(TAG, "showCallingView model=" + model.userId + " ,layout=" + layout);
                     if (layout == null) {
-                        layout = addUserToManager(model);
+                        layout = addUserToManager(model.userId);
                         layout.startLoading();
                     }
                     loadUserInfo(model, layout);
@@ -589,15 +598,11 @@ public class TUIGroupCallVideoView extends BaseTUICallView {
         }
     }
 
-    private TRTCGroupVideoLayout addUserToManager(UserModel userInfo) {
-        TRTCGroupVideoLayout layout = mLayoutManagerTRTC.allocVideoCallLayout(userInfo.userId);
-        if (layout == null) {
+    private TRTCGroupVideoLayout addUserToManager(String userId) {
+        if (TextUtils.isEmpty(userId)) {
             return null;
         }
-        TRTCLogger.d(TAG, String.format("addUserToManager, userId=%s, userName=%s, userAvatar=%s", userInfo.userId,
-                userInfo.userName, userInfo.userAvatar));
-        loadUserInfo(userInfo, layout);
-        return layout;
+        return mLayoutManagerTRTC.allocVideoCallLayout(userId);
     }
 
     //从IM查询用户信息并更新布局显示

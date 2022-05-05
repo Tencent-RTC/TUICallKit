@@ -9,8 +9,7 @@ This document describes how to quickly run the TUICalling demo project to make a
 TUICalling
 ├─ app          // Main panel, which is the entry of the audio/video call scenario
 ├─ debug        // Debugging code
-├─ tuicalling   // Real-time audio/video call business logic
-└─ tuicore      // Basic communication component
+└─ tuicalling   // Real-time audio/video call business logic
 ```
 
 ## Environment Requirements

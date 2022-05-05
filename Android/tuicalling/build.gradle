@@ -26,11 +26,6 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api "androidx.multidex:multidex:2.0.0"
-    api "androidx.recyclerview:recyclerview:1.0.0"
-    api "androidx.appcompat:appcompat:1.0.0"
-    api "com.google.android.material:material:1.0.0"
-    api "androidx.constraintlayout:constraintlayout:1.1.3"
     api 'androidx.appcompat:appcompat:1.0.0'
     api 'androidx.constraintlayout:constraintlayout:1.1.3'
     api "com.squareup.okhttp3:logging-interceptor:3.8.1"
@@ -42,8 +37,9 @@ dependencies {
     api "com.google.code.gson:gson:2.3.1"
     api "com.blankj:utilcode:1.25.9"
     api rootProject.ext.liteavSdk
-
-    api project(':tuicore')
+    api rootProject.ext.imSdk
+	
+    api 'com.tencent.liteav.tuikit:tuicore:latest.release'
     api project(':debug')
-
+	
 }
