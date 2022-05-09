@@ -2,17 +2,18 @@ import { ACTION_TYPE, BUSINESS_ID, CMD_TYPE_LIST, MODE_TYPE } from './common/con
 
 const TAG_NAME = 'TSignalingClint';
 
+
 class TSignalingClint {
   constructor(options) {
     this.TSignaling = options.TSignaling;
   }
 
   /**
-   * 信令数据处理
-   * @param {object} data 第一层数据
-   * @param {object} params 第二层数据
-   * @returns {object} 处理后的数据
-   * {@link https://iwiki.woa.com/pages/viewpage.action?pageId=820079397}
+     * 信令数据处理
+     * @param data 第一层数据
+     * @param params 第二层数据
+     * @returns 处理后的数据
+     * {@link https://iwiki.woa.com/pages/viewpage.action?pageId=820079397}
    */
   handleNewSignaling(data, params) {
     const info = {
@@ -32,8 +33,7 @@ class TSignalingClint {
   }
   /**
    * 从消息对象中提取通话相关的信息
-   * @param {object} message // 信息内容
-   * @returns { String }
+   * @param message
    */
   extractCallingInfoFromMessage(message) {
     if (!message || message.type !== 'TIMCustomElem') {
@@ -77,16 +77,11 @@ class TSignalingClint {
     const { type, roomID, userIDList, hangup, switchMode } = params;
     // 存在 hangup，表示挂断信令
     if (hangup) {
-      return JSON.stringify(
-        this.handleNewSignaling(
-          {
-            version: 0,
-            call_type: type,
-            call_end: hangup.callEnd,
-          },
-          { cmd: 'hangup' },
-        ),
-      );
+      return JSON.stringify(this.handleNewSignaling({
+        version: 0,
+        call_type: type,
+        call_end: hangup.callEnd,
+      }, { cmd: 'hangup' }));
     }
     // 存在 switchMode 则表示为切换信令
     if (switchMode) {
@@ -107,16 +102,11 @@ class TSignalingClint {
       return JSON.stringify(this.handleNewSignaling(message, otherMessage));
     }
     // 不存在 hangup、switchMode 为正常邀请信令
-    return JSON.stringify(
-      this.handleNewSignaling(
-        {
-          version: 0,
-          call_type: type,
-          room_id: roomID,
-        },
-        { userIDs: userIDList },
-      ),
-    );
+    return JSON.stringify(this.handleNewSignaling({
+      version: 0,
+      call_type: type,
+      room_id: roomID,
+    }, { userIDs: userIDList }));
   }
   // 处理群聊data数据
   _handleInviteGroupData(params) {
@@ -124,24 +114,17 @@ class TSignalingClint {
     let data = null;
     // 存在 hangup 则表示为挂断信令，不存在 hangup，表示正常呼叫信令
     if (!hangup) {
-      data = JSON.stringify(
-        this.handleNewSignaling({
-          version: 0,
-          call_type: type,
-          room_id: roomID,
-        }),
-      );
+      data = JSON.stringify(this.handleNewSignaling({
+        version: 0,
+        call_type: type,
+        room_id: roomID,
+      }));
     } else {
-      data = JSON.stringify(
-        this.handleNewSignaling(
-          {
-            version: 0,
-            call_type: type,
-            call_end: hangup.call_end,
-          },
-          { cmd: 'hangup' },
-        ),
-      );
+      data = JSON.stringify(this.handleNewSignaling({
+        version: 0,
+        call_type: type,
+        call_end: hangup.call_end,
+      }, { cmd: 'hangup' }));
     }
     return data;
   }
@@ -153,9 +136,7 @@ class TSignalingClint {
       data: [],
     };
     try {
-      const inviteList = userIDList.map((item) =>
-        this.invite({ userID: item, type, roomID, timeout, offlinePushInfo, userIDList }),
-      );
+      const inviteList = userIDList.map(item => this.invite({ userID: item, type, roomID, timeout, offlinePushInfo, userIDList }));
       const inviteListRes = await Promise.all(inviteList);
       result.data = inviteListRes;
     } catch (error) {
@@ -214,16 +195,11 @@ class TSignalingClint {
     try {
       return await this.TSignaling.accept({
         inviteID,
-        data: JSON.stringify(
-          this.handleNewSignaling(
-            {
-              version: 0,
-              call_type: type,
-              ...otherParams,
-            },
-            supportParams,
-          ),
-        ),
+        data: JSON.stringify(this.handleNewSignaling({
+          version: 0,
+          call_type: type,
+          ...otherParams,
+        }, supportParams)),
       });
     } catch (error) {
       return this.handleError(error, 'accept');
@@ -265,12 +241,10 @@ class TSignalingClint {
         const inviteID = inviteIDList[i];
         const result = await this.TSignaling.cancel({
           inviteID,
-          data: JSON.stringify(
-            this.handleNewSignaling({
-              version: 0,
-              call_type: callType,
-            }),
-          ),
+          data: JSON.stringify(this.handleNewSignaling({
+            version: 0,
+            call_type: callType,
+          })),
         });
         res.push(result);
       }
@@ -303,10 +277,9 @@ class TSignalingClint {
     });
   }
   /**
-   * 切换通话模式
-   * @param {Object} params 通话模式参数
-   * @returns {Promise}
-   */
+       * 切换通话模式
+       * @param params.mode 第一层数据
+     */
   async switchCallMode(params) {
     const { userID, callType, roomID, mode } = params;
     return this.invite({
