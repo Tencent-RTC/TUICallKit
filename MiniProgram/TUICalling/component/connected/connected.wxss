@@ -182,7 +182,5 @@
 }
 
 .avatar {
-	/* background: #dddddd; */
-  background: url('https://sdk-web-1252463788.cos.ap-hongkong.myqcloud.com/component/miniApp/resources/default_avatar.png') no-repeat;
-  background-size: 100% 100%;
+	background: #dddddd;
 }

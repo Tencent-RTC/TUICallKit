@@ -73,6 +73,8 @@ class TRTCCalling {
       _isGroupCall: false, // 当前通话是否是群通话
       _groupID: '', // 群组ID
       _switchCallModeStatus: true, // 是否可以进行模式切换
+      enterRoomStatus: false, // 进入房间状态
+      isCallEnd: true, // 通话是否为正常通话结束， true：正常通话结束，false：非正常通话结束 如：cancel、timeout、noResp
     };
     this.data = { ...this.data, ...data };
   }
@@ -158,8 +160,8 @@ class TRTCCalling {
     // 判断新的信令是否为结束信令
     if (callEnd) {
       // 群通话中收到最后挂断的邀请信令通知其他成员通话结束
-      this.TRTCCallingDelegate.onCallEnd({ userID: inviter, callEnd: isGroupCall ? 0 : inviteData.call_end });
-      this._reset();
+      // this.TRTCCallingDelegate.onCallEnd({ userID: inviter, callEnd: isGroupCall ? 0 : inviteData.call_end });
+      this._reset(isGroupCall ? 0 : inviteData.call_end);
       return;
     }
 
@@ -211,6 +213,10 @@ class TRTCCalling {
         callEnd: 0,
       },
     };
+    this.setPusherAttributesHandler({
+      enableCamera: this.data.config.type === CALL_TYPE.VIDEO
+    })
+    wx.createLivePusherContext().startPreview();
     this.TRTCCallingDelegate.onInvited(newReceiveData);
   }
 
@@ -294,13 +300,13 @@ class TRTCCalling {
           // 2、已经接受邀请，远端没有用户，发出结束通话事件
           const isPlayer = this.data.callStatus === CALL_STATUS.CONNECTED && this.data.playerList.length === 0;
           if (isCalling || isPlayer) {
-            this.TRTCCallingDelegate.onCallEnd({ userID: this.data.config.userID, callEnd: 0 });
+            // this.TRTCCallingDelegate.onCallEnd({ userID: this.data.config.userID, callEnd: 0 });
             this._reset();
           }
         }
       });
     } else {
-      this.TRTCCallingDelegate.onCallEnd({ userID: this.data.config.userID, callEnd: 0 });
+      // this.TRTCCallingDelegate.onCallEnd({ userID: this.data.config.userID, callEnd: 0 });
       this._reset();
     }
   }
@@ -319,7 +325,8 @@ class TRTCCalling {
     );
     this._setCallStatus(CALL_STATUS.IDLE);
     this.TRTCCallingDelegate.onCancel({ inviteID: event.data.inviteID, invitee: event.data.invitee });
-    this.TRTCCallingDelegate.onCallEnd({ userID: this.data.config.userID, callEnd: 0 });
+    this.data.isCallEnd = false;
+    // this.TRTCCallingDelegate.onCallEnd({ userID: this.data.config.userID, callEnd: 0 });
     this.setInviteIDList(event.data.inviteID);
     this._reset();
   }
@@ -348,7 +355,8 @@ class TRTCCalling {
       });
       // 若在呼叫中，且全部用户都无应答
       if (this.data.callStatus !== CALL_STATUS.CONNECTED) {
-        this.TRTCCallingDelegate.onCallEnd({ userID: inviter, callEnd: 0 });
+        // this.TRTCCallingDelegate.onCallEnd({ userID: inviter, callEnd: 0 });
+        this.data.isCallEnd = false;
         this._reset();
       }
       return;
@@ -382,12 +390,14 @@ class TRTCCalling {
           });
           return;
         }
-        this.TRTCCallingDelegate.onCallEnd({ userID: inviter, callEnd: 0 });
+        this.data.isCallEnd = false;
+        // this.TRTCCallingDelegate.onCallEnd({ userID: inviter, callEnd: 0 });
         this._reset();
       }
     } else {
       // 1v1通话被邀请方超时
-      this.TRTCCallingDelegate.onCallEnd({ userID: inviter, callEnd: 0 });
+      // this.TRTCCallingDelegate.onCallEnd({ userID: inviter, callEnd: 0 });
+      this.data.isCallEnd = false;
       this._reset();
     }
     // 用inviteeList进行判断，是为了兼容多人通话
@@ -399,6 +409,7 @@ class TRTCCalling {
   // SDK Ready 回调
   handleSDKReady() {
     console.log(TAG_NAME, 'TSignaling SDK ready');
+    this.TSignalingResolve();
     this.TRTCCallingDelegate.onSdkReady({ message: 'SDK ready' });
     const promise = this.tim.getMyProfile();
     promise
@@ -627,6 +638,7 @@ class TRTCCalling {
 
   // 进入房间
   enterRoom(options) {
+    this._addTRTCEvent();
     const { roomID } = options;
     const config = Object.assign(this.data.config, {
       roomID,
@@ -639,17 +651,25 @@ class TRTCCalling {
     if (this.data._unHandledInviteeList.length > 0) {
       this._setUnHandledInviteeList(this.data.config.userID);
     }
+    this.data.enterRoomStatus = true;
     this.data.pusher = this.TRTC.enterRoom(config);
     this.TRTC.getPusherInstance().start(); // 开始推流
   }
 
   // 退出房间
-  exitRoom() {
+  exitRoom(callEnd) {
+    this.TRTC.getPusherInstance().stop(); // 停止推流
     const result = this.TRTC.exitRoom();
+    if (this.data.isCallEnd) {
+      this.TRTCCallingDelegate.onCallEnd({ userID: this.data.config.userID, callEnd: callEnd || 0  }); 
+    }
     this.data.pusher = result.pusher;
     this.data.playerList = result.playerList;
     this.data._unHandledInviteeList = [];
+    this.data.enterRoomStatus = false;
+    this.data.isCallEnd = true;
     this.initTRTC();
+    this._removeTRTCEvent();
   }
 
   // 设置 pusher 属性
@@ -722,7 +742,8 @@ class TRTCCalling {
     wx.$TSignaling.setLogLevel(0);
     this.data.config.userID = data.userID;
     this.data.config.userSig = data.userSig;
-    return wx.$TSignaling
+    return new Promise((resolve, reject) => {
+      wx.$TSignaling
       .login({
         userID: data.userID,
         userSig: data.userSig,
@@ -731,9 +752,11 @@ class TRTCCalling {
         console.log(TAG_NAME, 'login', 'IM login success', res);
         this._reset();
         this._addTSignalingEvent();
-        this._addTRTCEvent();
         this.initTRTC();
+        this.TSignalingResolve = resolve
+        return null;
       });
+    })
   }
 
   /**
@@ -794,9 +817,9 @@ class TRTCCalling {
    */
   async call(params) {
     const { userID, type } = params;
-    // 生成房间号，拼接URL地址 TRTC-wx roomID 超出取值范围1～4294967295
-    const roomID = Math.floor(Math.random() * 4294967294 + 1); // 随机生成房间号
-    this.enterRoom({ roomID, callType: type });
+    // 生成房间号，拼接URL地址 TRTC-wx roomID 超出取值范围1～2147483647
+    const roomID = Math.floor(Math.random() * 2147483646 + 1); // 随机生成房间号
+    this.enterRoom({ roomID, callType: type });                                                                                   
     try {
       const res = await this.TSignalingClient.invite({ roomID, ...params });
       console.log(`${TAG_NAME} call(userID: ${userID}, type: ${type}) success, ${res}`);
@@ -829,8 +852,8 @@ class TRTCCalling {
    */
   async groupCall(params) {
     const { type } = params;
-    // 生成房间号，拼接URL地址 TRTC-wx roomID 超出取值范围1～4294967295
-    const roomID = this.data.roomID || Math.floor(Math.random() * 4294967294 + 1); // 随机生成房间号
+    // 生成房间号，拼接URL地址 TRTC-wx roomID 超出取值范围1～2147483647
+    const roomID = this.data.roomID || Math.floor(Math.random() * 2147483646 + 1); // 随机生成房间号
     this.enterRoom({ roomID, callType: type });
     try {
       let inviterInviteID = [...this.data.invitation.inviteID];
@@ -874,17 +897,33 @@ class TRTCCalling {
    * 当您作为被邀请方收到 {@link TRTCCallingDelegate#onInvited } 的回调时，可以调用该函数接听来电
    */
   async accept() {
-    // 拼接pusherURL进房
-    console.log(TAG_NAME, 'accept() inviteID: ', this.data.invitation.inviteID);
-    if (this.data.callStatus === CALL_STATUS.IDLE) {
-      throw new Error('The call was cancelled');
-    }
-    if (this.data.callStatus === CALL_STATUS.CALLING) {
-      this.enterRoom({ roomID: this.data.invitation.roomID, callType: this.data.config.type });
-      // 被邀请人进入通话状态
-      this._setCallStatus(CALL_STATUS.CONNECTED);
-    }
+    return new Promise((resolve,reject)=> {
+          // 拼接pusherURL进房
+      console.log(TAG_NAME, 'accept() inviteID: ', this.data.invitation.inviteID);
+      if (this.data.callStatus === CALL_STATUS.IDLE) {
+        throw new Error('The call was cancelled');
+      }
+      if (this.data.callStatus === CALL_STATUS.CALLING) {
+        if (this.data.config.type === 2) {
+          wx.createLivePusherContext().stopPreview({
+            success: () => {
+              const timer = setTimeout(async ()=>{
+                clearTimeout(timer);
+                this.handleAccept(resolve,reject);
+              }, 0)
+            }
+          });
+        } else {
+          this.handleAccept(resolve,reject);
+        }
+      }
+    })
+  }
 
+  async handleAccept(resolve, reject) {
+    this.enterRoom({ roomID: this.data.invitation.roomID, callType: this.data.config.type });
+    // 被邀请人进入通话状态
+    this._setCallStatus(CALL_STATUS.CONNECTED);
     const acceptRes = await this.TSignalingClient.accept({
       inviteID: this.data.invitation.inviteID,
       type: this.data.config.type,
@@ -894,13 +933,13 @@ class TRTCCalling {
       if (this._getGroupCallFlag()) {
         this._setUnHandledInviteeList(this._getUserID());
       }
-      return {
+      return resolve({
         message: acceptRes.data.message,
         pusher: this.data.pusher,
-      };
+      })
     }
     console.error(TAG_NAME, 'accept failed', acceptRes);
-    return acceptRes;
+    return reject(acceptRes);
   }
 
   /**
@@ -940,9 +979,10 @@ class TRTCCalling {
         inviteIDList: cancelInvite,
         callType: this.data.invitation.type,
       });
-      this.TRTCCallingDelegate.onCallEnd({ message: cancelRes[0].data.message });
+      this.data.isCallEnd = true;
+      // this.TRTCCallingDelegate.onCallEnd({ message: cancelRes[0].data.message });
     }
-    this.exitRoom();
+    // this.exitRoom();
     this._reset();
     return cancelRes;
   }
@@ -951,7 +991,7 @@ class TRTCCalling {
   async lastOneHangup(params) {
     const isGroup = this._getGroupCallFlag();
     const res = await this.TSignalingClient.lastOneHangup({ isGroup, groupID: this.data._groupID, ...params });
-    this.TRTCCallingDelegate.onCallEnd({ message: res.data.message });
+    // this.TRTCCallingDelegate.onCallEnd({ message: res.data.message });
     this._reset();
   }
 
@@ -1001,8 +1041,11 @@ class TRTCCalling {
   }
 
   // 通话结束，重置数据
-  _reset() {
-    console.log(TAG_NAME, ' _reset()');
+  _reset(callEnd) {
+    console.log(TAG_NAME, ' _reset()', this.data.enterRoomStatus);
+    if (this.data.enterRoomStatus) {
+      this.exitRoom(callEnd)
+    }
     this._setCallStatus(CALL_STATUS.IDLE);
     this.data.config.type = 1;
     // 清空状态
@@ -1066,6 +1109,7 @@ class TRTCCalling {
     if (this.data.callStatus !== CALL_STATUS.CONNECTED) {
       const targetPos = this.data.pusher.frontCamera === 'front' ? 'back' : 'front';
       this.setPusherAttributesHandler({ frontCamera: targetPos });
+      wx.createLivePusherContext().switchCamera();
     } else {
       this.TRTC.getPusherInstance().switchCamera();
     }

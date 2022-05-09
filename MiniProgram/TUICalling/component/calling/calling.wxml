@@ -1,5 +1,5 @@
 <view class="invite-call" wx:if="{{callType === 2}}">
-    <camera class="local-video" wx:if="{{remoteUsers.length === 1}}" device-position="{{pusher.frontCamera}}"  />
+    <live-pusher class="local-video" wx:if="{{remoteUsers.length === 1}}" device-position="{{pusher.frontCamera}}" />
     <view class="invite-calling">
         <view class="invite-calling-header"  wx:if="{{remoteUsers.length === 1}}">
             <view class="invite-calling-header-left">
