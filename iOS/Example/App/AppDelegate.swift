@@ -50,7 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let mainViewController = MainViewController.init()
         let rootVC = UINavigationController.init(rootViewController: mainViewController)
         
-        if let keyWindow = SceneDelegate.getCurrentWindow() {
+        if let keyWindow = SceneDelegate.getKeyWindow() {
             keyWindow.rootViewController = rootVC
             keyWindow.makeKeyAndVisible()
         } else {
@@ -62,7 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let loginVC = TRTCLoginViewController.init()
         let nav = UINavigationController(rootViewController: loginVC)
         
-        if let keyWindow = SceneDelegate.getCurrentWindow() {
+        if let keyWindow = SceneDelegate.getKeyWindow() {
             keyWindow.rootViewController = nav
             keyWindow.makeKeyAndVisible()
         } else {
