@@ -111,18 +111,26 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
     }
     
     [[TRTCCalling shareInstance] groupCall:userIDs type:[self transformCallingType:type] groupID:self.groupID ?: nil];
-    
-    if (userIDs.count >= 2 || self.groupID.length > 0) {
-        [self initCallingViewIsGroup:YES];
-        NSMutableArray *ids = [NSMutableArray arrayWithArray:userIDs];
-        [ids addObject:self.currentUserId];
-        [self configCallViewWithUserIDs:[ids copy] sponsor:nil];
-    } else {
-        [self initCallingViewIsGroup:NO];
-        [self configCallViewWithUserIDs:userIDs sponsor:nil];
-    }
-    
-    [self callStartWithUserIDs:userIDs type:type role:TUICallingRoleCall];
+    __weak typeof(self)weakSelf = self;
+    [[V2TIMManager sharedInstance] getUsersInfo:@[self.currentUserId] succ:^(NSArray<V2TIMUserFullInfo *> *infoList) {
+        __strong typeof(weakSelf)self = weakSelf;
+        CallUserModel *userModel = [self covertUser:infoList.firstObject];
+        
+        if (userIDs.count >= 2 || self.groupID.length > 0) {
+            [self initCallingViewIsGroup:YES];
+            [self.callingView setCurrentUser:userModel];
+            NSMutableArray *ids = [NSMutableArray arrayWithArray:userIDs];
+            [ids addObject:self.currentUserId];
+            [self configCallViewWithUserIDs:[ids copy] sponsor:nil];
+        } else {
+            [self initCallingViewIsGroup:NO];
+            [self configCallViewWithUserIDs:userIDs sponsor:nil];
+        }
+        
+        [self callStartWithUserIDs:userIDs type:type role:TUICallingRoleCall];
+    } fail:^(int code, NSString *desc) {
+        NSLog(@"Calling Error: code %d, msg %@", code, desc);
+    }];
 }
 
 - (void)setCallingListener:(id<TUICallingListerner>)listener {
