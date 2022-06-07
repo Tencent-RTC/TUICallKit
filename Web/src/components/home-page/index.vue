@@ -4,8 +4,8 @@
       class="home-page-header"
     >Welcome {{loginUserInfo && (loginUserInfo.name || loginUserInfo.userId)}}</div>
     <div class="home-page-section-list">
-      <div class="home-page-section" @click="goto('/video-call')">视频通话</div>
-      <div class="home-page-section" @click="goto('/audio-call')">语音通话</div>
+      <div class="home-page-section" @click="goto('/video-call')">Video call</div>
+      <div class="home-page-section" @click="goto('/audio-call')">Audio call</div>
     </div>
   </div>
 </template>
