@@ -1,7 +1,7 @@
 <template>
   <div class="user-login">
-    <el-input placeholder="用户ID" v-model="UserID" maxlength="11" class="phone-num"></el-input>
-    <el-button class="user-login-btn" @click="handleLogin">登陆</el-button>
+    <el-input placeholder="User ID" v-model="UserID" maxlength="11" class="phone-num"></el-input>
+    <el-button class="user-login-btn" @click="handleLogin">Log in</el-button>
   </div>
 </template>
 
@@ -21,7 +21,7 @@ export default {
     handleLogin: async function() {
       console.log("userid");
       if (!this.UserID) {
-        this.$message.error("请输入用户ID");
+        this.$message.error("Enter a user ID");
         return;
       }
 
@@ -33,6 +33,7 @@ export default {
         userSig
       });
 
+      // Log in to `trtcCalling`
       // 登录 trtcCalling
       this.$trtcCalling.login({
         userID: this.UserID,

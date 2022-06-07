@@ -3,10 +3,10 @@
     <div
       class="audio-call-section-header"
     >Welcome {{loginUserInfo && (loginUserInfo.name || loginUserInfo.userId)}}</div>
-    <div class="audio-call-section-title">语音通话</div>
+    <div class="audio-call-section-title">Audio call</div>
     <search-user  :callFlag="callFlag" :cancelFlag="cancelFlag" @callUser="handleCallUser" @cancelCallUser="handleCancelCallUser"></search-user>
     <div :class="{ 'audio-conference': true, 'is-show': isShowAudioCall }">
-      <div class="audio-conference-header">语音通话区域</div>
+      <div class="audio-conference-header">Audio call region</div>
 
       <div class="audio-conference-list">
         <div
@@ -27,9 +27,9 @@
           class="action-btn"
           type="success"
           @click="toggleAudio"
-        >{{isAudioOn ? '关闭麦克风' : '打开麦克风'}}</el-button>
+        >{{isAudioOn ? 'Turn mic off' : 'Turn mic on'}}</el-button>
 
-        <el-button class="action-btn" type="danger" @click="handleHangup">挂断</el-button>
+        <el-button class="action-btn" type="danger" @click="handleHangup">Hang Up</el-button>
       </div>
     </div>
   </div>
@@ -79,6 +79,7 @@ export default {
   },
   watch: {
     callStatus: function(newStatus, oldStatus) {
+      // Establish a call connection
       // 建立通话连接
       if (newStatus !== oldStatus && newStatus === "connected") {
         this.startMeeting();

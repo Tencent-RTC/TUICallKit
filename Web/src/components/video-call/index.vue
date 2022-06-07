@@ -3,10 +3,10 @@
     <div
       class="video-call-section-header"
     >Welcome {{loginUserInfo && (loginUserInfo.name || loginUserInfo.userId)}}</div>
-    <div class="video-call-section-title">视频通话</div>
+    <div class="video-call-section-title">Video call</div>
     <search-user :callFlag="callFlag" :cancelFlag="cancelFlag" @callUser="handleCallUser" @cancelCallUser="handleCancelCallUser"></search-user>
     <div :class="{ 'video-conference': true, 'is-show': isShowVideoCall }">
-      <div class="video-conference-header">视频通话区域</div>
+      <div class="video-conference-header">Video call area</div>
 
       <div class="video-conference-list">
         <div
@@ -31,15 +31,15 @@
           class="action-btn"
           type="success"
           @click="toggleVideo"
-        >{{isVideoOn ? '关闭摄像头' : '打开摄像头'}}</el-button>
+        >{{isVideoOn ? 'Turn camera off' : 'Turn camera on'}}</el-button>
 
         <el-button
           class="action-btn"
           type="success"
           @click="toggleAudio"
-        >{{isAudioOn ? '关闭麦克风' : '打开麦克风'}}</el-button>
+        >{{isAudioOn ? 'Turn mic off' : 'Turn mic on'}}</el-button>
 
-        <el-button class="action-btn" type="danger" @click="handleHangup">挂断</el-button>
+        <el-button class="action-btn" type="danger" @click="handleHangup">Hang up</el-button>
       </div>
     </div>
   </div>
@@ -91,6 +91,7 @@ export default {
   },
   watch: {
     callStatus: function(newStatus, oldStatus) {
+      // Establish a call connection as an invitee
       // 作为被邀请者, 建立通话连接
       if (newStatus !== oldStatus && newStatus === "connected") {
         this.startMeeting();
@@ -127,6 +128,7 @@ export default {
     },
     startMeeting: function() {
       if (this.meetingUserIdList.length >= 3) {
+        // Group call
         // 多人通话
         const lastJoinUser = this.meetingUserIdList[
           this.meetingUserIdList.length - 1
