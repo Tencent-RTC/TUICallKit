@@ -41,8 +41,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL disableCustomView;
 /// 开启悬浮窗按钮
 @property (nonatomic, strong) UIButton *floatingWindowBtn;
-/// 记录本地用户
-@property (nonatomic, strong) CallUserModel *currentUser;
 
 /// 展示Calling视图，默认Calling页面展示方式，用户自定义路由不会调用此方法。
 /// @param enable 是否允许展示悬浮窗

@@ -122,10 +122,6 @@
 
 #pragma mark - Getter and setter
 
-- (void)setCurrentUser:(CallUserModel *)currentUser {
-    _currentUser = currentUser;
-}
-
 - (UIWindow *)floatingWindow {
     if (!_floatingWindow) {
         _floatingWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];

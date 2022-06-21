@@ -10,17 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol TUICallingVideoRenderViewDelegete <NSObject>
-
-- (void)tapGestureAction:(UITapGestureRecognizer *)tapGesture;
-
-- (void)panGestureAction:(UIPanGestureRecognizer *)panGesture;
-
-@end
-
 @interface TUICallingVideoRenderView : UIView
-
-@property (nonatomic, weak) id<TUICallingVideoRenderViewDelegete> delegate;
 
 /// 配置页面信息
 /// @param userModel 用户数据模型

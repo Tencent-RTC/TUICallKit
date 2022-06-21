@@ -57,12 +57,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
     
-    static func getKeyWindow() -> UIWindow? {
-        if #available(iOS 13.0, *) {
-            return UIApplication.shared.windows.first(where: {$0.isKeyWindow})
-        } else {
-            return UIApplication.shared.keyWindow
-        }
+    static func getCurrentWindow() -> UIWindow? {
+        return UIApplication.shared.windows.first
     }
+    
 }
 

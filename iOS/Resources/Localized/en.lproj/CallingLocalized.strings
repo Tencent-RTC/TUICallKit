@@ -31,7 +31,7 @@
 "Demo.TRTC.calling.handsfreeon" = "Speaker on";
 "Demo.TRTC.calling.handsfreeoff" = "Speaker off";
 "LoginNetwork.AppUtils.warmprompt" = "Note";
-"LoginNetwork.AppUtils.tomeettheregulatory" = "In accordance with relevant regulations, the app forbids pornographic, abusive, violent, terrorist, and politically sensitive content. All audio/video calls and live streams are recorded and archived.";
+"LoginNetwork.AppUtils.tomeettheregulatory" = "In accordance with relevant regulations, the app forbids pornographic, abusive, violent, terrorist, and politically sensitive content. All voice/video calls and live streams are recorded and archived.";
 "LoginNetwork.AppUtils.determine" = "OK";
 "Demo.TRTC.calling.invitetovideocall" = "invites you to a video call";
 "Demo.TRTC.calling.invitetoaudiocall" = "invites you to a voice call";
