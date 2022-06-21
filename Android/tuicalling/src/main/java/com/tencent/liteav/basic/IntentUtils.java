@@ -10,9 +10,6 @@ import android.util.Log;
 public class IntentUtils {
     private static final String TAG = "IntentUtils";
 
-    /**
-     * 确保存在相应的 activity 来处理 intent，以免发生 activity 找不到的异常。
-     */
     public static void safeStartActivity(Context context, Intent intent) {
         if (intent == null || context == null) {
             Log.e(TAG, "intent or activity is null");
