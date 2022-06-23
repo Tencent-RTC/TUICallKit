@@ -19,16 +19,13 @@ More component solutions will be available in the future. If you have any questi
 
 
 ## Release Notes
-### Version 9.9 @ 2022.05.05
+### Version 10.2 @ 2022.06.21
 #### Bug fixes
-- Android: abnormal videoview when other user enter the room;
+- Android: When the application returns to the foreground, the call ends unexpectedly
 ####  Optimization
-- Android: remove tuicore catalogue instead of tuicore:1.0.5@aar
-- Android：open keep_alive service when the call starts，and close when the call is over
-- Android：move the `MODIFY_AUDIO_SETTINGS`permission to tuicalling module
+- Android: Optimize permission request and pop-up window display
 
 For earlier version update history, please click [More](./ReleaseNote.md)...
-
 
 
 ## Demonstration

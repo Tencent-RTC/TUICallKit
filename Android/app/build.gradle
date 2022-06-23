@@ -35,7 +35,6 @@ android {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api project(":tuicalling")
-    api project(':debug')
     // TPNS SDK 主工程依赖包
     implementation 'com.tencent.tpns:tpns:1.3.2.1-release'
     implementation "androidx.recyclerview:recyclerview:1.0.0"

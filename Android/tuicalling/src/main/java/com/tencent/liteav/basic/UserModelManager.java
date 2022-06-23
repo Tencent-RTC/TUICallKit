@@ -57,6 +57,14 @@ public class UserModelManager {
         }
     }
 
+    public synchronized void clearUserModel() {
+        try {
+            SPUtils.getInstance(PER_DATA).put(PER_USER_MODEL, "");
+        } catch (Exception e) {
+            Log.e(TAG, "clear user model error:" + e.getMessage());
+        }
+    }
+
     private String getUserPublishVideoDate() {
         if (mUserPubishVideoDate == null) {
             mUserPubishVideoDate = SPUtils.getInstance(PER_DATA).getString(PER_USER_DATE, "");
@@ -88,7 +96,6 @@ public class UserModelManager {
         return mHaveBackstage;
     }
 
-    // 首次TRTC打开摄像头提示"Demo特别配置了无限期云端存储"
     public boolean needShowSecurityTips() {
         String profileDate = getUserPublishVideoDate();
         Date date = new Date();
