@@ -1,5 +1,10 @@
 ## 发布日志
 
+### Version 10.3 @ 2022.07.11
+
+#### 功能优化
+- Android：替换原离线推送方式`TPNS`为[`TUIOfflinePush`](https://cloud.tencent.com/document/product/269/44516)
+
 ### Version 10.2 @ 2022.06.21
 
 #### 功能修复

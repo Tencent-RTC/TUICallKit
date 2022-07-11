@@ -17,11 +17,9 @@ _[English](README.en.md) | 中文_
 更多组件化方案，敬请期待，也欢迎加入我们的QQ交流群：592465424，期待一起交流&学习！
 
 ## 发布日志
-### Version 10.2 @ 2022.06.21
-#### 功能修复：
-- Android：未接听状态退到后台，再回到前台时，通话异常挂断。
-#### 功能优化：
-- Android：权限申请及弹窗显示更规范化。
+### Version 10.3 @ 2022.07.11
+#### 功能优化
+- Android：替换原离线推送方式`TPNS`为[`TUIOfflinePush`](https://cloud.tencent.com/document/product/269/44516)
 
 更早期的版本更新历史请点击  [More](./ReleaseNote.md)...
 
