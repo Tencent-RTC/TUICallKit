@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: "com.tencent.android.tpns"
 
 android {
     compileSdkVersion 28
@@ -12,16 +11,11 @@ android {
         minSdkVersion 17
         targetSdkVersion 26
         multiDexEnabled true
-        //tpns接入添加
         ndk {
             //可以根据需要来自行选择并添加对应cpu类型的.so库。
             abiFilters 'armeabi-v7a', 'arm64-v8a'
         }
-        manifestPlaceholders = [
-                // TPNS 推送服务 accessId、accessKey
-                XG_ACCESS_ID : "",
-                XG_ACCESS_KEY: ""
-        ]
+
     }
 
     buildTypes {
@@ -35,7 +29,6 @@ android {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api project(":tuicalling")
-    // TPNS SDK 主工程依赖包
-    implementation 'com.tencent.tpns:tpns:1.3.2.1-release'
+    api project(':debug')
     implementation "androidx.recyclerview:recyclerview:1.0.0"
 }

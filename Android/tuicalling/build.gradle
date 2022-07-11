@@ -35,5 +35,4 @@ dependencies {
     api rootProject.ext.imSdk
 
     api 'com.tencent.liteav.tuikit:tuicore:latest.release'
-    api project(':debug')
 }
