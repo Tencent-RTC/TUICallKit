@@ -12,6 +12,7 @@ Page({
       type: 1,
       tim: null,
     },
+    TUICalling: null,
   },
 
   userIDToSearchInput: function(e) {
@@ -24,12 +25,21 @@ Page({
     this.data.invitee = {
       userID: this.data.userIDToSearch,
     }
-    this.setData({
-      searchResultShow: true,
-      invitee: this.data.invitee,
-    }, () => {
-      console.log('searchUser: invitee:', this.data.invitee)
-    })
+    this.TUICalling.getTim()
+        .getUserProfile({ userIDList: [this.data.userIDToSearch] })
+        .then((imResponse) => {
+          console.log('获取getUserProfile', imResponse.data);
+          if(imResponse.data.length === 0) {
+            wx.showToast({
+              title: '未查询到此用户',
+              icon: 'none'
+            })
+          }
+          this.setData({
+            invitee: { ...imResponse.data[0] },
+            searchResultShow: true
+          });
+        });
   },
 
   call: function() {
