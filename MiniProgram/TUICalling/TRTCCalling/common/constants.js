@@ -23,9 +23,9 @@ export const EVENT = {
 }
 
 export const CALL_STATUS = {
-  IDLE: 'idle',
-  CALLING: 'calling',
-  CONNECTED: 'connected',
+  IDLE: 'idle', // 默认
+  CALLING: 'calling', //呼叫中/被呼叫中
+  CONNECTED: 'connected', //接通中
 }
 
 export const ACTION_TYPE = {

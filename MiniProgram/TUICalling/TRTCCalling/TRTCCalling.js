@@ -1,9 +1,7 @@
 import EventEmitter from './utils/event.js';
 import { EVENT, CALL_STATUS, MODE_TYPE, CALL_TYPE } from './common/constants.js';
 import formateTime from './utils/formate-time';
-import TSignaling from './node_module/tsignaling-wx';
-import TRTC from './node_module/trtc-wx';
-import TIM from './node_module/tim-wx-sdk';
+import { TSignaling, TRTC, TIM } from './libSrcConfig'
 import TSignalingClient from './TSignalingClient';
 import TRTCCallingDelegate from './TRTCCallingDelegate';
 import TRTCCallingInfo from './TRTCCallingInfo';
@@ -36,6 +34,7 @@ class TRTCCalling {
         SDKAppID: params.sdkAppID,
       });
     }
+
     if (!wx.$TSignaling) {
       wx.$TSignaling = new TSignaling({ SDKAppID: params.sdkAppID, tim: this.tim });
     }
@@ -147,6 +146,10 @@ class TRTCCalling {
       inviteeList.length >= 2 ||
       (inviteData.data && inviteData.data.userIDs && inviteData.data.userIDs.length >= 2)
     );
+    if (inviteData?.data?.cmd === 'hangup') {
+      this.TRTCCallingDelegate.onCallEnd(inviter, inviteData.call_end || 0);
+      return;
+    }
     let callEnd = false;
     // 此处逻辑用于通话结束时发出的invite信令
     // 群通话已结束时，room_id 不存在或者 call_end 为 0
@@ -231,7 +234,7 @@ class TRTCCalling {
   }
 
   // 发出的邀请收到接受的回调
-  handleInviteeAccepted(event) {
+  async handleInviteeAccepted(event) {
     console.log(
       `${TAG_NAME} INVITEE_ACCEPTED inviteID:${event.data.inviteID} invitee:${event.data.invitee} data:`,
       event.data,
@@ -250,7 +253,10 @@ class TRTCCalling {
     // 发起人进入通话状态从此处判断
     if (event.data.inviter === this._getUserID() && this.data.callStatus === CALL_STATUS.CALLING) {
       this._setCallStatus(CALL_STATUS.CONNECTED);
-      this.TRTCCallingDelegate.onUserAccept(event.data.invitee);
+      this.TRTCCallingDelegate.onUserAccept(
+          event.data.invitee,
+          await this.getUserProfile(this.data._unHandledInviteeList.map(item => ({userID: item}))),
+      );
     }
     this.setInviteIDList(event.data.inviteID);
     if (this._getGroupCallFlag()) {
@@ -448,19 +454,19 @@ class TRTCCalling {
   // 取消 tsignaling 事件监听
   _removeTSignalingEvent() {
     // 新的邀请回调事件
-    wx.$TSignaling.off(TSignaling.EVENT.NEW_INVITATION_RECEIVED);
+    wx.$TSignaling.off(TSignaling.EVENT.NEW_INVITATION_RECEIVED, this.handleNewInvitationReceived);
     // 发出的邀请收到接受的回调
-    wx.$TSignaling.off(TSignaling.EVENT.INVITEE_ACCEPTED);
+    wx.$TSignaling.off(TSignaling.EVENT.INVITEE_ACCEPTED, this.handleInviteeAccepted);
     // 发出的邀请收到拒绝的回调
-    wx.$TSignaling.off(TSignaling.EVENT.INVITEE_REJECTED);
+    wx.$TSignaling.off(TSignaling.EVENT.INVITEE_REJECTED, this.handleInviteeRejected);
     // 收到的邀请收到该邀请取消的回调
-    wx.$TSignaling.off(TSignaling.EVENT.INVITATION_CANCELLED);
+    wx.$TSignaling.off(TSignaling.EVENT.INVITATION_CANCELLED, this.handleInvitationCancelled);
     // 收到的邀请收到该邀请超时的回调
-    wx.$TSignaling.off(TSignaling.EVENT.INVITATION_TIMEOUT);
+    wx.$TSignaling.off(TSignaling.EVENT.INVITATION_TIMEOUT, this.handleInvitationTimeout);
     // SDK Ready 回调
-    wx.$TSignaling.off(TSignaling.EVENT.SDK_READY);
+    wx.$TSignaling.off(TSignaling.EVENT.SDK_READY, this.handleSDKReady);
     // 被踢下线
-    wx.$TSignaling.off(TSignaling.EVENT.KICKED_OUT);
+    wx.$TSignaling.off(TSignaling.EVENT.KICKED_OUT, this.handleKickedOut);
   }
 
   // 远端用户加入此房间
@@ -661,7 +667,7 @@ class TRTCCalling {
     this.TRTC.getPusherInstance().stop(); // 停止推流
     const result = this.TRTC.exitRoom();
     if (this.data.isCallEnd) {
-      this.TRTCCallingDelegate.onCallEnd({ userID: this.data.config.userID, callEnd: callEnd || 0  }); 
+      this.TRTCCallingDelegate.onCallEnd({ userID: this.data.config.userID, callEnd: callEnd || 0  });
     }
     this.data.pusher = result.pusher;
     this.data.playerList = result.playerList;
@@ -904,7 +910,7 @@ class TRTCCalling {
         throw new Error('The call was cancelled');
       }
       if (this.data.callStatus === CALL_STATUS.CALLING) {
-        if (this.data.config.type === 2) {
+        if (this.data.config.type === CALL_TYPE.VIDEO) {
           wx.createLivePusherContext().stopPreview({
             success: () => {
               const timer = setTimeout(async ()=>{
@@ -1047,7 +1053,7 @@ class TRTCCalling {
       this.exitRoom(callEnd)
     }
     this._setCallStatus(CALL_STATUS.IDLE);
-    this.data.config.type = 1;
+    this.data.config.type = CALL_TYPE.AUDIO;
     // 清空状态
     this.initData();
   }
@@ -1250,20 +1256,31 @@ class TRTCCalling {
       });
   }
   // 获取用户信息
-  async getUserProfile(userList) {
+  async getUserProfile(userList, type = 'array') {
     if (userList.length === 0) {
       return [];
     }
     const list = userList.map((item) => item.userID);
     const imResponse = await this.tim.getUserProfile({ userIDList: list });
-    const newUserList = userList.map((item) => {
-      const newItem = item;
-      const itemProfile = imResponse.data.filter((imItem) => imItem.userID === item.userID);
-      newItem.avatar = itemProfile[0] && itemProfile[0].avatar ? itemProfile[0].avatar : '';
-      newItem.nick = itemProfile[0] && itemProfile[0].nick ? itemProfile[0].nick : '';
-      return newItem;
-    });
-    return newUserList;
+    let result = null
+    switch (type) {
+      case 'array':
+        result = userList.map((item, index) => {
+          item.avatar = imResponse.data[index].avatar
+          item.nick = imResponse.data[index].nick
+          return item
+        });
+        break
+      case 'map':
+        result = {}
+        userList.forEach((item, index) => {
+          item.avatar = imResponse.data[index].avatar
+          item.nick = imResponse.data[index].nick
+          result[item.userID] = item
+        })
+        break
+    }
+    return result
   }
 
   // pusher 的网络状况
