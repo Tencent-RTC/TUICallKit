@@ -73,7 +73,7 @@ export default {
   methods: {
     handleCallBtnClick: function(param) {
       if (param === this.loginUserInfo.userId) {
-        this.$message("Enter the correct user ID");
+        this.$message("不能呼叫自己！");
         return;
       }
       this.call = true
