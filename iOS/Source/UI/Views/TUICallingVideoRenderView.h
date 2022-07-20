@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol TUICallingVideoRenderViewDelegete <NSObject>
+@protocol TUICallingVideoRenderViewDelegate <NSObject>
 
 - (void)tapGestureAction:(UITapGestureRecognizer *)tapGesture;
 
@@ -20,7 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface TUICallingVideoRenderView : UIView
 
-@property (nonatomic, weak) id<TUICallingVideoRenderViewDelegete> delegate;
+/// 手势回调
+@property (nonatomic, weak) id<TUICallingVideoRenderViewDelegate> delegate;
 
 /// 配置页面信息
 /// @param userModel 用户数据模型

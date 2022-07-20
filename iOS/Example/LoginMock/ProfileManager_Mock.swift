@@ -108,15 +108,13 @@ import TUICore
     ///   - success: 成功
     ///   - failed: 失败
     @objc func IMLogin(userSig: String, success: @escaping ()->Void, failed: @escaping (_ error: String)->Void) {
-        TUILogin.initWithSdkAppID(Int32(SDKAPPID))
-        
         guard let userID = curUserModel?.userId else {
             failed("userID wrong")
             return
         }
         let user = String(userID)
         
-        TUILogin.login(user, userSig: userSig) {
+        TUILogin.login(Int32(SDKAPPID), userID: user, userSig: userSig) {
             debugPrint("login success")
             // IM登录成功后，处理离线推送相关
             let config = V2TIMAPNSConfig()
