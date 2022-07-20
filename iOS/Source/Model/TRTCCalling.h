@@ -1,5 +1,5 @@
 //
-//  TRTCCall.h
+//  TRTCCalling.h
 //  TXIMSDK_TUIKit_iOS
 //
 //  Created by xiangzhang on 2020/7/2.
@@ -19,8 +19,9 @@ typedef void(^ErrorCallback)(int code, NSString *des);
 
 @interface TRTCCalling : NSObject<TRTCCloudDelegate, V2TIMSignalingListener, V2TIMSimpleMsgListener>
 
-/// 单例对象
 + (TRTCCalling *)shareInstance;
+
++ (void)destroySharedInstance;
 
 /// 设置TRTCCallingDelegate回调
 /// @param delegate 回调实例

@@ -87,9 +87,7 @@ class TRTCLoginViewController: UIViewController {
             showRegisterVC()
         } else {
             self.view.makeToast(LoginLocalize(key:"V2.Live.LinkMicNew.loginsuccess"))
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                AppUtils.shared.showMainController()
-            }
+            AppUtils.shared.showMainController()
         }
     }
     

@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 展示Calling视图，默认Calling页面展示方式，用户自定义路由不会调用此方法。
 /// @param enable 是否允许展示悬浮窗
-- (void)showCalingViewEnableFloatWindow:(BOOL)enable;
+- (void)showCallingViewEnableFloatWindow:(BOOL)enable;
 - (void)disMissCalingView;
 
 - (void)configViewWithUserList:(NSArray<CallUserModel *> *)userList sponsor:(CallUserModel *)sponsor;
