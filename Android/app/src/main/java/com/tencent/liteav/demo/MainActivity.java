@@ -23,14 +23,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.tencent.imsdk.BaseConstants;
-import com.tencent.imsdk.v2.V2TIMCallback;
-import com.tencent.imsdk.v2.V2TIMSDKConfig;
-import com.tencent.imsdk.v2.V2TIMSDKListener;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.debug.GenerateTestUserSig;
 import com.tencent.liteav.trtccalling.TUICallingImpl;
 import com.tencent.qcloud.tuicore.TUILogin;
+import com.tencent.qcloud.tuicore.interfaces.TUICallback;
+import com.tencent.qcloud.tuicore.interfaces.TUILoginListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,12 +77,10 @@ public class MainActivity extends AppCompatActivity {
         // 初始化并登录
         TUICallingImpl.sharedInstance(this);
         final UserModel userModel = UserModelManager.getInstance().getUserModel();
-        V2TIMSDKConfig config = new V2TIMSDKConfig();
-        config.setLogLevel(V2TIMSDKConfig.V2TIM_LOG_DEBUG);
-        TUILogin.init(this, GenerateTestUserSig.SDKAPPID, null, new V2TIMSDKListener() {
-
+        TUILogin.addLoginListener(new TUILoginListener() {
             @Override
             public void onKickedOffline() {
+                super.onKickedOffline();
                 Log.d(TAG, "You have been kicked off the line. Please login again!");
                 ToastUtils.showLong(getString(R.string.trtccalling_user_kicked_offline));
                 startLoginActivity();
@@ -91,25 +88,27 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onUserSigExpired() {
+                super.onUserSigExpired();
                 Log.d(TAG, "Your user signature information has expired");
                 ToastUtils.showLong(getString(R.string.trtccalling_user_sig_expired));
                 startLoginActivity();
             }
         });
-        TUILogin.login(userModel.userId, userModel.userSig, new V2TIMCallback() {
-            @Override
-            public void onError(int code, String msg) {
-                Log.d(TAG, "login fail code: " + code + " msg:" + msg);
-                //userSig过期,需要重新登录;userSig具有时效性,具体请查看GenerateTestUserSig.java文件
-                if (BaseConstants.ERR_USER_SIG_EXPIRED == code) {
-                    ToastUtils.showLong(R.string.user_sig_expired);
-                    startLoginActivity();
-                }
-            }
 
+        TUILogin.login(this, GenerateTestUserSig.SDKAPPID, userModel.userId, userModel.userSig, new TUICallback() {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "login onSuccess");
+            }
+
+            @Override
+            public void onError(int errorCode, String errorMessage) {
+                Log.d(TAG, "login fail errorCode: " + errorCode + " errorMessage:" + errorMessage);
+                //userSig过期,需要重新登录;userSig具有时效性,具体请查看GenerateTestUserSig.java文件
+                if (BaseConstants.ERR_USER_SIG_EXPIRED == errorCode) {
+                    ToastUtils.showLong(R.string.user_sig_expired);
+                    startLoginActivity();
+                }
             }
         });
     }
@@ -207,15 +206,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        TUILogin.logout(new V2TIMCallback() {
+        TUILogin.logout(new TUICallback() {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "logout success ");
             }
 
             @Override
-            public void onError(int code, String msg) {
-                Log.d(TAG, "logout fail : code = " + code + " , msg = " + msg);
+            public void onError(int errorCode, String errorMessage) {
+                Log.d(TAG, "logout fail : errorCode = " + errorCode + " , errorMessage = " + errorMessage);
             }
         });
     }
