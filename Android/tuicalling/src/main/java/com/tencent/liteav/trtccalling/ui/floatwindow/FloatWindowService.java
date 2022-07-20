@@ -73,11 +73,11 @@ public class FloatWindowService extends Service {
         super.onDestroy();
         Status.mIsShowFloatWindow = false;
         TRTCLogger.i(TAG, "onDestroy: mCallView = " + mCallView);
-        if (null != mCallView) {
+        if (mWindowManager != null && mCallView != null) {
             // 移除悬浮窗口
             mWindowManager.removeView(mCallView);
-            mCallView = null;
         }
+        mCallView = null;
     }
 
     /**
@@ -158,9 +158,9 @@ public class FloatWindowService extends Service {
                 case MotionEvent.ACTION_MOVE:
                     mTouchCurrentX = (int) event.getRawX();
                     mTouchCurrentY = (int) event.getRawY();
-                    mWindowLayoutParams.x += mTouchCurrentX - mTouchStartX;
-                    mWindowLayoutParams.y += mTouchCurrentY - mTouchStartY;
-                    if (null != mCallView) {
+                    if (mWindowManager != null && mCallView != null) {
+                        mWindowLayoutParams.x += mTouchCurrentX - mTouchStartX;
+                        mWindowLayoutParams.y += mTouchCurrentY - mTouchStartY;
                         mWindowManager.updateViewLayout(mCallView, mWindowLayoutParams);
                     }
                     mTouchStartX = mTouchCurrentX;
@@ -191,11 +191,14 @@ public class FloatWindowService extends Service {
 
     //悬浮窗贴边动画
     private void startScroll(int start, int end, boolean isLeft) {
-        mWidth = mCallView.getWidth();
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(start, end).setDuration(300);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
+                if (mWindowManager == null || mCallView == null) {
+                    return;
+                }
+                mWidth = mCallView.getWidth();
                 if (isLeft) {
                     mWindowLayoutParams.x = (int) (start * (1 - animation.getAnimatedFraction()));
                     mCallView.setBackgroundResource(R.drawable.trtccalling_bg_floatwindow_left);
@@ -212,6 +215,9 @@ public class FloatWindowService extends Service {
 
     //计算高度,防止悬浮窗上下越界
     private void calculateHeight() {
+        if (mWindowManager == null) {
+            return;
+        }
         int height = mCallView.getHeight();
         int screenHeight = mWindowManager.getDefaultDisplay().getHeight();
         //获取系统状态栏的高度

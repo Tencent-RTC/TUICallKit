@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -16,17 +13,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.blankj.utilcode.util.ToastUtils;
-import com.tencent.imsdk.v2.V2TIMCallback;
 import com.tencent.imsdk.v2.V2TIMManager;
-import com.tencent.imsdk.v2.V2TIMSDKConfig;
-import com.tencent.imsdk.v2.V2TIMSDKListener;
 import com.tencent.imsdk.v2.V2TIMUserFullInfo;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.debug.GenerateTestUserSig;
 import com.tencent.qcloud.tuicore.TUILogin;
+import com.tencent.qcloud.tuicore.interfaces.TUICallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,32 +70,17 @@ public class LoginActivity extends AppCompatActivity {
         userModel.userId = userId;
         userModel.userSig = GenerateTestUserSig.genTestUserSig(userId);
         manager.setUserModel(userModel);
-
-        V2TIMSDKConfig config = new V2TIMSDKConfig();
-        config.setLogLevel(V2TIMSDKConfig.V2TIM_LOG_DEBUG);
-        TUILogin.init(this, GenerateTestUserSig.SDKAPPID, null, new V2TIMSDKListener() {
-
-            @Override
-            public void onKickedOffline() {
-
-            }
-
-            @Override
-            public void onUserSigExpired() {
-
-            }
-        });
-        TUILogin.login(userModel.userId, userModel.userSig, new V2TIMCallback() {
-            @Override
-            public void onError(int code, String msg) {
-                ToastUtils.showLong(R.string.app_toast_login_fail, code, msg);
-                Log.d(TAG, "login fail code: " + code + " msg:" + msg);
-            }
-
+        TUILogin.login(this, GenerateTestUserSig.SDKAPPID, userModel.userId, userModel.userSig, new TUICallback() {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "login onSuccess");
                 getUserInfo();
+            }
+
+            @Override
+            public void onError(int errorCode, String errorMessage) {
+                ToastUtils.showLong(R.string.app_toast_login_fail, errorCode, errorMessage);
+                Log.d(TAG, "login fail errorCode: " + errorCode + " msg:" + errorMessage);
             }
         });
     }
