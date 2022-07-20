@@ -26,6 +26,7 @@
           <div class="video-item-username">{{userId2Name[userId] || userId}}</div>
         </div>
       </div>
+      <div>{{showTime}}</div>
       <div class="video-conference-action">
         <el-button
           class="action-btn"
@@ -49,6 +50,7 @@
 import { mapState } from "vuex";
 import SearchUser from "../search-user";
 import { getUsernameByUserid } from "../../service";
+import { formateTime } from "../../utils"
 
 export default {
   name: "VideoCall",
@@ -63,7 +65,10 @@ export default {
       meetingUserIdList: state => state.meetingUserIdList,
       muteVideoUserIdList: state => state.muteVideoUserIdList,
       muteAudioUserIdList: state => state.muteAudioUserIdList
-    })
+    }),
+    showTime: function() {
+      return formateTime(this.chatTime);
+    }
   },
   data() {
     return {
@@ -73,15 +78,19 @@ export default {
       userId2Name: {},
       callFlag: false,
       cancelFlag: false,
+      timer: 0,
+      chatTime: 0
     };
   },
   mounted() {
+    this.showChatTime();
     if (this.callStatus === "connected" && !this.isInviter) {
       this.startMeeting();
       this.updateUserId2Name(this.meetingUserIdList);
     }
   },
   destroyed() {
+    clearInterval(this.timer);
     this.$store.commit("updateMuteVideoUserIdList", []);
     this.$store.commit("updateMuteAudioUserIdList", []);
     if (this.callStatus === "connected") {
@@ -105,6 +114,14 @@ export default {
     }
   },
   methods: {
+    showChatTime: function() {
+      clearInterval(this.timer);
+      this.timer = setInterval(() => {
+        if (this.callStatus === "connected") {
+          this.chatTime += 1;
+        }
+      }, 1000)
+    },
     handleCallUser: function({ param }) {
       this.callFlag = true
       this.$trtcCalling.call({
