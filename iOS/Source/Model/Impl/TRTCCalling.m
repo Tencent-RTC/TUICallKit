@@ -1,5 +1,5 @@
 //
-//  TRTCCall.m
+//  TRTCCalling.m
 //  TXIMSDK_TUIKit_iOS
 //
 //  Created by xiangzhang on 2020/7/2.
@@ -25,13 +25,14 @@
     NSString *_curCallID;
 }
 
+static dispatch_once_t gOnceToken;
+static TRTCCalling *gSharedInstance;
+
 + (TRTCCalling *)shareInstance {
-    static dispatch_once_t onceToken;
-    static TRTCCalling * g_sharedInstance = nil;
-    dispatch_once(&onceToken, ^{
-        g_sharedInstance = [[TRTCCalling alloc] init];
+    dispatch_once(&gOnceToken, ^{
+        gSharedInstance = [[TRTCCalling alloc] init];
     });
-    return g_sharedInstance;
+    return gSharedInstance;
 }
 
 - (instancetype)init {
@@ -47,7 +48,15 @@
     return self;
 }
 
++ (void)destroySharedInstance {
+    [[TRTCCalling shareInstance] exitRoom];
+    [TRTCCloud destroySharedIntance];
+    gOnceToken = 0;
+    gSharedInstance = nil;
+}
+
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self removeSignalListener];
 }
 

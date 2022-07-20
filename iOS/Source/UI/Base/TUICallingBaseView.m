@@ -35,12 +35,17 @@
     }];
 }
 
-- (void)showCalingViewEnableFloatWindow:(BOOL)enable {
+- (void)showCallingViewEnableFloatWindow:(BOOL)enable {
     self.disableCustomView = YES;
     self.floatingWindowBtn.hidden = !enable;
-    self.floatingWindow.hidden = NO;
+    
     [self.floatingWindow addSubview:self];
-    [self.floatingWindow t_makeKeyAndVisible];
+    self.floatingWindow.hidden = NO;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.floatingWindow != nil) {
+            [self.floatingWindow t_makeKeyAndVisible];
+        }
+    });
 }
 
 - (void)disMissCalingView {

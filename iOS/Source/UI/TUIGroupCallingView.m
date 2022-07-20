@@ -210,16 +210,16 @@
     switch (curCallingState) {
         case TUICallingStateOnInvitee: {
             [self initUIForAudioCallee];
-            NSString *waitingText = CallingLocalize(@"Demo.TRTC.calling.invitetoaudiocall");
+            NSString *waitingText = TUICallingLocalize(@"Demo.TRTC.calling.invitetoaudiocall");
             if (self.isVideo) {
-                waitingText = CallingLocalize(@"Demo.TRTC.calling.invitetovideocall");
+                waitingText = TUICallingLocalize(@"Demo.TRTC.calling.invitetovideocall");
             }
             [self.userContainerView configUserInfoViewWith:self.curSponsor showWaitingText:waitingText];
         } break;
         case TUICallingStateDailing: {
             [self initUIForCaller];
             self.callingTime.hidden = YES;
-            [self.userContainerView configUserInfoViewWith:self.curSponsor showWaitingText:CallingLocalize(@"Demo.TRTC.calling.waitaccept")];
+            [self.userContainerView configUserInfoViewWith:self.curSponsor showWaitingText:TUICallingLocalize(@"Demo.TRTC.calling.waitaccept")];
         } break;
         case TUICallingStateCalling: {
             [self initUIForCaller];
@@ -482,7 +482,7 @@
 - (TUICallingControlButton *)muteBtn {
     if (!_muteBtn) {
         __weak typeof(self) weakSelf = self;
-        _muteBtn = [TUICallingControlButton createViewWithFrame:CGRectZero titleText:CallingLocalize(@"Demo.TRTC.Calling.mic") buttonAction:^(UIButton * _Nonnull sender) {
+        _muteBtn = [TUICallingControlButton createViewWithFrame:CGRectZero titleText:TUICallingLocalize(@"Demo.TRTC.Calling.mic") buttonAction:^(UIButton * _Nonnull sender) {
             [weakSelf muteTouchEvent:sender];
         } imageSize:kBtnSmallSize];
         [_muteBtn configBackgroundImage:[TUICommonUtil getBundleImageWithName:@"ic_mute"]];
@@ -494,7 +494,7 @@
 - (TUICallingControlButton *)handsfreeBtn {
     if (!_handsfreeBtn) {
         __weak typeof(self) weakSelf = self;
-        _handsfreeBtn = [TUICallingControlButton createViewWithFrame:CGRectZero titleText:CallingLocalize(@"Demo.TRTC.Calling.speaker") buttonAction:^(UIButton * _Nonnull sender) {
+        _handsfreeBtn = [TUICallingControlButton createViewWithFrame:CGRectZero titleText:TUICallingLocalize(@"Demo.TRTC.Calling.speaker") buttonAction:^(UIButton * _Nonnull sender) {
             [weakSelf hangsfreeTouchEvent:sender];
         } imageSize:kBtnSmallSize];
         [_handsfreeBtn configBackgroundImage:[TUICommonUtil getBundleImageWithName:@"ic_handsfree_on"]];
@@ -506,7 +506,7 @@
 - (TUICallingControlButton *)closeCameraBtn {
     if (!_closeCameraBtn) {
         __weak typeof(self) weakSelf = self;
-        _closeCameraBtn = [TUICallingControlButton createViewWithFrame:CGRectZero titleText:CallingLocalize(@"Demo.TRTC.Calling.camera") buttonAction:^(UIButton * _Nonnull sender) {
+        _closeCameraBtn = [TUICallingControlButton createViewWithFrame:CGRectZero titleText:TUICallingLocalize(@"Demo.TRTC.Calling.camera") buttonAction:^(UIButton * _Nonnull sender) {
             [weakSelf closeCameraTouchEvent:sender];
         } imageSize:kBtnSmallSize];
         [_closeCameraBtn configBackgroundImage:[TUICommonUtil getBundleImageWithName:@"camera_on"]];
@@ -519,7 +519,7 @@
     if (!_hangupBtn) {
         __weak typeof(self) weakSelf = self;
         
-        _hangupBtn = [TUICallingControlButton createViewWithFrame:CGRectZero titleText:CallingLocalize(@"Demo.TRTC.Calling.hangup") buttonAction:^(UIButton * _Nonnull sender) {
+        _hangupBtn = [TUICallingControlButton createViewWithFrame:CGRectZero titleText:TUICallingLocalize(@"Demo.TRTC.Calling.hangup") buttonAction:^(UIButton * _Nonnull sender) {
             [weakSelf hangupTouchEvent:sender];
         } imageSize:kBtnLargeSize];
         [_hangupBtn configBackgroundImage:[TUICommonUtil getBundleImageWithName:@"ic_hangup"]];
@@ -581,7 +581,7 @@
         _calleeTipLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _calleeTipLabel.font = [UIFont boldSystemFontOfSize:14.0f];
         [_calleeTipLabel setTextColor:[UIColor t_colorWithHexString:@"#999999"]];
-        [_calleeTipLabel setText:CallingLocalize(@"Demo.TRTC.Calling.calleeTip")];
+        [_calleeTipLabel setText:TUICallingLocalize(@"Demo.TRTC.Calling.calleeTip")];
         [_calleeTipLabel setTextAlignment:NSTextAlignmentCenter];
     }
     return _calleeTipLabel;
