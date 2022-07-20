@@ -78,19 +78,13 @@ export default {
       this.$trtcCalling.on(this.TrtcCalling.EVENT.USER_ACCEPT, this.handleUserAccept);
       this.$trtcCalling.on(this.TrtcCalling.EVENT.USER_ENTER, this.handleUserEnter);
       this.$trtcCalling.on(this.TrtcCalling.EVENT.USER_LEAVE, this.handleUserLeave);
-      // 发起人收到拒绝回调
       this.$trtcCalling.on(this.TrtcCalling.EVENT.REJECT, this.handleInviteeReject);
       this.$trtcCalling.on(this.TrtcCalling.EVENT.LINE_BUSY, this.handleInviteeLineBusy);
-      // 被邀请方收到，说明本次通话被主动取消
       this.$trtcCalling.on(this.TrtcCalling.EVENT.CALLING_CANCEL, this.handleInviterCancel);
       this.$trtcCalling.on(this.TrtcCalling.EVENT.KICKED_OUT, this.handleKickedOut);
-      // 被邀请方收到时，说明本次通话超时未答应
       this.$trtcCalling.on(this.TrtcCalling.EVENT.CALLING_TIMEOUT, this.handleCallTimeout);
-      // 发起人收到该回调时，对方无应答
       this.$trtcCalling.on(this.TrtcCalling.EVENT.NO_RESP, this.handleNoResponse);
-      // 收到该回调说明本次通话结束了
       this.$trtcCalling.on(this.TrtcCalling.EVENT.CALLING_END, this.handleCallEnd);
-      // 远端用户开启或关闭摄像头，会收到该回调
       this.$trtcCalling.on(this.TrtcCalling.EVENT.USER_VIDEO_AVAILABLE, this.handleUserVideoChange);
       this.$trtcCalling.on(this.TrtcCalling.EVENT.USER_AUDIO_AVAILABLE, this.handleUserAudioChange);
     },
