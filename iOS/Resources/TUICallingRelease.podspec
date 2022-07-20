@@ -15,8 +15,8 @@ Pod::Spec.new do |spec|
   spec.xcconfig     = { 'VALID_ARCHS' => 'armv7 arm64 x86_64' }
 
   spec.dependency 'Masonry'
-  spec.dependency 'TUICore', '>= 6.0.1992'
-
+  spec.dependency 'TUICore'
+  
   spec.requires_arc = true
   spec.static_framework = true
   spec.source = { :git => 'https://github.com/tencentyun/TUICalling.git', :tag => "v9.4" }
