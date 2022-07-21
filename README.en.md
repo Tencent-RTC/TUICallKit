@@ -8,9 +8,13 @@ This project is that the Tencent Cloud Audio and Video team has also packaged an
 If you need to use audio and video calling services, you are welcome to use the commercial version of TUICalling. For more information, see [here](https://github.com/tencentyun/TUICalling).
 
 ## Release Notes
-### Version 10.3 @ 2022.07.11
+### Version 10.4 @ 2022.07.20
+#### Bug fixes
+- Android: Fix the hangup signaling problem when a user call ends
+- Android：Fixed empty pointer exception of float window
 #### Optimization
-- Android：replace offline push component `TPNS` with [`TUIOfflinePush`](https://cloud.tencent.com/document/product/269/44516)
+- Android: Update the login/ logout interface of TUILogin
+- iOS：Update the login/ logout interface of TUILogin
 
 For earlier version update history, please click [More](./ReleaseNote.md)...
 
