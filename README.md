@@ -17,9 +17,15 @@ _[English](README.en.md) | 中文_
 更多组件化方案，敬请期待，也欢迎加入我们的QQ交流群：592465424，期待一起交流&学习！
 
 ## 发布日志
-### Version 10.3 @ 2022.07.11
-#### 功能优化
-- Android：替换原离线推送方式`TPNS`为[`TUIOfflinePush`](https://cloud.tencent.com/document/product/269/44516)
+### Version 10.4 @ 2022.07.20
+
+#### 功能修复：
+- Android：修复单人通话挂断时，没有发出hangup信令问题
+- Android：修复悬浮窗空指针异常
+
+#### 功能优化：
+- Android：更新TUILogin的login/logout接口
+- iOS：更新TUILogin的login/logout接口
 
 更早期的版本更新历史请点击  [More](./ReleaseNote.md)...
 
