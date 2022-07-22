@@ -7,9 +7,16 @@
     <div v-show="callStatus !== 'connected'" class="search-user-list">
       <div v-if="callStatus === 'calling' && isInviter" class="calling-user-footer">
         <el-button class="user-item-join-btn calling">Calling...</el-button>
-        <el-button class="user-item-cancel-join-btn" :disabled="cancel" :loading="cancel" @click="handleCancelCallBtnClick">Cancel</el-button>
+        <el-button 
+          class="user-item-cancel-join-btn" 
+          :disabled="cancel" 
+          :loading="cancel" 
+          @click="handleCancelCallBtnClick">Cancel</el-button>
       </div>
-      <el-button v-else @click="handleCallBtnClick(searchInput)" :disabled="call" class="user-item-join-btn">Call</el-button>
+      <el-button v-else 
+        @click="handleCallBtnClick(searchInput)" 
+        :disabled="call" 
+        class="user-item-join-btn">Call</el-button>
     </div>
   </div>
 </template>
@@ -73,10 +80,10 @@ export default {
   methods: {
     handleCallBtnClick: function(param) {
       if (param === this.loginUserInfo.userId) {
-        this.$message("不能呼叫自己！");
+        this.$message("Please don't call yourself!");
         return;
       }
-      this.call = true
+      this.call = false;
       this.callUserId = param;
       this.$emit("callUser", { param });
     },
