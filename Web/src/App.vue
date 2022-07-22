@@ -183,7 +183,6 @@ export default {
 
     handleAcceptCall: async function() {
       try {
-        console.log("@@@", 111);
         const { callType, roomID } = this.inviteData;
         this.$store.commit("userJoinMeeting", this.loginUserInfo.userId);
         await this.$trtcCalling.accept({
