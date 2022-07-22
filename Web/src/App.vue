@@ -169,7 +169,7 @@ export default {
     },
 
     handleAccept: function() {
-      this.handleDebounce(this.handleAcceptCall(), 500);
+      this.handleDebounce(this.handleAcceptCall, 500);
     },
 
     handleDebounce: function(func, wait) {
@@ -183,6 +183,7 @@ export default {
 
     handleAcceptCall: async function() {
       try {
+        console.log("@@@", 111);
         const { callType, roomID } = this.inviteData;
         this.$store.commit("userJoinMeeting", this.loginUserInfo.userId);
         await this.$trtcCalling.accept({
