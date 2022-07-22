@@ -169,7 +169,7 @@ export default {
     },
 
     handleAccept: function() {
-      this.handleDebounce(this.handleAcceptCall(), 500);
+      this.handleDebounce(this.handleAcceptCall, 500);
     },
 
     handleDebounce: function(func, wait) {
