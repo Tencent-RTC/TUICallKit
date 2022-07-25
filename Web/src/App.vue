@@ -19,6 +19,8 @@ import { mapState } from "vuex";
 import { log } from "./utils";
 import { getUsernameByUserid } from "./service";
 import HeaderNav from "./components/header-nav";
+import {aegisReportEvent} from './utils/aegis'
+
 let timeout;
 
 export default {
@@ -63,6 +65,7 @@ export default {
     };
   },
   mounted() {
+    aegisReportEvent("mounted", "mounted-success");
     if (!this.handleIPRequest(document.URL)) {
       this.$message.warning("Please request with localhost or 127.0.0.1 !");
     }
