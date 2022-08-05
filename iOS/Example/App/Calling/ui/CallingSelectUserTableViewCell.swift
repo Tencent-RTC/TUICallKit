@@ -6,8 +6,7 @@
 //
 
 import UIKit
-import ImSDK_Plus
-import TUICalling
+import TUICallKit
 
 public enum CallingSelectUserButtonType {
     case call
@@ -19,8 +18,8 @@ public class CallingSelectUserTableViewCell: UITableViewCell {
     private var isViewReady = false
     private var buttonAction: (() -> Void)?
     lazy var userImageView: UIImageView = {
-        let img = UIImageView()
-        return img
+        let imageView = UIImageView()
+        return imageView
     }()
     
     lazy var nameLabel: UILabel = {
@@ -73,11 +72,11 @@ public class CallingSelectUserTableViewCell: UITableViewCell {
     
     public func config(model: V2TIMUserFullInfo, type: CallingSelectUserButtonType, selected: Bool = false, action: (() -> Void)? = nil) {
         backgroundColor = UIColor.clear
-        var btnName = ""
+        var buttonName = ""
         
-        let faceURL = model.faceURL ?? DEFAULT_AVATETR
+        let faceURL = model.faceURL ?? TUI_CALL_DEFAULT_AVATAR
         if let imageURL = URL(string: faceURL) {
-            userImageView.kf.setImage(with: .network(imageURL), placeholder: TUICommonUtil.getBundleImage(withName: "userIcon"))
+            userImageView.kf.setImage(with: .network(imageURL), placeholder: TUICallingCommon.getBundleImage(withName: "userIcon"))
         }
         
         userImageView.layer.masksToBounds = true
@@ -87,14 +86,14 @@ public class CallingSelectUserTableViewCell: UITableViewCell {
         
         switch type {
         case .call:
-            btnName = CallingLocalize("Demo.TRTC.Streaming.call")
+            buttonName = CallingLocalize("Demo.TRTC.Streaming.call")
         case .add:
-            btnName = CallingLocalize("Demo.TRTC.calling.add")
+            buttonName = CallingLocalize("Demo.TRTC.calling.add")
         case .delete:
-            btnName = CallingLocalize("Demo.TRTC.calling.delete")
+            buttonName = CallingLocalize("Demo.TRTC.calling.delete")
         }
         
-        rightButton.setTitle(btnName, for: .normal)
+        rightButton.setTitle(buttonName, for: .normal)
     }
     
     @objc

@@ -8,8 +8,7 @@
 import UIKit
 import Foundation
 import Toast_Swift
-import TUICalling
-import ImSDK_Plus
+import TUICallKit
 
 enum TRTCCallingUserRemoveReason: UInt32 {
     case leave = 0
@@ -21,7 +20,7 @@ enum TRTCCallingUserRemoveReason: UInt32 {
 public class TRTCCallingContactView: UIView {
     var selectedFinished: (([V2TIMUserFullInfo])->Void)? = nil
     var btnType: CallingSelectUserButtonType = .call
-    @objc var callType: CallType = .audio
+    @objc var callType: TUICallMediaType = .audio
     /// 是否展示搜索结果
     var shouldShowSearchResult: Bool = false {
         didSet {
@@ -210,14 +209,6 @@ extension TRTCCallingContactView {
             textfield.leftViewMode = .always
         }
         ToastManager.shared.position = .bottom
-    }
-    
-    func showCallVC(users: [String]) {
-        var type: TUICallingType = .video
-        if callType == .audio {
-            type = .audio
-        }
-        TUICalling.shareInstance().call(userIDs: users, type: type)
     }
     
     @objc func hiddenNoMembersImg(isHidden: Bool) {

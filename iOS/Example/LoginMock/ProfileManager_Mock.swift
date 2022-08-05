@@ -8,8 +8,8 @@
 
 import UIKit
 import Alamofire
-import ImSDK_Plus
 import TUICore
+import TUICallKit
 
 @objc class LoginResultModel: NSObject, Codable {
     @objc var token: String
@@ -26,7 +26,7 @@ import TUICore
         name = userID
         
         userSig = GenerateTestUserSig.genTestUserSig(identifier: userID)
-        avatar = "https://imgcache.qq.com/qcloud/public/static//avatar1_100.20191230.png"
+        avatar = TUI_CALL_DEFAULT_AVATAR
         super.init()
     }
 }
@@ -108,15 +108,12 @@ import TUICore
     ///   - success: 成功
     ///   - failed: 失败
     @objc func IMLogin(userSig: String, success: @escaping ()->Void, failed: @escaping (_ error: String)->Void) {
-        TUILogin.initWithSdkAppID(Int32(SDKAPPID))
-        
         guard let userID = curUserModel?.userId else {
             failed("userID wrong")
             return
         }
         let user = String(userID)
-        
-        TUILogin.login(user, userSig: userSig) {
+        TUILogin.login(Int32(SDKAPPID), userID: user, userSig: userSig) {
             debugPrint("login success")
             // IM登录成功后，处理离线推送相关
             let config = V2TIMAPNSConfig()
