@@ -3,11 +3,8 @@
     <string name="app_name">TRTC</string>
     <string name="app_toast_login_success">Logged in</string>
     <string name="app_toast_login_fail">Login failed [%d]%s</string>
-    <string name="working">Running</string>
     <string name="self_userId">your userId:</string>
     <string name="tips_search">"Search for a registered user\n\t\t\t\t\t\t to start a call."</string>
-    <string name="toast_video_call">Video Call:%s</string>
-    <string name="toast_voice_call">Voice Call:%s</string>
     <string name="toast_not_call_myself">You cannot call yourself.</string>
     <string name="call_self_format">Your userId: %s</string>
     <string name="audio_call">Voice Call</string>
@@ -18,13 +15,13 @@
     <string name="user_id">Username</string>
     <string name="hint_user_id">Enter a userId</string>
     <string name="btn_login">Log In</string>
+    <string name="app_toast_search_fail">Search failed:%1$s.</string>
 
     <string name="welcome_tips">Welcome to Tencent\nReal-Time Communication</string>
     <string name="dialog_log_out">Are you sure you want to log out?</string>
     <string name="user_sig_expired">Your user signature information has expired. Please log in again!</string>
     <string name="user_id_is_empty">UserId is empty</string>
     <string name="app_title_register">Register</string>
-    <string name="app_text_user_name">Username</string>
     <string name="app_hint_user_name">Enter a username</string>
     <string name="app_tips_user_name">Chinese characters, letters, numbers and underscores, 2 – 20 words</string>
     <string name="app_toast_register_success_and_logging_in">Registered successfully</string>
@@ -37,8 +34,6 @@
     <string name="app_toast_multi_call_num_exceed">Failed, the users exceeded the limit</string>
     <string name="app_toast_user_added">User Added</string>
     <string name="app_search">Search</string>
-    <string name="app_tips_search">"Search for a registered user\n\t\t\t\t\t\t to start a call."</string>
-    <string name="app_self_userid">Your ID:</string>
     <string name="app_start_call">Call</string>
     <string name="app_user_not_exist">User does not exist</string>
     <string name="app_add">Add</string>

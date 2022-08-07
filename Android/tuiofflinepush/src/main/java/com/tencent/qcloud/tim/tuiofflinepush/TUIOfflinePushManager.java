@@ -14,11 +14,11 @@ import com.tencent.qcloud.tim.tuiofflinepush.utils.TUIOfflinePushLog;
 import com.tencent.qcloud.tuicore.util.ErrorMessageConverter;
 
 public class TUIOfflinePushManager {
-    public static final String TAG = TUIOfflinePushManager.class.getSimpleName();
-    private static TUIOfflinePushManager instance;
+    public static final String                TAG = TUIOfflinePushManager.class.getSimpleName();
+    private static      TUIOfflinePushManager instance;
 
-    private String pushToken;
-    private boolean isInternationalFlavor = false;
+    private String               pushToken;
+    private boolean              isInternationalFlavor = false;
     private PushSettingInterface pushSetting;
 
     public static TUIOfflinePushManager getInstance() {
@@ -29,27 +29,34 @@ public class TUIOfflinePushManager {
     }
 
     /**
-     *  注册离线推送服务, IM 账号登录成功时调用
+     * 注册离线推送服务, IM 账号登录成功时调用
      *
-     *  @note 请注意：
-     *  如果您没有使用 TUILogin 提供的接口，您需要在完成登录操作后，手动调用该接口即可开启推送服务
+     * @note 请注意：
+     * 如果您没有使用 TUILogin 提供的接口，您需要在完成登录操作后，手动调用该接口即可开启推送服务
+     * <p>
+     * <p>
+     * Register offline push service, called when IM account login is successful
+     * @note If you do not use the interface provided by TUILogin, you need to manually call the interface after completing the login operation to enable the push service
      */
     public void registerPush(Context context) {
         initPush(context);
     }
 
     /**
-     *  反注册离线推送服务
+     * 反注册离线推送服务
      *
-     *  @note 请注意：
-     *  如果您没有使用 TUILogin 提供的接口，您需要在完成登出操作后，手动调用该接口即可关闭推送服务
+     * @note 请注意：
+     * 如果您没有使用 TUILogin 提供的接口，您需要在完成登出操作后，手动调用该接口即可关闭推送服务
+     * <p>
+     * Unregister offline push service
+     * @note If you do not use the interface provided by TUILogin, you need to manually call this interface after completing the logout operation to close the push service
      */
     public void unRegisterPush() {
         unInitPush();
     }
 
 
-    //************* 以下为组件内部调用 *************
+    //************* 以下为组件内部调用  The following is the internal call of the component*************
     private String getPushToken() {
         return pushToken;
     }
@@ -80,16 +87,17 @@ public class TUIOfflinePushManager {
         });
     }
 
-    private void unInitPush(){
+    private void unInitPush() {
         if (pushSetting == null) {
             pushSetting = new OEMPushSetting();
         }
 
         pushSetting.setPushCallback(null);
     }
-    
+
     public interface PushCallback {
         void onTokenCallback(String token);
+
         void onBadgeCallback(Context context, int number);
     }
 
@@ -139,7 +147,7 @@ public class TUIOfflinePushManager {
             }
         }
         v2TIMOfflinePushConfig = new V2TIMOfflinePushConfig(businessID, pushToken);
-        TUIOfflinePushLog.d(TAG, "setOfflinePushConfig businessID = " + businessID +  " pushToken = " + pushToken);
+        TUIOfflinePushLog.d(TAG, "setOfflinePushConfig businessID = " + businessID + " pushToken = " + pushToken);
 
         V2TIMManager.getOfflinePushManager().setOfflinePushConfig(v2TIMOfflinePushConfig, new V2TIMCallback() {
             @Override
