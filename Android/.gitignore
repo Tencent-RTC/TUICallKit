@@ -1,12 +1,22 @@
-*.iml
-*.gradle/
-/local.properties
-*.idea/
+# OS X Files
 .DS_Store
+**/.DS_Store
+
+
+# Gradle files
+*/.gradle/
+*.gradle/
+# IDEA Files
+local.properties
+/.codecc/
+/build.yml
+*.iml
+*.idea/
 build/
 /captures
 .externalNativeBuild
 .cxx
-*.codecc/
-/build.yml
+
+/tuicallkit/.idea/
+/tuicallkit/build/
 tuicore

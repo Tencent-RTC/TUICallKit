@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+
 // TUIOfflinePush: delete it without Google(FCM) or Huawei offline push function
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.huawei.agconnect'
@@ -15,7 +16,6 @@ android {
         targetSdkVersion 26
         multiDexEnabled true
         ndk {
-            //可以根据需要来自行选择并添加对应cpu类型的.so库。
             abiFilters 'armeabi-v7a', 'arm64-v8a'
         }
 
@@ -30,7 +30,6 @@ android {
                 "VIVO_APPKEY": "",
                 "VIVO_APPID" : ""
         ]
-
     }
 
     buildTypes {
@@ -43,8 +42,9 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api project(":tuicalling")
-    api project(':debug')
+    api project(":tuicallkit")
     api project(':tuiofflinepush')
-    implementation "androidx.recyclerview:recyclerview:1.0.0"
+    api project(':debug')
+    implementation "com.google.code.gson:gson:2.3.1"
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
 }

@@ -3,11 +3,8 @@
     <string name="app_name">音视频通话</string>
     <string name="app_toast_login_success">登录成功</string>
     <string name="app_toast_login_fail">登录IM失败，所有功能不可用[%d]%s</string>
-    <string name="working">正在运行中</string>
     <string name="self_userId">您的userId:</string>
     <string name="tips_search">搜索添加已注册用户\n\t\t\t以发起通话</string>
-    <string name="toast_video_call">视频呼叫:%s</string>
-    <string name="toast_voice_call">语音呼叫:%s</string>
     <string name="toast_not_call_myself">不能呼叫自己</string>
     <string name="call_self_format">您的userId: %s</string>
     <string name="audio_call">语音通话</string>
@@ -18,17 +15,17 @@
     <string name="user_id">用户名</string>
     <string name="hint_user_id">请输入登录的userId</string>
     <string name="btn_login">登录</string>
+    <string name="app_toast_search_fail">搜索失败:%1$s</string>
 
     <string name="welcome_tips">欢迎使用\n腾讯云实时音视频</string>
     <string name="dialog_log_out">确定要退出登录吗？</string>
     <string name="user_sig_expired">您的用户签名信息已过期,请重新登录</string>
     <string name="user_id_is_empty">userId 不能为空</string>
     <string name="app_title_register">注册</string>
-    <string name="app_text_user_name">用户名</string>
     <string name="app_hint_user_name">请输入用户名</string>
     <string name="app_tips_user_name">仅限中文、字母、数字和下划线，2–20个字</string>
     <string name="app_toast_register_success_and_logging_in">注册成功</string>
-    <string name="app_toast_failed_to_set">设置失败: %s</string>
+    <string name="app_toast_failed_to_set">设置失败: %s</string>z
 
     <string name="app_item_multi_audio_call">多人语音通话</string>
     <string name="app_item_multi_video_call">多人视频通话</string>
@@ -36,8 +33,6 @@
     <string name="app_toast_no_member">无通话成员</string>
     <string name="app_toast_multi_call_num_exceed">添加失败,人数超出限制</string>
     <string name="app_toast_user_added">用户已添加</string>
-    <string name="app_tips_search">搜索添加已注册用户\n\t\t\t以发起通话</string>
-    <string name="app_self_userid">您的ID:</string>
     <string name="app_search">搜索</string>
     <string name="app_start_call">呼叫</string>
     <string name="app_user_not_exist">用户不存在</string>
