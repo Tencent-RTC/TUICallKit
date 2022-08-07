@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.tencent.liteav.demo">
+    package="com.tencent.qcloud.tuikit.tuicallkit.demo">
 
     <application
-        android:name=".BaseApplication"
+        android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.BaseApplication"
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -13,7 +13,7 @@
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name="com.tencent.liteav.demo.SplashActivity"
+            android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,12 +24,12 @@
         </activity>
 
         <activity
-            android:name=".LoginActivity"
+            android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.LoginActivity"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
-            android:name="com.tencent.liteav.demo.MainActivity"
+            android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.tencent.liteav.action.portal" />
@@ -43,21 +43,18 @@
                     android:path="/detail"
                     android:scheme="pushscheme" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="com.tencent.trtc.tuicalling" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
 
         <activity
-            android:name=".ProfileActivity"
+            android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.ProfileActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
-            android:name=".TUICallingEntranceActivity"
+            android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.TUICallingEntranceActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
+
     </application>
 
 </manifest>

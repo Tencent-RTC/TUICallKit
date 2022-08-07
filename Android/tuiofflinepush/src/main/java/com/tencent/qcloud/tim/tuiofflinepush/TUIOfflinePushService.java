@@ -71,8 +71,7 @@ public class TUIOfflinePushService extends ServiceInitializer implements ITUINot
                 @Override
                 public void onActivityCreated(Activity activity, Bundle bundle) {
                     TUIOfflinePushLog.i(TAG, "onActivityCreated bundle: " + bundle);
-                    if (bundle != null) { // 若bundle不为空则程序异常结束
-                        // 重启整个程序
+                    if (bundle != null) {
 
                     }
                 }
@@ -81,7 +80,6 @@ public class TUIOfflinePushService extends ServiceInitializer implements ITUINot
                 public void onActivityStarted(Activity activity) {
                     foregroundActivities++;
                     if (foregroundActivities == 1 && !isChangingConfiguration) {
-                        // 应用切到前台
                         TUIOfflinePushLog.i(TAG, "application enter foreground");
                         V2TIMManager.getOfflinePushManager().doForeground(new V2TIMCallback() {
                             @Override
@@ -114,7 +112,6 @@ public class TUIOfflinePushService extends ServiceInitializer implements ITUINot
                 public void onActivityStopped(Activity activity) {
                     foregroundActivities--;
                     if (foregroundActivities == 0) {
-                        // 应用切到后台
                         TUIOfflinePushLog.i(TAG, "application enter background");
                         V2TIMManager.getConversationManager().getTotalUnreadMessageCount(new V2TIMValueCallback<Long>() {
                             @Override
