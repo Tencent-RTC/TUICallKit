@@ -1,6 +1,6 @@
 <view class="container">
   <TUICalling
-    id="TUICalling-component"
+    id="TUICallKit-component"
     config="{{config}}"
   ></TUICalling>
 

@@ -1,4 +1,4 @@
-import LibGenerateTestUserSig from './lib-generate-test-usersig-es.min.js'
+import LibGenerateTestUserSig from './lib-generate-test-usersig-es.min.js';
 
 /**
  * 腾讯云 SDKAppId，需要替换为您自己账号下的 SDKAppId。
@@ -15,7 +15,7 @@ const SDKAPPID = 0
  * 时间单位：秒
  * 默认时间：7 x 24 x 60 x 60 = 604800 = 7 天
  */
-const EXPIRETIME = 604800
+const EXPIRETIME = 604800;
 
 
 /**
@@ -48,15 +48,15 @@ const SECRETKEY = ''
  * Reference：https://cloud.tencent.com/document/product/647/17275#Server
  */
 function genTestUserSig(userID) {
-  const generator = new LibGenerateTestUserSig(SDKAPPID, SECRETKEY, EXPIRETIME)
-  const userSig = generator.genTestUserSig(userID)
+  const generator = new LibGenerateTestUserSig(SDKAPPID, SECRETKEY, EXPIRETIME);
+  const userSig = generator.genTestUserSig(userID);
 
   return {
     sdkAppID: SDKAPPID,
-    userSig: userSig,
-  }
+    userSig,
+  };
 }
 
 module.exports = {
   genTestUserSig,
-}
+};

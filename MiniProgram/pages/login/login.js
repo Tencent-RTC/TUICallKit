@@ -3,25 +3,25 @@ Page({
     userID: '',
   },
 
-  onLoad: function() {
+  onLoad() {
 
   },
 
-  onShow: function() {
+  onShow() {
 
   },
 
-  onBack: function() {
+  onBack() {
     wx.navigateBack({
       delta: 1,
-    })
+    });
   },
 
 
   bindInputUserID(e) {
     this.setData({
       userID: e.detail.value,
-    })
+    });
   },
 
   login() {
@@ -29,12 +29,12 @@ Page({
       wx.showToast({
         title: '名称不能为空',
         icon: 'error',
-      })
+      });
     } else {
-      wx.$globalData.userID = this.data.userID
+      wx.$globalData.userID = this.data.userID;
       wx.switchTab({
         url: '../index/index',
-      })
+      });
     }
   },
-})
+});

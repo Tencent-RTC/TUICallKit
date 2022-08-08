@@ -29,17 +29,17 @@ Component({
   /**
    * 生命周期方法
    */
-   lifetimes: {
+  lifetimes: {
     created() {
 
     },
     attached() {
     },
     ready() {
-      wx.createLivePusherContext().startPreview()
+      wx.createLivePusherContext().startPreview();
     },
     detached() {
-      wx.createLivePusherContext().stopPreview()
+      wx.createLivePusherContext().stopPreview();
     },
     error() {
     },
