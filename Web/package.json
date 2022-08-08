@@ -1,5 +1,5 @@
 {
-  "name": "tuicall-engine-webrtc-demo",
+  "name": "-demo",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -14,7 +14,7 @@
     "EventEmitter": "^1.0.0",
     "qs": "^6.9.4",
     "tim-js-sdk": "^2.20.2",
-    "tuicall-engine-webrtc": "^1.0.0",
+    "tuicall-engine-web": "^1.0.0",
     "trtc-js-sdk": "^4.11.1",
     "tsignaling": "^0.10.0",
     "vue": "^2.6.11",
@@ -51,5 +51,5 @@
     "last 2 versions",
     "not dead"
   ],
-  "_id": "tuicall-engine-webrtc-demo@0.1.0"
+  "_id": "-demo@0.1.0"
 }

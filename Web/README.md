@@ -107,7 +107,7 @@ TUICallEngine 依赖以下端口进行数据传输，请将其加入防火墙白
 
 ###  开通服务
 
-TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/document/product/269/42440) 和 [实时音视频 TRTC](https://cloud.tencent.com/document/product/647/16788) 两项付费 PaaS 服务构建出的音视频通信组件。您可以按照如下步骤开通相关的服务并体验 7 天的免费试用服务：
+tuicall-engine-web 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/document/product/269/42440) 和 [实时音视频 TRTC](https://cloud.tencent.com/document/product/647/16788) 两项付费 PaaS 服务构建出的音视频通信组件。您可以按照如下步骤开通相关的服务并体验 7 天的免费试用服务：
 
 1. 登录到 [即时通信 IM 控制台](https://console.cloud.tencent.com/im)，单击**创建新应用**，在弹出的对话框中输入您的应用名称，并单击**确定**。
 ![](https://qcloudimg.tencent-cloud.cn/raw/1105c3c339be4f71d72800fe2839b113.png)
@@ -155,22 +155,22 @@ TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/docume
 ### 实现自定义 UI 界面
 #### 步骤1：集成 SDK
 NPM 集成
->- 为了减小 tuicall-engine-webrtc.js 的体积，避免和接入侧已使用的 trtc-js-sdk 和 tim-js-sdk 以及 tsignaling 发生版本冲突，trtc-js-sdk、 tim-js-sdk 、tsignaling 和 tuicall-engine-webrtc.js，在使用前您需要手动安装依赖。
+>- 为了减小 tuicall-engine-web.js 的体积，避免和接入侧已使用的 trtc-js-sdk 和 tim-js-sdk 以及 tsignaling 发生版本冲突，trtc-js-sdk、 tim-js-sdk 、tsignaling 和 tuicall-engine-web.js，在使用前您需要手动安装依赖。
 ```javascript
   npm i trtc-js-sdk --save
   npm i tim-js-sdk --save
   npm i tsignaling --save
-  npm i tuicall-engine-webrtc --save
+  npm i tuicall-engine-web --save
 
-  import { TUICallEngine, TUICallEvent, TUICAllType } from "tuicall-engine-webrtc"
+  import { TUICallEngine, TUICallEvent, TUICAllType } from "tuicall-engine-web"
 
 Script 集成 
-  如果您通过 script 方式使用 tuicall-engine-webrtc，需要按顺序先手动引入 trtc.js、tim-js.js、tsignaling.js、tuicall-engine-webrtc.js
+  如果您通过 script 方式使用 tuicall-engine-web，需要按顺序先手动引入 trtc.js、tim-js.js、tsignaling.js、tuicall-engine-web.js
   <script src="./trtc.js"></script>
   <script src="./tim-js.js"></script>
   <script src="./tsignaling.js"></script>s
   <script src="./trtc-calling-js.js"></script>
-  const { TUICallEngine, TUICallEvent, TUICAllType } = window['tuicall-engine-webrtc']
+  const { TUICallEngine, TUICallEvent, TUICAllType } = window['tuicall-engine-web']
 ```
 
 #### 步骤2：创建 TUICallEngine 实例
