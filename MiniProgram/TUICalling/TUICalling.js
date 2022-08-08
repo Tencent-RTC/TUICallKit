@@ -1,6 +1,5 @@
 import TRTCCalling from './TRTCCalling/TRTCCalling.js';
 
-
 const TAG_NAME = 'TUICalling';
 // 组件旨在跨终端维护一个通话状态管理机，以事件发布机制驱动上层进行管理，并通过API调用进行状态变更。
 // 组件设计思路将UI和状态管理分离。您可以通过修改`component`文件夹下的文件，适配您的业务场景，
@@ -36,7 +35,9 @@ Component({
     remoteUsers: [], // 远程用户资料
     screen: 'pusher', // 视屏通话中，显示大屏幕的流（只限1v1聊天
     soundMode: 'speaker', // 声音模式 听筒/扬声器
+    userList: null, //接受邀请的用户信息
   },
+
 
   methods: {
     initCall() {
@@ -59,9 +60,9 @@ Component({
     // 用户接听
     handleUserAccept(event) {
       console.log(`${TAG_NAME}, handleUserAccept, event${JSON.stringify(event)}`);
-
       this.setData({
         callStatus: 'connection',
+        userList: event.data.userList,
       });
     },
 
@@ -198,6 +199,7 @@ Component({
     // 切换通话模式
     handleCallMode(event) {
       this.data.config.type = event.data.type;
+      this.toggleSoundMode();
       this.setData({
         config: this.data.config,
       });
@@ -372,6 +374,7 @@ Component({
       this.setData({
         callStatus: 'idle',
         isSponsor: false,
+        soundMode: 'speaker',
         pusher: {}, // TRTC 本地流
         playerList: [], // TRTC 远端流
       });
@@ -395,6 +398,7 @@ Component({
         case 'switchAudioCall':
           wx.$TRTCCalling.switchAudioCall().then((res) => {
             this.data.config.type = wx.$TRTCCalling.CALL_TYPE.AUDIO;
+            this.toggleSoundMode();
             this.setData({
               config: this.data.config,
             });
@@ -450,7 +454,8 @@ Component({
           break;
         case 'switchAudioCall':
           wx.$TRTCCalling.switchAudioCall().then((res) => {
-            this.data.config.type = 1;
+            this.data.config.type = wx.$TRTCCalling.CALL_TYPE.AUDIO;
+            this.toggleSoundMode();
             this.setData({
               config: this.data.config,
             });

@@ -20,12 +20,12 @@
         <view class="search-selfInfo-phone">
           {{config.userID}}
         </view>
-      </view>  
+      </view>
       <view class="search-result">
         <view wx:if="{{invitee.userID}}" class="user-to-call">
           <view class="userInfo-box">
-            <image class="userInfo-avatar" src="../Resources/avatar1_100.png"></image>
-            <text class="userInfo-name">{{invitee.userID}}</text>
+            <image class="userInfo-avatar" src="{{invitee.avatar || '../Resources/avatar1_100.png'}}"></image>
+            <text class="userInfo-name">{{invitee.nick || invitee.userID}}</text>
           </view>
           <view class="btn-userinfo-call" bindtap="call">呼叫</view>
         </view>

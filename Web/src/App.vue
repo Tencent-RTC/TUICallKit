@@ -19,6 +19,8 @@ import { mapState } from "vuex";
 import { log } from "./utils";
 import { getUsernameByUserid } from "./service";
 import HeaderNav from "./components/header-nav";
+import {aegisReportEvent} from './utils/aegis'
+
 let timeout;
 
 export default {
@@ -62,122 +64,61 @@ export default {
       inviteID: ""
     };
   },
+  mounted() {
+    aegisReportEvent("mounted", "mounted-success");
+    if (!this.handleIPRequest(document.URL)) {
+      this.$message.warning("Please request with localhost or 127.0.0.1 !");
+    }
+  },
   destroyed() {
     this.removeListener();
   },
   methods: {
     handleAutoLogin: async function() {},
-    initListener: function() {
+    initListener: function() { 
       this.$trtcCalling.on(this.TrtcCalling.EVENT.ERROR, this.handleError);
-      this.$trtcCalling.on(
-        this.TrtcCalling.EVENT.INVITED,
-        this.handleNewInvitationReceived
-      );
-      this.$trtcCalling.on(
-        this.TrtcCalling.EVENT.USER_ACCEPT,
-        this.handleUserAccept
-      );
-      this.$trtcCalling.on(
-        this.TrtcCalling.EVENT.USER_ENTER,
-        this.handleUserEnter
-      );
-      this.$trtcCalling.on(
-        this.TrtcCalling.EVENT.USER_LEAVE,
-        this.handleUserLeave
-      );
-      this.$trtcCalling.on(
-        this.TrtcCalling.EVENT.REJECT,
-        this.handleInviteeReject
-      );
-      this.$trtcCalling.on(
-        this.TrtcCalling.EVENT.LINE_BUSY,
-        this.handleInviteeLineBusy
-      );
-      this.$trtcCalling.on(
-        this.TrtcCalling.EVENT.CALLING_CANCEL,
-        this.handleInviterCancel
-      );
-      this.$trtcCalling.on(
-        this.TrtcCalling.EVENT.KICKED_OUT,
-        this.handleKickedOut
-      );
-      this.$trtcCalling.on(
-        this.TrtcCalling.EVENT.CALLING_TIMEOUT,
-        this.handleCallTimeout
-      );
-      this.$trtcCalling.on(
-        this.TrtcCalling.EVENT.NO_RESP,
-        this.handleNoResponse
-      );
-      this.$trtcCalling.on(
-        this.TrtcCalling.EVENT.CALLING_END,
-        this.handleCallEnd
-      );
-      this.$trtcCalling.on(
-        this.TrtcCalling.EVENT.USER_VIDEO_AVAILABLE,
-        this.handleUserVideoChange
-      );
-      this.$trtcCalling.on(
-        this.TrtcCalling.EVENT.USER_AUDIO_AVAILABLE,
-        this.handleUserAudioChange
-      );
+      this.$trtcCalling.on(this.TrtcCalling.EVENT.INVITED, this.handleNewInvitationReceived);
+      this.$trtcCalling.on(this.TrtcCalling.EVENT.USER_ACCEPT, this.handleUserAccept);
+      this.$trtcCalling.on(this.TrtcCalling.EVENT.USER_ENTER, this.handleUserEnter);
+      this.$trtcCalling.on(this.TrtcCalling.EVENT.USER_LEAVE, this.handleUserLeave);
+      this.$trtcCalling.on(this.TrtcCalling.EVENT.REJECT, this.handleInviteeReject);
+      this.$trtcCalling.on(this.TrtcCalling.EVENT.LINE_BUSY, this.handleInviteeLineBusy);
+      this.$trtcCalling.on(this.TrtcCalling.EVENT.CALLING_CANCEL, this.handleInviterCancel);
+      this.$trtcCalling.on(this.TrtcCalling.EVENT.KICKED_OUT, this.handleKickedOut);
+      this.$trtcCalling.on(this.TrtcCalling.EVENT.CALLING_TIMEOUT, this.handleCallTimeout);
+      this.$trtcCalling.on(this.TrtcCalling.EVENT.NO_RESP, this.handleNoResponse);
+      this.$trtcCalling.on(this.TrtcCalling.EVENT.CALLING_END, this.handleCallEnd);
+      this.$trtcCalling.on(this.TrtcCalling.EVENT.USER_VIDEO_AVAILABLE, this.handleUserVideoChange);
+      this.$trtcCalling.on(this.TrtcCalling.EVENT.USER_AUDIO_AVAILABLE, this.handleUserAudioChange);
     },
     removeListener: function() {
       this.$trtcCalling.off(this.TrtcCalling.EVENT.ERROR, this.handleError);
-      this.$trtcCalling.off(
-        this.TrtcCalling.EVENT.INVITED,
-        this.handleNewInvitationReceived
-      );
-      this.$trtcCalling.off(
-        this.TrtcCalling.EVENT.USER_ACCEPT,
-        this.handleUserAccept
-      );
-      this.$trtcCalling.off(
-        this.TrtcCalling.EVENT.USER_ENTER,
-        this.handleUserEnter
-      );
-      this.$trtcCalling.off(
-        this.TrtcCalling.EVENT.USER_LEAVE,
-        this.handleUserLeave
-      );
-      this.$trtcCalling.off(
-        this.TrtcCalling.EVENT.REJECT,
-        this.handleInviteeReject
-      );
-      this.$trtcCalling.off(
-        this.TrtcCalling.EVENT.LINE_BUSY,
-        this.handleInviteeLineBusy
-      );
-      this.$trtcCalling.off(
-        this.TrtcCalling.EVENT.CALLING_CANCEL,
-        this.handleInviterCancel
-      );
-      this.$trtcCalling.off(
-        this.TrtcCalling.EVENT.KICKED_OUT,
-        this.handleKickedOut
-      );
-      this.$trtcCalling.off(
-        this.TrtcCalling.EVENT.CALLING_TIMEOUT,
-        this.handleCallTimeout
-      );
-      this.$trtcCalling.off(
-        this.TrtcCalling.EVENT.NO_RESP,
-        this.handleNoResponse
-      );
-      this.$trtcCalling.off(
-        this.TrtcCalling.EVENT.CALLING_END,
-        this.handleCallEnd
-      );
-      this.$trtcCalling.off(
-        this.TrtcCalling.EVENT.USER_VIDEO_AVAILABLE,
-        this.handleUserVideoChange
-      );
-      this.$trtcCalling.off(
-        this.TrtcCalling.EVENT.USER_AUDIO_AVAILABLE,
-        this.handleUserAudioChange
-      );
+      this.$trtcCalling.off(this.TrtcCalling.EVENT.INVITED, this.handleNewInvitationReceived);
+      this.$trtcCalling.off(this.TrtcCalling.EVENT.USER_ACCEPT, this.handleUserAccept);
+      this.$trtcCalling.off(this.TrtcCalling.EVENT.USER_ENTER, this.handleUserEnter);
+      this.$trtcCalling.off(this.TrtcCalling.EVENT.USER_LEAVE, this.handleUserLeave);
+      this.$trtcCalling.off(this.TrtcCalling.EVENT.REJECT, this.handleInviteeReject);
+      this.$trtcCalling.off(this.TrtcCalling.EVENT.LINE_BUSY, this.handleInviteeLineBusy);
+      this.$trtcCalling.off(this.TrtcCalling.EVENT.CALLING_CANCEL, this.handleInviterCancel);
+      this.$trtcCalling.off(this.TrtcCalling.EVENT.KICKED_OUT, this.handleKickedOut);
+      this.$trtcCalling.off(this.TrtcCalling.EVENT.CALLING_TIMEOUT, this.handleCallTimeout);
+      this.$trtcCalling.off(this.TrtcCalling.EVENT.NO_RESP, this.handleNoResponse);
+      this.$trtcCalling.off(this.TrtcCalling.EVENT.CALLING_END, this.handleCallEnd);
+      this.$trtcCalling.off(this.TrtcCalling.EVENT.USER_VIDEO_AVAILABLE, this.handleUserVideoChange);
+      this.$trtcCalling.off(this.TrtcCalling.EVENT.USER_AUDIO_AVAILABLE, this.handleUserAudioChange);
     },
     handleError: function() {},
+    handleIPRequest: function(urlStr) {
+      let flag = true;
+      if (urlStr.indexOf("localhost") !== -1) {
+        flag = true;
+      } else if (urlStr.indexOf("127") !== -1) {
+        flag = true;
+      } else {
+        flag = false;
+      }
+      return flag;
+    },
     handleNewInvitationReceived: async function(payload) {
       const { inviteID, sponsor, inviteData } = payload;
       log(`handleNewInvitationReceived ${JSON.stringify(payload)}`);
@@ -231,7 +172,7 @@ export default {
     },
 
     handleAccept: function() {
-      this.handleDebounce(this.handleAcceptCall(), 500);
+      this.handleDebounce(this.handleAcceptCall, 500);
     },
 
     handleDebounce: function(func, wait) {

@@ -17,13 +17,10 @@ _[中文](README.md) | English_
 More component solutions will be available in the future. If you have any questions or feedback, feel free to [contact us](https://intl.cloud.tencent.com/contact-us).
 
 
-
 ## Release Notes
-### Version 10.2 @ 2022.06.21
-#### Bug fixes
-- Android: When the application returns to the foreground, the call ends unexpectedly
-####  Optimization
-- Android: Optimize permission request and pop-up window display
+### Version 10.3 @ 2022.07.11
+#### Optimization
+- Android：replace offline push component `TPNS` with [`TUIOfflinePush`](https://cloud.tencent.com/document/product/269/44516)
 
 For earlier version update history, please click [More](./ReleaseNote.md)...
 

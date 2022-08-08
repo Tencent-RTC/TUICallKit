@@ -45,3 +45,19 @@ export function getUserLoginInfo() {
 export function log(content) {
   console.log(`${LOG_PREFIX} ${content}`)
 }
+
+export function formateTime(num) {
+  if (typeof num === "number") {
+    if (num <= 0) {
+      return '00:00:00';
+    } else {
+      let hh = parseInt(num / 3600);
+      let shh = num - hh * 3600;
+      let ii = parseInt(shh / 60);
+      let ss = shh - ii * 60;
+      return (hh < 10 ? '0' + hh : hh) + ':' + (ii < 10 ? '0'+ii : ii) +':'+(ss < 10 ? '0'+ss : ss);
+		}
+  } else {
+    return '00:00:00'
+  }
+}
