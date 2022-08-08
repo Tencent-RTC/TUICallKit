@@ -1,5 +1,5 @@
 import TIM from 'tim-js-sdk';
-import { TUICallEngine, TUICallEvent, TUICallType } from '';
+import { TUICallEngine, TUICallEvent, TUICallType } from 'tuicall-engine-web';
 import config from '../config';
 
 export function createTUICallEngine() {

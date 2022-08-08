@@ -1,5 +1,5 @@
 {
-  "name": "-demo",
+  "name": "tuicall-engine-web-demo",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -51,5 +51,5 @@
     "last 2 versions",
     "not dead"
   ],
-  "_id": "-demo@0.1.0"
+  "_id": "tuicall-engine-web-demo@1.0.0"
 }
