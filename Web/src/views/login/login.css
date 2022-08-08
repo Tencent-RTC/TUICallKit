@@ -1,0 +1,84 @@
+.user-login {
+    font-size: 16px;
+    
+}
+.user-login-form {
+    max-width: 80%;
+    width: 400px;
+    padding:20px 30px;
+    margin: 80px auto 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 2px 0 rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 20%), 0 1px 5px 0 rgb(0 0 0 / 12%);
+    background: #ffffff;
+}
+.user-login-form header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0 22px;
+    font-weight: 500;
+    font-size: 20px;
+}
+.user-login-form header img {
+    margin: 0 5px;
+}
+.user-code-btn.is-disabled:hover{
+    background: transparent;
+    color: inherit;
+}
+
+/* .phone-box .el-form-item__content{
+   display: flex;
+} */
+.phone-num .el-input-group__prepend {
+    padding: 0;
+}
+.phone-code {
+    width: 60px;
+    position: relative;
+}
+.phone-code::before{
+    position: absolute;
+    content: "+";
+    left: 6px;
+    line-height: 38px;
+}
+.phone-code input {
+    border: none;
+    height: 38px;
+}
+/* .phone-num input {
+    border-radius: 0 4px 4px 0;
+} */
+.user-login-btn {
+    margin-top: 10px;
+    width: 100%;
+}
+.user-info-footer {
+    margin-top: 10px;
+    display: flex;
+}
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.user-info .user-info-avtor {
+    width: 80px;
+    height: 80px;
+}
+.user-info .user-info-avtor img {
+    width: 100%;
+    border-radius: 100%;
+}
+
+.user-declare{
+    line-height: 20px;
+    display: flex;
+    align-items: flex-start;
+}
+.user-declare p {
+    text-align: left;
+    margin: 0;
+    padding: 0 5px;
+} 

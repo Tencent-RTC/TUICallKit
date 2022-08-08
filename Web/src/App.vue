@@ -7,8 +7,8 @@
     <el-dialog :title="callTypeDisplayName" :visible.sync="isShowNewInvitationDialog" width="400px">
       <span>{{this.getNewInvitationDialogContent()}}</span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="handleRejectCall">Reject</el-button>
-        <el-button type="primary" @click="handleAccept">Accept</el-button>
+        <el-button @click="handleRejectCall">拒绝</el-button>
+        <el-button type="primary" @click="handleAccept">接听</el-button>
       </span>
     </el-dialog>
   </div>
@@ -17,10 +17,7 @@
 <script>
 import { mapState } from "vuex";
 import { log } from "./utils";
-import { getUsernameByUserid } from "./service";
 import HeaderNav from "./components/header-nav";
-import {aegisReportEvent} from './utils/aegis'
-
 let timeout;
 
 export default {
@@ -29,17 +26,6 @@ export default {
     HeaderNav
   },
   watch: {
-    isLogin: function(newIsLogin, oldIsLogin) {
-      if (newIsLogin !== oldIsLogin) {
-        if (newIsLogin) {
-          if (this.$router.history.current.path === "/login") {
-            this.$router.push("/");
-          }
-        } else {
-          this.$router.push("/login");
-        }
-      }
-    }
   },
   computed: mapState({
     isLogin: state => state.isLogin,
@@ -52,7 +38,6 @@ export default {
   }),
   async created() {
     this.initListener();
-    await this.handleAutoLogin();
   },
   data() {
     return {
@@ -61,82 +46,153 @@ export default {
       inviterName: "",
       callTypeDisplayName: "",
       inviteData: {},
-      inviteID: ""
+      inviteId: "",
+      hiddenCallEndMessage: false
     };
-  },
-  mounted() {
-    aegisReportEvent("mounted", "mounted-success");
-    if (!this.handleIPRequest(document.URL)) {
-      this.$message.warning("Please request with localhost or 127.0.0.1 !");
-    }
   },
   destroyed() {
     this.removeListener();
   },
   methods: {
-    handleAutoLogin: async function() {},
-    initListener: function() { 
-      this.$trtcCalling.on(this.TrtcCalling.EVENT.ERROR, this.handleError);
-      this.$trtcCalling.on(this.TrtcCalling.EVENT.INVITED, this.handleNewInvitationReceived);
-      this.$trtcCalling.on(this.TrtcCalling.EVENT.USER_ACCEPT, this.handleUserAccept);
-      this.$trtcCalling.on(this.TrtcCalling.EVENT.USER_ENTER, this.handleUserEnter);
-      this.$trtcCalling.on(this.TrtcCalling.EVENT.USER_LEAVE, this.handleUserLeave);
-      this.$trtcCalling.on(this.TrtcCalling.EVENT.REJECT, this.handleInviteeReject);
-      this.$trtcCalling.on(this.TrtcCalling.EVENT.LINE_BUSY, this.handleInviteeLineBusy);
-      this.$trtcCalling.on(this.TrtcCalling.EVENT.CALLING_CANCEL, this.handleInviterCancel);
-      this.$trtcCalling.on(this.TrtcCalling.EVENT.KICKED_OUT, this.handleKickedOut);
-      this.$trtcCalling.on(this.TrtcCalling.EVENT.CALLING_TIMEOUT, this.handleCallTimeout);
-      this.$trtcCalling.on(this.TrtcCalling.EVENT.NO_RESP, this.handleNoResponse);
-      this.$trtcCalling.on(this.TrtcCalling.EVENT.CALLING_END, this.handleCallEnd);
-      this.$trtcCalling.on(this.TrtcCalling.EVENT.USER_VIDEO_AVAILABLE, this.handleUserVideoChange);
-      this.$trtcCalling.on(this.TrtcCalling.EVENT.USER_AUDIO_AVAILABLE, this.handleUserAudioChange);
+    initListener: function() {
+      this.$tuiCallEngine.on(this.TUICallEvent.ERROR, this.handleError);
+      this.$tuiCallEngine.on(
+        this.TUICallEvent.INVITED,
+        this.handleNewInvitationReceived
+      );
+      this.$tuiCallEngine.on(
+        this.TUICallEvent.USER_ACCEPT,
+        this.handleUserAccept
+      );
+      this.$tuiCallEngine.on(
+        this.TUICallEvent.USER_ENTER,
+        this.handleUserEnter
+      );
+      this.$tuiCallEngine.on(
+        this.TUICallEvent.USER_LEAVE,
+        this.handleUserLeave
+      );
+      this.$tuiCallEngine.on(
+        this.TUICallEvent.REJECT,
+        this.handleInviteeReject
+      );
+      this.$tuiCallEngine.on(
+        this.TUICallEvent.LINE_BUSY,
+        this.handleInviteeLineBusy
+      );
+      this.$tuiCallEngine.on(
+        this.TUICallEvent.CALLING_CANCEL,
+        this.handleInviterCancel
+      );
+      this.$tuiCallEngine.on(
+        this.TUICallEvent.KICKED_OUT,
+        this.handleKickedOut
+      );
+      this.$tuiCallEngine.on(
+        this.TUICallEvent.CALLING_TIMEOUT,
+        this.handleCallTimeout
+      );
+      this.$tuiCallEngine.on(
+        this.TUICallEvent.NO_RESP,
+        this.handleNoResponse
+      );
+      this.$tuiCallEngine.on(
+        this.TUICallEvent.CALLING_END,
+        this.handleCallEnd
+      );
+      this.$tuiCallEngine.on(
+        this.TUICallEvent.USER_VIDEO_AVAILABLE,
+        this.handleUserVideoChange
+      );
+      this.$tuiCallEngine.on(
+        this.TUICallEvent.USER_AUDIO_AVAILABLE,
+        this.handleUserAudioChange
+      );
+      this.$tuiCallEngine.on(
+        this.TUICallEvent.CALL_TYPE_CHANGED,
+        this.handleCallTypeChange
+      );
+      this.$tuiCallEngine.on(
+        this.TUICallEvent.DEVICED_UPDATED,
+        this.handleDeviceUpdated
+      );
     },
     removeListener: function() {
-      this.$trtcCalling.off(this.TrtcCalling.EVENT.ERROR, this.handleError);
-      this.$trtcCalling.off(this.TrtcCalling.EVENT.INVITED, this.handleNewInvitationReceived);
-      this.$trtcCalling.off(this.TrtcCalling.EVENT.USER_ACCEPT, this.handleUserAccept);
-      this.$trtcCalling.off(this.TrtcCalling.EVENT.USER_ENTER, this.handleUserEnter);
-      this.$trtcCalling.off(this.TrtcCalling.EVENT.USER_LEAVE, this.handleUserLeave);
-      this.$trtcCalling.off(this.TrtcCalling.EVENT.REJECT, this.handleInviteeReject);
-      this.$trtcCalling.off(this.TrtcCalling.EVENT.LINE_BUSY, this.handleInviteeLineBusy);
-      this.$trtcCalling.off(this.TrtcCalling.EVENT.CALLING_CANCEL, this.handleInviterCancel);
-      this.$trtcCalling.off(this.TrtcCalling.EVENT.KICKED_OUT, this.handleKickedOut);
-      this.$trtcCalling.off(this.TrtcCalling.EVENT.CALLING_TIMEOUT, this.handleCallTimeout);
-      this.$trtcCalling.off(this.TrtcCalling.EVENT.NO_RESP, this.handleNoResponse);
-      this.$trtcCalling.off(this.TrtcCalling.EVENT.CALLING_END, this.handleCallEnd);
-      this.$trtcCalling.off(this.TrtcCalling.EVENT.USER_VIDEO_AVAILABLE, this.handleUserVideoChange);
-      this.$trtcCalling.off(this.TrtcCalling.EVENT.USER_AUDIO_AVAILABLE, this.handleUserAudioChange);
+      this.$tuiCallEngine.off(this.TUICallEvent.ERROR, this.handleError);
+      this.$tuiCallEngine.off(
+        this.TUICallEvent.INVITED,
+        this.handleNewInvitationReceived
+      );
+      this.$tuiCallEngine.off(
+        this.TUICallEvent.USER_ACCEPT,
+        this.handleUserAccept
+      );
+      this.$tuiCallEngine.off(
+        this.TUICallEvent.USER_ENTER,
+        this.handleUserEnter
+      );
+      this.$tuiCallEngine.off(
+        this.TUICallEvent.USER_LEAVE,
+        this.handleUserLeave
+      );
+      this.$tuiCallEngine.off(
+        this.TUICallEvent.REJECT,
+        this.handleInviteeReject
+      );
+      this.$tuiCallEngine.off(
+        this.TUICallEvent.LINE_BUSY,
+        this.handleInviteeLineBusy
+      );
+      this.$tuiCallEngine.off(
+        this.TUICallEvent.CALLING_CANCEL,
+        this.handleInviterCancel
+      );
+      this.$tuiCallEngine.off(
+        this.TUICallEvent.KICKED_OUT,
+        this.handleKickedOut
+      );
+      this.$tuiCallEngine.off(
+        this.TUICallEvent.CALLING_TIMEOUT,
+        this.handleCallTimeout
+      );
+      this.$tuiCallEngine.off(
+        this.TUICallEvent.NO_RESP,
+        this.handleNoResponse
+      );
+      this.$tuiCallEngine.off(
+        this.TUICallEvent.CALLING_END,
+        this.handleCallEnd
+      );
+      this.$tuiCallEngine.off(
+        this.TUICallEvent.USER_VIDEO_AVAILABLE,
+        this.handleUserVideoChange
+      );
+      this.$tuiCallEngine.off(
+        this.TUICallEvent.USER_AUDIO_AVAILABLE,
+        this.handleUserAudioChange
+      );
+      this.$tuiCallEngine.off(
+        this.TUICallEvent.CALL_TYPE_CHANGED,
+        this.handleCallTypeChange
+      );
+      this.$tuiCallEngine.off(
+        this.TUICallEvent.DEVICED_UPDATED,
+        this.handleDeviceUpdated
+      );
     },
     handleError: function() {},
-    handleIPRequest: function(urlStr) {
-      let flag = true;
-      if (urlStr.indexOf("localhost") !== -1) {
-        flag = true;
-      } else if (urlStr.indexOf("127") !== -1) {
-        flag = true;
-      } else {
-        flag = false;
-      }
-      return flag;
-    },
-    handleNewInvitationReceived: async function(payload) {
+    async handleNewInvitationReceived(payload) {
       const { inviteID, sponsor, inviteData } = payload;
       log(`handleNewInvitationReceived ${JSON.stringify(payload)}`);
       if (inviteData.callEnd) {
-        // The last user sends an invitation to hang up the call
         // 最后一个人发送 invite 进行挂断
         this.$store.commit("updateCallStatus", "idle");
         return;
       }
-      if (sponsor === this.loginUserInfo.userId) {
-        // You are the inviter. The same account can log in on multiple devices
-        // 邀请人是自己, 同一个账号有可能在多端登录
-        return;
-      }
-      // Here, busy line needs to be considered
+
       // 这里需要考虑忙线的情况
       if (this.callStatus === "calling" || this.callStatus === "connected") {
-        await this.$trtcCalling.reject({ inviteID, isBusy: true });
+        await this.$tuiCallEngine.reject({ inviteID, isBusy: true });
         return;
       }
 
@@ -146,21 +202,22 @@ export default {
       this.isInviterCanceled = false;
       this.$store.commit("updateIsInviter", false);
       this.$store.commit("updateCallStatus", "calling");
-      const userName = sponsor;
-      this.inviterName = userName;
+      const response  = await this.$tim.getUserProfile({userIDList: [sponsor]})
+      this.inviterName = response.data[0].nick || sponsor;
       this.callTypeDisplayName =
-        callType === this.TrtcCalling.CALL_TYPE.AUDIO_CALL
-          ? "Audio Call"
-          : "Video Call";
+        callType === this.TUICallType.AUDIO_CALL
+          ? "语音通话"
+          : "视频通话";
       this.isShowNewInvitationDialog = true;
+      this.$store.commit("updateCallType", callType);
     },
     getNewInvitationDialogContent: function() {
-      return `From ${this.inviterName} to ${this.callTypeDisplayName}`;
+      return `来自${this.inviterName}的${this.callTypeDisplayName}`;
     },
     handleRejectCall: async function() {
       try {
         const { callType } = this.inviteData;
-        await this.$trtcCalling.reject({
+        await this.$tuiCallEngine.reject({
           inviteID: this.inviteID,
           isBusy: false,
           callType
@@ -172,7 +229,7 @@ export default {
     },
 
     handleAccept: function() {
-      this.handleDebounce(this.handleAcceptCall, 500);
+      this.handleDebounce(this.handleAcceptCall(), 500);
     },
 
     handleDebounce: function(func, wait) {
@@ -188,23 +245,18 @@ export default {
       try {
         const { callType, roomID } = this.inviteData;
         this.$store.commit("userJoinMeeting", this.loginUserInfo.userId);
-        await this.$trtcCalling.accept({
+        await this.$tuiCallEngine.accept({
           inviteID: this.inviteID,
           roomID,
           callType
         });
         this.isShowNewInvitationDialog = false;
-        if (
-          callType === this.TrtcCalling.CALL_TYPE.AUDIO_CALL &&
-          this.$router.history.current.fullPath !== "/audio-call"
-        ) {
-          this.$router.push("/audio-call");
-        } else if (
-          callType === this.TrtcCalling.CALL_TYPE.VIDEO_CALL &&
-          this.$router.history.current.fullPath !== "/video-call"
-        ) {
-          this.$router.push("/video-call");
-        }
+        this.$router.push({
+          name: 'call',
+          query: {
+            type: callType
+          }
+        });
       } catch (e) {
         this.dissolveMeetingIfNeed();
       }
@@ -214,24 +266,19 @@ export default {
       console.log(userID, "accepted");
     },
     handleUserEnter: function({ userID }) {
-      // Establish a connection
       // 建立连接
       this.$store.commit("userJoinMeeting", userID);
       if (this.callStatus === "calling") {
-        // If the user is the inviter, establish a connection
         // 如果是邀请者, 则建立连接
         this.$nextTick(() => {
-          // First, wait for the node of the remote user ID to be rendered to DOM
           // 需要先等远程用户 id 的节点渲染到 dom 上
           this.$store.commit("updateCallStatus", "connected");
         });
       } else {
-        // The Nth (N >= 3) user is being invited to the meeting and is not the inviter of themselves
         // 第n (n >= 3)个人被邀请入会, 并且他不是第 n 个人的邀请人
         this.$nextTick(() => {
-          // First, wait for the node of the remote user ID to be rendered to DOM
           // 需要先等远程用户 id 的节点渲染到 dom 上
-          this.$trtcCalling.startRemoteView({
+          this.$tuiCallEngine.startRemoteView({
             userID: userID,
             videoViewDomID: `video-${userID}`
           });
@@ -245,46 +292,52 @@ export default {
       this.$store.commit("userLeaveMeeting", userID);
     },
     handleInviteeReject: async function({ userID }) {
-      const userName = await getUsernameByUserid(userID);
-      this.$message.warning(`${userName} rejected`);
+      const response  = await this.$tim.getUserProfile({userIDList: [userID]})
+      this.$message.warning(`${response.data[0].nick || userID}拒绝通话`);
       this.dissolveMeetingIfNeed();
     },
-    handleInviteeLineBusy: async function({ userID }) {
-      const userName = await getUsernameByUserid(userID);
-      this.$message.warning(`${userName} busy`);
+    handleInviteeLineBusy: async function({ sponsor, userID }) {
+      if (sponsor !== window.sessionStorage.getItem('userId')) {
+        return
+      }
+      const response  = await this.$tim.getUserProfile({userIDList: [userID]})
+      this.$message.warning(`${response.data[0].nick || userID}忙线`);
       this.dissolveMeetingIfNeed();
     },
     handleInviterCancel: function() {
-      // The call was canceled
       // 邀请被取消
       this.isShowNewInvitationDialog = false;
-      this.$message.warning("The call was canceled");
+      this.$message.warning("通话已取消");
       this.dissolveMeetingIfNeed();
     },
     handleKickedOut: function() {
-      //Kicked out
       //重复登陆，被踢出房间
       this.$store.commit("userAccepted", false);
-      this.$trtcCalling.logout();
+      this.$tuiCallEngine.logout();
       this.$store.commit("userLogoutSuccess");
     },
-    // The call timed out and was not answered
     // 作为被邀请方会收到，收到该回调说明本次通话超时未应答
     handleCallTimeout: function() {
       this.isShowNewInvitationDialog = false;
-      this.$message.warning("The call timed out and was not answered");
+      this.hiddenCallEndMessage = true;
+      this.$message.warning("通话超时未应答");
       this.dissolveMeetingIfNeed();
     },
     handleCallEnd: function() {
-      this.$message.success("The call has ended");
-      this.$trtcCalling.hangup();
+      if (this.hiddenCallEndMessage) {
+        this.hiddenCallEndMessage = false;
+      }else {
+        this.$message.success("通话已结束");
+      } 
+      this.$tuiCallEngine.hangup();
       this.dissolveMeetingIfNeed();
-      this.$router.push("/");
+      this.$router.push("/home");
       this.$store.commit("userAccepted", false);
     },
-    handleNoResponse: async function({ userID }) {
-      const userName = await getUsernameByUserid(userID);
-      this.$message.warning(`${userName} No answer`);
+    handleNoResponse: async function({ userIDList }) {
+      this.hiddenCallEndMessage = true;
+      const response  = await this.$tim.getUserProfile({userIDList: [userIDList[0]]})
+      this.$message.warning(`${response.data[0].nick || userIDList[0]}无应答`);
       this.dissolveMeetingIfNeed();
     },
     handleUserVideoChange: function({ userID, isVideoAvailable }) {
@@ -321,32 +374,23 @@ export default {
       if (this.meetingUserIdList.length < 2) {
         this.$store.commit("dissolveMeeting");
       }
-    }
+    },
+    handleCallTypeChange({newCallType}) {
+      this.$store.commit("updateCallType", newCallType);
+    },
+    handleDeviceUpdated ({ microphoneList, cameraList, currentMicrophone, currentCamera}) {
+      const updateDevices = {
+        micList: microphoneList,
+        cameraList,
+        currentMicrophone,
+        currentCamera
+      }
+      this.$store.commit("updateDeviceList", updateDevices);
+    },
   }
 };
 </script>
 
-<style>
-html,
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin: 0;
-  padding: 0;
-  background: aliceblue;
-  height: 100%;
-}
-@media screen and (max-width: 767px) {
-  .el-message {
-    min-width: 180px;
-  }
-}
+<style scoped>
+@import url('./styles/common.css');
 </style>
