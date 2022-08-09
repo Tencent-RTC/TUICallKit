@@ -94,3 +94,7 @@ export function genTestUserSig(userID) {
   }
 }
 
+export  {
+  SDKAPPID
+}
+

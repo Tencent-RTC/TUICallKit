@@ -130,9 +130,9 @@ tuicall-engine-web 是基于腾讯云 [即时通信 IM](https://cloud.tencent.co
 
 #### 步骤2：配置 Demo 工程文件
 
-1. 找到并打开`Web/public/debug/GenerateTestUserSig.js`和 `Web/src/config/index.js` 文件。
+1. 找到并打开`Web/public/debug/GenerateTestUserSig.js`文件。
 
-2. 设置`GenerateTestUserSig.js`和`config/index.js` 文件中的相关参数：
+2. 设置`GenerateTestUserSig.js` 文件中的相关参数：
 
   <ul><li>SDKAPPID：默认为0，请设置为实际的 SDKAppID。</li>
 
@@ -163,9 +163,12 @@ NPM 集成
   npm i tuicall-engine-web --save
 
   import { TUICallEngine, TUICallEvent, TUICAllType } from "tuicall-engine-web"
+```
 
-Script 集成 
+Script 集成
+
   如果您通过 script 方式使用 tuicall-engine-web，需要按顺序先手动引入 trtc.js、tim-js.js、tsignaling.js、tuicall-engine-web.js
+```javascript
   <script src="./trtc.js"></script>
   <script src="./tim-js.js"></script>
   <script src="./tsignaling.js"></script>s

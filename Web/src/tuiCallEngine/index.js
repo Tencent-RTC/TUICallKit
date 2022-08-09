@@ -1,14 +1,14 @@
 import TIM from 'tim-js-sdk';
 import { TUICallEngine, TUICallEvent, TUICallType } from 'tuicall-engine-web';
-import config from '../config';
+import { SDKAPPID } from "../../public/debug/GenerateTestUserSig";
 
 export function createTUICallEngine() {
   const tim = TIM.create({
-    SDKAppID: config.SDKAppID
+    SDKAppID: SDKAPPID
   })
 
   const tuiCallEngine = TUICallEngine.createInstance({
-    SDKAppID: config.SDKAppID,
+    SDKAppID: SDKAPPID,
     tim: tim,
   });
   return {
