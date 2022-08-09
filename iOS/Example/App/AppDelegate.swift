@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import TUICalling
+import TUICallKit
 import UserNotifications
 
 @main

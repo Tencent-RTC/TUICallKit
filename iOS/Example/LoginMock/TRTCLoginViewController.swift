@@ -9,7 +9,7 @@
 import Foundation
 import Toast_Swift
 import WebKit
-import ImSDK_Plus
+import TUICallKit
 
 class TRTCLoginViewController: UIViewController {
     
@@ -87,7 +87,9 @@ class TRTCLoginViewController: UIViewController {
             showRegisterVC()
         } else {
             self.view.makeToast(LoginLocalize(key:"V2.Live.LinkMicNew.loginsuccess"))
-            AppUtils.shared.showMainController()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                AppUtils.shared.showMainController()
+            }
         }
     }
     

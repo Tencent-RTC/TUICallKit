@@ -11,7 +11,6 @@ import Toast_Swift
 import TXAppBasic
 import SnapKit
 import UIKit
-import ImSDK_Plus
 
 class TRTCRegisterViewController: UIViewController {
     

@@ -9,7 +9,7 @@ target 'TUICallingApp' do
   pod 'Alamofire'
   pod 'Kingfisher'
   pod 'SnapKit'
-  pod 'TUICalling', :path => "../", :subspecs => ["TRTC"]
+  pod 'TUICallKit', :path => "../", :subspecs => ["TRTC"]
 end
 
 post_install do |installer|

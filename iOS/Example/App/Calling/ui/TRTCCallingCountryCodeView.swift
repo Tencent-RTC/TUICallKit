@@ -9,7 +9,6 @@
 import Foundation
 import TXAppBasic
 import UIKit
-import ImSDK_Plus
 
 public class TRTCCallingCountryAlert: TRTCCallingAlertContentView {
     
