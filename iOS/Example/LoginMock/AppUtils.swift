@@ -8,7 +8,7 @@
 // 用于TRTC_SceneDemo
 
 import UIKit
-import ImSDK_Plus
+import TUICallKit
 
 class AppUtils: NSObject {
     @objc public static let shared = AppUtils()

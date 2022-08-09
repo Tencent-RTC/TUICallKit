@@ -8,8 +8,8 @@
 
 import UIKit
 import Alamofire
-import ImSDK_Plus
 import TUICore
+import TUICallKit
 
 @objc class LoginResultModel: NSObject, Codable {
     @objc var token: String
@@ -26,7 +26,7 @@ import TUICore
         name = userID
         
         userSig = GenerateTestUserSig.genTestUserSig(identifier: userID)
-        avatar = "https://imgcache.qq.com/qcloud/public/static//avatar1_100.20191230.png"
+        avatar = TUI_CALL_DEFAULT_AVATAR
         super.init()
     }
 }
@@ -113,7 +113,6 @@ import TUICore
             return
         }
         let user = String(userID)
-        
         TUILogin.login(Int32(SDKAPPID), userID: user, userSig: userSig) {
             debugPrint("login success")
             // IM登录成功后，处理离线推送相关

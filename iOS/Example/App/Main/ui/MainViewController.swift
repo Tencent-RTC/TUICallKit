@@ -7,8 +7,7 @@
 
 import UIKit
 import Toast_Swift
-import ImSDK_Plus
-import TUICalling
+import TUICallKit
 import TUICore
 
 class MainViewController: UIViewController {
@@ -55,20 +54,6 @@ class MainViewController: UIViewController {
                               selectHandle: { [weak self] in
                                   guard let `self` = self else { return }
                                   self.gotoVideoCallView()
-                              }),
-            MainMenuItemModel(imageName: "main_home_audiocall",
-                              title: MainLocalize("App.PortalViewController.groupaudiocalling"),
-                              content: MainLocalize("Demo.TRTC.Portal.Home.audiocalldesc"),
-                              selectHandle: { [weak self] in
-                                  guard let `self` = self else { return }
-                                  self.gotoGroupAudioCallView()
-                              }),
-            MainMenuItemModel(imageName: "main_home_videocall",
-                              title: MainLocalize("App.PortalViewController.groupvideocalling"),
-                              content: MainLocalize("Demo.TRTC.Portal.Home.videocalldesc"),
-                              selectHandle: { [weak self] in
-                                  guard let `self` = self else { return }
-                                  self.gotoGroupVideoCallView()
                               }),
         ]
     }()
@@ -126,22 +111,6 @@ extension MainViewController {
         videoCallVC.title = MainLocalize("App.PortalViewController.videocalling")
         videoCallVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(videoCallVC, animated: true)
-    }
-    
-    func gotoGroupAudioCallView() {
-        let groupAudioCallVC = TRTCGroupCallingContactViewController()
-        groupAudioCallVC.callType = .audio
-        groupAudioCallVC.title = MainLocalize("App.PortalViewController.groupaudiocalling")
-        groupAudioCallVC.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(groupAudioCallVC, animated: true)
-    }
-    
-    func gotoGroupVideoCallView() {
-        let groupVideoCallVC = TRTCGroupCallingContactViewController()
-        groupVideoCallVC.callType = .video
-        groupVideoCallVC.title = MainLocalize("App.PortalViewController.groupvideocalling")
-        groupVideoCallVC.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(groupVideoCallVC, animated: true)
     }
 }
 

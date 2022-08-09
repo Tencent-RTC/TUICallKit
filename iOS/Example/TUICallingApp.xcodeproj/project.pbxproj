@@ -24,6 +24,8 @@
 		47D9D36F26521A7A0007EE1F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47D9D36526521A7A0007EE1F /* Main.storyboard */; };
 		47D9D37026521A7A0007EE1F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D9D36726521A7A0007EE1F /* AppDelegate.swift */; };
 		47D9D37226521A7A0007EE1F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D9D36926521A7A0007EE1F /* SceneDelegate.swift */; };
+		4F3A41832892B3C500EBB5F6 /* TRTCGroupCallingContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A41812892B3C500EBB5F6 /* TRTCGroupCallingContactViewController.swift */; };
+		4F3A41842892B3C500EBB5F6 /* TRTCCallingCountryCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A41822892B3C500EBB5F6 /* TRTCCallingCountryCodeView.swift */; };
 		4F3F7CA826D65D38002912DE /* TRTCRegisterRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7C9A26D65D38002912DE /* TRTCRegisterRootView.swift */; };
 		4F3F7CA926D65D38002912DE /* TRTCLoginRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7C9B26D65D38002912DE /* TRTCLoginRootView.swift */; };
 		4F3F7CAA26D65D38002912DE /* UserAgreementViewController+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7C9C26D65D38002912DE /* UserAgreementViewController+UI.swift */; };
@@ -37,10 +39,8 @@
 		4F3F7CB226D65D38002912DE /* LayoutDefine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA726D65D38002912DE /* LayoutDefine.swift */; };
 		4F3F7CB526D65DE3002912DE /* GenerateTestUserSig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CB426D65DE3002912DE /* GenerateTestUserSig.swift */; };
 		4F84BEB127798B4500BE13C5 /* CallingSelectUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEAC27798B4500BE13C5 /* CallingSelectUserTableViewCell.swift */; };
-		4F84BEB227798B4500BE13C5 /* TRTCGroupCallingContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEAD27798B4500BE13C5 /* TRTCGroupCallingContactViewController.swift */; };
 		4F84BEB327798B4500BE13C5 /* TRTCCallingContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEAE27798B4500BE13C5 /* TRTCCallingContactViewController.swift */; };
 		4F84BEB427798B4500BE13C5 /* TRTCCallingContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEAF27798B4500BE13C5 /* TRTCCallingContactView.swift */; };
-		4F84BEB527798B4500BE13C5 /* TRTCCallingCountryCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEB027798B4500BE13C5 /* TRTCCallingCountryCodeView.swift */; };
 		4F84BECD2779A28100BE13C5 /* MainCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEBA2779A28100BE13C5 /* MainCollectionViewCell.swift */; };
 		4F84BED02779A28100BE13C5 /* MainMenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEBE2779A28100BE13C5 /* MainMenuCell.m */; };
 		4F84BED12779A28100BE13C5 /* MainMenuItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEC12779A28100BE13C5 /* MainMenuItemModel.swift */; };
@@ -53,7 +53,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2900AD2DB85102F00277DCDB /* Pods-TRTCCallingApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRTCCallingApp.release.xcconfig"; path = "Target Support Files/Pods-TRTCCallingApp/Pods-TRTCCallingApp.release.xcconfig"; sourceTree = "<group>"; };
 		2A653A99F0A29BA5B6E8ABF5 /* Pods-TUICallingApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TUICallingApp.release.xcconfig"; path = "Target Support Files/Pods-TUICallingApp/Pods-TUICallingApp.release.xcconfig"; sourceTree = "<group>"; };
 		382519A4D3CD8356970B4F9A /* Pods_TUICallingApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TUICallingApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C516BAB34F176BB5A4EE6D8 /* Pods-TUICallingApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TUICallingApp.debug.xcconfig"; path = "Target Support Files/Pods-TUICallingApp/Pods-TUICallingApp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -79,6 +78,8 @@
 		47D9D36826521A7A0007EE1F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		47D9D36926521A7A0007EE1F /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		4F09F32C27587C1400B5F5FE /* TUICallingApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TUICallingApp.entitlements; sourceTree = "<group>"; };
+		4F3A41812892B3C500EBB5F6 /* TRTCGroupCallingContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TRTCGroupCallingContactViewController.swift; sourceTree = "<group>"; };
+		4F3A41822892B3C500EBB5F6 /* TRTCCallingCountryCodeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TRTCCallingCountryCodeView.swift; sourceTree = "<group>"; };
 		4F3F7C9A26D65D38002912DE /* TRTCRegisterRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TRTCRegisterRootView.swift; sourceTree = "<group>"; };
 		4F3F7C9B26D65D38002912DE /* TRTCLoginRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TRTCLoginRootView.swift; sourceTree = "<group>"; };
 		4F3F7C9C26D65D38002912DE /* UserAgreementViewController+UI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserAgreementViewController+UI.swift"; sourceTree = "<group>"; };
@@ -93,10 +94,8 @@
 		4F3F7CA726D65D38002912DE /* LayoutDefine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutDefine.swift; sourceTree = "<group>"; };
 		4F3F7CB426D65DE3002912DE /* GenerateTestUserSig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateTestUserSig.swift; sourceTree = "<group>"; };
 		4F84BEAC27798B4500BE13C5 /* CallingSelectUserTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallingSelectUserTableViewCell.swift; sourceTree = "<group>"; };
-		4F84BEAD27798B4500BE13C5 /* TRTCGroupCallingContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TRTCGroupCallingContactViewController.swift; sourceTree = "<group>"; };
 		4F84BEAE27798B4500BE13C5 /* TRTCCallingContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TRTCCallingContactViewController.swift; sourceTree = "<group>"; };
 		4F84BEAF27798B4500BE13C5 /* TRTCCallingContactView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TRTCCallingContactView.swift; sourceTree = "<group>"; };
-		4F84BEB027798B4500BE13C5 /* TRTCCallingCountryCodeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TRTCCallingCountryCodeView.swift; sourceTree = "<group>"; };
 		4F84BEB92779A28100BE13C5 /* MainMenuCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuCell.h; sourceTree = "<group>"; };
 		4F84BEBA2779A28100BE13C5 /* MainCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainCollectionViewCell.swift; sourceTree = "<group>"; };
 		4F84BEBE2779A28100BE13C5 /* MainMenuCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuCell.m; sourceTree = "<group>"; };
@@ -108,9 +107,6 @@
 		4F84BECB2779A28100BE13C5 /* MainAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = MainAssets.xcassets; sourceTree = "<group>"; };
 		4F84BED62779AB6800BE13C5 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		4FE7A784275E3A89009CCB09 /* phone_ringing.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = phone_ringing.mp3; sourceTree = "<group>"; };
-		8F5D6C3B9ADE64ED3C2FC330 /* Pods-TRTCCallingApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRTCCallingApp.debug.xcconfig"; path = "Target Support Files/Pods-TRTCCallingApp/Pods-TRTCCallingApp.debug.xcconfig"; sourceTree = "<group>"; };
-		9932A0F6A2E0F892B8A8DE24 /* Pods-TRTCCalling.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRTCCalling.debug.xcconfig"; path = "Target Support Files/Pods-TRTCCalling/Pods-TRTCCalling.debug.xcconfig"; sourceTree = "<group>"; };
-		C5B5B8F206D4592A066F3950 /* Pods-TRTCCalling.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRTCCalling.release.xcconfig"; path = "Target Support Files/Pods-TRTCCalling/Pods-TRTCCalling.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,8 +191,8 @@
 				4F84BEAC27798B4500BE13C5 /* CallingSelectUserTableViewCell.swift */,
 				4F84BEAF27798B4500BE13C5 /* TRTCCallingContactView.swift */,
 				4F84BEAE27798B4500BE13C5 /* TRTCCallingContactViewController.swift */,
-				4F84BEB027798B4500BE13C5 /* TRTCCallingCountryCodeView.swift */,
-				4F84BEAD27798B4500BE13C5 /* TRTCGroupCallingContactViewController.swift */,
+				4F3A41822892B3C500EBB5F6 /* TRTCCallingCountryCodeView.swift */,
+				4F3A41812892B3C500EBB5F6 /* TRTCGroupCallingContactViewController.swift */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -319,10 +315,6 @@
 		914460EA7D352CBA688E2356 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				9932A0F6A2E0F892B8A8DE24 /* Pods-TRTCCalling.debug.xcconfig */,
-				C5B5B8F206D4592A066F3950 /* Pods-TRTCCalling.release.xcconfig */,
-				8F5D6C3B9ADE64ED3C2FC330 /* Pods-TRTCCallingApp.debug.xcconfig */,
-				2900AD2DB85102F00277DCDB /* Pods-TRTCCallingApp.release.xcconfig */,
 				3C516BAB34F176BB5A4EE6D8 /* Pods-TUICallingApp.debug.xcconfig */,
 				2A653A99F0A29BA5B6E8ABF5 /* Pods-TUICallingApp.release.xcconfig */,
 			);
@@ -478,7 +470,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4F84BEB527798B4500BE13C5 /* TRTCCallingCountryCodeView.swift in Sources */,
+				4F3A41842892B3C500EBB5F6 /* TRTCCallingCountryCodeView.swift in Sources */,
 				4F84BED12779A28100BE13C5 /* MainMenuItemModel.swift in Sources */,
 				4F84BED42779A28100BE13C5 /* MainLocalized.swift in Sources */,
 				47D9D37026521A7A0007EE1F /* AppDelegate.swift in Sources */,
@@ -492,13 +484,13 @@
 				4F3F7CB526D65DE3002912DE /* GenerateTestUserSig.swift in Sources */,
 				4F3F7CB126D65D38002912DE /* UserAgreementViewController.swift in Sources */,
 				4F3F7CAD26D65D38002912DE /* TRTCLoginViewController.swift in Sources */,
+				4F3A41832892B3C500EBB5F6 /* TRTCGroupCallingContactViewController.swift in Sources */,
 				4F84BED72779AB6800BE13C5 /* MainViewController.swift in Sources */,
 				4F84BED02779A28100BE13C5 /* MainMenuCell.m in Sources */,
 				4F3F7CB026D65D38002912DE /* TRTCRegisterViewController.swift in Sources */,
 				4F3F7CB226D65D38002912DE /* LayoutDefine.swift in Sources */,
 				4F3F7CA826D65D38002912DE /* TRTCRegisterRootView.swift in Sources */,
 				4F84BEB127798B4500BE13C5 /* CallingSelectUserTableViewCell.swift in Sources */,
-				4F84BEB227798B4500BE13C5 /* TRTCGroupCallingContactViewController.swift in Sources */,
 				4F3F7CA926D65D38002912DE /* TRTCLoginRootView.swift in Sources */,
 				4F3F7CAA26D65D38002912DE /* UserAgreementViewController+UI.swift in Sources */,
 				47D9D37226521A7A0007EE1F /* SceneDelegate.swift in Sources */,
@@ -726,7 +718,6 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Alamofire/Alamofire.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Kingfisher/Kingfisher.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/SnapKit/SnapKit.framework/Headers\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/TRTCCalling/TUICalling.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/TXAppBasic/TXAppBasic.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Toast-Swift/Toast_Swift.framework/Headers\"",
 					"${PODS_ROOT}/TXImSDK_Plus_iOS/ImSDK_Plus.framework/Headers/",
@@ -761,8 +752,6 @@
 					"\"QuartzCore\"",
 					"-framework",
 					"\"SnapKit\"",
-					"-framework",
-					"\"TUICalling\"",
 					"-framework",
 					"\"TXAppBasic\"",
 					"-framework",
@@ -795,12 +784,27 @@
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = F8A3GH6Q4W;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Alamofire\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Kingfisher\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Masonry\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/ReactiveObjC\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/SDWebImage\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/SnapKit\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/TUICore\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/TXAppBasic\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Toast-Swift\"",
+					"\"${PODS_ROOT}/TXIMSDK_Plus_iOS\"",
+					"\"${PODS_ROOT}/TXLiteAVSDK_TRTC/TXLiteAVSDK_TRTC\"",
+					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/TXFFmpeg\"",
+					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/TXSoundTouch\"",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Alamofire/Alamofire.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Kingfisher/Kingfisher.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/SnapKit/SnapKit.framework/Headers\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/TRTCCalling/TUICalling.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/TXAppBasic/TXAppBasic.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Toast-Swift/Toast_Swift.framework/Headers\"",
 					"${PODS_ROOT}/TXImSDK_Plus_iOS/ImSDK_Plus.framework/Headers/",
@@ -835,8 +839,6 @@
 					"\"QuartzCore\"",
 					"-framework",
 					"\"SnapKit\"",
-					"-framework",
-					"\"TUICalling\"",
 					"-framework",
 					"\"TXAppBasic\"",
 					"-framework",

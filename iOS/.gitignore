@@ -1,0 +1,12 @@
+# OS X Files
+.DS_Store
+**/.DS_Store
+
+Example/Pods
+SDK
+Example/Podfile.lock
+Example/*.xcworkspace
+
+
+
+

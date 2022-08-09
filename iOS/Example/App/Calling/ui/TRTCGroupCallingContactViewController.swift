@@ -8,23 +8,12 @@
 import UIKit
 import Foundation
 import Toast_Swift
-import TUICalling
-import ImSDK_Plus
-
-enum GroupCallingUserRemoveReason: UInt32 {
-    case leave = 0
-    case reject
-    case noresp
-    case busy
-}
+import TUICallKit
 
 public class TRTCGroupCallingContactViewController: UIViewController {
     var selectedFinished: (([V2TIMUserFullInfo])->Void)? = nil
-    
-    /// 存储已添加的用户id
     var addedV2TIMUserFullInfo: [V2TIMUserFullInfo] = []
-    
-    @objc var callType: CallType = .audio
+    @objc var callType: TUICallMediaType = .audio
     
     let addedTableTitle: UILabel = {
         let label = UILabel(frame: .zero)
@@ -59,41 +48,56 @@ public class TRTCGroupCallingContactViewController: UIViewController {
     lazy var callingContactView: TRTCCallingContactView = {
         let callingContactView = TRTCCallingContactView(frame: .zero, type: .add) { [weak self] users in
             guard let `self` = self else {return}
-            self.adduser(users: users)
+            self.addUser(users: users)
         }
         
         return callingContactView
     }()
     
+    deinit {
+        debugPrint("deinit \(self)")
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
         // 左侧按钮
-        let backBtn = UIButton(type: .custom)
-        backBtn.setImage(UIImage(named: "calling_back"), for: .normal)
-        backBtn.addTarget(self, action: #selector(backBtnClick), for: .touchUpInside)
-        let item = UIBarButtonItem(customView: backBtn)
+        let backButton = UIButton(type: .custom)
+        backButton.setImage(UIImage(named: "calling_back"), for: .normal)
+        backButton.addTarget(self, action: #selector(backButtonClick), for: .touchUpInside)
+        let item = UIBarButtonItem(customView: backButton)
         item.tintColor = UIColor.black
         navigationItem.leftBarButtonItem = item
         // 右侧按钮
-        let callBtn = UIButton(frame: CGRect(x: 0, y:0, width: 50, height: 30))
-        callBtn.setTitle(CallingLocalize("Demo.TRTC.calling.done"), for: .normal)
-        callBtn.setTitleColor(UIColor.black, for: .normal)
-        callBtn.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-        callBtn.addTarget(self, action: #selector(showCallVC), for: .touchUpInside)
-        let rightItem = UIBarButtonItem(customView: callBtn)
+        let callButton = UIButton(frame: CGRect(x: 0, y:0, width: 50, height: 30))
+        callButton.setTitle(CallingLocalize("Demo.TRTC.calling.done"), for: .normal)
+        callButton.setTitleColor(UIColor.black, for: .normal)
+        callButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        callButton.addTarget(self, action: #selector(showCallVC), for: .touchUpInside)
+        let rightItem = UIBarButtonItem(customView: callButton)
         rightItem.tintColor = UIColor.black
         navigationItem.rightBarButtonItem = rightItem
         
         setupUI()
     }
     
-    @objc func backBtnClick() {
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: false)
+        hiddenNoMembersImage(isHidden: false)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: false)
+    }
+    
+    @objc func backButtonClick() {
         navigationController?.popViewController(animated: true)
     }
     
     @objc func showCallVC() {
-        var type: TUICallingType = .video
+        var type: TUICallMediaType = .video
         if callType == .audio {
             type = .audio
         }
@@ -108,35 +112,17 @@ public class TRTCGroupCallingContactViewController: UIViewController {
             return
         }
         
-        TUICalling.shareInstance().call(userIDs: userIds, type: type)
+        TUICallKit.createInstance().groupCall(groupId: "", userIdList: userIds, callMediaType: type)
     }
-    
-    deinit {
-        debugPrint("deinit \(self)")
-    }
-    
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: false)
-        hiddenNoMembersImg(isHidden: false)
-    }
-    
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: false)
-    }
-    
-    var lastNetworkQualityCallTime: Date?
 }
 
 extension TRTCGroupCallingContactViewController {
-    
     func setupUI() {
         constructViewHierarchy()
         activateConstraints()
         bindInteraction()
         ToastManager.shared.position = .bottom
-        hiddenNoMembersImg(isHidden: false)
+        hiddenNoMembersImage(isHidden: false)
         addedTable.reloadData()
     }
     
@@ -196,7 +182,7 @@ extension TRTCGroupCallingContactViewController {
         addedTable.reloadData()
     }
     
-    func adduser(users: [V2TIMUserFullInfo]) {
+    func addUser(users: [V2TIMUserFullInfo]) {
         guard users.count > 0 else { return }
         let waitingAddUser: V2TIMUserFullInfo = users.first!
         var addedFlag = false
@@ -210,13 +196,12 @@ extension TRTCGroupCallingContactViewController {
         addedTable.reloadData()
     }
     
-    @objc func hiddenNoMembersImg(isHidden: Bool) {
+    @objc func hiddenNoMembersImage(isHidden: Bool) {
         noMembersTip.isHidden = isHidden
     }
 }
 
 extension TRTCGroupCallingContactViewController: UITableViewDelegate, UITableViewDataSource {
-    
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return addedV2TIMUserFullInfo.count
     }
