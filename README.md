@@ -1,65 +1,39 @@
 
 # 实时语音/视频通话
 
-_[English](README.en.md) | 中文_
+## 组件介绍
+**基于开发者反馈和市场需求调研，2022年08月 TUICalling 正式升级为 TUICallKit，新的组件升级了群内多人通话和离线唤醒等功能，并且配备了更低折扣的 TRTC 联合套餐包以及7天的免费试用期，期待您的关注。**
 
-## 概述
+TUICallKit 是腾讯云推出一款音视频通话 UI 组件，通过集成该组件，您只需要编写几行代码就可以为您的 App 添加音视频通话功能，并且支持离线唤起能力。TUICallKit 支持 Android、iOS、Web、小程序、Flutter、UniApp 等多个开发平台，基本功能如下图所示：
+![](https://qcloudimg.tencent-cloud.cn/raw/08f914b45857743fd05dfaa28e2adb72.png)
 
-**TUI组件化解决方案**是腾讯云TRTC针对直播、语聊、视频通话等推出的低代码解决方案，依托腾讯在音视频&通信领域的技术积累，帮助开发者快速实现相关业务场景，聚焦核心业务，助力业务起飞！
+> Tips：您也可以在 [**这里**](https://github.com/tencentyun/TUICalling/tree/open) 找到升级前的 TUICalling 开源项目。
+#### 功能优势
+- 接入方便：提供带 UI 的开源组件，节省90%开发时间，快速上线音视频通话应用。
+- 平台互通：各平台的 TUICallKit 组件支持相互拨打、接听、挂断等，互联互通。
+- 多人通话：不仅仅支持1对1视频通话，还支持在群组内发起多人视频通话。
+- 离线推送：支持Android&iOS离线推送，被叫用户 App 不在线时也能收到新的来电消息。
 
-- [视频互动直播-TUILiveRoom](https://github.com/tencentyun/TUILiveRoom/)
-- [多人音视频互动-TUIRoom](https://github.com/tencentyun/TUIRoom/)
-- [语音聊天室-TUIVoiceRoom](https://github.com/tencentyun/TUIVoiceRoom/)
-- [语音沙龙-TUIChatSalon](https://github.com/tencentyun/TUIChatSalon/)
-- [Karaoke-TUIKaraoke](https://github.com/tencentyun/TUIKaraoke/)
-- [一起合唱-TUIChorus](https://github.com/tencentyun/TUIChorus/)
+更多 TUIKit 组件化方案，敬请期待，也欢迎加入我们的QQ交流群：592465424，期待一起交流&学习！
 
-更多组件化方案，敬请期待，也欢迎加入我们的QQ交流群：592465424，期待一起交流&学习！
-
-## 发布日志
-### Version 10.4 @ 2022.07.20
-
-#### 功能修复：
-- Android：修复单人通话挂断时，没有发出hangup信令问题
-- Android：修复悬浮窗空指针异常
-
-#### 功能优化：
-- Android：更新TUILogin的login/logout接口
-- iOS：更新TUILogin的login/logout接口
-
-更早期的版本更新历史请点击  [More](./ReleaseNote.md)...
-
-## 效果演示
-
-### 实时视频通话
-
-<table>
-<tr>
-   <th>主动呼叫</th>
-   <th>被叫接听</th>
- </tr>
-<tr>
-<td><img src="video1.gif" width="300px" height="640px"/></td>
-<td><img src="video2.gif" width="300px" height="640px"/></td>
-</tr>
-</table>
-
-## Demo 体验
-
-| iOS                           | Android                       | 小程序                         |   Web                         |
-| ----------------------------- | ----------------------------- | ----------------------------- | ----------------------------- |
-| ![](https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/app_download_ios.png) | ![](https://qcloudimg.tencent-cloud.cn/raw/1027a02e38ae4aeb1ec9ef17ac1a953d.png) | ![](https://web.sdk.qcloud.com/component/miniApp/QRcode/tencentTRTC.jpg) |  [1v1音视频通话](https://web.sdk.qcloud.com/component/trtccalling/demo/web/latest/index.html#/login) |
 
 ## 文档资源
+### 快速接入 TUICallKit
 
-| iOS                           | Android                       | 小程序                         |   Web                         |
-| ----------------------------- | ----------------------------- | ----------------------------- | ----------------------------- |
-| [实时视频通话（iOS）](https://cloud.tencent.com/document/product/647/42044) | [实时视频通话（Android）](https://cloud.tencent.com/document/product/647/42045) |  [实时视频通话（小程序）](https://cloud.tencent.com/document/product/647/49379) |  [实时视频通话（Web）](https://cloud.tencent.com/document/product/647/49789) |
-| [实时语音通话（iOS）](https://cloud.tencent.com/document/product/647/42046) | [实时语音通话（Android）](https://cloud.tencent.com/document/product/647/42047) | [实时语音通话（小程序）](https://cloud.tencent.com/document/product/647/49363) |  [实时语音通话（Web）](https://cloud.tencent.com/document/product/647/49795) |
+- [iOS ](https://cloud.tencent.com/document/product/647/78730)
+- [Android](https://tcloud-doc.isd.com/document/product/647/78729)
+- [微信小程序](https://cloud.tencent.com/document/product/647/78733) 
+- [Web](https://cloud.tencent.com/document/product/647/78731)
+- [uni-app](https://cloud.tencent.com/document/product/647/78732)
 
-## 其他
+### 常见问题
 
-### 交流&反馈
+- [iOS ](https://cloud.tencent.com/document/product/647/78768)
+- [Android](https://tcloud-doc.isd.com/document/product/647/78767)
+- [微信小程序](https://cloud.tencent.com/document/product/647/78770) 
+- [Web](https://cloud.tencent.com/document/product/647/78769)
+
+## 交流&反馈
 
 欢迎加入QQ群进行技术交流和反馈问题，QQ群：592465424
 
