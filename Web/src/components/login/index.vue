@@ -7,6 +7,7 @@
 
 <script>
 import { genTestUserSig } from "../../../public/debug/GenerateTestUserSig";
+import {aegisReportEvent} from '../../utils/aegis'
 
 export default {
   name: "Login",
@@ -24,7 +25,7 @@ export default {
         this.$message.error("Enter a user ID");
         return;
       }
-
+      aegisReportEvent("login", "login-success");
       const userSig = genTestUserSig(this.UserID).userSig;
       const userId = this.UserID;
       this.$store.commit("userLoginSuccess");

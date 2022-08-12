@@ -16,19 +16,12 @@ class AegisReport {
         });
     }
     reportEvent(name, ext1) {
-        //去重处理，防止在一次login中重复上报其余事件 分母是login的总次数
-        if (!this.event[name] || !this.event[name][ext1]) {
-            this.aegis.reportEvent({
-                name,
-                ext1,
-                ext2: "webTUICallingExternal",
-                ext3: genTestUserSig('').sdkAppID,
-            });
-            if (typeof this.event[name] !== 'object') {
-                this.event[name] = {};
-            }
-            this.event[name][ext1] = true;
-        }
+        this.aegis.reportEvent({
+            name,
+            ext1,
+            ext2: "webTUICallingExternal",
+            ext3: genTestUserSig('').sdkAppID,
+        });
     }
 }
 

@@ -76,7 +76,6 @@ export default {
       this.showChatTime();
       this.startMeeting();
       this.updateUserId2UserInfo(this.meetingUserIdList);
-      aegisReportEvent("voiceCall", "call-1v1");
     }
   },
   destroyed() {
@@ -99,6 +98,7 @@ export default {
         this.showChatTime();
         this.startMeeting();
         this.updateUserId2UserInfo(this.meetingUserIdList);
+        aegisReportEvent("voiceCall", "VoiceCall-1v1");
       }
     },
     meetingUserIdList: function(newList, oldList) {

@@ -88,7 +88,6 @@ export default {
       this.showChatTime();
       this.startMeeting();
       this.updateUserId2Name(this.meetingUserIdList);
-      aegisReportEvent("videoCall", "call-1v1");
     }
   },
   destroyed() {
@@ -111,6 +110,7 @@ export default {
         this.showChatTime();
         this.startMeeting();
         this.updateUserId2Name(this.meetingUserIdList);
+        aegisReportEvent("videoCall", "VideoCall-1v1");
       }
     },
     meetingUserIdList: function(newList, oldList) {

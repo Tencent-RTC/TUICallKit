@@ -22,6 +22,7 @@
 
 <script>
 import { setUserLoginInfo } from "../../utils";
+import {aegisReportEvent} from '../../utils/aegis'
 export default {
   name: "HeaderNav",
   methods: {
@@ -31,6 +32,7 @@ export default {
           "https://web.sdk.qcloud.com/trtc/webrtc/demo/detect/index.html",
           "__blank"
         );
+        aegisReportEvent("deviceTest", "test-device");
         return;
       }
 
@@ -39,6 +41,7 @@ export default {
           "https://cloud.tencent.com/document/product/647/45558",
           "__blank"
         );
+        aegisReportEvent("commonProblem", "visit-comproblem");
         return;
       }
       
