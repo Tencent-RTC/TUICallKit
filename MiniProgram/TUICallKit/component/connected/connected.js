@@ -134,12 +134,12 @@ Component({
         });
       } else {
         this.data[key][index].avatar = '../../static/default_avatar.png';
-        if(this.data.playerList[index]) {
+        if (this.data.playerList[index]) {
           this.data.playerList[index].avatar = '../../static/default_avatar.png';
         }
         this.setData({
           playerList: this.data.playerList,
-          [key]: this.data[key]
+          [key]: this.data[key],
         });
       }
     },

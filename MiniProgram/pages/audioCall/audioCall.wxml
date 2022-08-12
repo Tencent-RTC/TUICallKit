@@ -1,8 +1,8 @@
 <view class="container">
-  <TUICalling
-    id="TUICalling-component"
+  <TUICallKit
+    id="TUICallKit-component"
     config="{{config}}"
-  ></TUICalling>
+  ></TUICallKit>
   <view class="trtc-calling-index">
     <view class="trtc-calling-index-title">
       <image class="btn-goback" src="../Resources/back.png" bind:tap="onBack" />

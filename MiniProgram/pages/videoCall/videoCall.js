@@ -1,6 +1,8 @@
-import { genTestUserSig } from '../../debug/GenerateTestUserSig'
+import { genTestUserSig } from '../../debug/GenerateTestUserSig';
+import {  MEDIA_TYPE } from '../../TUICallEngine/tuicall-engine-wx.js';
 
 Page({
+  TUICallKit: null,
   data: {
     userIDToSearch: '',
     searchResultShow: false,
@@ -9,79 +11,89 @@ Page({
       sdkAppID: wx.$globalData.sdkAppID,
       userID: wx.$globalData.userID,
       userSig: wx.$globalData.userSig,
-      type: 2,
+      type: MEDIA_TYPE.VIDEO,
       tim: null,
     },
   },
 
-  userIDToSearchInput: function(e) {
+  userIDToSearchInput(e) {
     this.setData({
       userIDToSearch: e.detail.value,
-    })
+    });
   },
 
-  searchUser: function() {
+  searchUser() {
     this.data.invitee = {
       userID: this.data.userIDToSearch,
-    }
-    this.TUICalling.getTim()
-        .getUserProfile({ userIDList: [this.data.userIDToSearch] })
-        .then((imResponse) => {
-          console.log('获取getUserProfile', imResponse.data);
-          if(imResponse.data.length === 0) {
-            wx.showToast({
-              title: '未查询到此用户',
-              icon: 'none'
-            })
-          }
-          this.setData({
-            invitee: { ...imResponse.data[0] },
-            searchResultShow: true
+    };
+    this.TUICallKit.getTim()
+      .getUserProfile({ userIDList: [this.data.userIDToSearch] })
+      .then((imResponse) => {
+        console.log('获取getUserProfile', imResponse.data);
+        if (imResponse.data.length === 0) {
+          wx.showToast({
+            title: '未查询到此用户',
+            icon: 'none',
           });
+          return;
+        }
+        this.setData({
+          invitee: { ...imResponse.data[0] },
+          searchResultShow: true,
         });
+      });
   },
 
-  call: function() {
+  async call() {
     if (this.data.config.userID === this.data.invitee.userID) {
       wx.showToast({
         icon: 'none',
         title: '不可呼叫本机',
-      })
-      return
+      });
+      return;
     }
-    this.TUICalling.call({ userID: this.data.invitee.userID, type: 2 })
+    try {
+      await this.TUICallKit.call({ userID: this.data.invitee.userID, type: MEDIA_TYPE.VIDEO });
+    } catch (error) {
+      wx.showModal({
+        icon: 'none',
+        title: 'error',
+        content: error.message,
+        showCancel: false,
+      });
+    }
   },
 
-  onBack: function() {
+  onBack() {
     wx.navigateBack({
       delta: 1,
-    })
-    this.TUICalling.destroyed()
+    });
+    this.TUICallKit.destroyed();
   },
 
-
-  onLoad: function() {
-    const Signature = genTestUserSig(wx.$globalData.userID)
+  onLoad() {
+    const Signature = genTestUserSig(wx.$globalData.userID);
     const config = {
       sdkAppID: wx.$globalData.sdkAppID,
       userID: wx.$globalData.userID,
       userSig: Signature.userSig,
-    }
-    this.setData({
-      config: { ...this.data.config, ...config },
-    }, () => {
-      this.TUICalling = this.selectComponent('#TUICalling-component')
-      this.TUICalling.init()
-    })
+    };
+    this.setData(
+      {
+        config: { ...this.data.config, ...config },
+      },
+      () => {
+        this.TUICallKit = this.selectComponent('#TUICallKit-component');
+        this.TUICallKit.init();
+      },
+    );
   },
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function() {
-    this.TUICalling.destroyed()
+  onUnload() {
+    this.TUICallKit.destroyed();
   },
 
-  onShow: function() {
-
-  },
-})
+  onShow() {},
+});

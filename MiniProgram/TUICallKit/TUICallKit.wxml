@@ -9,7 +9,7 @@
       bind:callingEvent="handleCallingEvent"
     ></TUI-Calling>
     <TUI-Connected
-      wx:if="{{callStatus === 'connection'}}"
+      wx:if="{{callStatus === 'connected'}}"
       playerList="{{playerList}}"
       userList="{{userList}}"
       pusher="{{pusher}}"

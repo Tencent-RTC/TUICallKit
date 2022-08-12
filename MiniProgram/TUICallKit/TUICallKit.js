@@ -1,6 +1,6 @@
-import TRTCCalling from './TRTCCalling/TRTCCalling.js';
+import TUICallEngine, { EVENT, MEDIA_TYPE, AUDIO_PLAYBACK_DEVICE, STATUS } from '../TUICallEngine/tuicall-engine-wx.js';
 
-const TAG_NAME = 'TUICalling';
+const TAG_NAME = 'TUICallKit';
 // 组件旨在跨终端维护一个通话状态管理机，以事件发布机制驱动上层进行管理，并通过API调用进行状态变更。
 // 组件设计思路将UI和状态管理分离。您可以通过修改`component`文件夹下的文件，适配您的业务场景，
 // 在UI展示上，您可以通过属性的方式，将上层的用户头像，名称等数据传入组件内部，`static`下的icon和默认头像图片，
@@ -28,14 +28,14 @@ Component({
   },
 
   data: {
-    callStatus: 'idle', // idle、calling、connection
+    callStatus: STATUS.IDLE, // idle、calling、connection
     isSponsor: false,
     pusher: {}, // TRTC 本地流
     playerList: [], // TRTC 远端流
     remoteUsers: [], // 远程用户资料
     screen: 'pusher', // 视屏通话中，显示大屏幕的流（只限1v1聊天
-    soundMode: 'speaker', // 声音模式 听筒/扬声器
-    userList: null, //接受邀请的用户信息
+    soundMode: AUDIO_PLAYBACK_DEVICE.SPEAKER, // 声音模式 听筒/扬声器
+    userList: null, // 接受邀请的用户信息
   },
 
 
@@ -52,7 +52,7 @@ Component({
       this.getUserProfile([event.data.sponsor]);
       this.setData({
         config: this.data.config,
-        callStatus: 'calling',
+        callStatus: STATUS.CALLING,
         isSponsor: false,
       });
     },
@@ -61,7 +61,7 @@ Component({
     handleUserAccept(event) {
       console.log(`${TAG_NAME}, handleUserAccept, event${JSON.stringify(event)}`);
       this.setData({
-        callStatus: 'connection',
+        callStatus: STATUS.CONNECTED,
         userList: event.data.userList,
       });
     },
@@ -110,7 +110,7 @@ Component({
     // 用户拒绝
     handleInviteeReject(event) {
       console.log(`${TAG_NAME}, handleInviteeReject, event${JSON.stringify(event)}`);
-      if (this.data.playerList.length===0) {
+      if (this.data.playerList.length === 0) {
         this.reset();
       }
       wx.showToast({
@@ -120,7 +120,7 @@ Component({
     // 用户不在线
     handleNoResponse(event) {
       console.log(`${TAG_NAME}, handleNoResponse, event${JSON.stringify(event)}`);
-      if (this.data.playerList.length===0) {
+      if (this.data.playerList.length === 0) {
         this.reset();
       }
       wx.showToast({
@@ -130,7 +130,7 @@ Component({
     // 用户忙线
     handleLineBusy(event) {
       console.log(`${TAG_NAME}, handleLineBusy, event${JSON.stringify(event)}`);
-      if (this.data.playerList.length===0) {
+      if (this.data.playerList.length === 0) {
         this.reset();
       }
       wx.showToast({
@@ -140,7 +140,7 @@ Component({
     // 用户取消
     handleCallingCancel(event) {
       console.log(`${TAG_NAME}, handleCallingCancel, event${JSON.stringify(event)}`);
-      if (this.data.playerList.length===0) {
+      if (this.data.playerList.length === 0) {
         this.reset();
       }
       wx.showToast({
@@ -150,7 +150,7 @@ Component({
     // 通话超时未应答
     handleCallingTimeout(event) {
       console.log(`${TAG_NAME}, handleCallingTimeout, event${JSON.stringify(event)}`);
-      if (this.data.playerList.length===0) {
+      if (this.data.playerList.length === 0) {
         this.reset();
       }
       wx.showToast({
@@ -173,7 +173,6 @@ Component({
     // 通话结束
     handleCallingEnd(event) {
       console.log(`${TAG_NAME}, handleCallingEnd`);
-      console.log(event);
       this.reset();
       if (event.data.message) {
         this.triggerEvent('sendMessage', {
@@ -199,7 +198,7 @@ Component({
     // 切换通话模式
     handleCallMode(event) {
       this.data.config.type = event.data.type;
-      this.toggleSoundMode();
+      this.setSoundMode(AUDIO_PLAYBACK_DEVICE.EAR);
       this.setData({
         config: this.data.config,
       });
@@ -210,64 +209,64 @@ Component({
     // 增加 tsignaling 事件监听
     _addTSignalingEvent() {
       // 被邀请通话
-      wx.$TRTCCalling.on(wx.$TRTCCalling.EVENT.INVITED, this.handleNewInvitationReceived, this);
+      wx.$TUICallEngine.on(EVENT.INVITED, this.handleNewInvitationReceived, this);
       // 用户接听
-      wx.$TRTCCalling.on(wx.$TRTCCalling.EVENT.USER_ACCEPT, this.handleUserAccept, this);
+      wx.$TUICallEngine.on(EVENT.USER_ACCEPT, this.handleUserAccept, this);
       // 用户进入通话
-      wx.$TRTCCalling.on(wx.$TRTCCalling.EVENT.USER_ENTER, this.handleUserEnter, this);
+      wx.$TUICallEngine.on(EVENT.USER_ENTER, this.handleUserEnter, this);
       // 用户离开通话
-      wx.$TRTCCalling.on(wx.$TRTCCalling.EVENT.USER_LEAVE, this.handleUserLeave, this);
+      wx.$TUICallEngine.on(EVENT.USER_LEAVE, this.handleUserLeave, this);
       // 用户离开通话
-      wx.$TRTCCalling.on(wx.$TRTCCalling.EVENT.USER_UPDATE, this.handleUserUpdate, this);
+      wx.$TUICallEngine.on(EVENT.USER_UPDATE, this.handleUserUpdate, this);
       // 用户拒绝通话
-      wx.$TRTCCalling.on(wx.$TRTCCalling.EVENT.REJECT, this.handleInviteeReject, this);
+      wx.$TUICallEngine.on(EVENT.REJECT, this.handleInviteeReject, this);
       // 用户无响应
-      wx.$TRTCCalling.on(wx.$TRTCCalling.EVENT.NO_RESP, this.handleNoResponse, this);
+      wx.$TUICallEngine.on(EVENT.NO_RESP, this.handleNoResponse, this);
       // 用户忙线
-      wx.$TRTCCalling.on(wx.$TRTCCalling.EVENT.LINE_BUSY, this.handleLineBusy, this);
+      wx.$TUICallEngine.on(EVENT.LINE_BUSY, this.handleLineBusy, this);
       // 通话被取消
-      wx.$TRTCCalling.on(wx.$TRTCCalling.EVENT.CALLING_CANCEL, this.handleCallingCancel, this);
+      wx.$TUICallEngine.on(EVENT.CALLING_CANCEL, this.handleCallingCancel, this);
       // 通话超时未应答
-      wx.$TRTCCalling.on(wx.$TRTCCalling.EVENT.CALLING_TIMEOUT, this.handleCallingTimeout, this);
+      wx.$TUICallEngine.on(EVENT.CALLING_TIMEOUT, this.handleCallingTimeout, this);
       // 通话结束
-      wx.$TRTCCalling.on(wx.$TRTCCalling.EVENT.CALL_END, this.handleCallingEnd, this);
+      wx.$TUICallEngine.on(EVENT.CALL_END, this.handleCallingEnd, this);
       // SDK Ready 回调
-      wx.$TRTCCalling.on(wx.$TRTCCalling.EVENT.SDK_READY, this.handleSDKReady, this);
+      wx.$TUICallEngine.on(EVENT.SDK_READY, this.handleSDKReady, this);
       // 被踢下线
-      wx.$TRTCCalling.on(wx.$TRTCCalling.EVENT.KICKED_OUT, this.handleKickedOut, this);
+      wx.$TUICallEngine.on(EVENT.KICKED_OUT, this.handleKickedOut, this);
       // 切换通话模式
-      wx.$TRTCCalling.on(wx.$TRTCCalling.EVENT.CALL_MODE, this.handleCallMode, this);
+      wx.$TUICallEngine.on(EVENT.CALL_MODE, this.handleCallMode, this);
     },
     // 取消 tsignaling 事件监听
     _removeTSignalingEvent() {
       // 被邀请通话
-      wx.$TRTCCalling.off(wx.$TRTCCalling.EVENT.INVITED, this.handleNewInvitationReceived);
+      wx.$TUICallEngine.off(EVENT.INVITED, this.handleNewInvitationReceived);
       // 用户接听
-      wx.$TRTCCalling.off(wx.$TRTCCalling.EVENT.USER_ACCEPT, this.handleUserAccept);
+      wx.$TUICallEngine.off(EVENT.USER_ACCEPT, this.handleUserAccept);
       // 用户进入通话
-      wx.$TRTCCalling.off(wx.$TRTCCalling.EVENT.USER_ENTER, this.handleUserEnter);
+      wx.$TUICallEngine.off(EVENT.USER_ENTER, this.handleUserEnter);
       // 用户离开通话
-      wx.$TRTCCalling.off(wx.$TRTCCalling.EVENT.USER_LEAVE, this.handleUserLeave);
+      wx.$TUICallEngine.off(EVENT.USER_LEAVE, this.handleUserLeave);
       // 用户离开通话
-      wx.$TRTCCalling.off(wx.$TRTCCalling.EVENT.USER_UPDATE, this.handleUserUpdate);
+      wx.$TUICallEngine.off(EVENT.USER_UPDATE, this.handleUserUpdate);
       // 用户拒绝通话
-      wx.$TRTCCalling.off(wx.$TRTCCalling.EVENT.REJECT, this.handleInviteeReject);
+      wx.$TUICallEngine.off(EVENT.REJECT, this.handleInviteeReject);
       // 用户无响应
-      wx.$TRTCCalling.off(wx.$TRTCCalling.EVENT.NO_RESP, this.handleNoResponse);
+      wx.$TUICallEngine.off(EVENT.NO_RESP, this.handleNoResponse);
       // 用户忙线
-      wx.$TRTCCalling.off(wx.$TRTCCalling.EVENT.LINE_BUSY, this.handleLineBusy);
+      wx.$TUICallEngine.off(EVENT.LINE_BUSY, this.handleLineBusy);
       // 通话被取消
-      wx.$TRTCCalling.off(wx.$TRTCCalling.EVENT.CALLING_CANCEL, this.handleCallingCancel);
+      wx.$TUICallEngine.off(EVENT.CALLING_CANCEL, this.handleCallingCancel);
       // 通话超时未应答
-      wx.$TRTCCalling.off(wx.$TRTCCalling.EVENT.CALLING_TIMEOUT, this.handleCallingTimeout);
+      wx.$TUICallEngine.off(EVENT.CALLING_TIMEOUT, this.handleCallingTimeout);
       // 通话结束
-      wx.$TRTCCalling.off(wx.$TRTCCalling.EVENT.CALL_END, this.handleCallingEnd);
+      wx.$TUICallEngine.off(EVENT.CALL_END, this.handleCallingEnd);
       // SDK Ready 回调
-      wx.$TRTCCalling.off(wx.$TRTCCalling.EVENT.SDK_READY, this.handleSDKReady);
+      wx.$TUICallEngine.off(EVENT.SDK_READY, this.handleSDKReady);
       // 被踢下线
-      wx.$TRTCCalling.off(wx.$TRTCCalling.EVENT.KICKED_OUT, this.handleKickedOut);
+      wx.$TUICallEngine.off(EVENT.KICKED_OUT, this.handleKickedOut);
       // 切换通话模式
-      wx.$TRTCCalling.off(wx.$TRTCCalling.EVENT.CALL_MODE, this.handleCallMode);
+      wx.$TUICallEngine.off(EVENT.CALL_MODE, this.handleCallMode);
     },
     /**
      * C2C邀请通话，被邀请方会收到的回调
@@ -278,19 +277,21 @@ Component({
      */
     async call(params) {
       this.initCall();
-      if (this.data.callStatus !== 'idle') {
+      if (this.data.callStatus !== STATUS.IDLE) {
         console.warn(`${TAG_NAME}, call callStatus isn't idle`);
         return;
       }
-      wx.$TRTCCalling.call({ userID: params.userID, type: params.type }).then((res) => {
+
+      await wx.$TUICallEngine.call({ userID: params.userID, type: params.type }).then((res) => {
         this.data.config.type = params.type;
         this.getUserProfile([params.userID]);
         this.setData({
           pusher: res.pusher,
           config: this.data.config,
-          callStatus: 'calling',
+          callStatus: STATUS.CALLING,
           isSponsor: true,
         });
+        this.setSoundMode(this.data.config.type === MEDIA_TYPE.AUDIO ? AUDIO_PLAYBACK_DEVICE.EAR : AUDIO_PLAYBACK_DEVICE.SPEAKER);
         this.triggerEvent('sendMessage', {
           message: res.data.message,
         });
@@ -306,17 +307,17 @@ Component({
      */
     async groupCall(params) {
       this.initCall();
-      if (this.data.callStatus !== 'idle') {
+      if (this.data.callStatus !== STATUS.IDLE) {
         console.warn(`${TAG_NAME}, groupCall callStatus isn't idle`);
         return;
       }
-      wx.$TRTCCalling.groupCall({ userIDList: params.userIDList, type: params.type, groupID: params.groupID }).then((res) => {
+      wx.$TUICallEngine.groupCall({ userIDList: params.userIDList, type: params.type, groupID: params.groupID }).then((res) => {
         this.data.config.type = params.type;
         this.getUserProfile(params.userIDList);
         this.setData({
           pusher: res.pusher,
           config: this.data.config,
-          callStatus: 'calling',
+          callStatus: STATUS.CALLING,
           isSponsor: true,
         });
       });
@@ -325,23 +326,31 @@ Component({
      * 当您作为被邀请方收到 {@link TRTCCallingDelegate#onInvited } 的回调时，可以调用该函数接听来电
      */
     async accept() {
-      wx.$TRTCCalling.accept().then((res) => {
+      wx.$TUICallEngine.accept().then((res) => {
         console.log('accept', res);
         this.setData({
           pusher: res.pusher,
-          callStatus: 'connection',
+          callStatus: STATUS.CONNECTED,
         });
         this.triggerEvent('sendMessage', {
           message: res.message,
         });
-      });
+      })
+        .catch((error) => {
+          wx.showModal({
+            icon: 'none',
+            title: 'error',
+            content: error.message,
+            showCancel: false,
+          });
+        });
     },
     /**
      * 当您作为被邀请方收到的回调时，可以调用该函数拒绝来电
      */
     async reject() {
       console.log(`${TAG_NAME}, reject`);
-      wx.$TRTCCalling.reject().then((res) => {
+      wx.$TUICallEngine.reject().then((res) => {
         this.triggerEvent('sendMessage', {
           message: res.data.message,
         });
@@ -350,31 +359,32 @@ Component({
     },
 
     // xml层，是否开启扬声器
-    toggleSoundMode() {
+    setSoundMode(type) {
       this.setData({
-        soundMode: wx.$TRTCCalling._toggleSoundMode(),
+        soundMode: wx.$TUICallEngine.selectAudioPlaybackDevice(type),
       });
     },
 
     // xml层，挂断
     _hangUp() {
       console.log(`${TAG_NAME}, hangup`);
-      wx.$TRTCCalling.hangup();
+      wx.$TUICallEngine.hangup();
       this.reset();
     },
 
     //  切换大小屏 (仅支持1v1聊天)
     toggleViewSize(event) {
       this.setData({
-        screen: wx.$TRTCCalling._toggleViewSize(event),
+        // FIXME _toggleViewSize 不应该为TUICallEngine的方法 后续修改
+        screen: wx.$TUICallEngine._toggleViewSize(event),
       });
     },
     // 数据重置
     reset() {
       this.setData({
-        callStatus: 'idle',
+        callStatus: STATUS.IDLE,
         isSponsor: false,
-        soundMode: 'speaker',
+        soundMode: AUDIO_PLAYBACK_DEVICE.SPEAKER,
         pusher: {}, // TRTC 本地流
         playerList: [], // TRTC 远端流
       });
@@ -384,6 +394,7 @@ Component({
       const { name } = data.detail;
       switch (name) {
         case 'accept':
+          this.setSoundMode(this.data.config.type === MEDIA_TYPE.AUDIO ? AUDIO_PLAYBACK_DEVICE.EAR : AUDIO_PLAYBACK_DEVICE.SPEAKER);
           this.accept();
           break;
         case 'hangup':
@@ -393,12 +404,12 @@ Component({
           this.reject();
           break;
         case 'toggleSwitchCamera':
-          wx.$TRTCCalling.switchCamera();
+          wx.$TUICallEngine.switchCamera();
           break;
         case 'switchAudioCall':
-          wx.$TRTCCalling.switchAudioCall().then((res) => {
-            this.data.config.type = wx.$TRTCCalling.CALL_TYPE.AUDIO;
-            this.toggleSoundMode();
+          wx.$TUICallEngine.switchCallMediaType(MEDIA_TYPE.AUDIO).then((res) => {
+            this.data.config.type = MEDIA_TYPE.AUDIO;
+            this.setSoundMode(AUDIO_PLAYBACK_DEVICE.EAR);
             this.setData({
               config: this.data.config,
             });
@@ -420,45 +431,45 @@ Component({
           this.toggleViewSize(event);
           break;
         case 'pusherNetStatus':
-          wx.$TRTCCalling._pusherNetStatus(event);
+          wx.$TUICallEngine._pusherNetStatus(event);
           break;
         case 'playNetStatus':
-          wx.$TRTCCalling._playNetStatus(event);
+          wx.$TUICallEngine._playNetStatus(event);
           break;
         case 'pusherStateChangeHandler':
-          wx.$TRTCCalling._pusherStateChangeHandler(event);
+          wx.$TUICallEngine._pusherStateChangeHandler(event);
           break;
         case 'pusherAudioVolumeNotify':
-          wx.$TRTCCalling._pusherAudioVolumeNotify(event);
+          wx.$TUICallEngine._pusherAudioVolumeNotify(event);
           break;
         case 'playerStateChange':
-          wx.$TRTCCalling._playerStateChange(event);
+          wx.$TUICallEngine._playerStateChange(event);
           break;
         case 'playerAudioVolumeNotify':
-          wx.$TRTCCalling._playerAudioVolumeNotify(event);
+          wx.$TUICallEngine._playerAudioVolumeNotify(event);
           break;
         case 'pusherAudioHandler':
-          wx.$TRTCCalling._pusherAudioHandler(event);
+          wx.$TUICallEngine._pusherAudioHandler(event);
           break;
         case 'hangup':
           this._hangUp();
           break;
         case 'toggleSoundMode':
-          this.toggleSoundMode();
+          this.setSoundMode(this.data.soundMode === AUDIO_PLAYBACK_DEVICE.EAR ? AUDIO_PLAYBACK_DEVICE.SPEAKER : AUDIO_PLAYBACK_DEVICE.EAR);
           break;
         case 'pusherVideoHandler':
-          wx.$TRTCCalling._pusherVideoHandler(event);
+          wx.$TUICallEngine._pusherVideoHandler(event);
           break;
         case 'toggleSwitchCamera':
-          wx.$TRTCCalling.switchCamera(event);
+          wx.$TUICallEngine.switchCamera(event);
           break;
         case 'switchAudioCall':
-          wx.$TRTCCalling.switchAudioCall().then((res) => {
-            this.data.config.type = wx.$TRTCCalling.CALL_TYPE.AUDIO;
-            this.toggleSoundMode();
+          wx.$TUICallEngine.switchCallMediaType(MEDIA_TYPE.AUDIO).then((res) => {
+            this.data.config.type = MEDIA_TYPE.AUDIO;
             this.setData({
               config: this.data.config,
             });
+            this.setSoundMode(AUDIO_PLAYBACK_DEVICE.EAR);
             this.triggerEvent('sendMessage', {
               message: res.data.message,
             });
@@ -467,6 +478,11 @@ Component({
         default:
           break;
       }
+    },
+
+    // 设置用户的头像、昵称
+    setSelfInfo(nickName, avatar) {
+      return wx.$TUICallEngine.setSelfInfo(nickName, avatar);
     },
 
     // 获取用户资料
@@ -478,28 +494,28 @@ Component({
     },
     // 获取 tim 实例
     getTim() {
-      return wx.$TRTCCalling.getTim();
+      return wx.$TUICallEngine.getTim();
     },
     // 初始化TRTCCalling
     async init() {
       this._addTSignalingEvent();
       try {
-        const res = await wx.$TRTCCalling.login({
+        const res = await wx.$TUICallEngine.login({
           userID: this.data.config.userID,
           userSig: this.data.config.userSig,
         });
         return res;
       } catch (error) {
-        throw new Error('TRTCCalling login failure', error);
+        throw new Error('TUICallEngine login failure', error);
       }
     },
-    // 销毁 TRTCCalling
+    // 销毁 TUICallEngine
     destroyed() {
       this._removeTSignalingEvent();
       if (this.data.config.tim) {
-        wx.$TRTCCalling.destroyed();
+        wx.$TUICallEngine.destroyed();
       } else {
-        wx.$TRTCCalling.logout();
+        wx.$TUICallEngine.logout();
       }
     },
   },
@@ -512,15 +528,12 @@ Component({
 
     },
     attached() {
+
     },
     ready() {
-      if (!wx.$TRTCCalling) {
-        wx.$TRTCCalling = new TRTCCalling({
-          sdkAppID: this.data.config.sdkAppID,
-          tim: wx.$tim,
-        });
-      }
-      wx.$TRTCCalling.initData();
+      wx.$TUICallEngine = TUICallEngine.createInstance({
+        sdkAppID: this.data.config.sdkAppID,
+      });
       this.reset();
     },
     detached() {

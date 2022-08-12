@@ -1,9 +1,9 @@
-import { genTestUserSig } from './debug/GenerateTestUserSig'
-import Aegis from './lib/aegis'
+import { genTestUserSig } from './debug/GenerateTestUserSig';
+import Aegis from './lib/aegis';
 
-const Signature = genTestUserSig('')
+const Signature = genTestUserSig('');
 App({
-  onLaunch: function() {
+  onLaunch() {
     wx.$globalData = {
       userInfo: null,
       headerHeight: 0,
@@ -15,9 +15,9 @@ App({
       expiresIn: '',
       phone: '',
       sessionID: '',
-    }
-    this.aegisInit()
-    this.aegisReportEvent('onLaunch', 'onLaunch-success')
+    };
+    this.aegisInit();
+    this.aegisReportEvent('onLaunch', 'onLaunch-success');
   },
   aegisInit() {
     wx.aegis = new Aegis({
@@ -35,10 +35,10 @@ App({
         ext2: 'wxTUICallingExternal',
         ext3: genTestUserSig('').sdkAppID,
       });
-      if(typeof this.aegisReportEvent[name] !== 'object') {
+      if (typeof this.aegisReportEvent[name] !== 'object') {
         this.aegisReportEvent[name] = {};
       }
       this.aegisReportEvent[name][ext1] = true;
     }
   },
-})
+});
