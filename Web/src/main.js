@@ -2,13 +2,15 @@ import Vue from 'vue'
 import 'element-ui/lib/theme-chalk/index.css';
 import {
   Input, Button, Message, MessageBox, Autocomplete, Dialog,
-  DropdownItem, DropdownMenu, Dropdown
+  DropdownItem, DropdownMenu, Dropdown, Form, FormItem, Checkbox,
+  Link, Select, Option
 } from 'element-ui';
 import store from './store';
-import {createRouter} from './router'
-import {createTrtcCalling} from './trtc-calling';
-import TRTCCalling from 'trtc-calling-js';
+import { createRouter } from './router'
+import { createTUICallEngine } from './tuiCallEngine';
 import App from './App.vue'
+import VConsole from 'vconsole';
+import { browser } from './utils'
 
 Vue.use(Input);
 Vue.use(Button);
@@ -17,14 +19,29 @@ Vue.use(Dialog);
 Vue.use(Dropdown);
 Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
+Vue.use(Form);
+Vue.use(FormItem);
+Vue.use(Checkbox);
+Vue.use(Link);
+Vue.use(Select);
+Vue.use(Option);
 
 Vue.prototype.$message = Message;
 Vue.prototype.$confirm = MessageBox.confirm;
 
-Vue.prototype.$trtcCalling = createTrtcCalling();
-Vue.prototype.TrtcCalling = TRTCCalling;
+const { tim, tuiCallEngine, TUICallEvent, TUICallType } = createTUICallEngine();
+
+Vue.prototype.$tim = tim;
+Vue.prototype.$tuiCallEngine = tuiCallEngine;
+Vue.prototype.TUICallEvent = TUICallEvent;
+Vue.prototype.TUICallType = TUICallType;
 
 Vue.config.productionTip = false
+
+if (browser().isH5) {
+  const vConsole = new VConsole();
+  console.log(vConsole);
+}
 
 new Vue({
   render: h => h(App),

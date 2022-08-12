@@ -4,19 +4,24 @@ export function isValidatePhoneNum(phoneNum) {
   const reg = new RegExp('^1[0-9]{10}$', 'gi');
   return phoneNum.match(reg);
 }
+export function isValidateEmail(email) {
+  // eslint-disable-next-line
+  const reg = new RegExp('^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$', 'gi');
+  return email.match(reg);
+}
 
 export function isUserNameValid(username) {
   return username && username.length <= 20;
 }
 
-export function setUserLoginInfo({token, phoneNum}) {
-  localStorage.setItem('userInfo', JSON.stringify({token, phoneNum}));
+export function setUserLoginInfo(userInfo) {
+  localStorage.setItem('userInfo', JSON.stringify(userInfo));
 }
 
 export function addToSearchHistory(searchUser) {
   const MAX_HISTORY_NUM = 3;
   let searchUserList = getSearchHistory();
-  const found = searchUserList.find(user => user.userId === searchUser.userId);
+  const found = searchUserList.find(user => user.userID === searchUser.userID);
   if (!found) {
     searchUserList.push(searchUser);
   }
@@ -24,6 +29,10 @@ export function addToSearchHistory(searchUser) {
     searchUserList = searchUserList.slice(-MAX_HISTORY_NUM);
   }
   localStorage.setItem('searchHistory', JSON.stringify(searchUserList));
+}
+
+export function delSearchHistory() {
+  localStorage.removeItem('searchHistory');
 }
 
 export function getSearchHistory() {
@@ -46,6 +55,9 @@ export function log(content) {
   console.log(`${LOG_PREFIX} ${content}`)
 }
 
+export const baseURL = 'https://service-c2zjvuxa-1252463788.gz.apigw.tencentcs.com'
+export const ENV = 'prod';
+
 export function formateTime(num) {
   if (typeof num === "number") {
     if (num <= 0) {
@@ -60,4 +72,22 @@ export function formateTime(num) {
   } else {
     return '00:00:00'
   }
+}
+
+export function browser() {
+  const ua = navigator.userAgent,
+    isWindowsPhone = /(?:Windows Phone)/.test(ua),
+    isSymbian = /(?:SymbianOS)/.test(ua) || isWindowsPhone,
+    isAndroid = /(?:Android)/.test(ua),
+    isFireFox = /(?:Firefox)/.test(ua),
+    isTablet = /(?:iPad|PlayBook)/.test(ua) || (isAndroid && !/(?:Mobile)/.test(ua)) || (isFireFox && /(?:Tablet)/.test(ua)),
+    isPhone = /(?:iPhone)/.test(ua) && !isTablet,
+    isPc = !isPhone && !isAndroid && !isSymbian;
+  return {
+    isTablet: isTablet,
+    isPhone: isPhone,
+    isAndroid: isAndroid,
+    isPC: isPc,
+    isH5: isPhone || isAndroid || isTablet,
+  };
 }

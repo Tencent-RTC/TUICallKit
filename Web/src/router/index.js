@@ -2,10 +2,10 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 import store from '../store';
-import HomePage from '../components/home-page';
-import Login from '../components/login';
-import AudioCall from '../components/audio-call';
-import VideoCall from '../components/video-call';
+import HomePage from '../views/home-page';
+import Login from '../views/login';
+import Profile from '../views/profile';
+import Call from '../views/call';
 
 Vue.use(Router);
 
@@ -14,10 +14,11 @@ export function createRouter () {
     mode: 'hash',
     fallback: false,
     routes: [
-      { path: '/', component: HomePage},
-      { path: '/login', component: Login},
-      { path: '/audio-call', component: AudioCall},
-      { path: '/video-call', component: VideoCall}
+      { path: '/', redirect:'login'},
+      { path: '/home', name:'home', component: HomePage},
+      { path: '/login', name:'login', component: Login},
+      { path: '/profile', name:'profile', component: Profile},
+      { path: '/call', name:'call', component: Call},
     ]
   });
   router.beforeEach((to, from, next) => {
@@ -31,6 +32,7 @@ export function createRouter () {
     }
     next();
   })
+
   return router;
 }
 

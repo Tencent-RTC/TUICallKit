@@ -1,49 +1,55 @@
 <template>
   <div class="search-user-container" v-if="callStatus !== 'connected'">
     <div class="search-section">
-      <el-input class="inline-input" v-model="searchInput" maxlength="11" placeholder="Enter a user ID"></el-input>
+      <el-input
+        class="inline-input"
+        v-model="searchInput"
+        @change="querySearch"
+        placeholder="搜索userID"
+      >
+        <i slot="prefix" class="el-input__icon el-icon-search"></i>
+      </el-input>
+      <el-button class="search-user-btn">搜索</el-button>
     </div>
-
-    <div v-show="callStatus !== 'connected'" class="search-user-list">
-      <div v-if="callStatus === 'calling' && isInviter" class="calling-user-footer">
-        <el-button class="user-item-join-btn calling">Calling...</el-button>
-        <el-button 
-          class="user-item-cancel-join-btn" 
-          :disabled="cancel" 
-          :loading="cancel" 
-          @click="handleCancelCallBtnClick">Cancel</el-button>
+    <div v-if="userList.length > 0 && callStatus !== 'connected'" class="search-user-list">
+      <div class="search-user-list-title">{{ searchResultList.length > 0 ? '搜索结果:' : '搜索历史:'}}</div>
+      <div class="user-item" v-for="item in userList" :key="item.userId">
+        <div class="user-item-info">
+          <div class="user-item-avatar-wrapper">
+            <img :src="item.avatar" onerror="this.src='https://web.sdk.qcloud.com/component/TUIKit/assets/avatar_21.png'" />
+          </div>
+          <div class="user-item-username">{{item.nick || item.userID}}</div>
+          <div class="user-item-username">（ userID: {{item.userID}} ）</div>
+        </div>
+        <div
+          v-if="callStatus === 'calling' && callUserId === item.userID"
+          class="calling-user-footer"
+        >
+          <el-button class="user-item-join-btn calling">呼叫中...</el-button>
+          <el-button class="user-item-cancel-join-btn" @click="handleCancelCallBtnClick">取消</el-button>
+        </div>
+        <el-button v-else @click="handleCallBtnClick(item.userID)" :class="['user-item-join-btn']" :disabled="!!callUserId" >呼叫</el-button>
       </div>
-      <el-button v-else 
-        @click="handleCallBtnClick(searchInput)" 
-        :disabled="call" 
-        class="user-item-join-btn">Call</el-button>
     </div>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import { getSearchHistory } from "../../utils";
-import { aegisReportEvent } from "../../utils/aegis"
+import {
+  // isValidatePhoneNum,
+  addToSearchHistory,
+  getSearchHistory
+} from "../../utils";
 
 export default {
   name: "SearchUser",
-  props:{
-    callFlag: {
-      type: Boolean
-    },
-    cancelFlag:{
-      type: Boolean
-    },
-  },
   data() {
     return {
       searchInput: "",
       callUserId: "",
       searchResultList: [],
-      searchHistoryUser: getSearchHistory(),
-      call: false,
-      cancel: false
+      searchHistoryUser: [],
     };
   },
   computed: {
@@ -51,8 +57,7 @@ export default {
       loginUserInfo: state => state.loginUserInfo,
       meetingUserIdList: state => state.meetingUserIdList,
       callStatus: state => state.callStatus,
-      isAccepted: state => state.isAccepted,
-      isInviter: state => state.isInviter
+      isAccepted: state => state.isAccepted
     }),
     userList: function() {
       if (this.searchInput === "" && this.searchHistoryUser.length !== 0) {
@@ -60,6 +65,9 @@ export default {
       }
       return this.searchResultList;
     }
+  },
+  mounted() {
+    this.searchHistoryUser = getSearchHistory(this.loginUserInfo.userId)
   },
   watch: {
     callStatus: function(newStatus, oldStatus) {
@@ -70,38 +78,45 @@ export default {
       if (newStatus === "idle") {
         this.callUserId = "";
       }
-    },
-    callFlag(newVal) {
-      this.call = newVal
-    },
-    cancelFlag(newVal) {
-      this.cancel = newVal
     }
   },
   methods: {
-    handleCallBtnClick: function(param) {
-      if (param === this.loginUserInfo.userId) {
-        this.$message("Please don't call yourself!");
+    querySearch: async function() {
+      const { userId } = this.loginUserInfo;
+      if (this.searchInput === "") {
+        this.searchResultList = [];
         return;
       }
-      this.call = false;
-      this.callUserId = param;
-      this.$emit("callUser", { param });
-      this.handleDiffPenetration();
+      // if (!isValidatePhoneNum(this.searchInput)) {
+      //   this.$message.error("无效电话号码");
+      //   return;
+      // }
+      if (userId === this.searchInput) {
+        this.$message.warning("不能搜索添加自己");
+        return;
+      }
+
+      const response = await this.$tim.getUserProfile({userIDList: [this.searchInput]})
+      if (response.data.length === 0) {
+        return this.$message.warning("该用户不存在");
+      } else {
+        addToSearchHistory(response.data[0])
+        this.searchResultList = [...response.data]
+        console.log(this.searchResultList);
+      }
+      
+    },
+    handleCallBtnClick: function(userId) {
+      this.callUserId = userId;
+      this.$emit("callUser", { userId });
     },
     handleCancelCallBtnClick: function() {
-      // The user accepted the invitation but failed to enter the room
       // 对方刚接受邀请，但进房未成功
-      this.cancel = true
-      this.$emit("cancelCallUser");
-    },
-    handleDiffPenetration: function() {
-      const path = this.$route.path;
-      if (path.indexOf("video") !== -1) {
-        aegisReportEvent("videoCall", "videoCall-1v1");
-      } else if (path.indexOf("audio") !== -1) {
-        aegisReportEvent("VoiceCall", "VoiceCall-1v1");
+      if (this.isAccepted && this.callStatus !== "connected") {
+        return;
       }
+      this.callUserId = "";
+      this.$emit("cancelCallUser");
     }
   }
 };
@@ -109,7 +124,7 @@ export default {
 
 <style scoped>
 .search-user-container {
-  width: 400px;
+  width: 450px;
   margin: 10px auto 0;
 }
 .search-section {
@@ -118,9 +133,6 @@ export default {
 }
 .search-user-btn {
   margin-left: 10px;
-}
-.search-user-list {
-  padding-top: 20px;
 }
 .search-user-list-title {
   margin-top: 20px;
@@ -146,6 +158,9 @@ export default {
 }
 .user-item-username {
   margin-left: 20px;
+}
+.el-button:disabled {
+  background: #DCDFE6 !important;
 }
 @media screen and (max-width: 767px) {
   .search-user-container {

@@ -1,13 +1,6 @@
+import {getUserLoginInfo} from '../utils';
 
-
-export async function getUsernameByUserid(userId) {
-  return userId;
-}
-
-export async function getUserDetailInfoByUserid(userId) {
-  return {
-    name: userId,
-    avatar: '',
-    userId: userId
-  };
+export async function getUserDetailInfoByUserid() {
+  const loginInfo = getUserLoginInfo();
+  return loginInfo;
 }
