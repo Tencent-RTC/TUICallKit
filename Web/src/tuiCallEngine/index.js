@@ -1,5 +1,5 @@
 import TIM from 'tim-js-sdk';
-import { TUICallEngine, TUICallEvent, TUICallType } from 'tuicall-engine-web';
+import { TUICallEngine, TUICallEvent, TUICallType } from 'tuicall-engine-webrtc';
 import { SDKAPPID } from "../../public/debug/GenerateTestUserSig";
 
 export function createTUICallEngine() {
