@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from "vuex"
 import {aegisReportEvent} from '../../utils/aegis'
 
 export default {
@@ -23,9 +23,6 @@ export default {
     return {
       enableEditName: true
     };
-  },
-  mounted() {
-    aegisReportEvent("login", "login-success");
   },
   methods: {
     goto: function(path) {

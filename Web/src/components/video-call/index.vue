@@ -49,8 +49,9 @@
 <script>
 import { mapState } from "vuex";
 import SearchUser from "../search-user";
-import { getUsernameByUserid } from "../../service";
+import { getUsernameByUserid } from "../../service"
 import { formateTime } from "../../utils"
+import { aegisReportEvent } from "../../utils/aegis"
 
 export default {
   name: "VideoCall",
@@ -78,24 +79,27 @@ export default {
       userId2Name: {},
       callFlag: false,
       cancelFlag: false,
-      timer: 0,
+      timer: null,
       chatTime: 0
     };
   },
   mounted() {
-    this.showChatTime();
     if (this.callStatus === "connected" && !this.isInviter) {
+      this.showChatTime();
       this.startMeeting();
       this.updateUserId2Name(this.meetingUserIdList);
     }
   },
   destroyed() {
-    clearInterval(this.timer);
     this.$store.commit("updateMuteVideoUserIdList", []);
     this.$store.commit("updateMuteAudioUserIdList", []);
     if (this.callStatus === "connected") {
       this.$trtcCalling.hangup();
       this.$store.commit("updateCallStatus", "idle");
+    }
+    if (this.timer !== null) {
+      clearInterval(this.timer);
+      this.timer = null;
     }
   },
   watch: {
@@ -103,8 +107,10 @@ export default {
       // Establish a call connection as an invitee
       // 作为被邀请者, 建立通话连接
       if (newStatus !== oldStatus && newStatus === "connected") {
+        this.showChatTime();
         this.startMeeting();
         this.updateUserId2Name(this.meetingUserIdList);
+        aegisReportEvent("videoCall", "VideoCall-1v1");
       }
     },
     meetingUserIdList: function(newList, oldList) {

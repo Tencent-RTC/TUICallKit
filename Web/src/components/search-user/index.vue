@@ -80,6 +80,7 @@ export default {
   },
   methods: {
     handleCallBtnClick: function(param) {
+      let path = this.$route.path;
       if (param === this.loginUserInfo.userId) {
         this.$message("Please don't call yourself!");
         return;
@@ -87,21 +88,17 @@ export default {
       this.call = false;
       this.callUserId = param;
       this.$emit("callUser", { param });
-      this.handleDiffPenetration();
+      if (path.indexOf("video") !== -1) {
+          aegisReportEvent("videoCallCount", "VideoCall-1v1-count");
+      } else if (path.indexOf("audio") !== -1) {
+          aegisReportEvent("voiceCallCount", "VoiceCall-1v1-count");
+      }
     },
     handleCancelCallBtnClick: function() {
       // The user accepted the invitation but failed to enter the room
       // 对方刚接受邀请，但进房未成功
       this.cancel = true
       this.$emit("cancelCallUser");
-    },
-    handleDiffPenetration: function() {
-      const path = this.$route.path;
-      if (path.indexOf("video") !== -1) {
-        aegisReportEvent("videoCall", "videoCall-1v1");
-      } else if (path.indexOf("audio") !== -1) {
-        aegisReportEvent("VoiceCall", "VoiceCall-1v1");
-      }
     }
   }
 };

@@ -12,6 +12,7 @@
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="command-detect">Device testing(设备检测)</el-dropdown-item>
+          <el-dropdown-item command="command-question">常见问题</el-dropdown-item>
           <el-dropdown-item command="command-logout">Log out</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -21,6 +22,7 @@
 
 <script>
 import { setUserLoginInfo } from "../../utils";
+import {aegisReportEvent} from '../../utils/aegis'
 export default {
   name: "HeaderNav",
   methods: {
@@ -30,9 +32,19 @@ export default {
           "https://web.sdk.qcloud.com/trtc/webrtc/demo/detect/index.html",
           "__blank"
         );
+        aegisReportEvent("deviceTest", "test-device");
         return;
       }
 
+      if (command === "command-question") {
+        window.open(
+          "https://cloud.tencent.com/document/product/647/45558",
+          "__blank"
+        );
+        aegisReportEvent("commonProblem", "visit-comproblem");
+        return;
+      }
+      
       if (command === "command-logout") {
         this.$trtcCalling.logout();
         this.$store.commit("userLogoutSuccess");
