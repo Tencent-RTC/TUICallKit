@@ -12,7 +12,7 @@ android {
         applicationId "com.tencent.trtc"
         versionName "1.0"
         versionCode 1
-        minSdkVersion 17
+        minSdkVersion 19
         targetSdkVersion 26
         multiDexEnabled true
         ndk {
