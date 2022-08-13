@@ -1,6 +1,6 @@
 //
-//  TRTCCallingContactView.swift
-//  TRTCAPP_AppStore
+//  ContactView.swift
+//  TUICallingApp
 //
 //  Created by noah on 2021/12/21.
 //
@@ -17,7 +17,7 @@ enum TRTCCallingUserRemoveReason: UInt32 {
     case busy
 }
 
-public class TRTCCallingContactView: UIView {
+public class ContactView: UIView {
     var selectedFinished: (([V2TIMUserFullInfo])->Void)? = nil
     var btnType: CallingSelectUserButtonType = .call
     @objc var callType: TUICallMediaType = .audio
@@ -84,7 +84,7 @@ public class TRTCCallingContactView: UIView {
         let table = UITableView(frame: CGRect.zero, style: .plain)
         table.tableFooterView = UIView(frame: .zero)
         table.backgroundColor = UIColor.clear
-        table.register(CallingSelectUserTableViewCell.classForCoder(), forCellReuseIdentifier: "CallingSelectUserTableViewCell")
+        table.register(SelectUserTableViewCell.classForCoder(), forCellReuseIdentifier: "CallingSelectUserTableViewCell")
         table.delegate = self
         table.dataSource = self
         return table
@@ -132,7 +132,7 @@ public class TRTCCallingContactView: UIView {
     var lastNetworkQualityCallTime: Date?
 }
 
-extension TRTCCallingContactView {
+extension ContactView {
     
     func setupUI() {
         constructViewHierarchy()
@@ -218,7 +218,7 @@ extension TRTCCallingContactView {
     }
 }
 
-extension TRTCCallingContactView: UITextFieldDelegate {
+extension ContactView: UITextFieldDelegate {
     
     public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         hiddenNoMembersImg(isHidden: false)
@@ -258,7 +258,7 @@ extension TRTCCallingContactView: UITextFieldDelegate {
     }
 }
 
-extension TRTCCallingContactView: UITableViewDelegate, UITableViewDataSource {
+extension ContactView: UITableViewDelegate, UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if shouldShowSearchResult {
@@ -268,7 +268,7 @@ extension TRTCCallingContactView: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CallingSelectUserTableViewCell") as! CallingSelectUserTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CallingSelectUserTableViewCell") as! SelectUserTableViewCell
         cell.selectionStyle = .none
         if shouldShowSearchResult {
             if let V2TIMUserFullInfo = searchResult {
@@ -304,7 +304,7 @@ extension TRTCCallingContactView: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-extension TRTCCallingContactView {
+extension ContactView {
     
     private func registerButtonTouchEvents() {
         searchBtn.addTarget(self, action: #selector(searchBtnTouchEvent(sender:)), for: .touchUpInside)

@@ -1,6 +1,6 @@
 //
-//  TRTCRegisterViewController.swift
-//  TXLiteAVDemo
+//  RegisterViewController.swift
+//  TUICallKitApp
 //
 //  Created by gg on 2021/4/8.
 //  Copyright © 2021 Tencent. All rights reserved.
@@ -12,7 +12,7 @@ import TXAppBasic
 import SnapKit
 import UIKit
 
-class TRTCRegisterViewController: UIViewController {
+class RegisterViewController: UIViewController {
     
     
     let loading = UIActivityIndicatorView.init(style: .large)
@@ -56,7 +56,7 @@ class TRTCRegisterViewController: UIViewController {
     
     override func loadView() {
         super.loadView()
-        let rootView = TRTCRegisterRootView()
+        let rootView = RegisterRootView()
         rootView.rootVC = self
         view = rootView
     }

@@ -1,6 +1,6 @@
 //
 //  profileManager.swift
-//  trtcScenesDemo
+//  TUICallKitApp
 //
 //  Created by xcoderliu on 12/23/19.
 //  Copyright © 2019 xcoderliu. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  appUtil.swift
-//  trtcScenesDemo
+//  TUICallKitApp
 //
 //  Created by xcoderliu on 12/24/19.
 //  Copyright © 2019 xcoderliu. All rights reserved.

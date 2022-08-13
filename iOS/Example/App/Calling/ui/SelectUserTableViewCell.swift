@@ -1,6 +1,6 @@
 //
 //  CallingSelectUserTableViewCell.swift
-//  TRTCScene
+//  TUICallingApp
 //
 //  Created by adams on 2021/5/20.
 //
@@ -14,7 +14,7 @@ public enum CallingSelectUserButtonType {
     case delete
 }
 
-public class CallingSelectUserTableViewCell: UITableViewCell {
+public class SelectUserTableViewCell: UITableViewCell {
     private var isViewReady = false
     private var buttonAction: (() -> Void)?
     lazy var userImageView: UIImageView = {

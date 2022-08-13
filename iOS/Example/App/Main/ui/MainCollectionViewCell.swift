@@ -1,8 +1,9 @@
 //
 //  MainCollectionViewCell.swift
-//  TRTCScene
+//  TUICallKitApp
 //
 //  Created by adams on 2021/5/11.
+//  Copyright © 2021 Tencent. All rights reserved.
 //
 
 import UIKit

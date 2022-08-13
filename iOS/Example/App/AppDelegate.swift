@@ -1,8 +1,9 @@
 //
 //  AppDelegate.swift
-//  TRTCCalling
+//  TUICallKitApp
 //
 //  Created by adams on 2021/5/7.
+//  Copyright © 2021 Tencent. All rights reserved.
 //
 
 import UIKit
@@ -59,7 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func showLoginViewController() {
-        let loginVC = TRTCLoginViewController.init()
+        let loginVC = LoginViewController.init()
         let nav = UINavigationController(rootViewController: loginVC)
         
         if let keyWindow = SceneDelegate.getKeyWindow() {

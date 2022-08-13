@@ -1,6 +1,6 @@
 //
-//  TRTCLoginViewController.swift
-//  TXLiteAVDemo
+//  LoginViewController.swift
+//  TUICallKitApp
 //
 //  Created by gg on 2021/4/7.
 //  Copyright © 2021 Tencent. All rights reserved.
@@ -11,7 +11,7 @@ import Toast_Swift
 import WebKit
 import TUICallKit
 
-class TRTCLoginViewController: UIViewController {
+class LoginViewController: UIViewController {
     
     let loading = UIActivityIndicatorView()
     
@@ -45,7 +45,7 @@ class TRTCLoginViewController: UIViewController {
             self.view.makeToast(err)
         }) {
             loading.startAnimating()
-            if let rootView = view as? TRTCLoginRootView {
+            if let rootView = view as? LoginRootView {
                 rootView.phoneNumTextField.text = ProfileManager.shared.curUserModel?.phone ?? ""
             }
         }
@@ -94,13 +94,13 @@ class TRTCLoginViewController: UIViewController {
     }
     
     func showRegisterVC() {
-        let vc = TRTCRegisterViewController.init()
+        let vc = RegisterViewController.init()
         navigationController?.pushViewController(vc, animated: true)
     }
     
     override func loadView() {
         super.loadView()
-        let rootView = TRTCLoginRootView()
+        let rootView = LoginRootView()
         rootView.rootVC = self
         view = rootView
     }

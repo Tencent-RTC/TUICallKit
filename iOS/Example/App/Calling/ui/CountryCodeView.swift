@@ -1,6 +1,6 @@
 //
-//  TRTCCallingCountryCodeView.swift
-//  TXLiteAVDemo
+//  CountryCodeView.swift
+//  TUICallingApp
 //
 //  Created by gg on 2021/4/30.
 //  Copyright © 2021 Tencent. All rights reserved.
@@ -10,10 +10,10 @@ import Foundation
 import TXAppBasic
 import UIKit
 
-public class TRTCCallingCountryAlert: TRTCCallingAlertContentView {
+public class CountryAlert: AlertContentView {
     
-    lazy var dataSource: [TRTCCallingCountryModel] = {
-        let list = TRTCCallingCountryModel.loginCountryList
+    lazy var dataSource: [CountryModel] = {
+        let list = CountryModel.loginCountryList
         return list
     }()
     
@@ -23,7 +23,7 @@ public class TRTCCallingCountryAlert: TRTCCallingAlertContentView {
         return tableView
     }()
     
-    public var didSelect: ((_ model: TRTCCallingCountryModel)->())?
+    public var didSelect: ((_ model: CountryModel)->())?
     
     override init(frame: CGRect = .zero) {
         super.init(frame: frame)
@@ -49,19 +49,19 @@ public class TRTCCallingCountryAlert: TRTCCallingAlertContentView {
     override func bindInteraction() {
         super.bindInteraction()
         
-        tableView.register(TRTCCallingCountryListCell.self, forCellReuseIdentifier: "TRTCCallingCountryListCell")
+        tableView.register(CountryListCell.self, forCellReuseIdentifier: "TRTCCallingCountryListCell")
         tableView.dataSource = self
         tableView.delegate = self
     }
 }
 
-extension TRTCCallingCountryAlert: UITableViewDataSource {
+extension CountryAlert: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataSource.count
     }
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TRTCCallingCountryListCell", for: indexPath)
-        if let scell = cell as? TRTCCallingCountryListCell {
+        if let scell = cell as? CountryListCell {
             let model = dataSource[indexPath.row]
             scell.model = model
         }
@@ -71,7 +71,7 @@ extension TRTCCallingCountryAlert: UITableViewDataSource {
         return 40
     }
 }
-extension TRTCCallingCountryAlert: UITableViewDelegate {
+extension CountryAlert: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if let action = didSelect {
@@ -81,9 +81,9 @@ extension TRTCCallingCountryAlert: UITableViewDelegate {
     }
 }
 
-class TRTCCallingCountryListCell: UITableViewCell {
+class CountryListCell: UITableViewCell {
     
-    var model: TRTCCallingCountryModel? {
+    var model: CountryModel? {
         didSet {
             guard let model = model else {
                 return
@@ -149,7 +149,7 @@ class TRTCCallingCountryListCell: UITableViewCell {
         
     }
 }
-public class TRTCCallingAlertContentView: UIView {
+public class AlertContentView: UIView {
     lazy var bgView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor.black
@@ -252,7 +252,7 @@ public class TRTCCallingAlertContentView: UIView {
     }
 }
 
-public class TRTCCallingCountryModel: NSObject {
+public class CountryModel: NSObject {
     public let code: String
     let displayEN: String
     let displayZH: String
@@ -287,13 +287,13 @@ public class TRTCCallingCountryModel: NSObject {
         return String(describing: preferredLang).hasPrefix("zh-")
     }
     
-    static var loginCountryList: [TRTCCallingCountryModel] {
+    static var loginCountryList: [CountryModel] {
         get {
             let list = loadLoginCountryJson()
-            var res : [TRTCCallingCountryModel] = []
+            var res : [CountryModel] = []
             list.forEach { (dic) in
                 if let code = dic["code"] as? Int, let en = dic["en"] as? String, let zh = dic["zh"] as? String {
-                    let model = TRTCCallingCountryModel(code: code, displayEN: en, displayZH: zh)
+                    let model = CountryModel(code: code, displayEN: en, displayZH: zh)
                     res.append(model)
                 }
             }

@@ -1,6 +1,6 @@
 //
-//  TRTCCallingContactViewController.swift
-//  TXLiteAVDemo
+//  ContactViewController.swift
+//  TUICallingApp
 //
 //  Created by abyyxwang on 2020/8/6.
 //  Copyright © 2020 Tencent. All rights reserved.
@@ -10,13 +10,13 @@ import Foundation
 import TUICallKit
 import UIKit
 
-public class TRTCCallingContactViewController: UIViewController {
+public class ContactViewController: UIViewController {
     var selectedFinished: (([V2TIMUserFullInfo])->Void)? = nil
     var callingVC = UIViewController()
     @objc var callType: TUICallMediaType = .audio
     
-    lazy var callingContactView: TRTCCallingContactView = {
-        let callingContactView = TRTCCallingContactView(frame: .zero, type: .call) { [weak self] users in
+    lazy var callingContactView: ContactView = {
+        let callingContactView = ContactView(frame: .zero, type: .call) { [weak self] users in
             guard let `self` = self else {return}
             var userIds: [String] = []
             for V2TIMUserFullInfo in users {
@@ -58,7 +58,7 @@ public class TRTCCallingContactViewController: UIViewController {
     }
 }
 
-extension TRTCCallingContactViewController {
+extension ContactViewController {
     func setupUI() {
         view.addSubview(callingContactView)
         

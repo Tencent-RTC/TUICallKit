@@ -1,8 +1,9 @@
 //
 //  SceneDelegate.swift
-//  TRTCCalling
+//  TUICallKitApp
 //
 //  Created by adams on 2021/5/7.
+//  Copyright © 2021 Tencent. All rights reserved.
 //
 
 import UIKit
@@ -19,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window = UIWindow.init(windowScene: windowScene)
         self.window?.backgroundColor = UIColor.white
         
-        let loginVC = TRTCLoginViewController.init()
+        let loginVC = LoginViewController.init()
         let nav = UINavigationController.init(rootViewController: loginVC)
         self.window?.rootViewController = nav
         self.window?.makeKeyAndVisible()
