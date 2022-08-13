@@ -1,6 +1,6 @@
 //
-//  TRTCLoginRootView.swift
-//  TXLiteAVDemo
+//  LoginRootView.swift
+//  TUICallKitApp
 //
 //  Created by gg on 2021/4/7.
 //  Copyright © 2021 Tencent. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TRTCLoginRootView: UIView {
+class LoginRootView: UIView {
     
     lazy var bgView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "login_bg"))
@@ -106,7 +106,7 @@ class TRTCLoginRootView: UIView {
     
     weak var currentTextField: UITextField?
     
-    public weak var rootVC: TRTCLoginViewController?
+    public weak var rootVC: LoginViewController?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -211,7 +211,7 @@ class TRTCLoginRootView: UIView {
     }
 }
 
-extension TRTCLoginRootView: UITextFieldDelegate {
+extension LoginRootView: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if let last = currentTextField {
             last.resignFirstResponder()

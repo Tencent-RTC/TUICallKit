@@ -1,8 +1,9 @@
 //
 //  MainViewController.swift
-//  TUICallingApp
+//  TUICallKitApp
 //
 //  Created by noah on 2021/12/27.
+//  Copyright © 2021 Tencent. All rights reserved.
 //
 
 import UIKit
@@ -36,7 +37,7 @@ class MainViewController: UIViewController {
         return backBtn
     }()
     
-    let callingContactVC = TRTCCallingContactViewController()
+    let callingContactVC = ContactViewController()
     
     var logFilesArray: [String] = []
     lazy var mainMenuItems: [MainMenuItemModel] = {
@@ -98,7 +99,7 @@ extension MainViewController {
 
 extension MainViewController {
     func gotoAudioCallView() {
-        let audioCallVC = TRTCCallingContactViewController()
+        let audioCallVC = ContactViewController()
         audioCallVC.callType = .audio
         audioCallVC.title = MainLocalize("App.PortalViewController.audiocalling")
         audioCallVC.hidesBottomBarWhenPushed = true
@@ -106,7 +107,7 @@ extension MainViewController {
     }
     
     func gotoVideoCallView() {
-        let videoCallVC = TRTCCallingContactViewController()
+        let videoCallVC = ContactViewController()
         videoCallVC.callType = .video
         videoCallVC.title = MainLocalize("App.PortalViewController.videocalling")
         videoCallVC.hidesBottomBarWhenPushed = true

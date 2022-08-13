@@ -1,8 +1,9 @@
 //
 //  MainLocalized.strings
-//  TUICallingApp
+//  TUICallKitApp
 //
 //  Created by noah on 2021/12/27.
+//  Copyright © 2021 Tencent. All rights reserved.
 //
 
 import Foundation

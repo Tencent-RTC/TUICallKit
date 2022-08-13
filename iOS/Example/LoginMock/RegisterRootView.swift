@@ -1,6 +1,6 @@
 //
-//  TRTCRegisterRootView.swift
-//  TXLiteAVDemo
+//  RegisterRootView.swift
+//  TUICallKitApp
 //
 //  Created by gg on 2021/4/8.
 //  Copyright © 2021 Tencent. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import Kingfisher
 
-class TRTCRegisterRootView: UIView {
+class RegisterRootView: UIView {
     
     lazy var titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
@@ -93,7 +93,7 @@ class TRTCRegisterRootView: UIView {
         checkRegistBtnState()
     }
     
-    public weak var rootVC: TRTCRegisterViewController?
+    public weak var rootVC: RegisterViewController?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -228,7 +228,7 @@ class TRTCRegisterRootView: UIView {
     }
 }
 
-extension TRTCRegisterRootView : UITextFieldDelegate {
+extension RegisterRootView : UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         textField.becomeFirstResponder()
     }
@@ -247,8 +247,8 @@ extension TRTCRegisterRootView : UITextFieldDelegate {
         let maxCount = 20
         guard let textFieldText = textField.text,
               let rangeOfTextToReplace = Range(range, in: textFieldText) else {
-                  return false
-              }
+            return false
+        }
         let substringToReplace = textFieldText[rangeOfTextToReplace]
         let count = textFieldText.count - substringToReplace.count + string.count
         let res = count <= maxCount

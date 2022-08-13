@@ -1,6 +1,6 @@
 //
-//  TRTCGroupCallingContactViewController.swift
-//  TRTCAPP_AppStore
+//  GroupContactViewController.swift
+//  TUICallingApp
 //
 //  Created by noah on 2021/12/21.
 //
@@ -10,7 +10,7 @@ import Foundation
 import Toast_Swift
 import TUICallKit
 
-public class TRTCGroupCallingContactViewController: UIViewController {
+public class GroupContactViewController: UIViewController {
     var selectedFinished: (([V2TIMUserFullInfo])->Void)? = nil
     var addedV2TIMUserFullInfo: [V2TIMUserFullInfo] = []
     @objc var callType: TUICallMediaType = .audio
@@ -29,7 +29,7 @@ public class TRTCGroupCallingContactViewController: UIViewController {
         let table = UITableView(frame: CGRect.zero, style: .plain)
         table.tableFooterView = UIView(frame: .zero)
         table.backgroundColor = UIColor.clear
-        table.register(CallingSelectUserTableViewCell.classForCoder(), forCellReuseIdentifier: "CallingSelectUserTableViewCell")
+        table.register(SelectUserTableViewCell.classForCoder(), forCellReuseIdentifier: "CallingSelectUserTableViewCell")
         table.delegate = self
         table.dataSource = self
         return table
@@ -45,8 +45,8 @@ public class TRTCGroupCallingContactViewController: UIViewController {
         return label
     }()
     
-    lazy var callingContactView: TRTCCallingContactView = {
-        let callingContactView = TRTCCallingContactView(frame: .zero, type: .add) { [weak self] users in
+    lazy var callingContactView: ContactView = {
+        let callingContactView = ContactView(frame: .zero, type: .add) { [weak self] users in
             guard let `self` = self else {return}
             self.addUser(users: users)
         }
@@ -116,7 +116,7 @@ public class TRTCGroupCallingContactViewController: UIViewController {
     }
 }
 
-extension TRTCGroupCallingContactViewController {
+extension GroupContactViewController {
     func setupUI() {
         constructViewHierarchy()
         activateConstraints()
@@ -201,13 +201,13 @@ extension TRTCGroupCallingContactViewController {
     }
 }
 
-extension TRTCGroupCallingContactViewController: UITableViewDelegate, UITableViewDataSource {
+extension GroupContactViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return addedV2TIMUserFullInfo.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CallingSelectUserTableViewCell") as! CallingSelectUserTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CallingSelectUserTableViewCell") as! SelectUserTableViewCell
         cell.selectionStyle = .none
         let V2TIMUserFullInfo = addedV2TIMUserFullInfo[indexPath.row]
         
