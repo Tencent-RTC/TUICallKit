@@ -512,11 +512,7 @@ Component({
     // 销毁 TUICallEngine
     destroyed() {
       this._removeTSignalingEvent();
-      if (this.data.config.tim) {
-        wx.$TUICallEngine.destroyed();
-      } else {
-        wx.$TUICallEngine.logout();
-      }
+      TUICallEngine.destroyInstance();
     },
   },
 
