@@ -89,7 +89,7 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
         [self makeToast:TUICallingLocalize(@"Demo.TRTC.Calling.UnableToRestartTheCall")];
         return;
     }
-    if ([self checkAuthorizationStatusIsDenied] || ![TUILogin getUserID]) {
+    if ([self checkAuthorizationStatusIsDenied:callMediaType] || ![TUILogin getUserID]) {
         return;
     }
     
@@ -125,7 +125,7 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
         return;
     }
     
-    if ([self checkAuthorizationStatusIsDenied] || ![TUILogin getUserID]) {
+    if ([self checkAuthorizationStatusIsDenied:callMediaType] || ![TUILogin getUserID]) {
         return;
     }
     
@@ -154,7 +154,7 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
         TRTCLog(@"Calling - joinToCall invalid roomID");
         return;
     }
-    if ([self checkAuthorizationStatusIsDenied]) {
+    if ([self checkAuthorizationStatusIsDenied:callMediaType]) {
         return;
     }
     
@@ -414,10 +414,6 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
         return;
     }
     
-    if ([self checkAuthorizationStatusIsDenied]) {
-        return;
-    }
-    
     NSMutableArray *userArray = [NSMutableArray arrayWithArray:calleeIdList];
     [userArray addObject:callerId];
     [userArray removeObject:[TUILogin getUserID]];
@@ -435,6 +431,12 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
         [allUserIdList addObject:callerId];
     }
     [self updateCallingView:calleeIdList callScene:callScene sponsor:callerId];
+    
+    if ([self checkAuthorizationStatusIsDenied:callMediaType]) {
+        [[TUICallEngine createInstance] reject:nil fail:nil];
+        [self callEnd];
+    }
+    
 }
 
 - (void)onCallCancelled:(nonnull NSString *)callerId {
@@ -690,24 +692,17 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
     return TUICallSceneSingle;
 }
 
-- (BOOL)checkAuthorizationStatusIsDenied {
+- (BOOL)checkAuthorizationStatusIsDenied:(TUICallMediaType)callMediaType {
     AVAuthorizationStatus statusAudio = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
     AVAuthorizationStatus statusVideo = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-    
+    if ((callMediaType == TUICallMediaTypeVideo) && (statusVideo == AVAuthorizationStatusDenied)) {
+        [TUICallingCommon showAuthorizationAlert:AuthorizationDeniedTypeVideo];
+        return YES;
+    }
     if (statusAudio == AVAuthorizationStatusDenied) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[TUICallingCommon getKeyWindow] makeToast:TUICallingLocalize(@"Demo.TRTC.Calling.failedtogetmicrophonepermission")];
-        });
+        [TUICallingCommon showAuthorizationAlert:AuthorizationDeniedTypeAudio];
         return YES;
     }
-    
-    if ((self.currentCallingType == TUICallMediaTypeVideo) && (statusVideo == AVAuthorizationStatusDenied)) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[TUICallingCommon getKeyWindow] makeToast:TUICallingLocalize(@"Demo.TRTC.Calling.failedtogetcamerapermission")];
-        });
-        return YES;
-    }
-    
     return NO;
 }
 
