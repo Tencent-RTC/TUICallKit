@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICallKit'
-  spec.version      = '1.0.0.51'
+  spec.version      = '1.0.0.52'
   spec.platform     = :ios
   spec.ios.deployment_target = '9.0'
   spec.license      = { :type => 'Proprietary',
@@ -15,7 +15,7 @@ Pod::Spec.new do |spec|
   spec.xcconfig     = { 'VALID_ARCHS' => 'armv7 arm64 x86_64' }
   
   spec.dependency 'Masonry'
-  spec.dependency 'TUICore'
+  spec.dependency 'TUICore', '>= 6.6.3002'
   spec.dependency 'TUICallEngine'
   
   spec.requires_arc = true
