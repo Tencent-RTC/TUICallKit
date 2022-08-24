@@ -155,7 +155,8 @@ tuicall-engine-webrtc 是基于腾讯云 [即时通信 IM](https://cloud.tencent
 ### 实现自定义 UI 界面
 #### 步骤1：集成 SDK
 NPM 集成
->- 为了减小 tuicall-engine-webrtc.js 的体积，避免和接入侧已使用的 trtc-js-sdk 和 tim-js-sdk 以及 tsignaling 发生版本冲突，trtc-js-sdk、 tim-js-sdk 、tsignaling 和 tuicall-engine-webrtc.js，在使用前您需要手动安装依赖。
+>为了减小 tuicall-engine-webrtc.js 的体积，避免和接入侧已使用的 trtc-js-sdk 和 tim-js-sdk 以及 tsignaling 发生版本冲突，trtc-js-sdk、 tim-js-sdk 、tsignaling 和 tuicall-engine-webrtc.js，在使用前您需要手动安装依赖。
+
 ```javascript
   npm i trtc-js-sdk --save
   npm i tim-js-sdk --save
@@ -167,17 +168,25 @@ NPM 集成
 
 Script 集成
 
-  如果您通过 script 方式使用 tuicall-engine-web，需要按顺序先手动引入 trtc.js、tim-js.js、tsignaling.js、tuicall-engine-web.js
+  如果您通过 script 方式使用 tuicall-engine-web，需要按顺序先手动引入 trtc.js、tim-js.js、tsignaling.js、tuicall-engine-webrtc.js。
+
+
+  下载地址：
+- [trtc-js-sdk](https://web.sdk.qcloud.com/component/trtccalling/download/trtc-js-sdk.zip)
+- [tim-js-sdk](https://web.sdk.qcloud.com/component/trtccalling/download/tim-js-sdk.zip)
+- [tsignaling](https://web.sdk.qcloud.com/component/trtccalling/download/tsignaling.zip)
+- [tuicall-engine-webrtc](https://web.sdk.qcloud.com/component/trtccalling/download/tuicall-engine-webrtc.zip)
+
 ```javascript
   <script src="./trtc.js"></script>
   <script src="./tim-js.js"></script>
-  <script src="./tsignaling.js"></script>s
-  <script src="./trtc-calling-js.js"></script>
+  <script src="./tsignaling.js"></script>
+  <script src="./tuicall-engine-webrtc.js"></script>
   const { TUICallEngine, TUICallEvent, TUICAllType } = window['tuicall-engine-webrtc']
 ```
 
 #### 步骤2：创建 TUICallEngine 实例
->- sdkAppID: 您从腾讯云申请的 sdkAppID
+>- SDKAppID: 您从腾讯云申请的 SDKAppID
 ```javascript
 let options = {
   SDKAppID: 0, // 接入时需要将 0 替换为您的云通信应用的 SDKAppID
