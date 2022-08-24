@@ -73,7 +73,11 @@
     if (param && [param tui_objectForKey:@"component" asClass:NSNumber.class]) {
         TUILog.component = [[param tui_objectForKey:@"component" asClass:NSNumber.class] intValue];
     }
-    if ([method isEqualToString:TUICore_TUICallingService_ShowCallingViewMethod]) {
+    
+    if ([method isEqualToString:TUICore_TUICallingService_EnableFloatWindowMethod]) {
+        NSNumber *enableFloatWindow = [param tui_objectForKey:TUICore_TUICallingService_EnableFloatWindowMethod_EnableFloatWindow asClass:NSNumber.class];
+        [[TUICallKit createInstance] enableFloatWindow:[enableFloatWindow boolValue]];
+    } else if ([method isEqualToString:TUICore_TUICallingService_ShowCallingViewMethod]) {
         NSArray *userIDs = [param tui_objectForKey:TUICore_TUICallingService_ShowCallingViewMethod_UserIDsKey asClass:NSArray.class];
         NSString *callMediaTypeKey = TUICore_TUICallingService_ShowCallingViewMethod_CallTypeKey;
         NSInteger callingMediaValue = (TUICallMediaType)[[param tui_objectForKey:callMediaTypeKey asClass:NSString.class] integerValue];
@@ -136,7 +140,7 @@
     
     if ([key isEqualToString:TUICore_TUIChatExtension_GetMoreCellInfo_VideoCall]) {
         titleLabel.text = TUIKitLocalizableString(TUIKitMoreVideoCall);
-        imageView.image = [UIImage d_imageNamed:@"more_video_call" bundle:TUIChatBundle];
+        imageView.image = TUICoreBundleThemeImage(@"service_more_video_call_img", @"more_video_call");
         // 群通话 view 点击事件交给 chat 处理，chat 需要先选择通话的群成员列表
         if (call_userID.length > 0) {
             UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onSelectC2CVideoCall:)];
@@ -146,7 +150,7 @@
     }
     else if ([key isEqualToString:TUICore_TUIChatExtension_GetMoreCellInfo_AudioCall]) {
         titleLabel.text = TUIKitLocalizableString(TUIKitMoreVoiceCall);
-        imageView.image = [UIImage d_imageNamed:@"more_voice_call" bundle:TUIChatBundle];
+        imageView.image = TUICoreBundleThemeImage(@"service_more_voice_call_img", @"more_voice_call");
         if (call_userID.length > 0) {
             UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onSelectC2CAudioCall:)];
             [view addGestureRecognizer:tap];

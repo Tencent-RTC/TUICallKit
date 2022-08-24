@@ -1,6 +1,6 @@
 //
 //  MainMenuCell.m
-//  TRTCDemo
+//  TUICallKitApp
 //
 //  Created by LiuXiaoya on 2020/1/13.
 //  Copyright © 2020 rushanting. All rights reserved.

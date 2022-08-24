@@ -1,8 +1,8 @@
 
-# 实时语音/视频通话
+# TUICallKit 音视频通话组件
 
 _[English](README.en.md) | 简体中文_
-## 组件介绍
+## 概述
 **基于开发者反馈和市场需求调研，2022年08月 TUICalling 正式升级为 TUICallKit，新的组件升级了群内多人通话和离线唤醒等功能，并且配备了更低折扣的 TRTC 联合套餐包以及7天的免费试用期，期待您的关注。**
 
 TUICallKit 是腾讯云推出一款音视频通话 UI 组件，通过集成该组件，您只需要编写几行代码就可以为您的 App 添加音视频通话功能，并且支持离线唤起能力。TUICallKit 支持 Android、iOS、Web、小程序、Flutter、UniApp 等多个开发平台，基本功能如下图所示：

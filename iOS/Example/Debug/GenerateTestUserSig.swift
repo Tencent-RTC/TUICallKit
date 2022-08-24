@@ -1,8 +1,9 @@
 //
 //  GenerateTestUserSig.swift
-//  TRTCVoiceRoomApp
+//  TUICallKitApp
 //
 //  Created by abyyxwang on 2021/5/7.
+//  Copyright © 2021 Tencent. All rights reserved.
 //
 
 import Foundation

@@ -45,7 +45,6 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
 @property (nonatomic, assign) NSInteger totalTime;
 @property (nonatomic, assign) BOOL needContinuePlaying;
 @property (nonatomic, copy) NSString *groupID;
-@property (nonatomic, strong) NSArray<NSString *> *userIDs;
 
 @end
 
@@ -83,9 +82,31 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
 #pragma mark - Public Method
 
 - (void)call:(NSString *)userId callMediaType:(TUICallMediaType)callMediaType {
-    if (userId) {
-        [self groupCall:nil userIdList:@[userId] callMediaType:callMediaType];
+    if (!userId || ![userId isKindOfClass:[NSString class]] || userId.length <= 0) {
+        return;
     }
+    if ([[TUICallingFloatingWindowManager shareInstance] isFloating]) {
+        [self makeToast:TUICallingLocalize(@"Demo.TRTC.Calling.UnableToRestartTheCall")];
+        return;
+    }
+    if ([self checkAuthorizationStatusIsDenied:callMediaType] || ![TUILogin getUserID]) {
+        return;
+    }
+    
+    self.currentCallingType = callMediaType;
+    self.currentCallingRole = TUICallRoleCall;
+    TUIRoomId *roomId = [[TUIRoomId alloc] init];
+    roomId.intRoomId = 1 + arc4random() % (INT32_MAX - 1);
+    __weak typeof(self) weakSelf = self;
+    [[TUICallEngine createInstance] call:roomId userId:userId callMediaType:callMediaType succ:^{
+        __strong typeof(self) strongSelf = weakSelf;
+        [strongSelf.callingViewManager createCallingView:callMediaType callRole:TUICallRoleCall callScene:TUICallSceneSingle];
+        [strongSelf callStart:@[userId] type:callMediaType role:TUICallRoleCall];
+        [strongSelf updateCallingView:@[userId] callScene:TUICallSceneSingle sponsor:[TUILogin getUserID]];
+    } fail:^(int code, NSString *errMsg) {
+        TRTCLog(@"log: call error code: %ld errMsg: %@", code, errMsg);
+        [self makeToast:[NSString stringWithFormat:@"%@", errMsg ?: TUICallingLocalize(@"Call error")]];
+    }];
 }
 
 - (void)groupCall:(NSString *)groupId userIdList:(NSArray<NSString *> *)userIdList callMediaType:(TUICallMediaType)callMediaType {
@@ -104,12 +125,11 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
         return;
     }
     
-    if ([self checkAuthorizationStatusIsDenied] || ![TUILogin getUserID]) {
+    if ([self checkAuthorizationStatusIsDenied:callMediaType] || ![TUILogin getUserID]) {
         return;
     }
     
     self.groupID = groupId;
-    self.userIDs = [NSArray arrayWithArray:userIdList];
     self.currentCallingType = callMediaType;
     self.currentCallingRole = TUICallRoleCall;
     TUIRoomId *roomId = [[TUIRoomId alloc] init];
@@ -134,7 +154,7 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
         TRTCLog(@"Calling - joinToCall invalid roomID");
         return;
     }
-    if ([self checkAuthorizationStatusIsDenied]) {
+    if ([self checkAuthorizationStatusIsDenied:callMediaType]) {
         return;
     }
     
@@ -394,14 +414,9 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
         return;
     }
     
-    if ([self checkAuthorizationStatusIsDenied]) {
-        return;
-    }
-    
     NSMutableArray *userArray = [NSMutableArray arrayWithArray:calleeIdList];
     [userArray addObject:callerId];
     [userArray removeObject:[TUILogin getUserID]];
-    self.userIDs = [userArray copy];
     self.currentCallingRole = TUICallRoleCalled;
     self.currentCallingType = callMediaType;
     TUICallScene callScene =  [self getCallScene:calleeIdList];
@@ -416,6 +431,12 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
         [allUserIdList addObject:callerId];
     }
     [self updateCallingView:calleeIdList callScene:callScene sponsor:callerId];
+    
+    if ([self checkAuthorizationStatusIsDenied:callMediaType]) {
+        [[TUICallEngine createInstance] reject:nil fail:nil];
+        [self callEnd];
+    }
+    
 }
 
 - (void)onCallCancelled:(nonnull NSString *)callerId {
@@ -671,24 +692,17 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
     return TUICallSceneSingle;
 }
 
-- (BOOL)checkAuthorizationStatusIsDenied {
+- (BOOL)checkAuthorizationStatusIsDenied:(TUICallMediaType)callMediaType {
     AVAuthorizationStatus statusAudio = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
     AVAuthorizationStatus statusVideo = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-    
+    if ((callMediaType == TUICallMediaTypeVideo) && (statusVideo == AVAuthorizationStatusDenied)) {
+        [TUICallingCommon showAuthorizationAlert:AuthorizationDeniedTypeVideo];
+        return YES;
+    }
     if (statusAudio == AVAuthorizationStatusDenied) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[TUICallingCommon getKeyWindow] makeToast:TUICallingLocalize(@"Demo.TRTC.Calling.failedtogetmicrophonepermission")];
-        });
+        [TUICallingCommon showAuthorizationAlert:AuthorizationDeniedTypeAudio];
         return YES;
     }
-    
-    if ((self.currentCallingType == TUICallMediaTypeVideo) && (statusVideo == AVAuthorizationStatusDenied)) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[TUICallingCommon getKeyWindow] makeToast:TUICallingLocalize(@"Demo.TRTC.Calling.failedtogetcamerapermission")];
-        });
-        return YES;
-    }
-    
     return NO;
 }
 

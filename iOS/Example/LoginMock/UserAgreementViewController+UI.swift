@@ -1,6 +1,6 @@
 //
 //  UserAgreementViewController+UI.swift
-//  TXLiteAVDemo
+//  TUICallKitApp
 //
 //  Created by lijie on 2020/6/23.
 //  Copyright © 2020 Tencent. All rights reserved.
