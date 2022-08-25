@@ -11,6 +11,7 @@
 <script>
 import { genTestUserSig } from "../../../public/debug/GenerateTestUserSig";
 import { getUserLoginInfo, setUserLoginInfo } from '../../utils'
+import {aegisReportEvent} from '../../utils/aegis';
 
 export default {
   name: "Login",
@@ -49,6 +50,7 @@ export default {
       }
       this.$store.commit("setLoginUserInfo", config);
       setUserLoginInfo(config);
+      aegisReportEvent("login", "login-success");
       this.$router.push('/home')
     },
     async handleLoginCalling() {
