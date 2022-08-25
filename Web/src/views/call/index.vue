@@ -96,7 +96,9 @@
 <script>
 import { mapState } from "vuex";
 import SearchUser from "../../components/search-user";
-import { formateTime } from "../../utils"
+import { formateTime } from "../../utils";
+import { aegisReportEvent } from "../../utils/aegis";
+
 export default {
   name: "Call",
   components: {
@@ -134,6 +136,7 @@ export default {
   },
   mounted() {
     if (this.callStatus === "connected" && !this.isInviter) {
+      aegisReportEvent("call", "call-1v1");
       this.$nextTick(()=>{
         this.updateUserId2Name(this.meetingUserIdList);
         this.startMeeting();
@@ -161,6 +164,7 @@ export default {
         this.startMeeting();
         this.showChatTime();
         this.getDevicesList();
+        aegisReportEvent("call", "call-1v1");
       }
     },
     meetingUserIdList(newList, oldList) {

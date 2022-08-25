@@ -18,6 +18,7 @@
 import { mapState } from "vuex";
 import { log } from "./utils";
 import HeaderNav from "./components/header-nav";
+import { aegisReportEvent } from './utils/aegis';
 let timeout;
 
 export default {
@@ -38,6 +39,9 @@ export default {
   }),
   async created() {
     this.initListener();
+  },
+  mounted() {
+    aegisReportEvent("mounted", "mounted-success");
   },
   data() {
     return {
