@@ -34,7 +34,7 @@ class AegisReport {
 
 const aegisReport = new AegisReport()
 aegisReport.init({
-    id: 'iHWefAYqQPqGRECJkc', // 项目key
+    id: 'iHWefAYqQPqGRECJkc', // 项目key 
     reportApiSpeed: true, // 接口测速
     reportAssetSpeed: true, // 静态资源测速
     spa: true, // 开启页面测速
