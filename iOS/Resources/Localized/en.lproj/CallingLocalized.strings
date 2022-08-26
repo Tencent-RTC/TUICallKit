@@ -65,3 +65,6 @@
 "TUICallKit.failedtogetmicrophonepermission.Tips"  = "Unable to use the function of sending audio and video calls, click \"Authorize Now\" to open the microphone permission";
 "TUICallKit.failedtogetmicrophonepermission.Later" = "Later";
 "TUICallKit.failedtogetmicrophonepermission.Enable" = "Authorize Now";
+
+"TUICallKit.package.not.purchased" = "You do not have TUICallKit package, please open the free experience in the console or purchase the official package";
+"TUICallKit.package.not.support" = "The package you purchased does not support this ability";

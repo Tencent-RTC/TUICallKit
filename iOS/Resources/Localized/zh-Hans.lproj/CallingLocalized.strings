@@ -65,3 +65,6 @@
 "TUICallKit.failedtogetmicrophonepermission.Tips"  = "无法使用发送音视频通话功能，点击\"去开启\"打开麦克风权限";
 "TUICallKit.failedtogetmicrophonepermission.Later" = "以后再说";
 "TUICallKit.failedtogetmicrophonepermission.Enable" = "去开启";
+
+"TUICallKit.package.not.purchased" = "您当前未购买音视频通话能力套餐，请前往IM 控制台开通免费体验或加购正式版";
+"TUICallKit.package.not.support" = "您当前购买的音视频通话能力套餐不支持该功能，建议您升级套餐类型";
