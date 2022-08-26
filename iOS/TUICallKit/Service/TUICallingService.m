@@ -60,7 +60,11 @@
         [[TUICallEngine createInstance] performSelector:@selector(setOnlineUserOnly:) withObject:@(0)];
     }
     
-    [[TUICallKit createInstance] groupCall:groupID userIdList:userIDs callMediaType:callingType];
+    if (groupID && [groupID isKindOfClass:NSString.class]) {
+        [[TUICallKit createInstance] groupCall:groupID userIdList:userIDs callMediaType:callingType];
+    } else {
+        [[TUICallKit createInstance] call:[userIDs firstObject] callMediaType:callingType];
+    }
 }
 
 #pragma mark - TUIServiceProtocol

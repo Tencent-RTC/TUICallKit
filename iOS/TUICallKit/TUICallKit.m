@@ -23,6 +23,7 @@
 #import "TRTCCloud.h"
 #import "TUICallingUserModel.h"
 #import "TUICallKitGCDTimer.h"
+#import "TUICallEngineHeader.h"
 
 typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
     TUICallingUserRemoveReasonLeave,
@@ -104,8 +105,8 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
         [strongSelf callStart:@[userId] type:callMediaType role:TUICallRoleCall];
         [strongSelf updateCallingView:@[userId] callScene:TUICallSceneSingle sponsor:[TUILogin getUserID]];
     } fail:^(int code, NSString *errMsg) {
-        TRTCLog(@"log: call error code: %ld errMsg: %@", code, errMsg);
-        [self makeToast:[NSString stringWithFormat:@"%@", errMsg ?: TUICallingLocalize(@"Call error")]];
+        __strong typeof(self) strongSelf = weakSelf;
+        [strongSelf handleAbilityFailErrorMessage:code errorMessage:errMsg];
     }];
 }
 
@@ -143,8 +144,8 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
         [strongSelf callStart:userIdList type:callMediaType role:TUICallRoleCall];
         [strongSelf updateCallingView:userIdList callScene:callMediaType sponsor:[TUILogin getUserID]];
     } fail:^(int code, NSString *errMsg) {
-        TRTCLog(@"log: call error code: %ld errMsg: %@", code, errMsg);
-        [self makeToast:[NSString stringWithFormat:@"%@", errMsg ?: TUICallingLocalize(@"Call error")]];
+        __strong typeof(self) strongSelf = weakSelf;
+        [strongSelf handleAbilityFailErrorMessage:code errorMessage:errMsg];
     }];
 }
 
@@ -175,7 +176,8 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
         }
         [strongSelf enableAutoLockScreen:NO];
     } fail:^(int code, NSString *errMsg) {
-        TRTCLog(@"log: joinInCall error code: %ld, errMsg: %@", code, errMsg);
+        __strong typeof(self) strongSelf = weakSelf;
+        [strongSelf handleAbilityFailErrorMessage:code errorMessage:errMsg];
     }];
 }
 
@@ -581,6 +583,18 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
 }
 
 #pragma mark - Private method
+
+- (void)handleAbilityFailErrorMessage:(int)errorCode errorMessage:(NSString *)errorMessage {
+    NSString *errMsg = errorMessage;
+    if (errorCode == ERROR_PACKAGE_NOT_PURCHASED) {
+        errMsg = TUICallingLocalize(@"TUICallKit.package.not.purchased");
+    } else if (errorCode == ERROR_PACKAGE_NOT_SUPPORTED) {
+        errMsg = TUICallingLocalize(@"TUICallKit.package.not.support");
+    } else {
+        TRTCLog(@"log: call error code: %ld errMsg: %@", errorCode, errorMessage);
+    }
+    [self makeToast:errMsg duration:4 position:nil];
+}
 
 - (void)initCallEngine {
     [[TUICallEngine createInstance] init:[TUILogin getSdkAppID] userId:[TUILogin getUserID] userSig:[TUILogin getUserSig] succ:nil fail:nil];
