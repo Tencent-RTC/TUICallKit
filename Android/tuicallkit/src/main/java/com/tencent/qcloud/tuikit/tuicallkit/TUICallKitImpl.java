@@ -219,6 +219,10 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
                             @Override
                             public void onError(int errCode, String errMsg) {
                                 TUILog.i(TAG, " call error, errCode: " + errCode + " , errMsg: " + errMsg);
+                                if (errCode == TUICallDefine.ERROR_PACKAGE_NOT_SUPPORTED) {
+                                    String hint = mContext.getString(R.string.tuicalling_package_not_support);
+                                    ToastUtil.toastLongMessage(hint);
+                                }
                             }
                         });
             } else {
@@ -236,6 +240,9 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
                     @Override
                     public void onError(int errCode, String errMsg) {
                         TUILog.i(TAG, " call error, errCode: " + errCode + " , errMsg: " + errMsg);
+                        if (errCode == TUICallDefine.ERROR_PACKAGE_NOT_PURCHASED) {
+                            ToastUtil.toastLongMessage(mContext.getString(R.string.tuicalling_package_not_purchased));
+                        }
                     }
                 });
             }
@@ -284,6 +291,10 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
                             @Override
                             public void onError(int errCode, String errMsg) {
                                 resetCall();
+                                if (errCode == TUICallDefine.ERROR_PACKAGE_NOT_SUPPORTED) {
+                                    String hint = mContext.getString(R.string.tuicalling_package_not_support);
+                                    ToastUtil.toastLongMessage(hint);
+                                }
                             }
                         });
             }
