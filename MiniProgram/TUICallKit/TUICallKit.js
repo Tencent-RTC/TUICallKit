@@ -499,15 +499,11 @@ Component({
     // 初始化TRTCCalling
     async init() {
       this._addTSignalingEvent();
-      try {
-        const res = await wx.$TUICallEngine.login({
-          userID: this.data.config.userID,
-          userSig: this.data.config.userSig,
-        });
-        return res;
-      } catch (error) {
-        throw new Error('TUICallEngine login failure', error);
-      }
+      const res = await wx.$TUICallEngine.init({
+        userID: this.data.config.userID,
+        userSig: this.data.config.userSig,
+      });
+      return res;
     },
     // 销毁 TUICallEngine
     destroyed() {

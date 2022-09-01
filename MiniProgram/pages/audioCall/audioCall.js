@@ -72,7 +72,6 @@ Page({
     wx.navigateBack({
       delta: 1,
     });
-    this.TUICallKit.destroyed();
   },
 
   onLoad() {
