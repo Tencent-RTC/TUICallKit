@@ -61,8 +61,10 @@ Note: You need to prepare at least two devices to try out the call feature of TU
 - Step 2: Enter the homepage and wait for the call.
 
 
-## FAQs
+## Have any questions?
+Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you~
+Click to join: https://t.me/+EPk6TMZEZMM5OGY1
+Or scan the QR code
 
-- [FAQs About TUI Scenario-Specific Solution](https://cloud.tencent.com/developer/article/1952880)
-- If you have any questions or feedback, feel free to [contact us](https://intl.cloud.tencent.com/contact-us).
+<img src="https://qcloudimg.tencent-cloud.cn/raw/9c67ed5746575e256b81ce5a60216c5a.jpg" width="320"/>
 
