@@ -79,6 +79,8 @@ public abstract class BaseTUICallView extends FrameLayout implements TRTCCalling
     //公共视图
     private ImageView mImageBack;          // 返回按钮,展示悬浮窗
 
+    private ITUINotification mTUINotification;
+
     public BaseTUICallView(Context context, TUICalling.Role role, TUICalling.Type type, String[] userIDs,
                            String sponsorID, String groupID, boolean isFromGroup) {
         super(context);
@@ -230,6 +232,7 @@ public abstract class BaseTUICallView extends FrameLayout implements TRTCCalling
         if (Status.mIsShowFloatWindow) {
             FloatWindowService.stopService(mContext);
         }
+        TUICore.unRegisterEvent(mTUINotification);
         TUILogin.removeLoginListener(mTUILoginListener);
     }
 
@@ -478,7 +481,7 @@ public abstract class BaseTUICallView extends FrameLayout implements TRTCCalling
     }
 
     private void initListener() {
-        ITUINotification notification = new ITUINotification() {
+        mTUINotification= new ITUINotification() {
             @Override
             public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
                 if (TUIConstants.TUILogin.EVENT_LOGIN_STATE_CHANGED.equals(key)
@@ -497,10 +500,10 @@ public abstract class BaseTUICallView extends FrameLayout implements TRTCCalling
         };
         TUICore.registerEvent(TUIConstants.TUILogin.EVENT_LOGIN_STATE_CHANGED,
                 TUIConstants.TUILogin.EVENT_SUB_KEY_USER_KICKED_OFFLINE,
-                notification);
+                mTUINotification);
         TUICore.registerEvent(TUIConstants.TUILogin.EVENT_LOGIN_STATE_CHANGED,
                 TUIConstants.TUILogin.EVENT_SUB_KEY_USER_SIG_EXPIRED,
-                notification);
+                mTUINotification);
     }
 
     public void showUserToast(String userId, int msgId) {
