@@ -3,7 +3,6 @@ package com.tencent.liteav.trtccalling.ui.common;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
-import android.text.TextUtils;
 
 import androidx.annotation.IntDef;
 
@@ -13,6 +12,7 @@ import com.tencent.qcloud.tuicore.util.PermissionRequester;
 public class PermissionHelper {
     public static final int PERMISSION_MICROPHONE = 1;
     public static final int PERMISSION_CAMERA     = 2;
+
 
     @IntDef({PERMISSION_MICROPHONE, PERMISSION_CAMERA})
     public @interface PermissionType {
@@ -45,6 +45,13 @@ public class PermissionHelper {
                 break;
         }
 
+        for (String item : PermissionRequester.PermissionConstants.getPermissions(permission)) {
+            if (PermissionRequester.isGranted(item)) {
+                callback.onGranted();
+                return;
+            }
+        }
+
         PermissionRequester.SimpleCallback simpleCallback = new PermissionRequester.SimpleCallback() {
             @Override
             public void onGranted() {
@@ -60,29 +67,30 @@ public class PermissionHelper {
                 }
             }
         };
-        if (!TextUtils.isEmpty(permission)) {
-            PermissionRequester.permission(permission)
-                    .reason(reason)
-                    .reasonTitle(reasonTitle)
-                    .deniedAlert(deniedAlert)
-                    .callback(simpleCallback)
-                    .permissionDialogCallback(new PermissionRequester.PermissionDialogCallback() {
-                        @Override
-                        public void onApproved() {
-                            if (callback != null) {
-                                callback.onDialogApproved();
-                            }
-                        }
 
-                        @Override
-                        public void onRefused() {
-                            if (callback != null) {
-                                callback.onDialogRefused();
-                            }
+        PermissionRequester.PermissionDialogCallback dialogCallback =
+                new PermissionRequester.PermissionDialogCallback() {
+                    @Override
+                    public void onApproved() {
+                        if (callback != null) {
+                            callback.onDialogApproved();
                         }
-                    })
-                    .request();
-        }
+                    }
+
+                    @Override
+                    public void onRefused() {
+                        if (callback != null) {
+                            callback.onDialogRefused();
+                        }
+                    }
+                };
+        PermissionRequester.permission(permission)
+                .reason(reason)
+                .reasonTitle(reasonTitle)
+                .deniedAlert(deniedAlert)
+                .callback(simpleCallback)
+                .permissionDialogCallback(dialogCallback)
+                .request();
     }
 
     public interface PermissionCallback {
