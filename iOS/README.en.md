@@ -32,7 +32,7 @@ TUICalling
 3. On the application information page, note down the `SDKAppID` and key as shown below:
     <img src="https://qcloudimg.tencent-cloud.cn/raw/bea06852e22a33c77cb41d287cac25db.png" width="900">
 
->! This feature uses two basic PaaS services of Tencent Cloud: [TRTC](https://cloud.tencent.com/document/product/647/16788) and [IM](https://cloud.tencent.com/document/product/269). When you activate TRTC, IM will be activated automatically. IM is a value-added service. See [Pricing](https://cloud.tencent.com/document/product/269/11673) for its billing details.
+>! This feature uses two basic PaaS services of Tencent Cloud: [TRTC](https://www.tencentcloud.com/document/product/1047/33513) and [IM](https://www.tencentcloud.com/document/product/1047/33513). When you activate TRTC, IM will be activated automatically. IM is a value-added service.
 
 [](id:ui.step2)
 ### Step 2. Configure the project
@@ -83,4 +83,9 @@ You can delete the `Push Notifications` feature as shown below:
 
 ![](https://qcloudimg.tencent-cloud.cn/raw/800bfcdc73e1927e24b5419f09ecef7a.png)
 
->? For more information, see [FAQs About TUI Scenario-Specific Solution](https://cloud.tencent.com/developer/article/1952880). If you have any questions or feedback, feel free to [contact us](https://intl.cloud.tencent.com/contact-us).
+## Have any questions?
+Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you~
+Click to join: https://t.me/+EPk6TMZEZMM5OGY1
+Or scan the QR code
+
+<img src="https://qcloudimg.tencent-cloud.cn/raw/9c67ed5746575e256b81ce5a60216c5a.jpg" width="320"/>
