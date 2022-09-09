@@ -7,7 +7,7 @@ _[简体中文](README.md) | English_
 
 TUICallKit is an media calling UI component. you only need to write a few lines of code to add video calls to your app, TUICallKit support offline arousal capabilities、multiple development platforms such as Android, iOS, Web, applet, Flutter, UniApp, etc. The basic functions are shown in the following figure:
 
-![](https://qcloudimg.tencent-cloud.cn/raw/08f914b45857743fd05dfaa28e2adb72.png)
+![](https://qcloudimg.tencent-cloud.cn/raw/e44ffc8b1db9dd6648b246d12ee1e223.png)
 
 > Tips: You can also find the TUICalling open source project before the upgrade at [**here**](https://github.com/tencentyun/TUICalling/tree/open).
 
@@ -15,18 +15,13 @@ TUICallKit is an media calling UI component. you only need to write a few lines 
 ## 文档资源
 ###  Quickstart
 
-- [iOS ](https://cloud.tencent.com/document/product/647/78730)
-- [Android](https://tcloud-doc.isd.com/document/product/647/78729)
-- [Web](https://cloud.tencent.com/document/product/647/78731)
-- [uni-app](https://cloud.tencent.com/document/product/647/78732)
+- [iOS ](https://www.tencentcloud.com/document/product/647/36065)
+- [Android](https://www.tencentcloud.com/document/product/647/36066)
+- [Web](https://www.tencentcloud.com/document/product/647/38927)
 
-### Q&A
+## Have any questions?
+Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you~
+Click to join: https://t.me/+EPk6TMZEZMM5OGY1
+Or scan the QR code
 
-- [iOS ](https://cloud.tencent.com/document/product/647/78768)
-- [Android](https://tcloud-doc.isd.com/document/product/647/78767)
-- [Web](https://cloud.tencent.com/document/product/647/78769)
-
-
-## Feedback
-
-If you have any questions or feedback, feel free to [contact us](https://intl.cloud.tencent.com/contact-us).
+<img src="https://qcloudimg.tencent-cloud.cn/raw/9c67ed5746575e256b81ce5a60216c5a.jpg" width="320"/>
