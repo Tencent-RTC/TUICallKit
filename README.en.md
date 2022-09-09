@@ -20,17 +20,7 @@ For earlier version update history, please click [More](./ReleaseNote.md)...
 
 
 ## Demonstration
-
-<table>
-<tr>
-   <th>Call</th>
-   <th>Answer</th>
- </tr>
-<tr>
-<td><img src="video1.gif" width="300px" height="640px"/></td>
-<td><img src="video2.gif" width="300px" height="640px"/></td>
-</tr>
-</table>
+![](https://qcloudimg.tencent-cloud.cn/raw/e44ffc8b1db9dd6648b246d12ee1e223.png)
 
 ## Have any questions?
 Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you~

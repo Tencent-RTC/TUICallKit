@@ -221,4 +221,11 @@ Upgrade/Switch:
 
 #### 2. What firewall restrictions does the SDK face?
 
-As the SDK uses the UDP protocol for audio/video transmission, it cannot be used in office networks that block UDP. If you encounter such a problem, see [Dealing with Organizational Firewall Restrictions](https://cloud.tencent.com/document/product/647/34399) for assistance.
+As the SDK uses the UDP protocol for audio/video transmission, it cannot be used in office networks that block UDP. If you encounter such a problem, see [Dealing with Organizational Firewall Restrictions](https://www.tencentcloud.com/document/product/647/35164) for assistance.
+
+## Have any questions?
+Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you~
+Click to join: https://t.me/+EPk6TMZEZMM5OGY1
+Or scan the QR code
+
+<img src="https://qcloudimg.tencent-cloud.cn/raw/9c67ed5746575e256b81ce5a60216c5a.jpg" width="320"/>
