@@ -1,7 +1,7 @@
 # Quick Run of TUICalling Demo for Android
 _[中文](README.md) | English_
 
-This document describes how to quickly run the TUICalling demo project to make a high-quality audio/video call. For more information on the TUICalling component connection process, see **[Integrating TUICalling (Android)](https://cloud.tencent.com/document/product/647/42045)**.
+This document describes how to quickly run the TUICalling demo project to make a high-quality audio/video call. For more information on the TUICalling component connection process, see **[Integrating TUICalling (Android)](https://www.tencentcloud.com/document/product/647/36066)**.
 
 ## Directory Structure
 
@@ -25,7 +25,7 @@ TUICalling
 3. On the application information page, note down the `SDKAppID` and key as shown below:
     <img src="https://qcloudimg.tencent-cloud.cn/raw/bea06852e22a33c77cb41d287cac25db.png" width="900">
 
->! This feature uses two basic PaaS services of Tencent Cloud: [TRTC](https://cloud.tencent.com/document/product/647/16788) and [IM](https://cloud.tencent.com/document/product/269). When you activate TRTC, IM will be activated automatically. IM is a value-added service. See [Pricing](https://cloud.tencent.com/document/product/269/11673) for its billing details.
+>! This feature uses two basic PaaS services of Tencent Cloud: [TRTC](https://www.tencentcloud.com/document/product/647/35078) and [IM](https://www.tencentcloud.com/document/product/1047/33513). When you activate TRTC, IM will be activated automatically. IM is a value-added service.
 
 [](id:ui.step2)
 ### Step 2. Download the source code and configure the project
@@ -50,10 +50,6 @@ Note: You need to prepare at least two devices to try out the call feature of TU
 - Step 2: Go to the different scenario pages, such as video call, based on your scenario and requirements.
 
 - Step 3: Enter `userId` of user B to be called, click **Search**, and then click **Call**.
-
-  | Step 1 | Step 2 | Step 3 | 
-  |---------|---------|---------|
-  |<img src="https://qcloudimg.tencent-cloud.cn/raw/ab18c3dee2fa825b14ff19fc727a161b.png" width="240"/>|<img src="https://qcloudimg.tencent-cloud.cn/raw/011897b6601bac5ba27641a9b120647a.png" width="240">|<img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/tuicalling_user.png" width="240"/>
 
 **Device B (userId: 222)**
 
