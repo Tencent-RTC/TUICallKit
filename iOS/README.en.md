@@ -2,7 +2,7 @@
 
 _[中文](README.md) | English_
 
-This document describes how to quickly run the TUICalling demo project to make a high-quality audio/video call. For more information on the TUICalling component connection process, see **[Integrating TUICalling (iOS)](https://cloud.tencent.com/document/product/647/42044)**.
+This document describes how to quickly run the TUICalling demo project to make a high-quality audio/video call. For more information on the TUICalling component connection process, see **[Integrating TUICalling (iOS)](https://www.tencentcloud.com/document/product/647/36065)**.
 
 ## Directory Structure
 
@@ -32,7 +32,7 @@ TUICalling
 3. On the application information page, note down the `SDKAppID` and key as shown below:
     <img src="https://qcloudimg.tencent-cloud.cn/raw/bea06852e22a33c77cb41d287cac25db.png" width="900">
 
->! This feature uses two basic PaaS services of Tencent Cloud: [TRTC](https://www.tencentcloud.com/document/product/1047/33513) and [IM](https://www.tencentcloud.com/document/product/1047/33513). When you activate TRTC, IM will be activated automatically. IM is a value-added service.
+>! This feature uses two basic PaaS services of Tencent Cloud: [TRTC](https://www.tencentcloud.com/document/product/647/35078) and [IM](https://www.tencentcloud.com/document/product/1047/33513). When you activate TRTC, IM will be activated automatically. IM is a value-added service.
 
 [](id:ui.step2)
 ### Step 2. Configure the project
