@@ -12,7 +12,7 @@ TUICallKit is an media calling UI component. you only need to write a few lines 
 > Tips: You can also find the TUICalling open source project before the upgrade at [**here**](https://github.com/tencentyun/TUICalling/tree/open).
 
 
-## 文档资源
+## Documentation
 ###  Quickstart
 
 - [iOS ](https://www.tencentcloud.com/document/product/647/36065)
