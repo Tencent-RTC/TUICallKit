@@ -6,7 +6,6 @@ Component({
   properties: {
     isSponsor: {
       type: Boolean,
-      value: false,
     },
     pusher: {
       type: Object,
@@ -26,7 +25,7 @@ Component({
    * 组件的初始数据
    */
   data: {
-
+    userID: null,
   },
 
   /**
@@ -34,13 +33,14 @@ Component({
    */
   lifetimes: {
     created() {
-
     },
     attached() {
     },
     ready() {
+      this.setData({ userID: wx.$globalData.userID });
     },
     detached() {
+
     },
     error() {
     },

@@ -12,7 +12,7 @@
     <view class="trtc-calling-index-search">
       <view class="search">
         <view class="input-box">
-          <input class="input-search-user" value="{{userIDToSearch}}" maxlength="11" type="number" bindinput="userIDToSearchInput" placeholder="搜索用户ID" />
+          <input class="input-search-user" value="{{userIDToSearch}}" maxlength="11" type="text" bindinput="userIDToSearchInput" placeholder="搜索用户ID" />
         </view>
         <view class="btn-search" bindtap="searchUser" >搜索</view>
       </view>
@@ -26,7 +26,7 @@
         <view wx:if="{{invitee.userID}}" class="user-to-call">
           <view class="userInfo-box">
             <image class="userInfo-avatar" src="{{invitee.avatar || '../Resources/avatar1_100.png'}}"></image>
-            <text class="userInfo-name">{{invitee.nick || invitee.userID}}</text>
+            <text class="userInfo-name">{{invitee.userID}}</text>
           </view>
           <view class="btn-userinfo-call" bindtap="call">呼叫</view>
         </view>

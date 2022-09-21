@@ -6,7 +6,9 @@
     "pages/index/index",
     "pages/audioCall/audioCall",
     "pages/cancellation/index",
-    "pages/about/index"
+    "pages/about/index",
+    "pages/audioGroupCall/audioGroupCall",
+    "pages/videoGroupCall/videoGroupCall"
   ],
   "window": {
     "backgroundColor": "#888",

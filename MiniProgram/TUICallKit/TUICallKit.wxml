@@ -1,16 +1,30 @@
 <view class="TUICalling {{callStatus === 'idle' ? 'hidden': 'show'}}">
-  <view class="TRTCCaling-container">
+  <view class="TRTCCaling-container {{isGroup && config.type === 2 ?'groupConnected':''}}">
     <TUI-Calling
-      wx:if="{{callStatus === 'calling'}}"
+      wx:if="{{callStatus === 'calling' && !isGroup}}"
       isSponsor="{{isSponsor}}"
       pusher="{{pusher}}"
+      isGroup="{{isGroup}}"
       callType="{{config.type}}"
       remoteUsers="{{remoteUsers}}"
       bind:callingEvent="handleCallingEvent"
     ></TUI-Calling>
+
+    <TUI-groupCalling
+      wx:if="{{callStatus === 'calling' && isGroup}}"
+      isSponsor="{{isSponsor}}"
+      pusher="{{pusher}}"
+      isGroup="{{isGroup}}"
+      callType="{{config.type}}"
+      remoteUsers="{{remoteUsers}}"
+      bind:callingEvent="handleCallingEvent"
+    ></TUI-groupCalling>
+
+
     <TUI-Connected
-      wx:if="{{callStatus === 'connected'}}"
+      wx:if="{{callStatus === 'connected' && !isGroup}}"
       playerList="{{playerList}}"
+      isGroup="{{isGroup}}"
       userList="{{userList}}"
       pusher="{{pusher}}"
       callType="{{config.type}}"
@@ -18,5 +32,19 @@
       screen="{{screen}}"
       bind:connectedEvent="handleConnectedEvent"
     ></TUI-Connected>
+
+    <TUI-groupConnected
+      wx:if="{{callStatus === 'connected'  && isGroup}}"
+      remoteUsers="{{remoteUsers}}"
+      playerList="{{playerList}}"
+      userList="{{userList}}"
+      isGroup="{{isGroup}}"
+      pusher="{{pusher}}"
+      callType="{{config.type}}"
+      soundMode="{{soundMode}}"
+      screen="{{screen}}"
+      playerProcess="{{ playerProcess}}"
+      bind:connectedEvent="handleConnectedEvent"
+    ></TUI-groupConnected>
   </view>
 </view>
