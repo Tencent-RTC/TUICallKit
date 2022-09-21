@@ -23,6 +23,11 @@ Page({
   },
 
   searchUser() {
+    // 去掉前后空格
+    const newSearch = this.data.userIDToSearch.trim();
+    this.setData({
+      userIDToSearch: newSearch,
+    });
     this.data.invitee = {
       userID: this.data.userIDToSearch,
     };
