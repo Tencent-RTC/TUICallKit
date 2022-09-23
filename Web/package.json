@@ -1,55 +1,13 @@
 {
-  "name": "tuicall-engine-web-demo",
+  "name": "tuicall-kit",
   "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
-  },
+  "main": "index.ts",
+  "author": "tencent",
+  "license": "MIT",
   "dependencies": {
-    "axios": "^0.21.1",
-    "core-js": "^3.6.5",
-    "element-ui": "^2.13.2",
-    "EventEmitter": "^1.0.0",
-    "qs": "^6.9.4",
-    "tim-js-sdk": "^2.21.2",
-    "trtc-js-sdk": "^4.14.1",
+    "tim-js-sdk": "^2.22.1",
+    "trtc-js-sdk": "^4.14.2",
     "tsignaling": "^0.10.0",
-    "tuicall-engine-webrtc": "^1.0.1",
-    "vue": "^2.6.11",
-    "vue-router": "^3.3.4",
-    "vuex": "^3.5.1"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.4.0",
-    "@vue/cli-plugin-eslint": "~4.4.0",
-    "@vue/cli-service": "~4.4.0",
-    "babel-eslint": "^10.1.0",
-    "babel-plugin-component": "^1.1.1",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^6.2.2",
-    "vconsole": "^3.14.6",
-    "vue-template-compiler": "^2.6.11"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ],
-  "_id": "tuicall-engine-web-demo@1.0.0"
+    "tuicall-engine-webrtc": "^1.0.3"
+  }
 }
