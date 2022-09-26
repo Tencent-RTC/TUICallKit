@@ -154,7 +154,7 @@ async function createGroup() {
       目前 userID: <span>({{ loginStatus }})</span>
     </div>
     <span>SDKAppID: </span>
-    <input v-model="SDKAppID" placeholder="SDKAppID" style="width: 100px" />
+    <input v-model="SDKAppID" placeholder="SDKAppID" type="number" style="width: 100px" />
     <br />
     <span>SecretKey: </span>
     <input v-model="SecretKey" placeholder="SecretKey" style="width: 500px" />

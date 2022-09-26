@@ -3,8 +3,8 @@ import Dialing from "./Dialing.vue";
 import ControlPanel from "./ControlPanel.vue";
 import CallingGroup from "./Calling-Group.vue";
 import CallingC2CVideo from './Calling-C2CVideo.vue';
-import { status } from "../store"
-import { STATUS } from '../constants'
+import { status } from "../store";
+import { STATUS } from '../constants';
 import { TUICallKitServer } from "../index";
 import '../style.css';
 
