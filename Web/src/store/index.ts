@@ -37,6 +37,8 @@ watch(status, () => {
   }
   if (status.value === STATUS.IDLE) {
     changeDialingInfo(`发起的${callType.value === CALL_TYPE_STRING.AUDIO ? '语音通话' : '视频通话'}`);
+    profile.value.microphone = true;
+    profile.value.camera = true;
     changeDialingInfo("");
     changeRemoteList([]);
     TUICallKitServer.afterCalling && TUICallKitServer.afterCalling();
@@ -57,6 +59,7 @@ function changeStatus(newValue: string, reason?: string, timeout: number = 0): v
     default: changeDialingInfo(``); break;
   }
   setTimeout(() => {
+    TUICallKitServer.statusChanged && TUICallKitServer.statusChanged({oldStatus: status.value, newStatus: newValue});
     status.value = newValue;
   }, timeout);
 }

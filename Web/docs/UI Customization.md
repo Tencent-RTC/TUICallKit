@@ -8,7 +8,7 @@
 
 ### 替换图标
 
-您可以直接替换 `src/assets` 文件夹下的图标，以确保整个 app 中的图标色调风格保持一致，请在替换时保持图标文件的名字不变。
+您可以直接修改 `src/icons` 文件夹下的图标组件，以确保整个 app 中的图标色调风格保持一致，请在替换时保持图标文件的名字不变，图标预览可参考 `src/assets`。
 
 <img style="width:600px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/a8bd4a66f3a8071ea94eb5b270387386.png"/>
 

@@ -28,6 +28,7 @@ export default class TUICallKit {
   public TUICore: any;
   public beforeCalling: Function | undefined;
   public afterCalling: Function | undefined;
+  public statusChanged: Function | undefined;
   constructor() {
     this.TUICore = null;
     this.tuiCallEngine = null;
@@ -47,10 +48,11 @@ export default class TUICallKit {
       SDKAppID = this.TUICore.SDKAppID;
       tim = this.TUICore.tim;
     }
-    if (this.tuiCallEngine) this.tuiCallEngine.destroyInstance(); 
+    if (this.tuiCallEngine) await this.tuiCallEngine.destroyInstance(); 
     this.tuiCallEngine = TUICallEngine.createInstance({ SDKAppID, tim });
     this.bindTIMEvent();
     await this.tuiCallEngine.login({ userID, userSig });
+    console.warn("TUICallKit 登录成功");
     updateProfile(Object.assign(profile.value, { userID }));
   }
 
@@ -183,6 +185,10 @@ export default class TUICallKit {
 
   public switchCallMediaType() {
     this.tuiCallEngine.switchCallMediaType(1);
+  }
+
+  public onStatusChanged(statusChanged: Function) {
+    this.statusChanged = statusChanged;
   }
 
   /**

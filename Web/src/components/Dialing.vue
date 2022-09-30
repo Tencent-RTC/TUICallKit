@@ -2,7 +2,7 @@
 import { status, remoteList, dialingInfo } from "../store"
 import { STATUS } from '../constants'
 import MicrophoneIcon from "./MicrophoneIcon.vue";
-import microphoneClosedSVG from '../assets/microphoneClosed.svg';
+import MicrophoneClosedSVG from '../icons/microphoneClosed.vue';
 import "../style.css"
 </script>
 
@@ -13,7 +13,8 @@ import "../style.css"
         {{ remoteList.length && remoteList[0].userID }}
         <div class="microphone-icon-container" v-if="status === STATUS.CALLING_C2C_AUDIO">
           <MicrophoneIcon :volume="remoteList[0]?.volume" v-if="remoteList[0]?.microphone" />
-          <img :src="microphoneClosedSVG" v-if="!remoteList[0]?.microphone" />
+          <!-- <img :src="microphoneClosedSVG" v-if="!remoteList[0]?.microphone" /> -->
+          <MicrophoneClosedSVG v-else />
         </div>
       </div>
       <div class="dialing-info"> {{ dialingInfo }} </div>
