@@ -25,10 +25,12 @@ android {
         *
         *  "VIVO_APPKEY" : ViVo application AppKey registered in the ViVo platform.
         *  "VIVO_APPID" : ViVo application AppId registered in the ViVo platform.
+        *  "HONOR_APPID" : Honor application AppId registered in the Honor platform.
         */
         manifestPlaceholders = [
-                "VIVO_APPKEY": "",
-                "VIVO_APPID" : ""
+                "VIVO_APPKEY": "PLACEHOLDER",
+                "VIVO_APPID" : "PLACEHOLDER",
+                "HONOR_APPID": "PLACEHOLDER"
         ]
     }
 
@@ -38,6 +40,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -45,6 +51,5 @@ dependencies {
     api project(":tuicallkit")
     api project(':tuiofflinepush')
     api project(':debug')
-    implementation "com.google.code.gson:gson:2.9.1"
     implementation "androidx.recyclerview:recyclerview:1.2.1"
 }

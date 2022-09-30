@@ -27,31 +27,30 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
+import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit;
+import com.tencent.qcloud.tuikit.tuicallkit.base.CallingUserModel;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.basic.IntentUtils;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.basic.UserModel;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.basic.UserModelManager;
-import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit;
-import com.tencent.qcloud.tuikit.tuicallkit.base.CallingUserModel;
 import com.tencent.qcloud.tuikit.tuicallkit.utils.ImageLoader;
 import com.tencent.qcloud.tuikit.tuicallkit.utils.UserInfoUtils;
-import com.tencent.qcloud.tuikit.tuicallkit.widget.RoundCornerImageView;
 
 import java.util.List;
 
 public class TUICallingEntranceActivity extends Activity {
 
-    private Toolbar              mToolbar;
-    private EditText             mEtSearchUser;
-    private ImageView            mIvClearSearch;
-    private TextView             mTvSearch;
-    private TextView             mTextUserId;    // Own userId
-    private LinearLayout         mLayoutContact;
-    private RoundCornerImageView mIvAvatar;
-    private TextView             mTvUserName;
-    private Button               mBtnStartCall;
-    private ConstraintLayout     mClTips;        // Search hint
-    private ImageButton          mBtnLink;       // Official website link
-    private ListView             mListMembers;   // Added members(Multi call)
+    private Toolbar          mToolbar;
+    private EditText         mEtSearchUser;
+    private ImageView        mIvClearSearch;
+    private TextView         mTvSearch;
+    private TextView         mTextUserId;    // Own userId
+    private LinearLayout     mLayoutContact;
+    private ImageView        mIvAvatar;
+    private TextView         mTvUserName;
+    private Button           mBtnStartCall;
+    private ConstraintLayout mClTips;        // Search hint
+    private ImageButton      mBtnLink;       // Official website link
+    private ListView         mListMembers;   // Added members(Multi call)
 
     private UserModel mSelfModel;
     private UserModel mSearchModel;
@@ -103,7 +102,7 @@ public class TUICallingEntranceActivity extends Activity {
         mTvSearch = (TextView) findViewById(R.id.tv_search);
         mTextUserId = (TextView) findViewById(R.id.tv_self_userid);
         mLayoutContact = (LinearLayout) findViewById(R.id.ll_contract);
-        mIvAvatar = (RoundCornerImageView) findViewById(R.id.img_avatar);
+        mIvAvatar = (ImageView) findViewById(R.id.img_avatar);
         mTvUserName = (TextView) findViewById(R.id.tv_user_name);
         mBtnStartCall = (Button) findViewById(R.id.btn_start_call);
         mClTips = (ConstraintLayout) findViewById(R.id.cl_tips);
@@ -225,7 +224,8 @@ public class TUICallingEntranceActivity extends Activity {
                 CallingUserModel model = list.get(0);
                 mSearchModel = new UserModel();
                 mSearchModel.userId = model.userId;
-                mSearchModel.userName = TextUtils.isEmpty(model.userName) ? model.userId : model.userName;
+                mSearchModel.userAvatar = model.userAvatar;
+                mSearchModel.userName = model.userName;
                 showSearchUserModel(mSearchModel);
             }
 

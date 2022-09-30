@@ -26,9 +26,9 @@ import com.tencent.qcloud.tuicore.interfaces.TUICallback;
 import com.tencent.qcloud.tuicore.interfaces.TUILoginListener;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.tencent.qcloud.tuikit.debug.GenerateTestUserSig;
+import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.basic.UserModel;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.basic.UserModelManager;
-import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,25 +72,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private final TUILoginListener mLoginListener = new TUILoginListener() {
+        @Override
+        public void onKickedOffline() {
+            super.onKickedOffline();
+            Log.i(TAG, "You have been kicked off the line. Please login again!");
+            ToastUtil.toastLongMessage(getString(R.string.tuicalling_user_kicked_offline));
+            logout();
+            startLoginActivity();
+        }
+
+        @Override
+        public void onUserSigExpired() {
+            super.onUserSigExpired();
+            Log.i(TAG, "Your user signature information has expired");
+            ToastUtil.toastLongMessage(getString(R.string.user_sig_expired));
+            logout();
+            startLoginActivity();
+        }
+    };
+
     private void login() {
-        TUILogin.addLoginListener(new TUILoginListener() {
-            @Override
-            public void onKickedOffline() {
-                super.onKickedOffline();
-                Log.i(TAG, "You have been kicked off the line. Please login again!");
-                ToastUtil.toastLongMessage(getString(R.string.tuicalling_user_kicked_offline));
-                startLoginActivity();
-            }
-
-            @Override
-            public void onUserSigExpired() {
-                super.onUserSigExpired();
-                Log.i(TAG, "Your user signature information has expired");
-                ToastUtil.toastLongMessage(getString(R.string.user_sig_expired));
-                startLoginActivity();
-            }
-        });
-
+        TUILogin.addLoginListener(mLoginListener);
         final UserModel userModel = UserModelManager.getInstance().getUserModel();
         TUILogin.login(mContext, GenerateTestUserSig.SDKAPPID, userModel.userId,
                 userModel.userSig, new TUICallback() {
@@ -102,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onError(int errorCode, String errorMessage) {
                         Log.e(TAG, "login failed, errorCode: " + errorCode + " msg:" + errorMessage);
+                        TUILogin.removeLoginListener(mLoginListener);
+                        startLoginActivity();
                     }
                 });
     }
@@ -191,12 +196,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 Log.i(TAG, "logout success");
+                TUILogin.removeLoginListener(mLoginListener);
             }
 
             @Override
             public void onError(int errorCode, String errorMessage) {
                 Log.e(TAG, "logout failed, errorCode: " + errorCode + " , errorMessage: " + errorMessage);
-
             }
         });
     }
