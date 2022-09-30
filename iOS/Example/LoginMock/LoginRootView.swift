@@ -241,8 +241,8 @@ extension LoginRootView: UITextFieldDelegate {
         }
         guard let textFieldText = textField.text,
               let rangeOfTextToReplace = Range(range, in: textFieldText) else {
-                  return false
-              }
+            return false
+        }
         let substringToReplace = textFieldText[rangeOfTextToReplace]
         let count = textFieldText.count - substringToReplace.count + string.count
         let res = count <= maxCount
@@ -289,9 +289,9 @@ extension LoginRootView: UITextFieldDelegate {
 
 /// MARK: - internationalization string
 fileprivate extension String {
-    static let titleText = LoginLocalize(key: "Demo.TRTC.Login.welcome")
-    static let phoneNumPlaceholderText = LoginLocalize(key:"V2.Live.LinkMicNew.enterphonenumber")
-    static let verifyCodePlaceholderText = LoginLocalize(key:"V2.Live.LinkMicNew.enterverificationcode")
-    static let getVerifyCodeText = LoginLocalize(key:"V2.Live.LinkMicNew.getverificationcode")
-    static let loginText = LoginLocalize(key:"V2.Live.LoginMock.login")
+    static let titleText = TUICallKitAppLocalize("TUICallKitApp.Login.welcome")
+    static let phoneNumPlaceholderText = TUICallKitAppLocalize("TUICallKitApp.Login.enterphonenumber")
+    static let verifyCodePlaceholderText = TUICallKitAppLocalize("TUICallKitApp.Login.enterverificationcode")
+    static let getVerifyCodeText = TUICallKitAppLocalize("TUICallKitApp.Login.getverificationcode")
+    static let loginText = TUICallKitAppLocalize("TUICallKitApp.login")
 }

@@ -76,7 +76,7 @@ class LoginViewController: UIViewController {
                 complete(true)
             } failed: { [weak self] (error) in
                 guard let `self` = self else { return }
-                self.view.makeToast(LoginLocalize(key: "App.PortalViewController.loginimfailed"))
+                self.view.makeToast(TUICallKitAppLocalize("TUICallKitApp.loginimfailed"))
                 complete(false)
             }
         }
@@ -86,7 +86,7 @@ class LoginViewController: UIViewController {
         if ProfileManager.shared.curUserModel?.name.count == 0 {
             showRegisterVC()
         } else {
-            self.view.makeToast(LoginLocalize(key:"V2.Live.LinkMicNew.loginsuccess"))
+            self.view.makeToast(TUICallKitAppLocalize("TUICallKitApp.Login.loginsuccess"))
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 AppUtils.shared.showMainController()
             }

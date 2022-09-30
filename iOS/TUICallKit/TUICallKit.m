@@ -24,6 +24,7 @@
 #import "TUICallingUserModel.h"
 #import "TUICallKitGCDTimer.h"
 #import "TUICallEngineHeader.h"
+#import "TUICallKitOfflinePushInfoConfig.h"
 
 typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
     TUICallingUserRemoveReasonLeave,
@@ -34,7 +35,7 @@ typedef NS_ENUM(NSUInteger, TUICallingUserRemoveReason) {
 
 static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
 
-@interface TUICallKit () <TUICallObserver, TUILoginListener>
+@interface TUICallKit () <TUICallObserver>
 
 @property (nonatomic, strong) TUICallingViewManager *callingViewManager;
 /// Calling Media Type: Audio/Video
@@ -70,7 +71,6 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
         [[TUICallingStatusManager shareInstance] setDelegate:self.callingViewManager];
         [self initCallEngine];
         [[TUICallEngine createInstance] addObserver:self];
-        [TUILogin addLoginListener:self];
         [self registerNotifications];
     }
     return self;
@@ -99,7 +99,7 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
     TUIRoomId *roomId = [[TUIRoomId alloc] init];
     roomId.intRoomId = 1 + arc4random() % (INT32_MAX - 1);
     __weak typeof(self) weakSelf = self;
-    [[TUICallEngine createInstance] call:roomId userId:userId callMediaType:callMediaType succ:^{
+    [[TUICallEngine createInstance] call:roomId userId:userId callMediaType:callMediaType params:[self getCallParams] succ:^{
         __strong typeof(self) strongSelf = weakSelf;
         [strongSelf.callingViewManager createCallingView:callMediaType callRole:TUICallRoleCall callScene:TUICallSceneSingle];
         [strongSelf callStart:@[userId] type:callMediaType role:TUICallRoleCall];
@@ -135,9 +135,8 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
     self.currentCallingRole = TUICallRoleCall;
     TUIRoomId *roomId = [[TUIRoomId alloc] init];
     roomId.intRoomId = 1 + arc4random() % (INT32_MAX - 1);
-    
     __weak typeof(self) weakSelf = self;
-    [[TUICallEngine createInstance] groupCall:roomId groupId:groupId userIdList:userIdList callMediaType:callMediaType succ:^{
+    [[TUICallEngine createInstance] groupCall:roomId groupId:groupId userIdList:userIdList callMediaType:callMediaType params:[self getCallParams] succ:^{
         __strong typeof(self) strongSelf = weakSelf;
         TUICallScene callScene = [strongSelf getCallScene:userIdList];
         [strongSelf.callingViewManager createCallingView:callMediaType callRole:TUICallRoleCall callScene:callScene];
@@ -150,9 +149,9 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
 }
 
 - (void)joinInGroupCall:(TUIRoomId *)roomId groupId:(NSString *)groupId callMediaType:(TUICallMediaType)callMediaType {
-    TRTCLog(@"log: joinInCall");
+    TUILog(@"log: joinInCall");
     if (!(roomId)) {
-        TRTCLog(@"Calling - joinToCall invalid roomID");
+        TUILog(@"Calling - joinToCall invalid roomID");
         return;
     }
     if ([self checkAuthorizationStatusIsDenied:callMediaType]) {
@@ -235,9 +234,12 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
     
     if ([filePath hasPrefix:@"http"]) {
         NSURLSession *session = [NSURLSession sharedSession];
-        NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithURL:[NSURL URLWithString:filePath] completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithURL:[NSURL URLWithString:filePath]
+                                                            completionHandler:^(NSURL * _Nullable location,
+                                                                                NSURLResponse * _Nullable response,
+                                                                                NSError * _Nullable error) {
             if (error != nil) {
-                TRTCLog(@"SetCallingBell Error: %@", error.localizedDescription);
+                TUILog(@"SetCallingBell Error: %@", error.localizedDescription);
                 return;
             }
             
@@ -291,7 +293,6 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
 #pragma mark - TUICallObserver
 
 - (void)onError:(int)code message:(NSString * _Nullable)message {
-    TRTCLog(@"onError: code %d, msg %@", code, message);
     NSString *toast = [NSString stringWithFormat:@"Error code: %d, Message: %@", code, message];
     
     if (code == ERR_ROOM_ENTER_FAIL) {
@@ -302,7 +303,6 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
 }
 
 - (void)onUserJoin:(nonnull NSString *)userId {
-    TRTCLog(@"log: onUserEnter: %@", userId);
     CallingUserModel *userModel = [TUICallingUserManager getUser:userId];
     
     if (userModel) {
@@ -325,27 +325,22 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
 }
 
 - (void)onUserLeave:(nonnull NSString *)userId {
-    TRTCLog(@"log: onUserLeave: %@", userId);
     [self handleUserLeave:userId removeReason:TUICallingUserRemoveReasonLeave];
 }
 
 - (void)onUserReject:(nonnull NSString *)userId {
-    TRTCLog(@"log: onUserReject: %@", userId);
     [self handleUserLeave:userId removeReason:TUICallingUserRemoveReasonReject];
 }
 
 - (void)onUserNoResponse:(nonnull NSString *)userId {
-    TRTCLog(@"log: onUserNoResponse: %@", userId);
     [self handleUserLeave:userId removeReason:TUICallingUserRemoveReasonNoResp];
 }
 
 - (void)onUserLineBusy:(nonnull NSString *)userId {
-    TRTCLog(@"log: onUserLineBusy: %@", userId);
     [self handleUserLeave:userId removeReason:TUICallingUserRemoveReasonBusy];
 }
 
 - (void)onUserAudioAvailable:(nonnull NSString *)userId isAudioAvailable:(BOOL)isAudioAvailable {
-    TRTCLog(@"log: onUserAudioAvailable: %@, isAudioAvailable: %d",userId, isAudioAvailable);
     CallingUserModel *userModel = [TUICallingUserManager getUser:userId];
     
     if (userModel) {
@@ -362,13 +357,14 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
         CallingUserModel *newUser = [TUICallingCommon covertUser:userInfo];
         newUser.isEnter = YES;
         newUser.isAudioAvailable = isAudioAvailable;
-        [TUICallingUserManager cacheUser:newUser];
+        if (isAudioAvailable) {
+            [TUICallingUserManager cacheUser:newUser];
+        }
         [strongSelf.callingViewManager updateUser:newUser];
     } fail:nil];
 }
 
 - (void)onUserVideoAvailable:(nonnull NSString *)userId isVideoAvailable:(BOOL)isVideoAvailable {
-    TRTCLog(@"log: onUserVideoAvailable: %@, isVideoAvailable: %d",userId, isVideoAvailable);
     CallingUserModel *userModel = [TUICallingUserManager getUser:userId];
     
     if (userModel) {
@@ -384,7 +380,9 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
         V2TIMUserFullInfo *userInfo =  [infoList firstObject];
         CallingUserModel *newUser = [TUICallingCommon covertUser:userInfo];
         newUser.isVideoAvailable = isVideoAvailable;
-        [TUICallingUserManager cacheUser:newUser];
+        if (isVideoAvailable) {
+            [TUICallingUserManager cacheUser:newUser];
+        }
         [strongSelf.callingViewManager updateUser:newUser];
     } fail:nil];
 }
@@ -409,9 +407,8 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
 
 - (void)onCallReceived:(nonnull NSString *)callerId
           calleeIdList:(nonnull NSArray<NSString *> *)calleeIdList
-           isGroupCall:(BOOL)isGroupCall
+               groupId:(NSString *)groupId
          callMediaType:(TUICallMediaType)callMediaType {
-    TRTCLog(@"log: onInvited callerId:%@ calleeIdList:%@", callerId, calleeIdList);
     if (![TUICallingCommon checkArrayValid:calleeIdList]) {
         return;
     }
@@ -421,8 +418,9 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
     [userArray removeObject:[TUILogin getUserID]];
     self.currentCallingRole = TUICallRoleCalled;
     self.currentCallingType = callMediaType;
+    [TUICallingStatusManager shareInstance].groupId = groupId;
     TUICallScene callScene =  [self getCallScene:calleeIdList];
-    if (isGroupCall) {
+    if (groupId && [groupId isKindOfClass:NSString.class] && groupId.length > 0) {
         callScene = TUICallSceneGroup;
     }
     [self.callingViewManager createCallingView:callMediaType callRole:TUICallRoleCalled callScene:callScene];
@@ -435,7 +433,9 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
     [self updateCallingView:calleeIdList callScene:callScene sponsor:callerId];
     
     if ([self checkAuthorizationStatusIsDenied:callMediaType]) {
-        [[TUICallEngine createInstance] reject:nil fail:nil];
+        [[TUICallEngine createInstance] reject:^{
+        } fail:^(int code, NSString *errMsg) {
+        }];
         [self callEnd];
     }
     
@@ -446,7 +446,6 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
 }
 
 - (void)onCallBegin:(nonnull TUIRoomId *)roomId callMediaType:(TUICallMediaType)callMediaType callRole:(TUICallRole)callRole {
-    TRTCLog(@"onCallBegin \n %s roomId: %ld, %ld, %ld", __FUNCTION__, roomId.intRoomId, callMediaType, callRole);
     [self stopAudio];
     [TUICallingStatusManager shareInstance].callStatus = TUICallStatusAccept;
     
@@ -461,7 +460,6 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
     callMediaType:(TUICallMediaType)callMediaType
          callRole:(TUICallRole)callRole
         totalTime:(float)totalTime {
-    TRTCLog(@"onCallBegin \n %s roomId: %ld, %ld, %ld, totalTime: %lf", __FUNCTION__, roomId.intRoomId, callMediaType, callRole, totalTime);
     [self callEnd];
 }
 
@@ -469,7 +467,7 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
     if (oldCallMediaType == TUICallMediaTypeVideo && newCallMediaType == TUICallMediaTypeAudio) {
         self.currentCallingType = TUICallMediaTypeAudio;
         [TUICallingStatusManager shareInstance].audioPlaybackDevice = TUIAudioPlaybackDeviceEarpiece;
-        [TUICallingStatusManager shareInstance].callType = TUICallMediaTypeAudio;
+        [TUICallingStatusManager shareInstance].callMediaType = TUICallMediaTypeAudio;
     }
 }
 
@@ -526,8 +524,6 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
         [self makeToast:toast];
     }
 }
-
-#pragma mark - TUILoginListener
 
 - (void)onKickedOffline {
     [self stopCurrentCall];
@@ -591,13 +587,15 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
     } else if (errorCode == ERROR_PACKAGE_NOT_SUPPORTED) {
         errMsg = TUICallingLocalize(@"TUICallKit.package.not.support");
     } else {
-        TRTCLog(@"log: call error code: %ld errMsg: %@", errorCode, errorMessage);
+        TUILog(@"log: call error code: %ld errMsg: %@", errorCode, errorMessage);
     }
     [self makeToast:errMsg duration:4 position:nil];
 }
 
 - (void)initCallEngine {
-    [[TUICallEngine createInstance] init:[TUILogin getSdkAppID] userId:[TUILogin getUserID] userSig:[TUILogin getUserSig] succ:nil fail:nil];
+    [[TUICallEngine createInstance] init:[TUILogin getSdkAppID] userId:[TUILogin getUserID] userSig:[TUILogin getUserSig] succ:^{
+    } fail:^(int code, NSString *errMsg) {
+    }];
 }
 
 - (void)stopCurrentCall {
@@ -648,6 +646,7 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
 
 - (void)setGroupID:(NSString *)groupID {
     _groupID = groupID;
+    [TUICallingStatusManager shareInstance].groupId = groupID;
 }
 
 - (void)playAudioToCalled {
@@ -727,10 +726,17 @@ static NSString * const TUI_CALLING_BELL_KEY = @"CallingBell";
     self.timerName = [TUICallKitGCDTimer timerTask:^{
         __strong typeof(self) strongSelf = weakSelf;
         strongSelf.totalTime += (NSInteger)interval;
-        NSString *minutes = [NSString stringWithFormat:@"%@%ld", (strongSelf.totalTime / 60 < 10) ? @"0" : @"" , (NSInteger)(strongSelf.totalTime / 60)];
-        NSString *seconds = [NSString stringWithFormat:@"%@%ld", (strongSelf.totalTime % 60 < 10) ? @"0" : @"" , strongSelf.totalTime % 60];
+        NSString *minutes = [NSString stringWithFormat:@"%@%ld", (strongSelf.totalTime / 60 < 10) ? @"0" : @"", (NSInteger)(strongSelf.totalTime / 60)];
+        NSString *seconds = [NSString stringWithFormat:@"%@%ld", (strongSelf.totalTime % 60 < 10) ? @"0" : @"", strongSelf.totalTime % 60];
         [strongSelf.callingViewManager updateCallingTimeStr:[NSString stringWithFormat:@"%@ : %@", minutes, seconds]];
     } start:0 interval:interval repeats:YES async:NO];
+}
+
+- (TUICallParams *)getCallParams {
+    TUIOfflinePushInfo *offlinePushInfo = [TUICallKitOfflinePushInfoConfig createOfflinePushInfo];
+    TUICallParams *callParams = [TUICallParams new];
+    callParams.offlinePushInfo = offlinePushInfo;
+    return callParams;
 }
 
 @end

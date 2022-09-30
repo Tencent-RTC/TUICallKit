@@ -68,3 +68,4 @@
 
 "TUICallKit.package.not.purchased" = "您当前未购买音视频通话能力套餐，请前往IM 控制台开通免费体验或加购正式版";
 "TUICallKit.package.not.support" = "您当前购买的音视频通话能力套餐不支持该功能，建议您升级套餐类型";
+"TUICallKit.have.new.invitation" = "您有一个新的通话";
