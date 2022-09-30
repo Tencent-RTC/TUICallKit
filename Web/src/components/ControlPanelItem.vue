@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue';
-import triangleSVG from '../assets/triangle.svg';
+import TriangleSVG from '../icons/triangle.vue';
 import "../style.css";
 
 const openDetail = ref<boolean>(false);
@@ -40,7 +40,8 @@ const toggleDetail = (event: Event) => {
           <slot name="icon"> </slot>
       </div>
       <div class="control-item-summary" @click="toggleDetail" v-if="hasDetail">
-        <img :src="triangleSVG" />
+        <!-- <img :src="triangleSVG" /> -->
+        <TriangleSVG />
       </div>
       <div class="control-item-detail" v-show="openDetail">
           <slot name="detail"> </slot>

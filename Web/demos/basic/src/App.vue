@@ -123,7 +123,7 @@ async function createGroup() {
     <div class="call-kit-container">
       <div class="search" v-show="!isCalling">
         <div class="search-window search-left">
-          <div class="search-title">视频通话</div>
+          <div class="search-title">{{ typeString === "video" ? "视频通话" : "音频通话" }}</div>
           <div class="search-input-container">
             <img :src="searchSVG" class="icon-search" />
             <input class="search-input" type="text" v-model="userID" />
@@ -167,7 +167,7 @@ async function createGroup() {
     <br />
     <button @click="login()">登录</button>
     <button>
-      <a :href="`?qer=233`" target="_blank">打开新窗口登录其他 UserID</a>
+      <a href="/" target="_blank">打开新窗口登录其他 UserID</a>
     </button>
   </div>
 </template>

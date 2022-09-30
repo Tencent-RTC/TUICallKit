@@ -5,9 +5,9 @@ import MicrophoneIcon from "./MicrophoneIcon.vue";
 import { TUICallKitServer } from '../index';
 import { RemoteUser } from "../interface";
 import { CALL_TYPE_STRING, STATUS } from '../constants';
-import leftSVG from "../assets/left.svg";
-import rightSVG from "../assets/right.svg";
-import microphoneClosedSVG from '../assets/microphoneClosed.svg';
+import LeftSVG from "../icons/left.vue";
+import RightSVG from "../icons/right.vue";
+import MicrophoneClosedSVG from '../icons/microphoneClosed.vue';
 import '../style.css';
 
 const currentPage = ref<number>(1);
@@ -68,12 +68,14 @@ function pageIncrease() {
     <template v-if="remoteList.length > 8">
       <div class="page-turn left" @click="pageReduce">
         <div class="turn-icon-container">
-          <img :src="leftSVG" />
+          <!-- <img :src="leftSVG" /> -->
+          <LeftSVG />
         </div>
       </div>
       <div class="page-turn right" @click="pageIncrease">
         <div class="turn-icon-container">
-          <img :src="rightSVG" />
+          <!-- <img :src="rightSVG" /> -->
+          <RightSVG />
         </div>
       </div>
     </template>
@@ -82,7 +84,8 @@ function pageIncrease() {
         <span class="tag">
           <div class="microphone-icon-container">
             <MicrophoneIcon :volume="profile?.volume" v-if="profile?.microphone" />
-            <img :src="microphoneClosedSVG" v-if="!profile?.microphone" />
+            <!-- <img :src="microphoneClosedSVG" v-if="!profile?.microphone" /> -->
+            <MicrophoneClosedSVG v-else />
           </div>
           {{ `${profile.userID} (me)` }}
         </span>
@@ -98,7 +101,8 @@ function pageIncrease() {
           <span class="tag">
             <div class="microphone-icon-container">
               <MicrophoneIcon :volume="remoteUserItem?.volume" v-if="remoteUserItem?.microphone" />
-              <img :src="microphoneClosedSVG" v-if="!remoteUserItem?.microphone" />
+              <!-- <img :src="microphoneClosedSVG" v-if="!remoteUserItem?.microphone" /> -->
+              <MicrophoneClosedSVG v-else />
             </div>
             {{ remoteUserItem.userID }}
           </span>

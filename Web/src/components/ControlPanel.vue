@@ -4,16 +4,17 @@ import { onMounted, ref } from 'vue';
 import ControlPanelItem from './ControlPanelItem.vue';
 import { profile, remoteList, changeRemoteList, callType, status } from '../store';
 import { STATUS, CALL_TYPE_STRING } from '../constants'
-import rejectSVG from '../assets/reject.svg';
-import acceptAudioSVG from '../assets/acceptAudio.svg';
-import acceptVideoSVG from '../assets/acceptVideo.svg';
-import addSVG from '../assets/add.svg';
-import cameraSVG from '../assets/camera.svg';
-import microphoneSVG from '../assets/microphone.svg';
-import switchSVG from '../assets/switch.svg';
-import hangupSVG from '../assets/hangup.svg';
-import microphoneClosedBigSVG from '../assets/microphoneClosedBig.svg';
-import cameraClosedBigSVG from '../assets/cameraClosedBig.svg';
+import RejectSVG from '../icons/reject.vue';
+import AcceptAudioSVG from '../icons/acceptAudio.vue';
+import AcceptVideoSVG from '../icons/acceptVideo.vue';
+import AddSVG from '../icons/add.vue';
+import CameraSVG from '../icons/camera.vue';
+import MicrophoneSVG from '../icons/microphone.vue';
+import SwitchSVG from '../icons/switch.vue';
+// import hangupSVG from '../assets/hangup.vue';
+import HangupSVG from '../icons/hangup.vue'
+import MicrophoneClosedBigSVG from '../icons/microphoneClosedBig.vue';
+import CameraClosedBigSVG from '../icons/cameraClosedBig.vue';
 import "../style.css";
 
 const cameraList = ref<any>([]);
@@ -102,7 +103,8 @@ function reject() {
           拒绝
         </template>
         <template #icon>
-          <img :src="rejectSVG" />
+          <!-- <img :src="rejectSVG" /> -->
+          <RejectSVG />
         </template>
       </ControlPanelItem>
 
@@ -112,10 +114,12 @@ function reject() {
         </template>
         <template #icon>
           <template v-if="callType === CALL_TYPE_STRING.AUDIO">
-            <img :src="acceptAudioSVG" />
+            <!-- <img :src="acceptAudioSVG" /> -->
+            <AcceptAudioSVG />
           </template>
           <template v-else-if="callType === CALL_TYPE_STRING.VIDEO">
-            <img :src="acceptVideoSVG" />
+            <!-- <img :src="acceptVideoSVG" /> -->
+            <AcceptVideoSVG />
           </template>
         </template>
       </ControlPanelItem>
@@ -127,8 +131,10 @@ function reject() {
           摄像头已{{ profile?.camera ? "打开" : "关闭" }}
         </template>
         <template #icon>
-          <img :src="cameraSVG" v-if="profile?.camera"/>
-          <img :src="cameraClosedBigSVG" v-if="!profile?.camera"/>
+          <!-- <img :src="cameraSVG" v-if="profile?.camera"/> -->
+          <!-- <img :src="cameraClosedBigSVG" v-if="!profile?.camera"/> -->
+          <CameraSVG v-if="profile?.camera"/>
+          <CameraClosedBigSVG v-if="!profile?.camera"/>
         </template>
         <template #detail>
           <div class="control-item-detail-row">
@@ -155,8 +161,10 @@ function reject() {
           麦克风已{{ profile?.microphone ? "打开" : "关闭" }}
         </template>
         <template #icon>
-          <img :src="microphoneSVG" v-if="profile?.microphone"/>
-          <img :src="microphoneClosedBigSVG" v-if="!profile?.microphone" />
+          <!-- <img :src="microphoneSVG" v-if="profile?.microphone"/> -->
+          <!-- <img :src="microphoneClosedBigSVG" v-if="!profile?.microphone" /> -->
+          <MicrophoneSVG v-if="profile?.microphone"/>
+          <MicrophoneClosedBigSVG v-if="!profile?.microphone" />
         </template>
         <template #detail>
           <div>
@@ -175,7 +183,8 @@ function reject() {
           添加成员
         </template>
         <template #icon>
-          <img :src="addSVG" />
+          <!-- <img :src="addSVG" /> -->
+          <AddSVG />
         </template>
       </ControlPanelItem>
 
@@ -184,7 +193,8 @@ function reject() {
           视频转语音
         </template>
         <template #icon>
-          <img :src="switchSVG" />
+          <!-- <img :src="switchSVG" /> -->
+          <SwitchSVG />
         </template>
       </ControlPanelItem>
 
@@ -193,7 +203,8 @@ function reject() {
           挂断
         </template>
         <template #icon>
-          <img :src="hangupSVG" />
+          <!-- <img :src="hangupSVG" /> -->
+          <HangupSVG />
         </template>
       </ControlPanelItem>
     </template>

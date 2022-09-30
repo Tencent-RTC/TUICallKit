@@ -1,5 +1,6 @@
 import Server from "./server";
 import TUICallKit from "./components/TUICallKit.vue";
+import { STATUS } from "./constants"
 
 const TUICallKitServer = new Server();
 
@@ -19,4 +20,5 @@ const install = (app: any) => {
 export {
   TUICallKit,
   TUICallKitServer,
+  STATUS
 };

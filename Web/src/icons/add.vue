@@ -1,0 +1,8 @@
+<template>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 40 40" class="design-iconfont">
+        <rect width="40" height="40" rx="20" fill="#DADADA" fill-opacity=".3" />
+        <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M20 12C19.4477 12 19 12.4477 19 13V19H13C12.4477 19 12 19.4477 12 20C12 20.5523 12.4477 21 13 21H19V27C19 27.5523 19.4477 28 20 28C20.5523 28 21 27.5523 21 27V21H27C27.5523 21 28 20.5523 28 20C28 19.4477 27.5523 19 27 19H21V13C21 12.4477 20.5523 12 20 12Z"
+            fill="#fff" />
+    </svg>
+</template>

@@ -3,8 +3,8 @@ import { TUICallKitServer } from '../index';
 import { onMounted, onUpdated, ref, nextTick } from "vue";
 import { remoteList, profile } from '../store/index'
 import MicrophoneIcon from './MicrophoneIcon.vue';
-import switch2SVG from '../assets/switch2.svg';
-import microphoneClosedSVG from '../assets/microphoneClosed.svg';
+import Switch2SVG from '../icons/switch2.vue';
+import MicrophoneClosedSVG from '../icons/microphoneClosed.vue';
 import '../style.css'
 
 onMounted(() => {
@@ -43,12 +43,14 @@ const switchUserView = async () => {
       <span class="tag">
         <div class="microphone-icon-container">
           <MicrophoneIcon :volume="profile?.volume" v-if="profile?.microphone" />
-          <img :src="microphoneClosedSVG" v-if="!profile?.microphone" />
+          <!-- <img :src="microphoneClosedSVG" v-if="!profile?.microphone" /> -->
+          <MicrophoneClosedSVG v-else />
         </div>
         {{ `${profile.userID} (me)` }}
       </span>
       <div class="switch-large-small" @click="switchUserView">
-        <img :src="switch2SVG" />
+        <!-- <img :src="switch2SVG" /> -->
+        <Switch2SVG />
       </div>
     </div>
     <template v-if="remoteList.length >= 1">
@@ -56,12 +58,14 @@ const switchUserView = async () => {
         <span class="tag">
           <div class="microphone-icon-container">
             <MicrophoneIcon :volume="remoteList[0].volume" v-if="remoteList[0]?.microphone" />
-            <img :src="microphoneClosedSVG" v-if="!remoteList[0]?.microphone" />
+            <!-- <img :src="microphoneClosedSVG"  v-if="!remoteList[0]?.microphone"/> -->
+            <MicrophoneClosedSVG  v-else />
           </div>
           {{ remoteList[0].userID }}
         </span>
         <div class="switch-large-small" @click="switchUserView">
-          <img :src="switch2SVG" />
+          <!-- <img :src="switch2SVG" /> -->
+          <Switch2SVG />
         </div>
       </div>
     </template>
