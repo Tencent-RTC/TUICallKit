@@ -1,27 +1,57 @@
-# TUICallKit Calls UIKit 
-
 _[简体中文](README.md) | English_
+# Tencent Cloud UIKit for Video Calls 
 
-## Overview
-**Based on developer feedback and market demand research, TUICalling will be officially upgraded to TUICallKit in August 2022. The new components have upgraded functions such as multi-group calls and offline wake-up, and are equipped with a lower discount TRTC joint package and 7 Days of free trial period, looking forward to your attention.**
+<img src="Preview/logo.png" align="left" width=120 height=120>TUICallKit is a UIKit about video calls launched by Tencent Cloud. By integrating this component, you can write a few lines of code to use the video calling function, TUICallKit support offline calling and multiple  platforms such as Android, iOS, Web, Flutter(doing), etc.
 
-TUICallKit is an media calling UI component. you only need to write a few lines of code to add video calls to your app, TUICallKit support offline arousal capabilities、multiple development platforms such as Android, iOS, Web, applet, Flutter, UniApp, etc. The basic functions are shown in the following figure:
-
-![](https://qcloudimg.tencent-cloud.cn/raw/e44ffc8b1db9dd6648b246d12ee1e223.png)
-
-> Tips: You can also find the TUICalling open source project before the upgrade at [**here**](https://github.com/tencentyun/TUICalling/tree/open).
+<a href="https://apps.apple.com/cn/app/%E8%85%BE%E8%AE%AF%E4%BA%91%E8%A7%86%E7%AB%8B% E6%96%B9trtc/id1400663224"><img src="Preview/app-store.svg" height=40></a> <a href="https://dldir1.qq.com/hudongzhibo/liteav/TRTCDemo .apk"><img src="Preview/play-store.svg" height=40></a> <a href="https://web.sdk.qcloud.com/trtc/webrtc/demo/api- sample/login.html"><img src="Preview/web-app.svg" height=40></a>
 
 
-## Documentation
-###  Quickstart
 
-- [iOS ](https://www.tencentcloud.com/document/product/647/36065)
-- [Android](https://www.tencentcloud.com/document/product/647/36066)
-- [Web](https://www.tencentcloud.com/document/product/647/38927)
+## Features
+
+<p align="center">
+  <img src="Preview/calls-uikit.png"/>
+</p>
+
+- **Perfect UI interaction**: We provide TUICallKit, an open source component with UI, which can save 90% of your development time. You only need to divide 20 minutes to have a video calling application similar to WeChat and FaceTime.
+
+- **Multi-platform interconnection**: We support various platforms such as Web, Android, iOS, WeChat applet, etc., and also support cross-platform frameworks such as uni-app. You can use TUICallKit components of different platforms to support mutual calls and answers , hang up, etc. In the future, we also plan to support Flutter, MacOS, Windows and other devices.
+
+- **Mobile terminal offline push**: We support offline wake-up on Android and iOS. When your app is offline, you can also receive call reminders in time. Currently, Google FCM, Apple, Xiaomi, Huawei, OPPO, VIVO, Meizu and other push services
+
+- **Group (multi-person) calls**: We not only support 1-to-1 video calls, but also support multi-person video calls within the group, invite group members to join in the middle, and support group members to actively join the call, etc. .
+
+- **Multi-device login**: We also support that you can log in to multiple devices on different platforms. You can log in on your Pad and mobile phone at the same time, with a larger screen, better experience and more flexibility.
+
+- **More Features**: We also support multiple features such as custom ringtones, custom avatars, AI noise reduction, weak network optimization...
+
+
+
+## Make a first call
+
+Here is an example of integration with UI (ie TUICallKit),  which is also our recommended integration method. The key steps are as follows:
+
+- **Step1**: Activate the [Tencent Cloud Audio and Video Call Service](https://console.cloud.tencent.com/vcube/project/manage), for developer integration, we also provide a free trial version, [More introduction](https://cloud.tencent.com/document/product/1640/81130).
+
+- **Step2**: Access TUICallKit to your project, the detailed access process of each platform/framework: [Web](https://cloud.tencent.com/document/product/1640/81132), [ Android](https://cloud.tencent.com/document/product/647/78729), [iOS](https://cloud.tencent.com/document/product/647/78730).
+
+- **Step3**: Make your first video call!
+
+
+## Quick link
+
+- If you encounter difficulties, you can refer to [FAQs](https://cloud.tencent.com/document/product/647/78767), here are the most frequently encountered problems of developers, covering various platforms, I hope you can Help you solve problems quickly.
+
+- If you want to know more official examples, you can refer to the example Demo of each platform: [Web](Web/), [Android](Android/), [iOS](iOS/).
+
+- If you want to know some of our latest product features, you can check the [Update Log](https://cloud.tencent.com/document/product/647/80931), here are the latest features of TUICallKit, as well as the historical version features iterate
+- For complete API documentation, see [Audio Video Call SDK API Example](https://cloud.tencent.com/document/product/647/78748): including TUICallKit (with UIKit), TUICallEngine (without UIKit), and call events Callbacks, etc.
+- If you want to know more about the projects maintained by Tencent Cloud  Media Services Team, you can check our [Product Official Website](https://cloud.tencent.com/product/rtcube), [Github Organizations](https://github .com/LiteAVSDK) etc.
+
+
 
 ## Have any questions?
-Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you~
-Click to join: https://t.me/+EPk6TMZEZMM5OGY1
-Or scan the QR code
-
-<img src="https://qcloudimg.tencent-cloud.cn/raw/9c67ed5746575e256b81ce5a60216c5a.jpg" width="320"/>
+- Welcome to submit [**issue**](https://github.com/tencentyun/TUICallKit/issues),  
+- Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you，Click to join: https://t.me/+EPk6TMZEZMM5OGY1
+Or scan the QR code 
+<img src="Preview/telegram-code.jpg"/>
