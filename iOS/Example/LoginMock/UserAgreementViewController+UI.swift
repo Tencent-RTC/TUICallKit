@@ -13,7 +13,7 @@ import TXAppBasic
 
 extension UserAgreementViewController {
     func setupUI() {
-        self.title = LoginLocalize(key:"V2.Live.LinkMicNew.termsandconditions")
+        self.title = TUICallKitAppLocalize("TUICallKitApp.Login.termsandconditions")
         
         let htmlPath = Bundle.main.path(forResource: "UserProtocol", ofType: "html")
         var htmlContent = ""
@@ -43,7 +43,7 @@ extension UserAgreementViewController {
         }
         
         let agreeBtn = UIButton()
-        agreeBtn.setTitle(LoginLocalize(key:"V2.Live.LinkMicNew.agree"), for: .normal)
+        agreeBtn.setTitle(TUICallKitAppLocalize("TUICallKitApp.Login.agree"), for: .normal)
         agreeBtn.setTitleColor(UIColor.init(0x0062E3), for: .normal)
         view.addSubview(agreeBtn)
         agreeBtn.snp.remakeConstraints { (make) in
@@ -56,7 +56,7 @@ extension UserAgreementViewController {
         
         
         let unAgreeBtn = UIButton()
-        unAgreeBtn.setTitle(LoginLocalize(key:"V2.Live.LinkMicNew.disagree"), for: .normal)
+        unAgreeBtn.setTitle(TUICallKitAppLocalize("TUICallKitApp.Login.disagree"), for: .normal)
         unAgreeBtn.setTitleColor(UIColor.init(0x0062E3), for: .normal)
         view.addSubview(unAgreeBtn)
         unAgreeBtn.snp.remakeConstraints { (make) in

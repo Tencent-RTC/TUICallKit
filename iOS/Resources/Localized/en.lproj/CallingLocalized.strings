@@ -68,3 +68,4 @@
 
 "TUICallKit.package.not.purchased" = "You do not have TUICallKit package, please open the free experience in the console or purchase the official package";
 "TUICallKit.package.not.support" = "The package you purchased does not support this ability";
+"TUICallKit.have.new.invitation" = "You have a new call";

@@ -46,10 +46,10 @@ class RegisterRootView: UIView {
         return label
     }()
     
-    lazy var registBtn: UIButton = {
+    lazy var registerBtn: UIButton = {
         let btn = UIButton(type: .custom)
         btn.setTitleColor(.white, for: .normal)
-        btn.setTitle(.registText, for: .normal)
+        btn.setTitle(.registerText, for: .normal)
         btn.adjustsImageWhenHighlighted = false
         btn.setBackgroundImage(UIColor(hex: "006EFF")?.trans2Image(), for: .normal)
         btn.titleLabel?.font = UIFont(name: "PingFangSC-Medium", size: 18)
@@ -80,7 +80,7 @@ class RegisterRootView: UIView {
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        registBtn.layer.cornerRadius = registBtn.frame.height * 0.5
+        registerBtn.layer.cornerRadius = registerBtn.frame.height * 0.5
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -90,7 +90,7 @@ class RegisterRootView: UIView {
         UIView.animate(withDuration: 0.3) {
             self.transform = .identity
         }
-        checkRegistBtnState()
+        checkRegisterBtnState()
     }
     
     public weak var rootVC: RegisterViewController?
@@ -152,7 +152,7 @@ class RegisterRootView: UIView {
         addSubview(textField)
         addSubview(textFieldSpacingLine)
         addSubview(descLabel)
-        addSubview(registBtn)
+        addSubview(registerBtn)
     }
     func activateConstraints() {
         titleLabel.snp.makeConstraints { (make) in
@@ -179,7 +179,7 @@ class RegisterRootView: UIView {
             make.leading.equalToSuperview().offset(convertPixel(w: 40))
             make.trailing.lessThanOrEqualToSuperview().offset(convertPixel(w: -40))
         }
-        registBtn.snp.makeConstraints { (make) in
+        registerBtn.snp.makeConstraints { (make) in
             make.top.equalTo(descLabel.snp.bottom).offset(convertPixel(h: 40))
             make.leading.equalToSuperview().offset(convertPixel(w: 20))
             make.trailing.equalToSuperview().offset(-convertPixel(w: 20))
@@ -187,7 +187,7 @@ class RegisterRootView: UIView {
         }
     }
     func bindInteraction() {
-        registBtn.addTarget(self, action: #selector(registBtnClick), for: .touchUpInside)
+        registerBtn.addTarget(self, action: #selector(registerBtnClick), for: .touchUpInside)
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(headBtnClick))
         headImageView.addGestureRecognizer(tap)
@@ -209,21 +209,21 @@ class RegisterRootView: UIView {
         
     }
     
-    @objc func registBtnClick() {
+    @objc func registerBtnClick() {
         textField.resignFirstResponder()
         guard let name = textField.text else {
             return
         }
         ProfileManager.shared.curUserModel?.name = name
-        rootVC?.regist(name)
+        rootVC?.register(name)
     }
     
-    func checkRegistBtnState(_ count: Int = -1) {
+    func checkRegisterBtnState(_ count: Int = -1) {
         if count > -1 {
-            registBtn.isEnabled = count > 0
+            registerBtn.isEnabled = count > 0
         }
         else {
-            registBtn.isEnabled = false
+            registerBtn.isEnabled = false
         }
     }
 }
@@ -237,7 +237,7 @@ extension RegisterRootView : UITextFieldDelegate {
         UIView.animate(withDuration: 0.3) {
             self.transform = .identity
         }
-        checkRegistBtnState()
+        checkRegisterBtnState()
     }
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
@@ -253,7 +253,7 @@ extension RegisterRootView : UITextFieldDelegate {
         let count = textFieldText.count - substringToReplace.count + string.count
         let res = count <= maxCount
         if res {
-            checkRegistBtnState(count)
+            checkRegisterBtnState(count)
         }
         return res
     }
@@ -261,8 +261,8 @@ extension RegisterRootView : UITextFieldDelegate {
 
 /// MARK: - internationalization string
 fileprivate extension String {
-    static let titleText = LoginLocalize(key:"Demo.TRTC.Login.regist")
-    static let nicknamePlaceholderText = LoginLocalize(key:"Demo.TRTC.Login.enterusername")
-    static let descText = LoginLocalize(key:"Demo.TRTC.Login.limit20count")
-    static let registText = LoginLocalize(key:"Demo.TRTC.Login.regist")
+    static let titleText = TUICallKitAppLocalize("TUICallKitApp.Login.register")
+    static let nicknamePlaceholderText = TUICallKitAppLocalize("TUICallKitApp.Login.enterusername")
+    static let descText = TUICallKitAppLocalize("TUICallKitApp.Login.limit20count")
+    static let registerText = TUICallKitAppLocalize("TUICallKitApp.Login.register")
 }
