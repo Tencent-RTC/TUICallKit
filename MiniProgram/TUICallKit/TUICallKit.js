@@ -455,9 +455,10 @@ Component({
           sponsor: this.data.config.userID,
         });
         // 将自身的userID插入到邀请列表中,组成完整的用户信息
-        params.userIDList.unshift(this.data.config.userID);
+        const allUser = JSON.parse(JSON.stringify(params.userIDList));
+        allUser.unshift(this.data.config.userID);
         // 获取用户信息
-        this.getUserProfile(params.userIDList);
+        this.getUserProfile(allUser);
       });
     },
     /**
