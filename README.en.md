@@ -1,11 +1,9 @@
 _[简体中文](README.md) | English_
 # Tencent Cloud UIKit for Video Calls 
 
-<img src="Preview/logo.png" align="left" width=120 height=120>TUICallKit is a UIKit about video calls launched by Tencent Cloud. By integrating this component, you can write a few lines of code to use the video calling function, TUICallKit support offline calling and multiple  platforms such as Android, iOS, Web, Flutter(doing), etc.
+<img src="Preview/logo.png" align="left" width=120 height=120>TUICallKit is a UIKit about **audio&video calls** launched by Tencent Cloud. By integrating this component, you can write a few lines of code to use the video calling function, TUICallKit support offline calling and multiple  platforms such as Android, iOS, Web, Flutter(doing), etc.
 
 <a href="https://apps.apple.com/cn/app/%E8%85%BE%E8%AE%AF%E4%BA%91%E8%A7%86%E7%AB%8B% E6%96%B9trtc/id1400663224"><img src="Preview/app-store.svg" height=40></a> <a href="https://dldir1.qq.com/hudongzhibo/liteav/TRTCDemo .apk"><img src="Preview/play-store.svg" height=40></a> <a href="https://web.sdk.qcloud.com/trtc/webrtc/demo/api- sample/login.html"><img src="Preview/web-app.svg" height=40></a>
-
-
 
 ## Features
 
@@ -13,15 +11,15 @@ _[简体中文](README.md) | English_
   <img src="Preview/calls-uikit.png"/>
 </p>
 
-- **Perfect UI interaction**: We provide TUICallKit, an open source component with UI, which can save 90% of your development time. You only need to divide 20 minutes to have a video calling application similar to WeChat and FaceTime.
+- **Perfect UI interaction**: We provide TUICallKit, an open source component with UI, which can save your 90% of development time.and you can have a video calling app like WeChat or FaceTime in just 20 minutes.
 
-- **Multi-platform interconnection**: We support various platforms such as Web, Android, iOS, WeChat applet, etc., and also support cross-platform frameworks such as uni-app. You can use TUICallKit components of different platforms to support mutual calls and answers , hang up, etc. In the future, we also plan to support Flutter, MacOS, Windows and other devices.
+- **Multi-platform interconnection**: We support various platforms such as Web, Android, iOS, WeChat applet, etc., as well as support cross-platform frameworks such as uni-app. You can use TUICallKit components from different platforms to support mutual calls and answers , hang up, etc. In the future, we also plan to support Flutter, MacOS, Windows and other devices.
 
 - **Mobile terminal offline push**: We support offline wake-up on Android and iOS. When your app is offline, you can also receive call reminders in time. Currently, Google FCM, Apple, Xiaomi, Huawei, OPPO, VIVO, Meizu and other push services
 
-- **Group (multi-person) calls**: We not only support 1-to-1 video calls, but also support multi-person video calls within the group, invite group members to join in the middle, and support group members to actively join the call, etc. .
+- **Group (multi-person) calls**: We not only support 1-to-1 video calls, but also support multi-person video calls within a group, inviting group members to join in the middle, and support group members to actively join the call and more.
 
-- **Multi-device login**: We also support that you can log in to multiple devices on different platforms. You can log in on your Pad and mobile phone at the same time, with a larger screen, better experience and more flexibility.
+- **Multi-device login**: We also support the ability to log in to multiple devices on different platforms, your pad or mobile phone at the same time, for a larger screen and a more flexible experience.
 
 - **More Features**: We also support multiple features such as custom ringtones, custom avatars, AI noise reduction, weak network optimization...
 
@@ -42,11 +40,11 @@ Here is an example of integration with UI (ie TUICallKit),  which is also our re
 
 - If you encounter difficulties, you can refer to [FAQs](https://cloud.tencent.com/document/product/647/78767), here are the most frequently encountered problems of developers, covering various platforms, I hope you can Help you solve problems quickly.
 
-- If you want to know more official examples, you can refer to the example Demo of each platform: [Web](Web/), [Android](Android/), [iOS](iOS/).
+- If you would like to see more official examples, you can refer to the example Demo of each platform: [Web](Web/), [Android](Android/), [iOS](iOS/).
 
-- If you want to know some of our latest product features, you can check the [Update Log](https://cloud.tencent.com/document/product/647/80931), here are the latest features of TUICallKit, as well as the historical version features iterate
+- If you would like to see some of our latest product features, you can check the [Update Log](https://cloud.tencent.com/document/product/647/80931), here are the latest features of TUICallKit, as well as the historical version features iterate
 - For complete API documentation, see [Audio Video Call SDK API Example](https://cloud.tencent.com/document/product/647/78748): including TUICallKit (with UIKit), TUICallEngine (without UIKit), and call events Callbacks, etc.
-- If you want to know more about the projects maintained by Tencent Cloud  Media Services Team, you can check our [Product Official Website](https://cloud.tencent.com/product/rtcube), [Github Organizations](https://github .com/LiteAVSDK) etc.
+- If you want to learn more about the projects maintained by Tencent Cloud  Media Services Team, you can check our [Product Official Website](https://cloud.tencent.com/product/rtcube), [Github Organizations](https://github .com/LiteAVSDK) etc.
 
 
 
