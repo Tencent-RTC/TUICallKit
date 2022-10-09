@@ -10,7 +10,7 @@ _[English](README.en.md) | 简体中文_
 ## 产品特性
 
 <p align="center">
-  <img src="Preview/calls-uikit.png"/>
+  <img src="Preview/calls-uikit-zh.png"/>
 </p>
 
 - **完善的 UI 交互**：我们提供含 UI 的开源组件 TUICallKit，可以节省您 90% 开发时间，您只需要划分20分钟就可以拥有一款类似微信、FaceTime 的视频通话应用。
