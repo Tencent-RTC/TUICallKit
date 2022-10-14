@@ -16,7 +16,7 @@ public let kDeviceIsIphoneX : Bool = {
         return false
     }
     let size = UIScreen.main.bounds.size
-    let notchValue = Int(size.width/size.height*100)
+    let notchValue = Int(size.width / size.height * 100)
     if notchValue == 216 || notchValue == 46 {
         return true
     }
@@ -24,28 +24,18 @@ public let kDeviceIsIphoneX : Bool = {
 }()
 
 public let kDeviceSafeTopHeight : CGFloat = {
-    if kDeviceIsIphoneX {
-        return 44
-    }
-    else {
-        return 20
-    }
+    return kDeviceIsIphoneX ? 44 : 20
 }()
 
 public let kDeviceSafeBottomHeight : CGFloat = {
-    if kDeviceIsIphoneX {
-        return 34
-    }
-    else {
-        return 0
-    }
+    return kDeviceIsIphoneX ? 34 : 0
 }()
 
 public func convertPixel(w:CGFloat) -> CGFloat {
-    return w/375.0*ScreenWidth
+    return w / 375.0 * ScreenWidth
 }
 
 public func convertPixel(h:CGFloat) -> CGFloat {
-    return h/812.0*ScreenHeight
+    return h / 812.0 * ScreenHeight
 }
 

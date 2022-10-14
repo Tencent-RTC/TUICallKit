@@ -29,12 +29,12 @@ class RegisterViewController: UIViewController {
         }
     }
     
-    func regist(_ nickName: String) {
+    func register(_ nickName: String) {
         loading.startAnimating()
         ProfileManager.shared.synchronizUserInfo()
         ProfileManager.shared.setNickName(name: nickName) { [weak self] in
             guard let `self` = self else { return }
-            self.registSuccess()
+            self.registerSuccess()
         } failed: { (err) in
             self.loading.stopAnimating()
             self.view.makeToast(err)
@@ -44,10 +44,9 @@ class RegisterViewController: UIViewController {
         }
     }
     
-    func registSuccess() {
-        
+    func registerSuccess() {
         self.loading.stopAnimating()
-        self.view.makeToast(.registSuccessText)
+        self.view.makeToast(.registerSuccessText)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             //show main vc
             AppUtils.shared.showMainController()
@@ -64,6 +63,6 @@ class RegisterViewController: UIViewController {
 
 /// MARK: - internationalization string
 fileprivate extension String {
-    static let registSuccessText = LoginLocalize(key:"Demo.TRTC.Login.registsuccess")
+    static let registerSuccessText = TUICallKitAppLocalize("TUICallKitApp.Login.registersuccess")
 }
 
