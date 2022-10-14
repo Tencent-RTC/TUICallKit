@@ -26,15 +26,30 @@ TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/docume
 
 1. 登录到 [即时通信 IM 控制台](https://console.cloud.tencent.com/im)，单击**创建新应用**，在弹出的对话框中输入您的应用名称，并单击**确定**。
 
-<img style="width:600px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/1105c3c339be4f71d72800fe2839b113.png"/> 
+<!-- <img style="width:600px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/1105c3c339be4f71d72800fe2839b113.png"/>  -->
+
+<div align="center">
+
+<img style="width:600px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/194734917-3173e280-6f94-4cdb-92e4-9b8c8905abfd.png"/> 
+
+</div>
 
 2. 单击刚刚创建出的应用，进入**基本配置**页面，并在页面的右下角找到**开通腾讯实时音视频服务**功能区，单击**免费体验**即可开通 TUICallKit 的 7 天免费试用服务。
 
-<img style="width:600px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/667633f7addfd0c589bb086b1fc17d30.png"/> 
+<div align="center">
+<!-- <img style="width:600px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/667633f7addfd0c589bb086b1fc17d30.png"/>  -->
+
+<img style="width:600px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/194734939-f649f891-e45b-4efc-aaa3-d063e382d466.png"/> 
+</div>
 
 3. 在同一页面找到 **SDKAppID** 和**密钥**并记录下来，它们会在后续中被用到。
 
-<img style="width:600px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/e435332cda8d9ec7fea21bd95f7a0cba.png"/> 
+<!-- <img style="width:600px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/e435332cda8d9ec7fea21bd95f7a0cba.png"/>  -->
+
+<div align="center">
+
+<img style="width:600px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/194735234-8a3cc361-accb-41e4-8066-c8d7c88d2927.png"/> 
+</div>
 
 - SDKAppID：IM 的应用 ID，用于业务隔离，即不同的 SDKAppID 的通话彼此不能互通；
 - Secretkey：IM 的应用密钥，需要和 SDKAppID 配对使用，用于签出合法使用 IM 服务的鉴权用票据 UserSig，我们会在接下来的步骤五中用到这个 Key。
@@ -43,12 +58,17 @@ TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/docume
 
 1. 从 [GitHub 下载](https://github.com/tencentyun/TUICallKit/tree/main/Web) TUICallKit 源码。复制 `TUICallKit/Web` 文件夹放置到自己到工程的 `src/components` 文件夹中，例如：
 
-<img style="width:300px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/e4699aaa507aa4618034463225f72cb2.png"/> 
+<!-- <img style="width:300px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/e4699aaa507aa4618034463225f72cb2.png"/>  -->
+
+<div align="center">
+
+<img style="width:300px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/194735247-3cbe30c6-37ab-43a4-97f0-27b8e40140cf.png"/> 
+</div>
 
 2. 进入此文件夹中，安装运行所需依赖
 ```shell
 cd ./src/components/TUICallKit/Web 
-yarn                                  // 若当前环境未安装 yarn 包管理工具，可使用 npm install -g yarn 进行安装
+yarn         # 如果你没装过 yarn, 可以先运行: npm install -g yarn
 ```
 
 ## 步骤三：生成 UserSig
@@ -57,11 +77,19 @@ yarn                                  // 若当前环境未安装 yarn 包管理
 
 1. 设置初始化的相关参数，其中 SDKAppID 和密钥等信息，可通过 [即时通信 IM 控制台](https://console.cloud.tencent.com/im) 获取，单击目标应用卡片，进入应用的基础配置页面。例如：
 
-<img style="width:600px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/480455e5b4a2a1d4d67ffb2e445452a6.png"/>
+<!-- <img style="width:600px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/480455e5b4a2a1d4d67ffb2e445452a6.png"/> -->
+
+<div align="center">
+<img style="width:600px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/194735288-d96dd384-7bb3-479b-aff0-171888a9e15a.png"/>
+</div>
 
 2. 在基本信息区域，单击显示密钥，复制并保存密钥信息至 `TUICallKit/Web/demos/basic/public/debug/GenerateTestUserSig.js` 文件。 
 
-<img style="width:600px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/bbb093bfc7343a626dd8bc6f3d4cabf7.png"/> 
+<!-- <img style="width:600px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/bbb093bfc7343a626dd8bc6f3d4cabf7.png"/>  -->
+<div align="center">
+
+<img style="width:600px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/194735315-ae423867-b4cf-49c9-b542-761f6525882a.png"/> 
+</div>
 
 3. 在步骤四中，即可使用 `GenerateTestUserSig.js` 中 `genTestUserSig(userID)` 函数来计算 userSig，例如：
 
@@ -86,38 +114,54 @@ import { TUICallKit } from "./src/components/TUICallKit/Web";
 </script>
   
 <template>
-  <div class="call-kit-container">
-    <TUICallKit />
-  </div>
+  <TUICallKit />
 </template>
-  
-<style scoped>
-.call-kit-container {
-  width: 50rem;
-  height: 35rem;
-  border-radius: 16px;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-}
-</style>
 ```
 
 2. 登录用户与拨打电话
 
-其中初始化所需 userSig 可在[步骤三](#步骤三：生成-UserSig)中获取
+若您已使用 [TUIKit](https://cloud.tencent.com/document/product/269/79737) 套件，则需引入下方代码，声明 TUICallKit 为插件；若未使用，则不需要引入下方代码
 
 ```javascript
-// 用户根据需要触发
-import { TUICallKitServer } from './src/components/TUICallKit/Web';
-// TUICore.user(TUICallKit); 若已使用 TUIKit 组件，可调用此行协同使用，自动获取 tim 实例
-TUICallKitServer.init({ SDKAppID, userID, userSig }); 
-TUICallKitServer.call({ userID, type });
-TUICallKitServer.groupCall({ userIDList, groupID, type });
+import { TUICallKit } from './src/components/TUICallKit/Web/src/index';
+TUIKit.use(TUICallKit); 
 ```
-详解接口参数可参考[接口文档](https://github.com/tencentyun/TUICallKit/blob/main/Web/docs/API.md)
+
+之后，可以在需要登录的地方，执行：
+
+```javascript
+import { TUICallKitServer } from './src/components/TUICallKit/Web/src/index';
+TUICallKitServer.init({ SDKAppID, userID, userSig }); 
+```
+>  userSig 可在[步骤三](#步骤三：生成-UserSig)中获取
+
+在需要拨打电话的地方，执行：
+
+```javascript
+import { TUICallKitServer } from './src/components/TUICallKit/Web/src/index';
+TUICallKitServer.call({ userID, type }); // 双人通话
+TUICallKitServer.groupCall({ userIDList, groupID, type }); // 多人通话
+```
+
+之后就可以成功拨打您的第一通电话了～更详解接口参数可参考[接口文档](https://cloud.tencent.com/document/product/647/81015)
 
 3. 进阶接口
 
-本组件提供了 `beforeCalling` 和 `afterCalling` 两个回调，可以用于通知业务侧当前通话状态，分别会在通话前执行与通话后执行，例如可用来进行 `<TUICallKit />` 组件的展开与折叠，如[示例 demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/src/App.vue)。
+本组件提供了 `beforeCalling` 和 `afterCalling` 两个回调，可以用于通知业务侧当前通话状态，
+
+- `beforeCalling`: 通话前会执行
+- `afterCalling`: 通话后执行
+
+例如可用来进行 `<TUICallKit />` 组件的展开与折叠，如[示例 demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/src/App.vue)。
+
+```javascript
+function beforeCalling() {
+  console.log("通话前 会执行此函数");
+}
+function afterCalling() {
+  console.log("通话后 会执行此函数");
+}
+```
 
 ```html
 <TUICallKit :beforeCalling="beforeCalling" :afterCalling="afterCalling"/>
@@ -125,9 +169,9 @@ TUICallKitServer.groupCall({ userIDList, groupID, type });
 
 ## 其他文档
 
-- [TUICallKit API](https://github.com/tencentyun/TUICallKit/blob/main/Web/docs/API.md)
+- [TUICallKit API](https://cloud.tencent.com/document/product/647/81015)
 - [TUICallKit demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.md)
-- [TUICallKit 界面定制指引](https://github.com/tencentyun/TUICallKit/blob/main/Web/docs/UI%20Customization.md)
+- [TUICallKit 界面定制指引](https://cloud.tencent.com/document/product/647/81014)
 - [TUICallKit (Web) 常见问题](https://cloud.tencent.com/document/product/647/78769)
 - 欢迎加入 QQ 群：**646165204**，进行技术交流和反馈~
 

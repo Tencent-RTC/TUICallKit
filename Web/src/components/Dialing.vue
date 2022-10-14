@@ -10,7 +10,9 @@ import "../style.css"
   <div class="dialing-wrapper">
     <div class="dialing-content">
       <div class="dialing-user-id">
-        {{ remoteList.length && remoteList[0].userID }}
+        <template v-if="remoteList.length >= 1">
+          {{ remoteList[0].userID }}
+        </template>
         <div class="microphone-icon-container" v-if="status === STATUS.CALLING_C2C_AUDIO">
           <MicrophoneIcon :volume="remoteList[0]?.volume" v-if="remoteList[0]?.microphone" />
           <!-- <img :src="microphoneClosedSVG" v-if="!remoteList[0]?.microphone" /> -->

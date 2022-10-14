@@ -6,6 +6,7 @@ import { TUICallType } from 'tuicall-engine-webrtc';
 import { TUICallKitServer } from '../index';
 
 const status = ref<string>(STATUS.IDLE);
+const isMinimized = ref<boolean>(false);
 const dialingInfo = ref<string>("waiting");
 const callType = ref<string>();
 const isFromGroup = ref<boolean>(false);
@@ -24,11 +25,9 @@ watch(timerString, () => {
 
 watch(status, () => {
   if (status.value === STATUS.BE_INVITED) {
-    TUICallKitServer.beforeCalling && TUICallKitServer.beforeCalling();
     changeDialingInfo(`发起的${callType.value === CALL_TYPE_STRING.AUDIO ? '语音通话' : '视频通话'}`);
   }
   if (status.value.split('-')[0] === "dialing") {
-    TUICallKitServer.beforeCalling && TUICallKitServer.beforeCalling();
     changeDialingInfo("等待接听...");
   }
   if (status.value.split('-')[0] === "calling") {
@@ -39,6 +38,7 @@ watch(status, () => {
     changeDialingInfo(`发起的${callType.value === CALL_TYPE_STRING.AUDIO ? '语音通话' : '视频通话'}`);
     profile.value.microphone = true;
     profile.value.camera = true;
+    isMinimized.value = false;
     changeDialingInfo("");
     changeRemoteList([]);
     TUICallKitServer.afterCalling && TUICallKitServer.afterCalling();
@@ -46,8 +46,9 @@ watch(status, () => {
 });
 
 function changeStatus(newValue: string, reason?: string, timeout: number = 0): void {
-  console.log("Status: " + newValue);
+  console.log("TUICallKit Status: " + newValue);
   if (reason !== CHANGE_STATUS_REASON.CALL_TYPE_CHANGED) {
+    console.log("TUICallKit timerClear");
     timerClear();
   }
   switch (reason) {
@@ -76,13 +77,14 @@ function addRemoteListByUserID(userID: string): void {
   }
 }
 
-function removeRemoteListByUserID(userID: string): void {
+function removeRemoteListByUserID(userID: string): number {
   const isExisted = remoteList.value.findIndex((item: RemoteUser) => item.userID === userID);
   if (isExisted >= 0) {
     const resArray = remoteList.value;
     resArray.splice(isExisted, 1);
     changeRemoteList([...resArray]);
   }
+  return remoteList.value.length;
 }
 
 function changeRemoteDeviceByUserID(userID: string, deviceType: string, value: boolean): void {
@@ -128,6 +130,10 @@ function updateProfile(newValue: RemoteUser): void {
   profile.value = newValue;
 }
 
+function changeIsMinimized(newValue: boolean): void {
+  isMinimized.value = newValue;
+}
+
 export {
   status,
   profile,
@@ -135,6 +141,7 @@ export {
   callType,
   isFromGroup,
   remoteList,
+  isMinimized,
   changeStatus,
   changeCallType,
   changeIsFromGroup,
@@ -144,5 +151,6 @@ export {
   removeRemoteListByUserID,
   changeRemoteDeviceByUserID,
   updateRemoteVolumeMap,
-  updateProfile
+  updateProfile,
+  changeIsMinimized
 };

@@ -55,6 +55,13 @@ body,
   font-size: 20px;
 }
 
+.user-id {
+  font-size: 14px;
+  opacity: 0.5;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
 .selected-title {
   font-size: 18px;
 }
@@ -231,4 +238,12 @@ body,
   padding: 10px;
   z-index: 10;
   box-sizing: border-box;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+}
+input[type="number"] {
+  -moz-appearance: textfield !important;
 }

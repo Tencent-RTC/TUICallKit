@@ -10,7 +10,9 @@
 
 您可以直接修改 `src/icons` 文件夹下的图标组件，以确保整个 app 中的图标色调风格保持一致，请在替换时保持图标文件的名字不变，图标预览可参考 `src/assets`。
 
-<img style="width:600px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/a8bd4a66f3a8071ea94eb5b270387386.png"/>
+<!-- <img style="width:600px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/a8bd4a66f3a8071ea94eb5b270387386.png"/> -->
+
+<img style="width:600px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/194735399-64e56ca4-b25b-4eba-8470-92bb55013acc.png"/>
 
 ### 调整UI布局
 
@@ -33,4 +35,7 @@
 
 ## 方案二：自实现 UI 方案
 
-TUICallKit 的整个通话功能是基于 TUICallEngine 这个无 UI SDK实现的，您可以完全基于 TUICallEngine 实现一套自己的 UI 界面。详情可见[API 接口地址](https://cloud.tencent.com/document/product/647/78757)。
+TUICallKit 的整个通话功能是基于 TUICallEngine 这个无 UI SDK实现的，您可以完全基于 TUICallEngine 实现一套自己的 UI 界面。详情可见
+
+- [TUICallEngine 接入指引](https://www.npmjs.com/package/tuicall-engine-webrtc)
+- [TUICallEngine API 接口地址](https://cloud.tencent.com/document/product/647/78757)

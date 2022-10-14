@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 
 let timer: number = 0;
-let timerIncrease: number = 0;
+let timerIncrease: any;
 const timerString = ref<string>("");
 
 function timerStart(): boolean {
