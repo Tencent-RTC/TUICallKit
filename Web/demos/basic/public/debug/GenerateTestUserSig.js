@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import * as LibGenerateTestUserSig from './lib-generate-test-usersig.min.js'
+import * as LibGenerateTestUserSig from "./lib-generate-test-usersig.min.js";
 
 /**
  * Tencent Cloud SDKAppId, which should be replaced with user's SDKAppId.
@@ -12,8 +12,7 @@ import * as LibGenerateTestUserSig from './lib-generate-test-usersig.min.js'
  * 进入腾讯云实时音视频[控制台](https://console.cloud.tencent.com/rav ) 创建应用，即可看到 SDKAppId，
  * 它是腾讯云用于区分客户的唯一标识。
  */
-export let SDKAPPID = 0
-  
+export let SDKAPPID = 0;
 
 /**
  * Signature expiration time, which should not be too short
@@ -24,7 +23,7 @@ export let SDKAPPID = 0
  * 时间单位：秒
  * 默认时间：7 x 24 x 60 x 60 = 604800 = 7 天
  */
-const EXPIRETIME = 604800
+const EXPIRETIME = 604800;
 
 /**
  * Encryption key for calculating signature, which can be obtained in the following steps:
@@ -49,7 +48,7 @@ const EXPIRETIME = 604800
  * 注意：该方案仅适用于调试Demo，正式上线前请将 UserSig 计算代码和密钥迁移到您的后台服务器上，以避免加密密钥泄露导致的流量盗用。
  * 文档：https://cloud.tencent.com/document/product/647/17275#Server
  */
-let SECRETKEY = ''
+let SECRETKEY = "";
 
 /*
  * Module: GenerateTestUserSig
@@ -67,8 +66,8 @@ let SECRETKEY = ''
  * Given that it is more difficult to hack a server than a client application, server-end calculation can better protect your key.
  *
  * Reference: https://cloud.tencent.com/document/product/647/17275#Server
- * 
- * 
+ *
+ *
  * Module:   GenerateTestUserSig
  *
  * Function: 用于生成测试用的 UserSig，UserSig 是腾讯云为其云服务设计的一种安全保护签名。
@@ -84,16 +83,16 @@ let SECRETKEY = ''
  *            由于破解服务器的成本要高于破解客户端 App，所以服务器计算的方案能够更好地保护您的加密密钥。
  *
  * Reference：https://cloud.tencent.com/document/product/647/17275#Server
-*/
+ */
 
 export function genTestUserSig(userID, SDKAppID, SecretKey) {
   if (SDKAppID) SDKAPPID = SDKAppID;
   if (SecretKey) SECRETKEY = SecretKey;
-  const generator = new LibGenerateTestUserSig(SDKAPPID, SECRETKEY, EXPIRETIME)
-  const userSig = generator.genTestUserSig(userID)
+  const generator = new LibGenerateTestUserSig(SDKAPPID, SECRETKEY, EXPIRETIME);
+  const userSig = generator.genTestUserSig(userID);
 
   return {
-   sdkAppID: SDKAppID,
-   userSig: userSig,
-  }
+    sdkAppID: SDKAppID,
+    userSig: userSig,
+  };
 }

@@ -14,12 +14,14 @@ const currentPage = ref<number>(1);
 const currentPageRemoteList = ref<RemoteUser[]>([]);
 const groupUserViewClass = ref<string>("group-user-view");
 const groupCallingContainerClass = ref<string>("group-calling-container");
+const userViewUserId = ref<string>("user-view-user-id");
 
 watch(currentPageRemoteList, async () => {
   const userViewCount = currentPageRemoteList.value.length + 1;
   await nextTick();
   groupUserViewClass.value = `group-user-view group-user-view-${userViewCount}`;
   groupCallingContainerClass.value = `group-calling-container group-calling-container-${userViewCount}`;
+  userViewUserId.value = `user-view-user-id user-view-user-id-${userViewCount}`;
 });
 
 watchEffect(() => {
@@ -56,7 +58,7 @@ function pageReduce() {
 }
 
 function pageIncrease() {
-  if (currentPage.value < Math.floor((remoteList.value.length) / 8 + 1)) {
+  if (currentPage.value < Math.floor((remoteList.value.length - 1) / 8 + 1)) {
     currentPage.value++;
   }
 }
@@ -94,7 +96,7 @@ function pageIncrease() {
         <div :class="groupUserViewClass" :id='remoteUserItem.userID'>
           <template v-if="!remoteUserItem.isEntered || (isFromGroup && callType === CALL_TYPE_STRING.AUDIO)">
             <div class="user-view-text-container">
-              <div class="user-view-user-id"> {{ remoteUserItem.userID }} </div>
+              <div :class="userViewUserId"> {{ remoteUserItem.userID }} </div>
               <div class="user-view-info"> {{ remoteUserItem.isEntered ? "已经进入当前通话" : "等待接听..." }} </div>
             </div>
           </template>

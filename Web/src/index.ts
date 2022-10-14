@@ -1,17 +1,21 @@
 import Server from "./server";
 import TUICallKit from "./components/TUICallKit.vue";
+import TUICallKitMini from "./components/TUICallKitMini.vue";
 import { STATUS } from "./constants"
 
 const TUICallKitServer = new Server();
 
 const plugin = (TUICore: any) => {
   TUICore.component("TUICallKit", TUICallKit);
+  TUICore.component("TUICallKitMini", TUICallKitMini);
   TUICallKitServer.bindTUICore(TUICore);
   return TUICallKit;
 };
 
 const install = (app: any) => {
-  console.log("TUICallKit installed", app);
+  app.component('TUICallKitMini', TUICallKitMini);
+  app.component('TUICallKit', TUICallKit);
+  console.log("TUICallKit&mini installed", app);
 };
 
 (TUICallKit as any).plugin = plugin;
@@ -19,6 +23,7 @@ const install = (app: any) => {
 
 export {
   TUICallKit,
+  TUICallKitMini,
   TUICallKitServer,
   STATUS
 };

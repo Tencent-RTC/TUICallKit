@@ -27,4 +27,5 @@ export interface RemoteUser {
 export interface CallbackParam {
   beforeCalling?: Function;
   afterCalling?: Function;
+  onMinimized?: Function;
 }

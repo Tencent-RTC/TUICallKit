@@ -110,9 +110,11 @@
   display: flex;
   flex-direction: column;
   width: 100px;
+  margin: 0 20px;
 }
 
 .control-item-text {
+  margin-top: 5px;
   white-space: nowrap;
   font-weight: 400;
   font-size: 14px;
@@ -276,6 +278,8 @@
   background: rgba(32, 32, 32, 0.45);
   backdrop-filter: blur(34px);
   color: white;
+
+  overflow: hidden;
 }
 
 .user-view-text-container {
@@ -399,4 +403,95 @@
 
 .group-calling-container-6 {
   height: 66%
+}
+
+.user-view-user-id-1 {
+  font-size: 24px;
+}
+
+.user-view-user-id-2 {
+  font-size: 22px;
+}
+
+.user-view-user-id-3 {
+  font-size: 22px;
+}
+
+.user-view-user-id-4 {
+  font-size: 22px;
+}
+
+.user-view-user-id-5 {
+  font-size: 18px;
+}
+
+.user-view-user-id-6 {
+  font-size: 18px;
+}
+
+.user-view-user-id-7 {
+  font-size: 18px;
+}
+
+.user-view-user-id-8 {
+  font-size: 18px;
+}
+
+.user-view-user-id-9 {
+  font-size: 18px;
+}
+
+.float-control-panel {
+  width: 168px;
+  height: 56px;
+  background: white;
+  z-index: 13;
+
+  position: fixed;
+  top: 20px;
+  right: 20px;
+
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+
+  border-radius: 40px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+.minimize {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  z-index: 13;
+  cursor: pointer;
+}
+
+.float-control-item-icon {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  width: 56px;
+  height: 56px;
+  position: relative;
+}
+
+.float-control-item-icon-container {
+  border-radius: 40px;
+  width: 40px;
+  height: 40px;
+
+  margin: 0.5rem;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.float-control-item-icon-container:hover {
+  background: rgba(218, 218, 218, 0.3);
 }
