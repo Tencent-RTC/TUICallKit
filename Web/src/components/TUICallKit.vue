@@ -3,53 +3,77 @@ import Dialing from "./Dialing.vue";
 import ControlPanel from "./ControlPanel.vue";
 import CallingGroup from "./Calling-Group.vue";
 import CallingC2CVideo from "./Calling-C2CVideo.vue";
-import { profile, status, isMinimized } from "../store";
+import { status, isMinimized } from "../store";
 import { STATUS } from "../constants";
 import { TUICallKitServer } from "../index";
-import FloatCallEnd from "../icons/floatCallEnd.vue";
-import FloatMicrophoneSVG from '../icons/floatMicrophone.vue';
-import FloatMicrophoneClosedSVG from '../icons/floatMicrophoneClosed.vue';
-import MinimizeSVG from '../icons/minimize.vue';
-import FullScreenSVG from '../icons/fullScreen.vue';
+import MinimizeSVG from "../icons/minimize.vue";
+import fullScreenSVG from "../icons/fullScreen.vue";
+import { withDefaults, defineProps, toRefs } from "vue";
 import "../style.css";
 
-const props = withDefaults(defineProps<{
-  beforeCalling?: Function;
-  afterCalling?: Function;
-  onMinimized?: Function;
-  allowedMinimized?: boolean;
-}>(), {
-  allowedMinimized: true,
+const props = withDefaults(
+  defineProps<{
+    beforeCalling?: (...args: any[]) => void;
+    afterCalling?: (...args: any[]) => void;
+    onMinimized?: (...args: any[]) => void;
+    allowedMinimized?: boolean;
+    allowedFullScreen?: boolean;
+  }>(),
+  {
+    allowedMinimized: false,
+    allowedFullScreen: true
+  }
+);
+const { beforeCalling, afterCalling, onMinimized, allowedMinimized, allowedFullScreen } = toRefs(props);
+TUICallKitServer.setCallback({
+  beforeCalling: beforeCalling.value,
+  afterCalling: afterCalling.value,
+  onMinimized: onMinimized.value,
 });
-const { beforeCalling, afterCalling, onMinimized, allowedMinimized } = props;
-TUICallKitServer.setCallback({ beforeCalling, afterCalling, onMinimized });
 
 function toggleMinimize() {
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  }
   TUICallKitServer.toggleMinimize();
 }
 
-const hangup = () => {
-  TUICallKitServer.hangup();
-};
-
-const toggleMicrophone = async () => {
-  if (profile.value?.microphone) {
-    await TUICallKitServer.closeMicrophone();
+function toggleFullscreen() {
+  let elem = document.getElementById("tui-call-kit-id") as HTMLElement;
+  if (!document.fullscreenElement) {
+    elem.requestFullscreen().catch((err) => {
+      alert(`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
+    });
   } else {
-    await TUICallKitServer.openMicrophone();
+    document.exitFullscreen();
   }
 }
 </script>
 
 <template>
-  <div class="tui-call-kit" v-if="status !== STATUS.IDLE" v-show="!isMinimized">
-    <div
-      class="minimize"
-      @click="toggleMinimize"
-      v-if="status !== STATUS.IDLE && allowedMinimized === true && status !== STATUS.DIALING_C2C && status !== STATUS.DIALING_GROUP && status !== STATUS.BE_INVITED"
-    >
-    <MinimizeSVG />
-  </div>
+  <div class="tui-call-kit" id="tui-call-kit-id" v-if="status !== STATUS.IDLE" v-show="!isMinimized">
+    <div class="function-buttons">
+      <div
+        class="minimize"
+        @click="toggleMinimize"
+        v-if="
+          status !== STATUS.IDLE &&
+          allowedMinimized === true &&
+          status !== STATUS.DIALING_C2C &&
+          status !== STATUS.DIALING_GROUP &&
+          status !== STATUS.BE_INVITED
+        "
+      >
+        <MinimizeSVG />
+      </div>
+      <div
+        class="minimize"
+        @click="toggleFullscreen"
+        v-if="allowedFullScreen === true"
+      >
+        <fullScreenSVG />
+      </div>
+    </div>
     <Dialing
       v-if="
         status === STATUS.BE_INVITED ||
