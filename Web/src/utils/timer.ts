@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 
-let timer: number = 0;
+let timer = 0;
 let timerIncrease: any;
 const timerString = ref<string>("");
 

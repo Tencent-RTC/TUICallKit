@@ -66,3 +66,7 @@
 - 如果你遇到了困难，可以先参阅 [常见问题](https://cloud.tencent.com/document/product/647/78769)；
 - 如果发现了示例代码的 bug，欢迎提交 issue；
 - 欢迎加入 QQ 群：**646165204**，进行技术交流和反馈~
+
+## License
+
+ISC License © 2022-present, [Tencent](https://www.tencent.com/)

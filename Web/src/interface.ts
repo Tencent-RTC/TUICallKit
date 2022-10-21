@@ -5,15 +5,26 @@ export interface TUIInitParam {
   userSig: string;
 }
 
+export interface offlinePushInfoType {
+  title?: string;
+  description?: string;
+  androidOPPOChannelID?: string;
+  extension?: string;
+}
+
 export interface TUICallParam {
   userID: string;
   type: number;
+  timeout?: number;
+  offlinePushInfo?: offlinePushInfoType;
 }
 
 export  interface TUIGroupCallParam {
   userIDList: Array<string>;
   type: number;
   groupID: string;
+  timeout?: number;
+  offlinePushInfo?: offlinePushInfoType;
 }
 
 export interface RemoteUser {
@@ -25,7 +36,12 @@ export interface RemoteUser {
 }
 
 export interface CallbackParam {
-  beforeCalling?: Function;
-  afterCalling?: Function;
-  onMinimized?: Function;
+  beforeCalling?: (...args: any[]) => void;
+  afterCalling?: (...args: any[]) => void;
+  onMinimized?: (...args: any[]) => void;
+}
+
+export  interface statusChangedReturnType {
+  oldStatus: string;
+  newStatus: string;
 }
