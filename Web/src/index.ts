@@ -6,8 +6,8 @@ import { STATUS } from "./constants"
 const TUICallKitServer = new Server();
 
 const plugin = (TUICore: any) => {
-  TUICore.component("TUICallKit", TUICallKit);
-  TUICore.component("TUICallKitMini", TUICallKitMini);
+  TUICore.component('TUICallKit', { server: TUICallKitServer });
+  TUICore.component('TUICallKitMini', { server: TUICallKitServer });
   TUICallKitServer.bindTUICore(TUICore);
   return TUICallKit;
 };

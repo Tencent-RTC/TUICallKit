@@ -175,6 +175,7 @@
 
 .control-item-detail-row {
   margin-bottom: 6px;
+  font-size: 16px;
 }
 
 .device-select {
@@ -185,6 +186,7 @@
   padding-bottom: 6px;
   margin-top: 10px;
   margin-bottom: 10px;
+  font-size: 14px;
 }
 
 .control-item-detail::before {
@@ -207,6 +209,7 @@
   padding: 2px 10px;
   border-top-right-radius: inherit;
   border-bottom-left-radius: inherit;
+  font-size: 14px;
 
   position: absolute;
   left: 0;
@@ -459,12 +462,20 @@
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
-.minimize {
+.function-buttons {
   position: absolute;
   right: 12px;
   top: 12px;
   z-index: 13;
   cursor: pointer;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.minimize {
+  margin-left: 10px;
 }
 
 .float-control-item-icon {

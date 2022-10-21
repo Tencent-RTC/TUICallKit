@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { TUICallKit, TUICallKitServer, TUICallKitMini } from "../../..";
 import * as GenerateTestUserSig from "../public/debug/GenerateTestUserSig.js";
 import TIM from "tim-js-sdk";
@@ -10,6 +10,7 @@ import audioWhiteSVG from "./assets/audioWhite.svg";
 import audioBlackSVG from "./assets/audioBlack.svg";
 import searchSVG from "./assets/search.svg";
 import cancelSVG from "./assets/cancel.svg";
+import { ElMessage } from 'element-plus';
 import "./App.css";
 
 const SDKAppID = ref<number>(0);
@@ -18,10 +19,10 @@ const userID = ref<string>("");
 const loginUserID = ref<string>("");
 const userList = ref<string[]>([]);
 const currentUserID = ref<string>("未登录");
-const timer = ref<any>(null);
 
 const debugDisplayStyle = ref<string>("");
 const isNewTab = ref<boolean>(false);
+const isMinimized = ref<boolean>(false);
 
 const typeString = ref<string>("video");
 const isCalling = ref<boolean>(false);
@@ -37,10 +38,10 @@ onMounted(() => {
   SecretKey.value = getQueryVariable("SecretKey") || "";
 });
 
-onBeforeUnmount(() => {
-  clearInterval(timer.value)
-  timer.value = null;
+onUnmounted(() => {
+  TUICallKitServer.destroyed();
 })
+
 
 async function login() {
   if (!SDKAppID.value || SDKAppID.value === 0) {
@@ -63,14 +64,18 @@ async function login() {
   tim = TIM.create({
     SDKAppID: SDKAppID.value,
   });
-  TUICallKitServer.init({
-    userID: loginUserID.value,
-    userSig,
-    SDKAppID: SDKAppID.value,
-    tim,
-  });
-  currentUserID.value = loginUserID.value;
-  debugDisplayStyle.value = "display: none;";
+  try {
+    await TUICallKitServer.init({
+      userID: loginUserID.value,
+      userSig,
+      SDKAppID: SDKAppID.value,
+      tim,
+    });
+    currentUserID.value = loginUserID.value;
+    debugDisplayStyle.value = "display: none;";
+  } catch (error: any) {
+    if (error.message) ElMessage.error(`登录失败，请检查 SDKAppID 与 SecretKey 是否正确 ${error.message}`);
+  }
 }
 
 function switchCallType(type: string) {
@@ -85,34 +90,44 @@ async function startCall(typeString: string) {
   }
   const type = typeString === "audio" ? 1 : 2;
   if (userList.value.length <= 0) return;
-  if (userList.value.length === 1)
-    await TUICallKitServer.call({ userID: userList.value[0], type });
-  else {
-    // 此处可直接使用已存在的群组，不需要每次创建新群组
-    groupID.value = await createGroup();
-    await TUICallKitServer.groupCall({
-      userIDList: userList.value,
-      type,
-      groupID: groupID.value,
-    });
+  try {
+    if (userList.value.length === 1)
+      await TUICallKitServer.call({ userID: userList.value[0], type });
+    else {
+      // 此处可直接使用已存在的群组，不需要每次创建新群组
+      groupID.value = await createGroup();
+      await TUICallKitServer.groupCall({
+        userIDList: userList.value,
+        type,
+        groupID: groupID.value,
+      });
+    }
+  } catch (error: any) {
+    if (error.message) ElMessage.error(error.message);
   }
 }
 
 function beforeCalling(type: string, error: any) {
+  console.log("basic demo beforeCalling", type, error);
   if (!error) isCalling.value = true;
+  else {
+    console.warn("basic demo beforeCallingbasic demo beforeCalling");
+    ElMessage.error(`${error.type}: ${error.message}`);
+  }
 }
 
 function afterCalling() {
   userList.value = [];
   isCalling.value = false;
+  isMinimized.value = false;
 }
 
 function onMinimized(oldStatus: boolean, newStatus: boolean) {
   console.warn("onMinimized: " + oldStatus + " -> " + newStatus);
   if (newStatus === true) {
-    isCalling.value = false;
+    isMinimized.value = true;
   } else {
-    isCalling.value = true;
+    isMinimized.value = false;
   }
 }
 
@@ -162,20 +177,12 @@ function newTab(event: any) {
   );
 }
 
-function hint(hintString: string) {
-  const tempUserID = currentUserID.value;
-  currentUserID.value = hintString;
-  timer.value = setTimeout(() => {
-    currentUserID.value = tempUserID;
-  }, 1000);
-}
-
 function copyUserID() {
   copyText(currentUserID.value, undefined, (error: any) => {
     if (error) {
-      hint("复制失败，请手动填写");
+      ElMessage.warn(`复制失败，请手动填写`);
     } else {
-      hint("已复制");
+      ElMessage.success(`已复制`);
     }
   });
 }
@@ -210,7 +217,10 @@ function copyUserID() {
       </div>
     </div>
     <div class="call-kit-container">
-      <div class="search" v-show="!isCalling">
+      <div class="hover" v-show="isCalling && isMinimized">
+        已进入最小化模式
+      </div>
+      <div class="search" v-show="!isCalling || isMinimized">
         <div class="search-window search-left">
           <div class="search-title">
             {{ typeString === "video" ? "视频通话" : "音频通话" }}
@@ -273,7 +283,8 @@ function copyUserID() {
         :beforeCalling="beforeCalling"
         :afterCalling="afterCalling"
         :onMinimized="onMinimized"
-        :allowedMinimized="false"
+        :allowedMinimized="true"
+        :allowedFullScreen="true"
       />
       <TUICallKitMini />
     </div>
