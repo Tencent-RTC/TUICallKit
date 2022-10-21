@@ -3,9 +3,9 @@ import { profile, status, isMinimized } from "../store";
 import { STATUS } from "../constants";
 import { TUICallKitServer } from "../index";
 import FloatCallEnd from "../icons/floatCallEnd.vue";
-import FloatMicrophoneSVG from '../icons/floatMicrophone.vue';
-import FloatMicrophoneClosedSVG from '../icons/floatMicrophoneClosed.vue';
-import FullScreenSVG from '../icons/fullScreen.vue';
+import FloatMicrophoneSVG from "../icons/floatMicrophone.vue";
+import FloatMicrophoneClosedSVG from "../icons/floatMicrophoneClosed.vue";
+import FloatFullScreenSVG from "../icons/floatFullScreen.vue";
 import "../style.css";
 
 function toggleMinimize() {
@@ -22,11 +22,15 @@ const toggleMicrophone = async () => {
   } else {
     await TUICallKitServer.openMicrophone();
   }
-}
+};
 </script>
 
 <template>
-  <div class="float-control-panel" v-show="isMinimized" v-if="status !== STATUS.IDLE">
+  <div
+    class="float-control-panel"
+    v-show="isMinimized"
+    v-if="status !== STATUS.IDLE"
+  >
     <div class="float-control-item-icon">
       <div class="float-control-item-icon-container" @click="hangup">
         <FloatCallEnd />
@@ -40,7 +44,7 @@ const toggleMicrophone = async () => {
     </div>
     <div class="float-control-item-icon">
       <div class="float-control-item-icon-container" @click="toggleMinimize">
-        <FullScreenSVG />
+        <FloatFullScreenSVG />
       </div>
     </div>
   </div>

@@ -45,7 +45,7 @@ const hangup = () => {
 function switchCameraDevice() {
   TUICallKitServer.switchDevice("video", currentCamera.value);
   openCameraDetail.value = false;
-};
+}
 
 const switchMicrophoneDevice = () => {
   TUICallKitServer.switchDevice('audio', currentMicrophone.value);
@@ -141,7 +141,7 @@ function reject() {
             <div> 摄像头</div>
             <select class="device-select" v-model="currentCamera" @change="switchCameraDevice">
               <option value="" selected disabled hidden>{{ cameraList && cameraList[0]?.label }}</option>
-              <option v-for="camera in cameraList" :value="camera.deviceId"> {{ camera.label }} </option>
+              <option v-for="camera in cameraList" :value="camera.deviceId" :key="camera.deviceId"> {{ camera.label }} </option>
             </select>
           </div>
           <div v-if="status === STATUS.DIALING_C2C">
@@ -171,7 +171,7 @@ function reject() {
             麦克风
             <select class="device-select" v-model="currentMicrophone" @change="switchMicrophoneDevice">
               <option value="" selected disabled hidden>{{ microphoneList && microphoneList[0]?.label }}</option>
-              <option v-for="microphone in microphoneList" :value="microphone.deviceId"> {{ microphone.label }}
+              <option v-for="microphone in microphoneList" :value="microphone.deviceId" :key="microphone.deviceId"> {{ microphone.label }}
               </option>
             </select>
           </div>

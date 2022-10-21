@@ -229,6 +229,24 @@ body,
   position: relative;
 }
 
+.hover {
+  position: absolute;
+  background: black;
+  opacity: .6;
+  z-index: 2000;
+  width: 100%;
+  height: 100%;
+  width: 50rem;
+  height: 35rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 32px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
 #debug {
   position: absolute;
   width: 100%;

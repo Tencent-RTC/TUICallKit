@@ -45,7 +45,7 @@ watch(status, () => {
   }
 });
 
-function changeStatus(newValue: string, reason?: string, timeout: number = 0): void {
+function changeStatus(newValue: string, reason?: string, timeout = 0): void {
   console.log("TUICallKit Status: " + newValue);
   if (reason !== CHANGE_STATUS_REASON.CALL_TYPE_CHANGED) {
     console.log("TUICallKit timerClear");

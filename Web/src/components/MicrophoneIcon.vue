@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import "../style.css"
-
-const { volume } = defineProps<{
-  volume?: number,
-}>()
-
-
+import '../style.css';
+import { defineProps, toRefs } from 'vue';
+const props = defineProps<{
+  volume?: number;
+}>();
+const { volume } = toRefs(props);
 </script>
-    
+
 <template>
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16" class="design-iconfont">
     <g v-if="volume && volume > 0">
