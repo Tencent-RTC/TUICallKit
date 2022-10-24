@@ -37,7 +37,7 @@
 .custom-tab .custom-box .custom-item.active{ 
     color: #007BFC; 
 }
-.custom-tab .custom-box .custom-item image{ 
+.custom-tab .custom-box .custom-item .custom-item-image{ 
     width: 22px; 
     height: 22px; 
     margin-bottom: 2rpx; 
@@ -60,7 +60,7 @@
     justify-content: center;
     align-items: center;
 }
-.custom-logo image {
+.custom-logo .custom-logo-image {
     width: 56px;
     height: 56px;
 

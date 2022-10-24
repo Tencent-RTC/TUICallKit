@@ -1,6 +1,5 @@
 import TUICallEngine, { EVENT, MEDIA_TYPE, AUDIO_PLAYBACK_DEVICE, STATUS } from '../TUICallEngine/tuicall-engine-wx.js';
 
-const TAG_NAME = 'TUICallKit';
 // 组件旨在跨终端维护一个通话状态管理机，以事件发布机制驱动上层进行管理，并通过API调用进行状态变更。
 // 组件设计思路将UI和状态管理分离。您可以通过修改`component`文件夹下的文件，适配您的业务场景，
 // 在UI展示上，您可以通过属性的方式，将上层的用户头像，名称等数据传入组件内部，`static`下的icon和默认头像图片，
@@ -38,7 +37,6 @@ Component({
     sponsor: '',      // 主叫方
     screen: 'pusher', // 视屏通话中，显示大屏幕的流（只限1v1聊天
     soundMode: AUDIO_PLAYBACK_DEVICE.SPEAKER, // 声音模式 听筒/扬声器
-    timer: null, // 用来清除僵尸用户的定时器
   },
 
 
@@ -50,7 +48,6 @@ Component({
     // 新的邀请回调事件
     handleNewInvitationReceived(event) {
       this.resetUI();
-      console.log(`${TAG_NAME}, handleNewInvitationReceived, event${JSON.stringify(event)}`);
       this.data.config.type = event.data.inviteData.callType;
       // 判断是否为多人通话
       if (event.data.isFromGroup) {
@@ -63,24 +60,6 @@ Component({
         newList.unshift(event.data.sponsor);
         // 获取用户信息
         this.getUserProfile(newList);
-        // 缓冲时间
-        const bufferTime = 5000;
-        // 开启定时器用来清除在接听前就已经退出的用户
-        const clearUserTimer = setTimeout(() => {
-          // 获取推拉流中的的用户列表
-          const player = this.data.playerList.map(item => item.userID);
-          player.push(this.data.config.userID);
-          // 两者的差集就是僵尸用户
-          const differ = newList.filter(v =>  player.indexOf(v) === -1);
-          // 清除僵尸用户
-          const newUser = this.updateUsers(this.data.remoteUsers, differ);
-          this.setData({
-            remoteUsers: newUser,
-          });
-        }, 30000 + bufferTime);
-        this.setData({
-          timer: clearUserTimer,
-        });
       } else {
         this.getUserProfile([event.data.sponsor]);
       }
@@ -93,7 +72,6 @@ Component({
 
     // 用户接听
     handleUserAccept(event) {
-      console.log(`${TAG_NAME}, handleUserAccept, event${JSON.stringify(event)}`);
       this.setData({
         callStatus: STATUS.CONNECTED,
       });
@@ -135,7 +113,6 @@ Component({
     },
     // 用户数据更新
     handleUserUpdate(res) {
-      console.log(`${TAG_NAME}, handleUserUpdate, res`);
       this.handleNetStatus(res.data);
       const newplayer = {};
       const newres = res.data.playerList;
@@ -174,7 +151,6 @@ Component({
     },
     // 用户拒绝
     handleInviteeReject(event) {
-      console.log(`${TAG_NAME}, handleInviteeReject, event${JSON.stringify(event)}`);
       if (!this.data.isGroup) {
         wx.showToast({
           title: `${this.handleCallingUser([event.data.invitee])}已拒绝`,
@@ -200,7 +176,6 @@ Component({
     },
     // 用户不在线
     handleNoResponse(event) {
-      console.log(`${TAG_NAME}, handleNoResponse, event${JSON.stringify(event)}`);
       if (this.data.isGroup) {
         const newList = this.updateUsers(this.data.remoteUsers, event.data.timeoutUserList);
         this.setData({
@@ -216,7 +191,6 @@ Component({
     },
     // 用户忙线
     handleLineBusy(event) {
-      console.log(`${TAG_NAME}, handleLineBusy, event${JSON.stringify(event)}`);
       if (this.data.playerList.length === 0) {
         this.reset();
       }
@@ -226,7 +200,6 @@ Component({
     },
     // 用户取消
     handleCallingCancel(event) {
-      console.log(`${TAG_NAME}, handleCallingCancel, event${JSON.stringify(event)}`);
       this.reset();
       wx.showToast({
         title: `${this.handleCallingUser([event.data.invitee])}取消通话`,
@@ -234,7 +207,6 @@ Component({
     },
     // 通话超时未应答
     handleCallingTimeout(event) {
-      console.log(`${TAG_NAME}, handleCallingTimeout, event${JSON.stringify(event)}`);
       if (this.data.isGroup) {
         // 若是自身未应答 则不弹窗
         if (this.data.config.userID === event.data.timeoutUserList[0]) {
@@ -259,7 +231,6 @@ Component({
       this.setData({
         remoteUsers: remoteUsers.filter(item => userIDList.some(userItem => userItem !== item.userID)),
       });
-      console.log(`${TAG_NAME}, handleCallingUser, userProfile`, userProfile);
       let nick = '';
       for (let i = 0; i < userProfile.length; i++) {
         nick += `${userProfile[i].nick}、`;
@@ -268,7 +239,6 @@ Component({
     },
     // 通话结束
     handleCallingEnd(event) {
-      console.log(`${TAG_NAME}, handleCallingEnd`);
       this.reset();
       if (event.data.message) {
         this.triggerEvent('sendMessage', {
@@ -392,7 +362,6 @@ Component({
     async call(params) {
       this.resetUI();
       if (this.data.callStatus !== STATUS.IDLE) {
-        console.warn(`${TAG_NAME}, call callStatus isn't idle`);
         return;
       }
 
@@ -420,7 +389,6 @@ Component({
      * @param groupID IM群组ID
      */
     async groupCall(params) {
-      console.log(`${TAG_NAME},人员列表${params.userIDList},通话类型${params.type},群组ID：${params.groupID}`);
       // 判断是否存在groupID
       if (!params.groupID) {
         wx.showToast({
@@ -431,7 +399,6 @@ Component({
       // 查看群是否有效
       this.getTim().searchGroupByID(params.groupID)
         .then((imResponse) => {
-          console.log(imResponse.data.group);  // 群组信息
         })
         .catch(() => {
           wx.showToast({
@@ -441,7 +408,6 @@ Component({
         });
       this.resetUI();
       if (this.data.callStatus !== STATUS.IDLE) {
-        console.warn(`${TAG_NAME}, groupCall callStatus isn't idle`);
         return;
       }
       wx.$TUICallEngine.groupCall({ userIDList: params.userIDList, type: params.type, groupID: params.groupID }).then((res) => {
@@ -455,10 +421,10 @@ Component({
           sponsor: this.data.config.userID,
         });
         // 将自身的userID插入到邀请列表中,组成完整的用户信息
-        const allUser = JSON.parse(JSON.stringify(params.userIDList));
-        allUser.unshift(this.data.config.userID);
+        const allUSer = JSON.parse(JSON.stringify(params.userIDList));
+        allUSer.unshift(this.data.config.userID);
         // 获取用户信息
-        this.getUserProfile(allUser);
+        this.getUserProfile(allUSer);
       });
     },
     /**
@@ -500,7 +466,6 @@ Component({
      * 当您作为被邀请方收到的回调时，可以调用该函数拒绝来电
      */
     async reject() {
-      console.log(`${TAG_NAME}, reject`);
       wx.$TUICallEngine.reject().then((res) => {
         this.triggerEvent('sendMessage', {
           message: res.data.message,
@@ -518,7 +483,6 @@ Component({
 
     // xml层，挂断
     _hangUp() {
-      console.log(`${TAG_NAME}, hangup`);
       wx.$TUICallEngine.hangup();
       this.reset();
     },
@@ -577,7 +541,6 @@ Component({
     },
     // 通话中的事件处理
     handleConnectedEvent(data) {
-      console.log(`${TAG_NAME}, handleVideoEvent--`, data);
       const { name, event } = data.detail;
       switch (name) {
         case 'toggleViewSize':
