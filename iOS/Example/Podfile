@@ -8,7 +8,7 @@ target 'TUICallKitApp' do
   pod 'TXAppBasic', :path => "./TXAppBasic/"
   pod 'Toast-Swift'
   pod 'Alamofire'
-  pod 'Kingfisher'
+  pod 'Kingfisher', '<= 6.3.1'
   pod 'SnapKit'
   pod 'TUICallKit', :path => "../", :subspecs => ["TRTC"]
   
