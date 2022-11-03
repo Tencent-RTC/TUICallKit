@@ -23,6 +23,7 @@ const currentUserID = ref<string>("未登录");
 const debugDisplayStyle = ref<string>("");
 const isNewTab = ref<boolean>(false);
 const isMinimized = ref<boolean>(false);
+const lang = ref<string>("zh-cn");
 
 const typeString = ref<string>("video");
 const isCalling = ref<boolean>(false);
@@ -41,7 +42,6 @@ onMounted(() => {
 onUnmounted(() => {
   TUICallKitServer.destroyed();
 })
-
 
 async function login() {
   if (!SDKAppID.value || SDKAppID.value === 0) {
@@ -180,7 +180,7 @@ function newTab(event: any) {
 function copyUserID() {
   copyText(currentUserID.value, undefined, (error: any) => {
     if (error) {
-      ElMessage.warn(`复制失败，请手动填写`);
+      ElMessage.warning(`复制失败，请手动填写`);
     } else {
       ElMessage.success(`已复制`);
     }
@@ -285,6 +285,7 @@ function copyUserID() {
         :onMinimized="onMinimized"
         :allowedMinimized="true"
         :allowedFullScreen="true"
+        :lang="lang"
       />
       <TUICallKitMini />
     </div>

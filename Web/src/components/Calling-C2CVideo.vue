@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { TUICallKitServer } from '../index';
 import { onMounted, onUpdated, ref, nextTick } from "vue";
-import { remoteList, profile } from '../store/index'
+import { remoteList, profile, t } from '../store/index';
 import MicrophoneIcon from './MicrophoneIcon.vue';
 import Switch2SVG from '../icons/switch2.vue';
 import MicrophoneClosedSVG from '../icons/microphoneClosed.vue';
-import '../style.css'
+import "../style.css";
 
 onMounted(() => {
   refreshUserViewList();
@@ -46,7 +46,7 @@ const switchUserView = async () => {
           <!-- <img :src="microphoneClosedSVG" v-if="!profile?.microphone" /> -->
           <MicrophoneClosedSVG v-else />
         </div>
-        {{ `${profile.userID} (me)` }}
+        {{ `${profile.userID} ${t('me')}` }}
       </span>
       <div class="switch-large-small" @click="switchUserView">
         <!-- <img :src="switch2SVG" /> -->

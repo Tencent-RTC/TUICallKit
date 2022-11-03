@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isFromGroup, remoteList, callType, profile, status } from '../store/index';
+import { isFromGroup, remoteList, callType, profile, status, t } from '../store/index';
 import { onUpdated, ref, watch, nextTick, watchEffect } from "vue";
 import MicrophoneIcon from "./MicrophoneIcon.vue";
 import { TUICallKitServer } from '../index';
@@ -89,7 +89,7 @@ function pageIncrease() {
             <!-- <img :src="microphoneClosedSVG" v-if="!profile?.microphone" /> -->
             <MicrophoneClosedSVG v-else />
           </div>
-          {{ `${profile.userID} (me)` }}
+          {{ `${profile.userID} ${t('me')}` }}
         </span>
       </div>
       <template v-for='remoteUserItem in currentPageRemoteList' :key='remoteUserItem.userID'>
@@ -97,7 +97,7 @@ function pageIncrease() {
           <template v-if="!remoteUserItem.isEntered || (isFromGroup && callType === CALL_TYPE_STRING.AUDIO)">
             <div class="user-view-text-container">
               <div :class="userViewUserId"> {{ remoteUserItem.userID }} </div>
-              <div class="user-view-info"> {{ remoteUserItem.isEntered ? "已经进入当前通话" : "等待接听..." }} </div>
+              <div class="user-view-info"> {{ remoteUserItem.isEntered ? t('already-enter') : t('waiting') }} </div>
             </div>
           </template>
           <span class="tag">

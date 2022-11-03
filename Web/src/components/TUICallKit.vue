@@ -8,7 +8,7 @@ import { STATUS } from "../constants";
 import { TUICallKitServer } from "../index";
 import MinimizeSVG from "../icons/minimize.vue";
 import fullScreenSVG from "../icons/fullScreen.vue";
-import { withDefaults, defineProps, toRefs } from "vue";
+import { withDefaults, defineProps, toRefs, watchEffect } from "vue";
 import "../style.css";
 
 const props = withDefaults(
@@ -16,21 +16,28 @@ const props = withDefaults(
     beforeCalling?: (...args: any[]) => void;
     afterCalling?: (...args: any[]) => void;
     onMinimized?: (...args: any[]) => void;
+    onMessageSentByMe?: (...args: any[]) => void;
     allowedMinimized?: boolean;
     allowedFullScreen?: boolean;
+    lang?: string;
   }>(),
   {
     allowedMinimized: false,
-    allowedFullScreen: true
+    allowedFullScreen: true,
+    lang: "zh-cn"
   }
 );
-const { beforeCalling, afterCalling, onMinimized, allowedMinimized, allowedFullScreen } = toRefs(props);
+const { beforeCalling, afterCalling, onMinimized, onMessageSentByMe, allowedMinimized, allowedFullScreen, lang } =
+  toRefs(props);
 TUICallKitServer.setCallback({
   beforeCalling: beforeCalling.value,
   afterCalling: afterCalling.value,
   onMinimized: onMinimized.value,
+  onMessageSentByMe: onMessageSentByMe.value,
 });
-
+// watchEffect(() => {
+//   TUICallKitServer.setLanguage(lang.value);
+// })
 function toggleMinimize() {
   if (document.fullscreenElement) {
     document.exitFullscreen();

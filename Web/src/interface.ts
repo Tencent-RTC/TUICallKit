@@ -19,7 +19,7 @@ export interface TUICallParam {
   offlinePushInfo?: offlinePushInfoType;
 }
 
-export  interface TUIGroupCallParam {
+export interface TUIGroupCallParam {
   userIDList: Array<string>;
   type: number;
   groupID: string;
@@ -39,9 +39,10 @@ export interface CallbackParam {
   beforeCalling?: (...args: any[]) => void;
   afterCalling?: (...args: any[]) => void;
   onMinimized?: (...args: any[]) => void;
+  onMessageSentByMe?: (...args: any[]) => void;
 }
 
-export  interface statusChangedReturnType {
+export interface statusChangedReturnType {
   oldStatus: string;
   newStatus: string;
 }
