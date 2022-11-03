@@ -2,7 +2,7 @@
 import { TUICallKitServer } from '../index';
 import { onMounted, ref } from 'vue';
 import ControlPanelItem from './ControlPanelItem.vue';
-import { profile, remoteList, changeRemoteList, callType, status } from '../store';
+import { profile, remoteList, changeRemoteList, callType, status, t } from '../store';
 import { STATUS, CALL_TYPE_STRING } from '../constants'
 import RejectSVG from '../icons/reject.vue';
 import AcceptAudioSVG from '../icons/acceptAudio.vue';
@@ -100,7 +100,7 @@ function reject() {
     <template v-if="status === STATUS.BE_INVITED">
       <ControlPanelItem :action="reject">
         <template #text>
-          拒绝
+          {{ t('reject') }}
         </template>
         <template #icon>
           <!-- <img :src="rejectSVG" /> -->
@@ -110,7 +110,7 @@ function reject() {
 
       <ControlPanelItem :action="accept">
         <template #text>
-          接听
+          {{ t('accept') }}
         </template>
         <template #icon>
           <template v-if="callType === CALL_TYPE_STRING.AUDIO">
@@ -128,7 +128,7 @@ function reject() {
     <template v-else-if="status !== 'idle'">
       <ControlPanelItem :action="toggleCamera" :hasDetail="true" v-if="callType === CALL_TYPE_STRING.VIDEO">
         <template #text>
-          摄像头已{{ profile?.camera ? "打开" : "关闭" }}
+          {{ profile?.camera ? t('camera-opened') : t('camera-closed') }}
         </template>
         <template #icon>
           <!-- <img :src="cameraSVG" v-if="profile?.camera"/> -->
@@ -138,16 +138,16 @@ function reject() {
         </template>
         <template #detail>
           <div class="control-item-detail-row">
-            <div> 摄像头</div>
+            <div> {{ t('camera') }} </div>
             <select class="device-select" v-model="currentCamera" @change="switchCameraDevice">
               <option value="" selected disabled hidden>{{ cameraList && cameraList[0]?.label }}</option>
               <option v-for="camera in cameraList" :value="camera.deviceId" :key="camera.deviceId"> {{ camera.label }} </option>
             </select>
           </div>
           <div v-if="status === STATUS.DIALING_C2C">
-            <div> 分辨率 </div>
+            <div> {{ t('image-resolution') }} </div>
             <select class="device-select" v-model="currentVideoQuality" @change="setVideoQuality">
-              <option value="" selected disabled hidden>默认分辨率</option>
+              <option value="" selected disabled hidden>{{ t('default-image-resolution') }} </option>
               <option value="480p" selected> 480p </option>
               <option value="720p" selected> 720p </option>
               <option value="1080p" selected> 1080p </option>
@@ -158,7 +158,7 @@ function reject() {
 
       <ControlPanelItem :action="toggleMicrophone" :hasDetail="true">
         <template #text>
-          麦克风已{{ profile?.microphone ? "打开" : "关闭" }}
+          {{ profile?.microphone ? t('microphone-opened') : t('microphone-closed') }}
         </template>
         <template #icon>
           <!-- <img :src="microphoneSVG" v-if="profile?.microphone"/> -->
@@ -168,7 +168,7 @@ function reject() {
         </template>
         <template #detail>
           <div>
-            麦克风
+            {{ t('microphone') }}
             <select class="device-select" v-model="currentMicrophone" @change="switchMicrophoneDevice">
               <option value="" selected disabled hidden>{{ microphoneList && microphoneList[0]?.label }}</option>
               <option v-for="microphone in microphoneList" :value="microphone.deviceId" :key="microphone.deviceId"> {{ microphone.label }}
@@ -180,7 +180,7 @@ function reject() {
 
       <ControlPanelItem :action="addPerson_debug" v-if="false">
         <template #text>
-          添加成员
+          {{ t('invited-person') }}
         </template>
         <template #icon>
           <!-- <img :src="addSVG" /> -->
@@ -190,7 +190,7 @@ function reject() {
 
       <ControlPanelItem :action="switchCallMediaType" v-if="status === 'calling-c2c-video'">
         <template #text>
-          视频转语音
+          {{ t('video-to-audio') }}
         </template>
         <template #icon>
           <!-- <img :src="switchSVG" /> -->
@@ -200,7 +200,7 @@ function reject() {
 
       <ControlPanelItem :action="hangup">
         <template #text>
-          挂断
+          {{ t('hangup') }}
         </template>
         <template #icon>
           <!-- <img :src="hangupSVG" /> -->

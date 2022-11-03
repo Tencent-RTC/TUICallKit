@@ -4,6 +4,9 @@ import { timerStart, timerClear, timerString } from '../utils/timer';
 import { STATUS, CHANGE_STATUS_REASON, CALL_TYPE_STRING } from '../constants';
 import { TUICallType } from 'tuicall-engine-webrtc';
 import { TUICallKitServer } from '../index';
+import languageData from '../locales/index';
+
+const lang = ref<string>("zh-cn");
 
 const status = ref<string>(STATUS.IDLE);
 const isMinimized = ref<boolean>(false);
@@ -25,17 +28,16 @@ watch(timerString, () => {
 
 watch(status, () => {
   if (status.value === STATUS.BE_INVITED) {
-    changeDialingInfo(`发起的${callType.value === CALL_TYPE_STRING.AUDIO ? '语音通话' : '视频通话'}`);
+    changeDialingInfo(callType.value === CALL_TYPE_STRING.AUDIO ? t('start-voice-call') : t('start-video-call'));
   }
   if (status.value.split('-')[0] === "dialing") {
-    changeDialingInfo("等待接听...");
+    changeDialingInfo(t('waiting'));
   }
   if (status.value.split('-')[0] === "calling") {
     changeDialingInfo("");
     timerStart();
   }
   if (status.value === STATUS.IDLE) {
-    changeDialingInfo(`发起的${callType.value === CALL_TYPE_STRING.AUDIO ? '语音通话' : '视频通话'}`);
     profile.value.microphone = true;
     profile.value.camera = true;
     isMinimized.value = false;
@@ -45,6 +47,26 @@ watch(status, () => {
   }
 });
 
+function setLanguage(language: string): void {
+  lang.value = language;
+}
+
+function t(key: any): string {
+  for(let langKey in languageData) {
+    if (langKey === lang.value) {
+      let currentLanguage = languageData[langKey];
+      for (let sentenceKey in currentLanguage) {
+        if (sentenceKey === key) {
+          return currentLanguage[sentenceKey];
+        }
+      }
+    }
+  }
+  let enString = key['en']?.key;
+  console.error("translation is not found: ", key);
+  return enString;
+}
+
 function changeStatus(newValue: string, reason?: string, timeout = 0): void {
   console.log("TUICallKit Status: " + newValue);
   if (reason !== CHANGE_STATUS_REASON.CALL_TYPE_CHANGED) {
@@ -52,11 +74,11 @@ function changeStatus(newValue: string, reason?: string, timeout = 0): void {
     timerClear();
   }
   switch (reason) {
-    case CHANGE_STATUS_REASON.REJECT: changeDialingInfo(`对方已拒绝，${callType.value === CALL_TYPE_STRING.AUDIO ? '语音通话' : '视频通话'}结束`); break;
-    case CHANGE_STATUS_REASON.NO_RESPONSE: changeDialingInfo(`对方无应答，${callType.value === CALL_TYPE_STRING.AUDIO ? '语音通话' : '视频通话'}结束`); break;
-    case CHANGE_STATUS_REASON.LINE_BUSY: changeDialingInfo(`对方忙线中，${callType.value === CALL_TYPE_STRING.AUDIO ? '语音通话' : '视频通话'}结束`); break;
-    case CHANGE_STATUS_REASON.CALLING_CANCEL: changeDialingInfo(`对方已取消`); break;
-    case CHANGE_STATUS_REASON.CALLING_TIMEOUT: changeDialingInfo(`本次通话超时未应答`); break;
+    case CHANGE_STATUS_REASON.REJECT: changeDialingInfo(`${t('be-rejected')}${callType.value === CALL_TYPE_STRING.AUDIO ? t('voice-call-end') : t('video-call-end')}`); break;
+    case CHANGE_STATUS_REASON.NO_RESPONSE: changeDialingInfo(`${t('be-no-response')}${callType.value === CALL_TYPE_STRING.AUDIO ? t('voice-call-end') : t('video-call-end')}`); break;
+    case CHANGE_STATUS_REASON.LINE_BUSY: changeDialingInfo(`${t('be-line-busy')}${callType.value === CALL_TYPE_STRING.AUDIO ? t('voice-call-end') : t('video-call-end')}`); break;
+    case CHANGE_STATUS_REASON.CALLING_CANCEL: changeDialingInfo(t('be-canceled')); break;
+    case CHANGE_STATUS_REASON.CALLING_TIMEOUT: changeDialingInfo(t('timeout')); break;
     default: changeDialingInfo(``); break;
   }
   setTimeout(() => {
@@ -152,5 +174,7 @@ export {
   changeRemoteDeviceByUserID,
   updateRemoteVolumeMap,
   updateProfile,
-  changeIsMinimized
+  changeIsMinimized,
+  setLanguage,
+  t
 };
