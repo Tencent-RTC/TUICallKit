@@ -34,8 +34,17 @@ android {
         ]
     }
 
+    signingConfigs {
+        release {
+            storeFile file('tuicallkit.jks')
+            storePassword 'tencent'
+            keyAlias 'tuicallkit'
+            keyPassword 'tencent'
+        }
+    }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -52,4 +61,7 @@ dependencies {
     api project(':tuiofflinepush')
     api project(':debug')
     implementation "androidx.recyclerview:recyclerview:1.2.1"
+
+    // Optional, if you use support library fragments:
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }
