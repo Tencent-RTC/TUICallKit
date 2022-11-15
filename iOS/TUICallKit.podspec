@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICallKit'
-  spec.version      = '1.1.0.103'
+  spec.version      = '1.2.0.153'
   spec.platform     = :ios
   spec.ios.deployment_target = '9.0'
   spec.license      = { :type => 'Proprietary',
@@ -34,7 +34,7 @@ Pod::Spec.new do |spec|
     trtc.ios.framework = ['AVFoundation', 'Accelerate']
     trtc.library = 'c++', 'resolv'
     trtc.resource_bundles = {
-      'TUICallingKitBundle' => ['Resources/Localized/**/*.strings', 'Resources/AudioFile', 'Resources/*.xcassets']
+      'TUICallingKitBundle' => ['Resources/*.gif', 'Resources/Localized/**/*.strings', 'Resources/AudioFile', 'Resources/*.xcassets']
     }
   end
   
@@ -45,7 +45,7 @@ Pod::Spec.new do |spec|
     professional.ios.framework = ['AVFoundation', 'Accelerate', 'AssetsLibrary']
     professional.library = 'c++', 'resolv', 'sqlite3'
     professional.resource_bundles = {
-      'TUICallingKitBundle' => ['Resources/Localized/**/*.strings', 'Resources/AudioFile', 'Resources/*.xcassets']
+      'TUICallingKitBundle' => ['Resources/*.gif', 'Resources/Localized/**/*.strings', 'Resources/AudioFile', 'Resources/*.xcassets']
     }
   end
   
