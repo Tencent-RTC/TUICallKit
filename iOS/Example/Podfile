@@ -8,12 +8,14 @@ target 'TUICallKitApp' do
   pod 'TXAppBasic', :path => "./TXAppBasic/"
   pod 'Toast-Swift'
   pod 'Alamofire'
-  pod 'Kingfisher', '<= 6.3.1'
+  pod 'Kingfisher'
   pod 'SnapKit'
   pod 'TUICallKit', :path => "../", :subspecs => ["TRTC"]
   
 end
 
+#Pods config
+#Fix Xcode14 Bundle target error
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
