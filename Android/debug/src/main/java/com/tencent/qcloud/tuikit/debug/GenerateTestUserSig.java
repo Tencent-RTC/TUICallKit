@@ -78,7 +78,7 @@ public class GenerateTestUserSig {
      * 文档：https://cloud.tencent.com/document/product/269/32688#Server
      */
     public static String genTestUserSig(String userId) {
-        return GenTLSSignature(SDKAPPID, userId, EXPIRETIME, null, SECRETKEY);
+        return genTLSSignature(SDKAPPID, userId, EXPIRETIME, null, SECRETKEY);
     }
 
     /**
@@ -91,7 +91,8 @@ public class GenerateTestUserSig {
      * @param priKeyContent 生成 tls 票据使用的私钥内容
      * @return 如果出错，会返回为空，或者有异常打印，成功返回有效的票据
      */
-    private static String GenTLSSignature(long sdkappid, String userId, long expire, byte[] userbuf, String priKeyContent) {
+    private static String genTLSSignature(long sdkappid, String userId, long expire, byte[] userbuf,
+                                          String priKeyContent) {
         if (TextUtils.isEmpty(priKeyContent)) {
             return "";
         }
@@ -135,7 +136,8 @@ public class GenerateTestUserSig {
     }
 
 
-    private static String hmacsha256(long sdkappid, String userId, long currTime, long expire, String priKeyContent, String base64Userbuf) {
+    private static String hmacsha256(long sdkappid, String userId, long currTime, long expire, String priKeyContent,
+                                     String base64Userbuf) {
         String contentToBeSigned = "TLS.identifier:" + userId + "\n"
                 + "TLS.sdkappid:" + sdkappid + "\n"
                 + "TLS.time:" + currTime + "\n"
@@ -158,7 +160,7 @@ public class GenerateTestUserSig {
 
     private static byte[] base64EncodeUrl(byte[] input) {
         byte[] base64 = new String(Base64.encode(input, Base64.NO_WRAP)).getBytes();
-        for (int i = 0; i < base64.length; ++i)
+        for (int i = 0; i < base64.length; ++i) {
             switch (base64[i]) {
                 case '+':
                     base64[i] = '*';
@@ -172,7 +174,7 @@ public class GenerateTestUserSig {
                 default:
                     break;
             }
+        }
         return base64;
     }
-
 }
