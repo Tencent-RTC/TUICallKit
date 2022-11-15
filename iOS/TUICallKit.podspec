@@ -29,7 +29,7 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'TRTC' do |trtc|
     trtc.dependency 'TXLiteAVSDK_TRTC'
-    trtc.dependency 'TUICallEngine/TRTC'
+    trtc.dependency 'TUICallEngine/TRTC', '1.2.0.153'
     trtc.source_files = 'TUICallKit/*.{h,m,mm}', 'TUICallKit/localized/**/*.{h,m,mm}', 'TUICallKit/Service/**/*.{h,m,mm}', 'TUICallKit/Config/*.{h,m,mm}', 'TUICallKit/UI/**/*.{h,m,mm}', 'TUICallKit/TUICallKit_TRTC/*.{h,m,mm}', 'TUICallKit/TUICallEngine_Framework/*.{h,m,mm}'
     trtc.ios.framework = ['AVFoundation', 'Accelerate']
     trtc.library = 'c++', 'resolv'
@@ -40,7 +40,7 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'Professional' do |professional|
     professional.dependency 'TXLiteAVSDK_Professional'
-    professional.dependency 'TUICallEngine/Professional'
+    professional.dependency 'TUICallEngine/Professional', '1.2.0.153'
     professional.source_files = 'TUICallKit/*.{h,m,mm}', 'TUICallKit/localized/**/*.{h,m,mm}', 'TUICallKit/Service/**/*.{h,m,mm}', 'TUICallKit/Config/*.{h,m,mm}', 'TUICallKit/UI/**/*.{h,m,mm}', 'TUICallKit/TUICallKit_Professional/*.{h,m,mm}', 'TUICallKit/TUICallEngine_Framework/*.{h,m,mm}'
     professional.ios.framework = ['AVFoundation', 'Accelerate', 'AssetsLibrary']
     professional.library = 'c++', 'resolv', 'sqlite3'
