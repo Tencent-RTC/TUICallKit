@@ -1,6 +1,6 @@
 # Quick Run of TUICalling Demo for iOS
 
-_[中文](README.md) | English_
+_[简体中文](README.md) | English_
 
 This document describes how to quickly run the TUICalling demo project to make a high-quality audio/video call. For more information on the TUICalling component connection process, see **[Integrating TUICalling (iOS)](https://www.tencentcloud.com/document/product/647/36065)**.
 

@@ -1,5 +1,5 @@
 # Quick Run of TUICalling Demo for Android
-_[中文](README.md) | English_
+_[简体中文](README.md) | English_
 
 This document describes how to quickly run the TUICalling demo project to make a high-quality audio/video call. For more information on the TUICalling component connection process, see **[Integrating TUICalling (Android)](https://www.tencentcloud.com/document/product/647/36066)**.
 
