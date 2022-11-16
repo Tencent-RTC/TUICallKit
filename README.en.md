@@ -3,7 +3,7 @@ _[简体中文](README.md) | English_
 
 <img src="Preview/logo.png" align="left" width=120 height=120>TUICallKit is a UIKit about **audio&video calls** launched by Tencent Cloud. By integrating this component, you can write a few lines of code to use the video calling function, TUICallKit support offline calling and multiple  platforms such as Android, iOS, Web, Flutter(doing), etc.
 
-<a href="https://apps.apple.com/cn/app/%E8%85%BE%E8%AE%AF%E4%BA%91%E8%A7%86%E7%AB%8B% E6%96%B9trtc/id1400663224"><img src="Preview/app-store.svg" height=40></a> <a href="https://dldir1.qq.com/hudongzhibo/liteav/TRTCDemo .apk"><img src="Preview/play-store.svg" height=40></a> <a href="https://web.sdk.qcloud.com/trtc/webrtc/demo/api- sample/login.html"><img src="Preview/web-app.svg" height=40></a>
+<a href="https://apps.apple.com/cn/app/%E8%85%BE%E8%AE%AF%E4%BA%91%E9%9F%B3%E8%A7%86%E9%A2%91/id1400663224"><img src="Preview/app-store.svg" height=40></a> <a href="https://dldir1.qq.com/hudongzhibo/liteav/TRTCDemo.apk"><img src="Preview/play-store.svg" height=40></a> <a href="https://web.sdk.qcloud.com/trtc/webrtc/demo/api-sample/login.html"><img src="Preview/web-app.svg" height=40></a>
 
 ## Features
 

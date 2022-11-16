@@ -1,6 +1,6 @@
 # TUICallKit iOS 示例工程快速跑通
 
-_中文 | [English](README.en.md)_
+_简体中文 | [English](README.en.md)_
 
 本文档主要介绍如何快速跑通TUICallKit 示例工程，体验高质量视频/语音通话，更详细的TUICallKit组件接入流程，请点击腾讯云官网文档： [**TUICallKit 组件 iOS 接入说明** ](https://cloud.tencent.com/document/product/647/42044)...
 

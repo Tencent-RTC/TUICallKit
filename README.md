@@ -3,7 +3,7 @@ _[English](README.en.md) | 简体中文_
 
 <img src="Preview/logo.png" align="left" width=120 height=120>  TUICallKit 是腾讯云推出一款音视频通话的含 UI 组件，通过集成该组件，您只需要编写几行代码就可以为您的 App 添加音视频通话功能，并且支持离线唤起能力。TUICallKit 支持 Android、iOS、Web、小程序、Flutter、UniApp 等多个开发平台。
 
-<a href="https://apps.apple.com/cn/app/%E8%85%BE%E8%AE%AF%E4%BA%91%E8%A7%86%E7%AB%8B%E6%96%B9trtc/id1400663224"><img src="Preview/app-store.svg" height=40></a> <a href="https://dldir1.qq.com/hudongzhibo/liteav/TRTCDemo.apk"><img src="Preview/play-store.svg" height=40></a> <a href="https://web.sdk.qcloud.com/trtc/webrtc/demo/api-sample/login.html"><img src="Preview/web-app.svg" height=40></a>
+<a href="https://apps.apple.com/cn/app/%E8%85%BE%E8%AE%AF%E4%BA%91%E9%9F%B3%E8%A7%86%E9%A2%91/id1400663224"><img src="Preview/app-store.svg" height=40></a> <a href="https://dldir1.qq.com/hudongzhibo/liteav/TRTCDemo.apk"><img src="Preview/play-store.svg" height=40></a> <a href="https://web.sdk.qcloud.com/trtc/webrtc/demo/api-sample/login.html"><img src="Preview/web-app.svg" height=40></a>
 
 
 
@@ -14,9 +14,7 @@ _[English](README.en.md) | 简体中文_
 </p>
 
 - **完善的 UI 交互**：我们提供含 UI 的开源组件 TUICallKit，可以节省您 90% 开发时间，您只需要划分20分钟就可以拥有一款类似微信、FaceTime 的视频通话应用。
-
 - **多平台互联互通**：我们支持Web、Android、iOS、微信小程序等各个平台，同时也支持类似uni-app等跨平台框架，您可以使用不同平台的 TUICallKit 组件支持相互呼叫、接听、挂断等，未来我们还计划支持 Flutter、MacOS、Windows等设备。
-
 - **移动端离线推送**：我们支持Android、iOS 的离线唤醒，当您的应用处于离线状态时，也可以及时收到来电提醒，目前已经支持Google FCM、Apple、小米、华为、OPPO、VIVO、魅族等多个推送服务
 - **群组（多人）通话**：我们不仅仅支持1对1的视频通话，还支持在群组内发起多人视频通话，支持中途邀请群成员加入，支持群成员主动加入通话等。
 - **多设备登录**：我们也支持您可以在不同平台上登录多台设备，您可以同时在您的Pad、手机登录，更大屏幕，体验更好跟更灵活。
