@@ -1,5 +1,5 @@
 import { genTestUserSig } from '../../debug/GenerateTestUserSig';
-import { MEDIA_TYPE } from '../../TUICallEngine/TUICallEngine';
+import { MEDIA_TYPE } from '../../TUICallEngine/tuicall-engine-wx.js';
 import { TIM } from '../../TUICallEngine/libSrcConfig';
 
 Page({
@@ -119,7 +119,7 @@ Page({
       });
       // 重置数据
       this.setData({
-        searchList: [],
+        // searchList: [],
         ischeck: true,
       });
     } else {
@@ -239,7 +239,7 @@ Page({
    */
   onUnload() {
     // 解散群聊
-    this.dismissGroup(this.data.groupID || '');
+    // this.dismissGroup(this.data.groupID || '');
     this.TUICallKit.destroyed();
   },
 

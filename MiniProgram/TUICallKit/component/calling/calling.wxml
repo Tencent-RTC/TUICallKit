@@ -59,7 +59,7 @@
                     <text>挂断</text>
                 </view>
                 <view class="btn-operate-item">
-                    <view class="call-operate" catch:tap="accept">
+                    <view class="call-operate" catchtap="{{isClick ? 'accept' :''}}">
                         <image src="../../static/dialing.png" />
                     </view>
                     <text>接听</text>
@@ -87,7 +87,7 @@
                 <view style="margin-top:10px">挂断</view>
             </view>
             <view class="button-container">
-                <view class="call-operate" catch:tap="accept">
+                <view class="call-operate" catchtap="{{isClick ? 'accept' :''}}">
                     <image src="../../static/dialing.png"/>
                 </view>
                 <view style="margin-top:10px">接听</view>

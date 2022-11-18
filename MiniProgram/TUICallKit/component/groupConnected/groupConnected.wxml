@@ -1,13 +1,13 @@
 <view class="{{callType === 2?'TUICalling-connected-video':'TUICalling-connected-layout'}}">
     <!-- 语音通话 -->
     <view wx:if="{{callType === 1}}">
-        <swiper class="swiper" indicator-dots="{{remoteUsers.length/4 > 1}}" indicator-color="white" indicator-active-color="black">
-            <block wx:for="{{(remoteUsers.length)/4}}" wx:key="*this" wx:for-index="pos">
+        <swiper class="swiper" indicator-dots="{{allUsers.length/4 > 1}}" indicator-color="white" indicator-active-color="black">
+            <block wx:for="{{(allUsers.length)/4}}" wx:key="*this" wx:for-index="pos">
                 <swiper-item class="invite-calling-list">
-                    <view wx:for="{{remoteUsers}}" wx:key="userID" class="invite-calling-item" wx:if="{{index >= pos*4 && index < pos*4+4}}">
+                    <view wx:for="{{allUsers}}" wx:key="userID" class="invite-calling-item" wx:if="{{index >= pos*4 && index < pos*4+4}}">
                         <view id="{{item.userID}}" class="invite-calling-item-message" wx:if="{{!item.isEnter}}">
                             <view class="invite-calling-item-loadimg">
-                                <image src="../../../pages/Resources/loading.png"></image>
+                                <image src="../../static/loading.png"></image>
                             </view>
                             <view class="invite-calling-item-id">{{item.userID}}</view>
                         </view>
@@ -15,7 +15,7 @@
                         <!-- 音量图标 -->
                         <view class="player-control">
                             <image src="{{item.avatar || '../../static/default_avatar.png'}}"></image>
-                            <view class="name">{{item.userID===userID?'我':item.userID}}</view>
+                            <view class="name">{{item.userID===ownUserId?'我':item.userID}}</view>
                         </view>
                     </view>
                 </swiper-item>
@@ -23,20 +23,20 @@
         </swiper>
     </view>
     <view class="{{callType === 1 ? 'pusher-audio' : ''}}">
-        <swiper class="swiper" indicator-dots="{{remoteUsers.length/4 > 1}}" indicator-color="white" indicator-active-color="black">
-            <block wx:for="{{(remoteUsers.length)/4}}" wx:key="*this" wx:for-index="pos">
+        <swiper class="swiper" indicator-dots="{{allUsers.length/4 > 1}}" indicator-color="white" indicator-active-color="black">
+            <block wx:for="{{(allUsers.length)/4}}" wx:key="*this" wx:for-index="pos">
                 <swiper-item class="invite-calling-list">
-                    <view wx:for="{{remoteUsers}}" wx:key="userID" class="invite-calling-item" wx:if="{{index >= pos*4 && index < pos*4+4}}">
+                    <view wx:for="{{allUsers}}" wx:key="userID" class="invite-calling-item" wx:if="{{index >= pos*4 && index < pos*4+4}}">
                         <view id="{{item.userID}}" class="invite-calling-item-message" wx:if="{{!item.isEnter}}">
                             <view class="invite-calling-item-loadimg">
-                                <image src="../../../pages/Resources/loading.png"></image>
+                                <image src="../../static/loading.png"></image>
                             </view>
                             <image class="avatar" src="{{item.avatar || '../../static/default_avatar.png'}}" binderror="handleErrorImage" />
                             <view class="invite-calling-item-id">{{item.userID}}</view>
                         </view>
                         <view wx:else>
                             <!-- 本地流 -->
-                            <view wx:if="{{item.userID===userID}}" class="{{callType === 1 ? 'pusher-audio' : 'play-item'}}" data-screen="pusher" catch:tap="toggleViewSize">
+                            <view wx:if="{{item.userID===ownUserId}}" class="{{callType === 1 ? 'pusher-audio' : 'play-item'}}" data-screen="pusher" catch:tap="toggleViewSize">
                                 <live-pusher class="{{callType === 1 ? 'pusher-audio' : 'pusher-ownvideo'}}" url="{{pusher.url}}" mode="{{pusher.mode}}" autopush="{{true}}" enable-camera="{{pusher.enableCamera}}" enable-mic="{{true}}" muted="{{!pusher.enableMic}}" enable-agc="{{true}}" enable-ans="{{true}}" enable-ear-monitor="{{pusher.enableEarMonitor}}" auto-focus="{{pusher.enableAutoFocus}}" zoom="{{pusher.enableZoom}}" min-bitrate="{{pusher.minBitrate}}" max-bitrate="{{pusher.maxBitrate}}" video-width="{{pusher.videoWidth}}" video-height="{{pusher.videoHeight}}" beauty="{{pusher.beautyLevel}}" whiteness="{{pusher.whitenessLevel}}" orientation="{{pusher.videoOrientation}}" aspect="{{pusher.videoAspect}}" device-position="{{pusher.frontCamera}}" remote-mirror="{{pusher.enableRemoteMirror}}" local-mirror="{{pusher.localMirror}}" background-mute="{{pusher.enableBackgroundMute}}" audio-quality="{{pusher.audioQuality}}" audio-volume-type="{{pusher.audioVolumeType}}" audio-reverb-type="{{pusher.audioReverbType}}" waiting-image="{{pusher.waitingImage}}" beauty-style="{{pusher.beautyStyle}}" filter="{{pusher.filter}}" bindstatechange="pusherStateChangeHandler" bindnetstatus="pusherNetStatus" binderror="pusherErrorHandler" bindaudiovolumenotify="pusherAudioVolumeNotify" />
                                 <view class="player-control">
                                     <image src="{{item.avatar || '../../static/default_avatar.png'}}"></image>
