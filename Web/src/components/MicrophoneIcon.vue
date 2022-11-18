@@ -29,4 +29,3 @@ const { volume } = toRefs(props);
       fill="#fff" />
   </svg>
 </template>
-    

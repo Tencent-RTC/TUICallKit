@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue';
-import { RemoteUser } from '../interface';
+import type { RemoteUser } from '../interface';
 import { timerStart, timerClear, timerString } from '../utils/timer';
 import { STATUS, CHANGE_STATUS_REASON, CALL_TYPE_STRING } from '../constants';
 import { TUICallType } from 'tuicall-engine-webrtc';

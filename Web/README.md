@@ -12,11 +12,11 @@
 
 ## 特性
 
-<!-- - 支持 H5 响应式布局 -->
 <!-- - 底层使用 腾讯云即时通信与音视频能力，效果媲美微信 -->
+<!-- - 📦 集成无负担 —— 未引入除 SDK 外其他 npm 依赖，有效控制代码体积 -->
 - ⚡️ 功能全面 —— 支持单人/多人/音频/视频通话、支持视频转音频通话、支持自由选择通话设备
 - 🌟 低门槛 —— 仅需 3 行代码即可跑通测试 Demo，6 行代码完成通用能力接入
-- 📦 集成无负担 —— 未引入除 SDK 外其他 npm 依赖，有效控制代码体积
+- 📱 多设备适配 —— 支持 H5 1v1 布局
 - 🎨 灵活样式 —— 组件开源，可复用逻辑，自定义 UI 样式
 - 🛠 优秀生态 —— 与 [TUIKit](https://cloud.tencent.com/document/product/269/79737) 协同使用，可以在 [TIM](https://cloud.tencent.com/document/product/269) 会话中直接发起音视频通话
 - 🔥 先进技术栈 —— `TypeScript` 类型，支持 Vue3 `Composition API`
@@ -60,6 +60,9 @@
 - 此文件夹下是 TUICallKit 组件源文件，包含全部 UI 层与逻辑层代码，入口文件为 `index.ts`。
 - 可直接复制此文件到您的工程中进行组件的引入，如 `import { TUICallKit, TUICallKitServer } from './src/index'`, 其中 `src` 可重命名，引入路径做相应的修改即可，更详细的接入组件过程请参考 [快速接入 TUICallKit](https://cloud.tencent.com/document/product/647/78731)。
 
+## Changelog
+
+- [Changelog](./docs/Changelog.md)
 
 ## 附录
 

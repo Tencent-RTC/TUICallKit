@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import { TUICallKit, TUICallKitServer, TUICallKitMini } from "../../..";
+import DeviceDetector from "./components/DeviceDetector/index.vue";
 import * as GenerateTestUserSig from "../public/debug/GenerateTestUserSig.js";
 import TIM from "tim-js-sdk";
 import { copyText } from "vue3-clipboard";
@@ -11,6 +12,7 @@ import audioBlackSVG from "./assets/audioBlack.svg";
 import searchSVG from "./assets/search.svg";
 import cancelSVG from "./assets/cancel.svg";
 import { ElMessage } from 'element-plus';
+import logReporter from "./utils/aegis";
 import "./App.css";
 
 const SDKAppID = ref<number>(0);
@@ -24,6 +26,8 @@ const debugDisplayStyle = ref<string>("");
 const isNewTab = ref<boolean>(false);
 const isMinimized = ref<boolean>(false);
 const lang = ref<string>("zh-cn");
+const finishedRTCDetectStatus = ref<string>("");
+const isSkippedRTCDetect = ref<boolean>(false);
 
 const typeString = ref<string>("video");
 const isCalling = ref<boolean>(false);
@@ -37,11 +41,18 @@ onMounted(() => {
     isNewTab.value = true;
   }
   SecretKey.value = getQueryVariable("SecretKey") || "";
+  finishedRTCDetectStatus.value = localStorage.getItem('callkit-basic-demo-finish-rtc-detect') || "";
 });
 
 onUnmounted(() => {
   TUICallKitServer.destroyed();
+  tim.logout();
 })
+
+function logout() {
+  TUICallKitServer.destroyed();
+  tim.logout();
+}
 
 async function login() {
   if (!SDKAppID.value || SDKAppID.value === 0) {
@@ -73,8 +84,11 @@ async function login() {
     });
     currentUserID.value = loginUserID.value;
     debugDisplayStyle.value = "display: none;";
+    if (finishedRTCDetectStatus.value !== "finished") initNetWorkInfo();
+    logReporter.loginSuccess(SDKAppID.value);
   } catch (error: any) {
     if (error.message) ElMessage.error(`登录失败，请检查 SDKAppID 与 SecretKey 是否正确 ${error.message}`);
+    logReporter.loginFailed(SDKAppID.value, error?.message);
   }
 }
 
@@ -90,11 +104,12 @@ async function startCall(typeString: string) {
   }
   const type = typeString === "audio" ? 1 : 2;
   if (userList.value.length <= 0) return;
+  const callType = (userList.value.length === 1) ? "call" : "groupCall";
   try {
     if (userList.value.length === 1)
       await TUICallKitServer.call({ userID: userList.value[0], type });
     else {
-      // 此处可直接使用已存在的群组，不需要每次创建新群组
+      // you can use existing groups, no need to create a new group every time
       groupID.value = await createGroup();
       await TUICallKitServer.groupCall({
         userIDList: userList.value,
@@ -102,8 +117,11 @@ async function startCall(typeString: string) {
         groupID: groupID.value,
       });
     }
+    logReporter.callSuccess(SDKAppID.value, callType, typeString);
   } catch (error: any) {
+    console.error("startCall", error);
     if (error.message) ElMessage.error(error.message);
+    logReporter.callFailed(SDKAppID.value, callType, typeString, error?.message);
   }
 }
 
@@ -111,7 +129,7 @@ function beforeCalling(type: string, error: any) {
   console.log("basic demo beforeCalling", type, error);
   if (!error) isCalling.value = true;
   else {
-    console.warn("basic demo beforeCallingbasic demo beforeCalling");
+    console.error("basic demo beforeCalling", error);
     ElMessage.error(`${error.type}: ${error.message}`);
   }
 }
@@ -186,10 +204,74 @@ function copyUserID() {
     }
   });
 }
+
+function changeLang() {
+  // if (lang.value === "zh-cn") lang.value = "en";
+  // else lang.value = "zh-cn";
+}
+
+function handleClose() {
+  showDeviceDetector.value = false;
+  isSkippedRTCDetect.value = true;
+  ElMessage.warning("已跳过设备检测");
+}
+
+function handleFinishDetect() {
+  showDeviceDetector.value = false;
+  finishedRTCDetectStatus.value = "finished";
+  localStorage.setItem('callkit-basic-demo-finish-rtc-detect', 'finished');
+}
+
+const networkDetectInfo = ref();
+const showDeviceDetector = ref<boolean>(false);
+
+const initNetWorkInfo = async () => {
+  if (!SDKAppID.value || !SecretKey.value) {
+    ElMessage.error("请填写正确的 SDKAppID 与 SecretKey 后重试");
+    return;
+  };
+  const status = localStorage.getItem('callkit-basic-demo-finish-rtc-detect');
+  if (status === 'finished') return;
+  const uplinkUserId = currentUserID.value + '_uplink_test';
+  const downlinkUserId = currentUserID.value + '_downlink_test';
+  const roomId = 999999;
+
+  const uplinkUserSig = GenerateTestUserSig.genTestUserSig(
+    uplinkUserId,
+    SDKAppID.value,
+    SecretKey.value
+  ).userSig;
+  const downlinkUserSig = GenerateTestUserSig.genTestUserSig(
+    downlinkUserId,
+    SDKAppID.value,
+    SecretKey.value
+  ).userSig;
+  networkDetectInfo.value = {
+    sdkAppId: SDKAppID,
+    roomId,
+    uplinkUserInfo: {
+      uplinkUserId,
+      uplinkUserSig,
+    },
+    downlinkUserInfo: {
+      downlinkUserId,
+      downlinkUserSig,
+    },
+  };
+  showDeviceDetector.value = true;
+}
+
 </script>
 
 <template>
   <div class="wrapper">
+    <DeviceDetector
+      :visible="showDeviceDetector"
+      :onClose="handleClose"
+      :onFinish="handleFinishDetect"
+      :networkDetectInfo="networkDetectInfo"
+    >
+    </DeviceDetector>
     <div class="switch">
       <div
         class="switch-btn"
@@ -275,7 +357,10 @@ function copyUserID() {
               />
             </div>
           </div>
-          <div class="call-btn" @click="startCall(typeString)">通话</div>
+          <div class="call-buttons">
+            <div class="rtc-detector-starter" @click="initNetWorkInfo()" v-show="currentUserID !== '未登录' && finishedRTCDetectStatus !== 'finished'">开始设备检测</div>
+            <div class="call-btn" @click="startCall(typeString)">通话</div>
+          </div>
         </div>
       </div>
       <TUICallKit
@@ -289,34 +374,33 @@ function copyUserID() {
       />
       <TUICallKitMini />
     </div>
-  </div>
-
-  <div id="debug" :style="debugDisplayStyle">
-    <div>
-      <span>Debug Panel</span><br />
-      目前 userID: <span>({{ currentUserID }})</span>
+    <div id="debug" :style="debugDisplayStyle">
+      <div>
+        <span>Debug Panel</span><br />
+        目前 userID: <span>({{ currentUserID }})</span>
+      </div>
+      <span>SDKAppID: </span>
+      <input
+        v-model="SDKAppID"
+        placeholder="SDKAppID"
+        type="number"
+        style="width: 100px"
+      />
+      <br />
+      <span>SecretKey: </span>
+      <input v-model="SecretKey" placeholder="SecretKey" style="width: 500px" />
+      <div style="font-size: 12px">
+        注意️：本 Debug Panel 仅用于调试，正式上线前请将 UserSig
+        计算代码和密钥迁移到您的后台服务器上，以避免加密密钥泄露导致的流量盗用。
+        <a
+          href="https://cloud.tencent.com/document/product/647/17275"
+          target="_blank"
+          >查看文档</a
+        >
+      </div>
+      <span>UserID: </span> <input v-model="loginUserID" placeholder="UserID" />
+      <br />
+      <button @click="login()">登录</button>
     </div>
-    <span>SDKAppID: </span>
-    <input
-      v-model="SDKAppID"
-      placeholder="SDKAppID"
-      type="number"
-      style="width: 100px"
-    />
-    <br />
-    <span>SecretKey: </span>
-    <input v-model="SecretKey" placeholder="SecretKey" style="width: 500px" />
-    <div style="font-size: 12px">
-      注意️：本 Debug Panel 仅用于调试，正式上线前请将 UserSig
-      计算代码和密钥迁移到您的后台服务器上，以避免加密密钥泄露导致的流量盗用。
-      <a
-        href="https://cloud.tencent.com/document/product/647/17275"
-        target="_blank"
-        >查看文档</a
-      >
-    </div>
-    <span>UserID: </span> <input v-model="loginUserID" placeholder="UserID" />
-    <br />
-    <button @click="login()">登录</button>
   </div>
 </template>

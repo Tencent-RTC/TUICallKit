@@ -12,7 +12,8 @@ body,
   height: 100%;
 
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
 
   background-image: url("./assets/background-compress.png");
@@ -67,7 +68,6 @@ body,
 }
 
 .add-btn {
-  border-radius: 18px;
   margin-top: 24px;
   position: relative;
   width: 100%;
@@ -162,11 +162,31 @@ body,
   margin-top: 4px;
 }
 
-.call-btn {
+.rtc-detector-starter {
+  height: 32px;
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  cursor: pointer;
+  user-select: none;
+  margin-right: 10px;
+
+  text-decoration: underline;
+}
+
+.call-buttons {
   position: absolute;
   right: 32px;
   bottom: 32px;
 
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.call-btn {
   background: linear-gradient(95.14deg, #0052d9 0%, #0676ff 100%);
   border-radius: 2px;
   height: 32px;
@@ -190,8 +210,8 @@ body,
   display: flex;
   flex-wrap: nowrap;
 
-  position: absolute;
-  top: 36px;
+  margin-top: 36px;
+  margin-bottom: 3rem;
 }
 
 .icon {
@@ -264,4 +284,20 @@ input::-webkit-inner-spin-button {
 }
 input[type="number"] {
   -moz-appearance: textfield !important;
+}
+
+
+@media screen and (max-height: 800px) { 
+  .call-kit-container {
+    width: 45rem;
+    height: 30rem;
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 16px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    font-family: "PingFang SC";
+    overflow: hidden;
+  
+    position: relative;
+  }
 }

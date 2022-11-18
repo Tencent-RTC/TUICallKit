@@ -5,13 +5,11 @@ declare module '*.vue' {
   export default component
 }
 
-declare module 'tuicall-engine-webrtc' {
-  import { TUICallEngine, TUICallEvent, TUICallType } from 'tuicall-engine-webrtc'
-  export { TUICallEngine, TUICallEvent, TUICallType }
-}
-
+declare module 'tuicall-engine-webrtc';
 
 declare module '*.svg' {
   const content: any;
   export default content;
 }
+
+declare module 'aegis-web-sdk';
