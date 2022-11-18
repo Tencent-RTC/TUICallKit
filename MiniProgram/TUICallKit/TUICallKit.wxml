@@ -16,7 +16,8 @@
       pusher="{{pusher}}"
       isGroup="{{isGroup}}"
       callType="{{config.type}}"
-      remoteUsers="{{remoteUsers}}"
+      allUsers="{{allUsers}}"
+      ownUserId="{{ownUserId}}"
       bind:callingEvent="handleCallingEvent"
     ></TUI-groupCalling>
 
@@ -35,7 +36,7 @@
 
     <TUI-groupConnected
       wx:if="{{callStatus === 'connected'  && isGroup}}"
-      remoteUsers="{{remoteUsers}}"
+      allUsers="{{allUsers}}"
       playerList="{{playerList}}"
       userList="{{userList}}"
       isGroup="{{isGroup}}"
@@ -43,6 +44,7 @@
       callType="{{config.type}}"
       soundMode="{{soundMode}}"
       screen="{{screen}}"
+      ownUserId="{{ownUserId}}"
       playerProcess="{{ playerProcess}}"
       bind:connectedEvent="handleConnectedEvent"
     ></TUI-groupConnected>

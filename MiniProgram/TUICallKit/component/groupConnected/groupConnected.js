@@ -24,11 +24,14 @@ Component({
     isGroup: {
       type: Boolean,
     },
-    remoteUsers: {
+    allUsers: {
       type: Array,
     },
     playerProcess: {
       type: Object,
+    },
+    ownUserId: {
+      type: String,
     },
   },
 
@@ -47,10 +50,8 @@ Component({
     attached() {
     },
     ready() {
-      this.setData({ userID: wx.$globalData.userID });
     },
     detached() {
-
     },
     error() {
     },

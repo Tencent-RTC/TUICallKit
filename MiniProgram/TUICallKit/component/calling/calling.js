@@ -26,7 +26,7 @@ Component({
    * 组件的初始数据
    */
   data: {
-
+    isClick: true,
   },
 
   /**
@@ -51,6 +51,9 @@ Component({
    */
   methods: {
     accept(event) {
+      this.setData({
+        isClick: false,
+      });
       const data = {
         name: 'accept',
         event,

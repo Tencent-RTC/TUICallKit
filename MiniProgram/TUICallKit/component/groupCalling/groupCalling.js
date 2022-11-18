@@ -13,11 +13,14 @@ Component({
     callType: {
       type: Number,
     },
-    remoteUsers: {
+    allUsers: {
       type: Array,
     },
     isGroup: {
       type: Boolean,
+    },
+    ownUserId: {
+      type: String,
     },
   },
 
@@ -26,6 +29,7 @@ Component({
    */
   data: {
     userID: null,
+    isClick: true,
   },
 
   /**
@@ -37,7 +41,7 @@ Component({
     attached() {
     },
     ready() {
-      this.setData({ userID: wx.$globalData.userID });
+
     },
     detached() {
 
@@ -51,6 +55,9 @@ Component({
    */
   methods: {
     accept(event) {
+      this.setData({
+        isClick: false,
+      });
       const data = {
         name: 'accept',
         event,
@@ -73,14 +80,14 @@ Component({
     },
     handleErrorImage(e) {
       const { id } = e.target;
-      const remoteUsers = this.data.remoteUsers.map((item) => {
+      const allUsers = this.data.allUsers.map((item) => {
         if (item.userID === id) {
           item.avatar = '../../static/default_avatar.png';
         }
         return item;
       });
       this.setData({
-        remoteUsers,
+        allUsers,
       });
     },
     toggleSwitchCamera(event) {
