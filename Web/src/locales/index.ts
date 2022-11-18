@@ -10,7 +10,7 @@ const languageData: any = {
     "search-result": "search result",
     "no-user": "user not found",
     "member-not-added": "member not added",
-    "input-phone-userID": "enter phone number or userID",
+    "input-phone-userID": "phone number or userID",
     "not-login": "not logged in",
     "login-status-expire": "login status is invalid, please refresh the page and try again",
     "experience-multi-call": "experience multi-person calls, please download the full-featured demo: ",

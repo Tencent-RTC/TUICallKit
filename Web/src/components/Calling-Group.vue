@@ -3,7 +3,7 @@ import { isFromGroup, remoteList, callType, profile, status, t } from '../store/
 import { onUpdated, ref, watch, nextTick, watchEffect } from "vue";
 import MicrophoneIcon from "./MicrophoneIcon.vue";
 import { TUICallKitServer } from '../index';
-import { RemoteUser } from "../interface";
+import type { RemoteUser } from "../interface";
 import { CALL_TYPE_STRING, STATUS } from '../constants';
 import LeftSVG from "../icons/left.vue";
 import RightSVG from "../icons/right.vue";

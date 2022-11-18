@@ -30,10 +30,10 @@ const props = withDefaults(
 const { beforeCalling, afterCalling, onMinimized, onMessageSentByMe, allowedMinimized, allowedFullScreen, lang } =
   toRefs(props);
 TUICallKitServer.setCallback({
-  beforeCalling: beforeCalling.value,
-  afterCalling: afterCalling.value,
-  onMinimized: onMinimized.value,
-  onMessageSentByMe: onMessageSentByMe.value,
+  beforeCalling: beforeCalling && beforeCalling.value,
+  afterCalling: afterCalling && afterCalling.value,
+  onMinimized: onMinimized && onMinimized.value,
+  onMessageSentByMe: onMessageSentByMe && onMessageSentByMe.value,
 });
 // watchEffect(() => {
 //   TUICallKitServer.setLanguage(lang.value);
