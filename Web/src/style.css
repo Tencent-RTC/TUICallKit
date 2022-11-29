@@ -226,6 +226,7 @@
 
 .device-select {
   height: 32px;
+  width: 100%;
   border: 1px solid #DEE0E3;
   padding-left: 6px;
   padding-top: 6px;
@@ -233,19 +234,24 @@
   margin-top: 10px;
   margin-bottom: 10px;
   font-size: 14px;
+  color: #596174;
 }
 
 .control-item-detail::before {
   content: '';
   width: 0;
   height: 0;
-  border-width: 10px 5px;
+  border-width: 10px;
   border-style: solid;
   border-color: #FEFEFF transparent transparent;
-  bottom: -20px;
-  margin-left: -5px;
+  bottom: -3px;
+  margin-left: -9px;
   position: absolute;
   left: 50%;
+
+  border-color: white ;
+  border-radius: 4px;
+  transform: rotate(60deg) skewX(30deg)
 }
 
 .tag {

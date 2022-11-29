@@ -1,4 +1,4 @@
-import { TUICallEngine, TUICallEvent } from "tuicall-engine-webrtc";
+import { TUICallEngine, TUICallEvent, TUICallType } from "tuicall-engine-webrtc";
 
 import type { TUICallParam, TUIInitParam, TUIGroupCallParam, RemoteUser, CallbackParam, offlinePushInfoType, statusChangedReturnType } from "./interface";
 import {
@@ -315,12 +315,13 @@ export default class TUICallKit {
   }
 
   public async switchCallMediaType() {
+    console.log("TUICallKit switchCallMediaType", TUICallType.AUDIO_CALL);
     if (this.callingAPIMutex === "switchCallMediaType") {
       return;
     }
     this.callingAPIMutex = "switchCallMediaType";
     try {
-      await this.tuiCallEngine.switchCallMediaType(1);
+      await this.tuiCallEngine.switchCallMediaType(TUICallType.AUDIO_CALL);
     } catch (error: any) {
       console.error("TUICallKit switchCallMediaType error:", error);
     }
@@ -564,7 +565,6 @@ export default class TUICallKit {
     console.log("TUICallKit handleCallTypeChanged", event);
     const { newCallType } = event;
     changeCallType(newCallType);
-    changeStatus(STATUS.CALLING_C2C_AUDIO, CHANGE_STATUS_REASON.CALL_TYPE_CHANGED);
   }
 
   private handleMessageSentByMe(event: any) {
