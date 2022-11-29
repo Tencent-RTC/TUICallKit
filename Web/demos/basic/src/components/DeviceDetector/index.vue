@@ -157,7 +157,7 @@ export default {
     const result = detect.getSystem();
     const stepNameList = ['camera', 'microphone', 'speaker', 'network'];
     // iOS系统和firefox浏览器，不包含扬声器检测
-    if (result.browser.name === 'Firefox' || result.OS === 'iOS') {
+    if (result.browser.name === 'Firefox' || result.browser.name === 'Safari' || result.OS === 'iOS') {
       stepNameList.indexOf('speaker') >= 0 && stepNameList.splice(stepNameList.indexOf('speaker'), 1);
     }
     if (!this.hasNetworkDetect) {

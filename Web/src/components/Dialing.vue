@@ -17,6 +17,8 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+  console.log("TUICallKit stopLocalView because status is ", status.value);
+  if (status.value === STATUS.IDLE) return;
   TUICallKitServer.stopLocalView();
 })
 

@@ -1,6 +1,6 @@
 {
   "name": "@tencentcloud/call-uikit-vue",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "main": "./src/index.ts",
   "description": "An Open-source Voice & Video Calling UI Component Based on Tencent Cloud Service.",
   "homepage": "https://cloud.tencent.com/document/product/647/78731",
@@ -10,6 +10,11 @@
     "type": "git",
     "url": "git+https://github.com/tencentyun/TUICallKit"
   },
+  "files": [
+    "/README.md",
+    "/src/",
+    "/demos/basic/public/debug/"
+  ],
   "bugs": {
     "url": "https://github.com/tencentyun/TUICallKit/issues"
   },
@@ -33,6 +38,6 @@
     "tim-js-sdk": "^2.24.1",
     "trtc-js-sdk": "^4.14.6",
     "tsignaling": "^1.0.1",
-    "tuicall-engine-webrtc": "^1.1.3"
+    "tuicall-engine-webrtc": "^1.2.1"
   }
 }

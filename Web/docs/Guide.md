@@ -9,8 +9,7 @@
 ## 目录
 * [步骤一：开通服务](#步骤一：开通服务)
 * [步骤二：引入 TUICallKit 组件](步骤二：引入-TUICallKit-组件)
-* [步骤三：生成 UserSig](#步骤三：生成-UserSig)
-* [步骤四：调用 TUICallKit 组件](#步骤四：调用-TUICallKit-组件)
+* [步骤三：调用 TUICallKit 组件](#步骤三：调用-TUICallKit-组件)
 * [其他文档](#其他文档)
 * [常见问题](#常见问题)
   + [1. 如何生成 UserSig？](#1-如何生成-UserSig？)
@@ -56,6 +55,22 @@ TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/docume
 
 ## 步骤二：引入 TUICallKit 组件
 
+### 方式1：npm 集成
+
+通过 npm 方式下载 TUICallKit 组件，为了方便您后续的拓展，建议您将 TUICallKit 组件复制到自己工程的 `src/components/` 目录下：
+
+```bash
+# macOS
+yarn add @tencentcloud/call-uikit-vue  # 如果你没装过 yarn, 可以先运行: npm install -g yarn
+mkdir -p ./src/components/TUICallKit/Web && cp -r ./node_modules/@tencentcloud/call-uikit-vue/* ./src/components/TUICallKit/Web
+
+# windows
+yarn add @tencentcloud/call-uikit-vue  # 如果你没装过 yarn, 可以先运行: npm install -g yarn
+xcopy .\node_modules\@tencentcloud\call-uikit-vue  .\src\components\TUICallKit\Web /i /e
+```
+
+### 方式2：源码集成
+
 1. 从 [GitHub 下载](https://github.com/tencentyun/TUICallKit/tree/main/Web) TUICallKit 源码。复制 `TUICallKit/Web` 文件夹放置到自己到工程的 `src/components` 文件夹中，例如：
 
 <!-- <img style="width:300px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/e4699aaa507aa4618034463225f72cb2.png"/>  -->
@@ -71,38 +86,7 @@ cd ./src/components/TUICallKit/Web
 yarn         # 如果你没装过 yarn, 可以先运行: npm install -g yarn
 ```
 
-## 步骤三：生成 UserSig
-
-若已生成 UserSig，可跳过本步骤至 [步骤四](#步骤四：调用-TUICallKit-组件)
-
-1. 设置初始化的相关参数，其中 SDKAppID 和密钥等信息，可通过 [即时通信 IM 控制台](https://console.cloud.tencent.com/im) 获取，单击目标应用卡片，进入应用的基础配置页面。例如：
-
-<!-- <img style="width:600px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/480455e5b4a2a1d4d67ffb2e445452a6.png"/> -->
-
-<div align="center">
-<img style="width:600px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/194735288-d96dd384-7bb3-479b-aff0-171888a9e15a.png"/>
-</div>
-
-2. 在基本信息区域，单击显示密钥，复制并保存密钥信息至 `TUICallKit/Web/demos/basic/public/debug/GenerateTestUserSig.js` 文件。 
-
-<!-- <img style="width:600px; max-width: inherit;" src="https://qcloudimg.tencent-cloud.cn/raw/bbb093bfc7343a626dd8bc6f3d4cabf7.png"/>  -->
-<div align="center">
-
-<img style="width:600px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/194735315-ae423867-b4cf-49c9-b542-761f6525882a.png"/> 
-</div>
-
-3. 在步骤四中，即可使用 `GenerateTestUserSig.js` 中 `genTestUserSig(userID)` 函数来计算 userSig，例如：
-
-```javascript
-import * as GenerateTestUserSig from "../public/debug/GenerateTestUserSig.js";
-const { userSig } = GenerateTestUserSig.genTestUserSig(userID);
-```
-
-4. 若您使用 vite 作为启动工具，还需注意 [vite 引入问题](#2-vite-引入问题)
-
-> 发布前请务必删除此文件，本文提到的获取 UserSig 的方案是在客户端代码中配置 SECRETKEY，该方法中 SECRETKEY 很容易被反编译逆向破解，一旦您的密钥泄露，攻击者就可以盗用您的腾讯云流量，因此**该方法仅适合本地跑通功能调试**。 正确的 UserSig 签发方式是将 UserSig 的计算代码集成到您的服务端，并提供面向 App 的接口，在需要 UserSig 时由您的 App 向业务服务器发起请求获取动态 UserSig。更多详情请参见 [服务端生成 UserSig](https://cloud.tencent.com/document/product/269/32688#GeneratingdynamicUserSig)。
-
-## 步骤四：调用 TUICallKit 组件
+## 步骤三：调用 TUICallKit 组件
 
 在需要展示的页面，调用 TUICallKit 的组件即可展示通话页面。
 
@@ -110,7 +94,7 @@ const { userSig } = GenerateTestUserSig.genTestUserSig(userID);
 
 ```js
 <script lang="ts" setup>
-import { TUICallKit } from "./src/components/TUICallKit/Web";
+import { TUICallKit } from "./components/TUICallKit/Web";
 </script>
   
 <template>
@@ -120,30 +104,40 @@ import { TUICallKit } from "./src/components/TUICallKit/Web";
 
 2. 登录用户与拨打电话
 
-若您已使用 [TUIKit](https://cloud.tencent.com/document/product/269/79737) 套件，则需引入下方代码，声明 TUICallKit 为插件；若未使用，则不需要引入下方代码
+    2.1 若您已使用 [TUIKit](https://cloud.tencent.com/document/product/269/79737) 套件，则需引入下方代码，声明 TUICallKit 为插件；若未使用，则可以跳过本步骤至2.2
 
-```javascript
-import { TUICallKit } from './src/components/TUICallKit/Web/src/index';
-TUIKit.use(TUICallKit); 
-```
+    ```javascript
+    import { TUICallKit } from './components/TUICallKit/Web';
+    TUIKit.use(TUICallKit); 
+    ```
 
-之后，可以在需要登录的地方，执行：
+    2.2 拨打电话需保持初始化组件
 
-```javascript
-import { TUICallKitServer } from './src/components/TUICallKit/Web/src/index';
-TUICallKitServer.init({ SDKAppID, userID, userSig }); 
-```
->  userSig 可在[步骤三](#步骤三：生成-UserSig)中获取
+    ```javascript
+    import { TUICallKitServer } from './components/TUICallKit/Web';
+    TUICallKitServer.init({ SDKAppID, userID, userSig }); 
+    ```
 
-在需要拨打电话的地方，执行：
+    > SDKAppID, SecretKey 的获取可见步骤一
 
-```javascript
-import { TUICallKitServer } from './src/components/TUICallKit/Web/src/index';
-TUICallKitServer.call({ userID, type }); // 双人通话
-TUICallKitServer.groupCall({ userIDList, groupID, type }); // 多人通话
-```
+    > userSig 可**临时**使用 `GenerateTestUserSig.js` 中 `genTestUserSig(userID)` 函数来计算 ，例如：
+    ```javascript
+    import * as GenerateTestUserSig from "./components/TUICallKit/Web/demos/basic/public/debug/GenerateTestUserSig.js";
+    const { userSig } = GenerateTestUserSig.genTestUserSig(userID, SDKAppID, SecretKey);
+    ```
+    > 若您使用 vite 作为启动工具，还需注意 [vite 引入问题](#2-vite-引入问题)
 
-之后就可以成功拨打您的第一通电话了～更详解接口参数可参考[接口文档](https://cloud.tencent.com/document/product/647/81015)
+    > 本文提到的获取 UserSig 的方案是在前端代码中配置 SECRETKEY，该方法中 SECRETKEY 很容易被反编译逆向破解，一旦您的密钥泄露，攻击者就可以盗用您的腾讯云流量，因此**该方法仅适合本地跑通功能调试**。 正确的 UserSig 签发方式是将 UserSig 的计算代码集成到您的服务端，并提供面向 App 的接口，在需要 UserSig 时由您的 App 向业务服务器发起请求获取动态 UserSig。更多详情请参见 [服务端生成 UserSig](https://cloud.tencent.com/document/product/269/32688#GeneratingdynamicUserSig)。
+
+    2.3 在需要拨打电话的地方，执行：
+
+    ```javascript
+    import { TUICallKitServer } from './components/TUICallKit/Web';
+    TUICallKitServer.call({ userID: "123", type: 2 }); // 双人通话
+    TUICallKitServer.groupCall({ userIDList: ["xxx"], groupID: "xxx", type: 2 }); // 多人通话
+    ```
+
+    之后就可以成功拨打您的第一通电话了～更详解接口参数可参考[接口文档](https://cloud.tencent.com/document/product/647/81015)
 
 3. 进阶接口
 
@@ -186,7 +180,7 @@ UserSig 签发方式是将 UserSig 的计算代码集成到您的服务端，并
 
 ```javascript
 // index.html
-<script src="/public/debug/lib-generate-test-usersig.min.js"> </script>
+<script src="./src/components/TUICallKit/Web/demos/basic/public/debug/lib-generate-test-usersig.min.js"> </script>
 ```
 
 并将原来 `GenerateTestUserSig.js` 中 import 引入的方式注释
