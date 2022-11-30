@@ -8,3 +8,6 @@
 */
 
 "UILaunchStoryboardName" = "LaunchScreen_en";
+
+NSCameraUsageDescription = "TUICallKitApp needs access to your camera, and it can be used for functions such as Video Call, Group Video Call.";
+NSMicrophoneUsageDescription = "TUICallKitApp needs access to your microphone，and it can be used for functions such as Audio Call, Group Audio Call, Video Call, Group Video Call.";

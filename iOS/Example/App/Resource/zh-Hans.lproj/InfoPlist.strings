@@ -8,3 +8,6 @@
 */
 
 "UILaunchStoryboardName" = "LaunchScreen";
+
+NSCameraUsageDescription = "TUICallKitApp需要访问您的相机权限，开启后用于视频通话、多人视频通话功能。";
+NSMicrophoneUsageDescription = "TUICallKitApp需要访问您的麦克风权限，开启后用于语音通话、多人语音通话、视频通话、多人视频通话功能，并且开启后录制的视频才会有声音。";
