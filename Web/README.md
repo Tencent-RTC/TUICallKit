@@ -33,6 +33,12 @@ GitHub Release Date: -->
 
 ## 使用指引
 
+```text
+我们团队即将在 Web 端丰富更多不同的组件，以满足您的开发需求。
+希望您能抽出几分钟时间，为您自己的需求投上一票，我们将优先开发！
+问卷地址：https://wj.qq.com/s2/11263124/1556/
+```
+
 为方便您的使用，本组件配套多篇使用指引：
 
 - 如果您想在线体验通话效果，请访问 [1v1音视频通话体验馆](https://web.sdk.qcloud.com/component/experience-center/index.html#/detail?scene=callkit)
