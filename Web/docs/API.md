@@ -82,7 +82,7 @@ function onMinimized(oldStatus, newStatus) {
 初始化 TUICallKit，需在 call, groupCall 之前进行。
 
 ```javascript
-import { TUICallKitServer } from "./src/components/TUICallKit/Web";
+import { TUICallKitServer } from "./components/TUICallKit/Web";
 TUICallKitServer.init({
   SDKAppID,
   userID, 
@@ -104,7 +104,7 @@ TUICallKitServer.init({
 拨打电话（1v1通话）。
 
 ```javascript
-import { TUICallKitServer } from "./src/components/TUICallKit/Web";
+import { TUICallKitServer } from "./components/TUICallKit/Web";
 TUICallKitServer.call({
   userID: 'jack',
   type: 1,
@@ -133,7 +133,7 @@ TUICallKitServer.call({
 发起群组通话。
 
 ```javascript
-import { TUICallKitServer } from "./src/components/TUICallKit/Web";
+import { TUICallKitServer } from "./components/TUICallKit/Web";
 TUICallKitServer.groupCall({
   userIDList: ['jack', 'tom'],
   groupID: 'xxx',
@@ -157,6 +157,6 @@ TUICallKitServer.groupCall({
 销毁 TUICallKit。
 
 ```javascript
-import { TUICallKitServer } from "./src/components/TUICallKit/Web";
+import { TUICallKitServer } from "./components/TUICallKit/Web";
 TUICallKitServer.destroyed();
 ```

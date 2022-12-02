@@ -15,15 +15,15 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.2.0</string>
+	<string>1.3.0</string>
 	<key>CFBundleVersion</key>
-	<string>153</string>
+	<string>205</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>TUICallKitApp需要访问你的相机权限，开启后录制的视频才会有画面</string>
+	<string>TUICallKitApp needs access to your camera, and it can be used for functions such as Video Call, Group Video Call.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>TUICallKitApp需要访问你的麦克风权限，开启后录制的视频才会有声音</string>
+	<string>TUICallKitApp needs access to your microphone，and it can be used for functions such as Audio Call, Group Audio Call, Video Call, Group Video Call.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

@@ -30,7 +30,7 @@
   border-radius: inherit;
   background: #00183C;
   color: white;
-  opacity: .7;
+  opacity: 0.7;
 
   width: 100%;
   height: 100%;
@@ -47,6 +47,12 @@
   z-index: 10;
 
   overflow: hidden;
+}
+
+.dialing-local {
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 .dialing-content {
@@ -92,13 +98,25 @@
   background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%);
 
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
-  justify-content: center;
+  align-items: center;
 
   z-index: 11;
 
   user-select: none;
+}
+
+.panel-button-area {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 30px 0;
+}
+
+.panel-dialing-info {
+  text-align: center;
 }
 
 .control-wrapper:hover {
@@ -111,6 +129,14 @@
   flex-direction: column;
   width: 100px;
   margin: 0 20px;
+}
+
+.control-item-h5 {
+  /* border: 1px solid blue; */
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+  margin: 0px;
 }
 
 .control-item-text {
@@ -133,13 +159,33 @@
   position: relative;
 }
 
-.control-item-icon-container {
+.control-item-icon-container-small {
   background: rgba(218, 218, 218, 0.3);
   border-radius: 40px;
   width: 40px;
   height: 40px;
 
-  margin: 0.5rem;
+  margin: 8px;
+  cursor: pointer;
+}
+
+.control-item-icon-container-medium {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 56px;
+  width: 56px;
+  height: 56px;
+
+  margin: 8px;
+  cursor: pointer;
+}
+
+.control-item-icon-container-large {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 68px;
+  width: 68px;
+  height: 68px;
+
+  margin: 8px;
   cursor: pointer;
 }
 
@@ -180,6 +226,7 @@
 
 .device-select {
   height: 32px;
+  width: 100%;
   border: 1px solid #DEE0E3;
   padding-left: 6px;
   padding-top: 6px;
@@ -187,19 +234,24 @@
   margin-top: 10px;
   margin-bottom: 10px;
   font-size: 14px;
+  color: #596174;
 }
 
 .control-item-detail::before {
   content: '';
   width: 0;
   height: 0;
-  border-width: 10px 5px;
+  border-width: 10px;
   border-style: solid;
   border-color: #FEFEFF transparent transparent;
-  bottom: -20px;
-  margin-left: -5px;
+  bottom: -3px;
+  margin-left: -9px;
   position: absolute;
   left: 50%;
+
+  border-color: white ;
+  border-radius: 4px;
+  transform: rotate(60deg) skewX(30deg)
 }
 
 .tag {
@@ -236,19 +288,33 @@
   cursor: pointer;
 }
 
+.small-h5 {
+  position: absolute;
+  width: 94px;
+  height: 160px;
+  min-height: 100px;
+  max-height: 60%;
+  top: 30px;
+  right: 10px;
+  z-index: 2;
+  overflow: hidden;
+  background: #D9D9D9;
+  border-radius: 4px;
+}
+
 .small {
   position: absolute;
-  width: auto;
-  height: 200px;
+  width: 260px;
+  height: 170px;
   min-height: 100px;
   max-height: 60%;
   top: 30px;
   left: 30px;
   z-index: 2;
-  border-radius: 8px;
   overflow: hidden;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  resize: vertical;
+  resize: both;
+  background: #D9D9D9;
+  border-radius: 4px;
 }
 
 .large {

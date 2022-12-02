@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue';
-import { RemoteUser } from '../interface';
+import type { RemoteUser } from '../interface';
 import { timerStart, timerClear, timerString } from '../utils/timer';
 import { STATUS, CHANGE_STATUS_REASON, CALL_TYPE_STRING } from '../constants';
 import { TUICallType } from 'tuicall-engine-webrtc';
@@ -136,8 +136,28 @@ function changeDialingInfo(newValue: string): void {
 }
 
 function changeCallType(newValue: number): void {
-  if (newValue === TUICallType.AUDIO_CALL) callType.value = CALL_TYPE_STRING.AUDIO;
-  if (newValue === TUICallType.VIDEO_CALL) callType.value = CALL_TYPE_STRING.VIDEO;
+  // change call type
+  switch (newValue) {
+    case TUICallType.AUDIO_CALL: 
+      callType.value = CALL_TYPE_STRING.AUDIO;
+      break;
+    case TUICallType.VIDEO_CALL:
+      callType.value = CALL_TYPE_STRING.VIDEO;
+      break;
+    default:
+      console.error("TUICallKit changeCallType: unknown call type value ", newValue);
+      return;
+  }
+  // change status
+  if (status.value === STATUS.CALLING_C2C_VIDEO && callType.value === CALL_TYPE_STRING.AUDIO) {
+    changeStatus(STATUS.CALLING_C2C_AUDIO, CHANGE_STATUS_REASON.CALL_TYPE_CHANGED);
+  }
+  if (status.value === STATUS.CALLING_C2C_AUDIO && callType.value === CALL_TYPE_STRING.VIDEO) {
+    changeStatus(STATUS.CALLING_C2C_VIDEO, CHANGE_STATUS_REASON.CALL_TYPE_CHANGED);
+  }
+  if (status.value === STATUS.BE_INVITED) {
+    changeDialingInfo(callType.value === CALL_TYPE_STRING.AUDIO ? t('start-voice-call') : t('start-video-call'));
+  }
 }
 
 function changeIsFromGroup(newValue: boolean): void {

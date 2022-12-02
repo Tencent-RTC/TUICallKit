@@ -1,22 +1,28 @@
-# TUICallKit
-   
-<!-- 分仓后加入：https://shields.io/category/version  - tag: docs/demos, H5, v1.0.3(changelog),  -->
+<!-- Vue3 版本的 TUICallKit 音视频通话 UI 组件，通过集成该组件，您只需要编写几行代码，就可以为您的 Web 应用添加音视频通话功能。
+分仓后加入：https://shields.io/category/version  - tag: docs/demos, H5, v1.0.3(changelog), 
+GitHub Release Date: -->
 
-本仓库是 Vue3 版本的 TUICallKit 音视频通话 UI 组件，通过集成该组件，您只需要编写几行代码，就可以为您的 Web 应用添加音视频通话功能。
+<div align="center">
+<h1> TUICallKit </h1>
+<img src="https://img.shields.io/npm/v/@tencentcloud/call-uikit-vue">
+<img src="https://img.shields.io/badge/Vue-%5E3.0.0-brightgreen">
+<img src="https://img.shields.io/npm/l/@tencentcloud/call-uikit-vue">
+<p>Vue3 版本的 TUICallKit 音视频通话 UI 组件，通过集成该组件，您只需要编写几行代码，就可以为您的 Web 应用添加音视频通话功能。</p>
+</div>
 
 <div align="center">
 
-![Oct-08-2022 20-21-07](https://user-images.githubusercontent.com/57169560/194707785-6d2e1aca-5ee7-427a-be62-19699578e684.gif)
+<img src="https://user-images.githubusercontent.com/57169560/194707785-6d2e1aca-5ee7-427a-be62-19699578e684.gif" style="width: 1000px">
 
 </div>
 
 ## 特性
 
-<!-- - 支持 H5 响应式布局 -->
 <!-- - 底层使用 腾讯云即时通信与音视频能力，效果媲美微信 -->
+<!-- - 📦 开箱即用 —— 未引入除 SDK 外其他 npm 依赖，有效控制代码体积 -->
 - ⚡️ 功能全面 —— 支持单人/多人/音频/视频通话、支持视频转音频通话、支持自由选择通话设备
 - 🌟 低门槛 —— 仅需 3 行代码即可跑通测试 Demo，6 行代码完成通用能力接入
-- 📦 集成无负担 —— 未引入除 SDK 外其他 npm 依赖，有效控制代码体积
+- 📱 多设备适配 —— 支持 H5 1v1 布局
 - 🎨 灵活样式 —— 组件开源，可复用逻辑，自定义 UI 样式
 - 🛠 优秀生态 —— 与 [TUIKit](https://cloud.tencent.com/document/product/269/79737) 协同使用，可以在 [TIM](https://cloud.tencent.com/document/product/269) 会话中直接发起音视频通话
 - 🔥 先进技术栈 —— `TypeScript` 类型，支持 Vue3 `Composition API`
@@ -27,9 +33,17 @@
 
 ## 使用指引
 
+```text
+我们团队即将在 Web 端丰富更多不同的组件，以满足您的开发需求。
+希望您能抽出几分钟时间，为您自己的需求投上一票，我们将优先开发！
+问卷地址：https://wj.qq.com/s2/11263124/1556/
+```
+
 为方便您的使用，本组件配套多篇使用指引：
 
-- 如果您想要体验并调试通话效果，请阅读 [Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.md)
+- 如果您想在线体验通话效果，请访问 [1v1音视频通话体验馆](https://web.sdk.qcloud.com/component/experience-center/index.html#/detail?scene=callkit)
+
+- 如果您想要调试通话效果，请阅读 [Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.md)
 
 - 如果您想把我们的功能直接嵌入到您的项目中，请阅读 [快速接入 TUICallKit](https://cloud.tencent.com/document/product/647/78731)
 
@@ -60,6 +74,9 @@
 - 此文件夹下是 TUICallKit 组件源文件，包含全部 UI 层与逻辑层代码，入口文件为 `index.ts`。
 - 可直接复制此文件到您的工程中进行组件的引入，如 `import { TUICallKit, TUICallKitServer } from './src/index'`, 其中 `src` 可重命名，引入路径做相应的修改即可，更详细的接入组件过程请参考 [快速接入 TUICallKit](https://cloud.tencent.com/document/product/647/78731)。
 
+## Changelog
+
+- [Changelog](./docs/Changelog.md)
 
 ## 附录
 
