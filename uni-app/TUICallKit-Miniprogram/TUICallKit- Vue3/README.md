@@ -9,7 +9,6 @@
 - 小程序基础库最低版本要求：2.10.0
 - 由于小程序测试号不具备 <live-pusher> 和 <live-player> 的使用权限，请使用企业小程序账号申请相关权限进行开发
 - 由于微信开发者工具不支持原生组件（即 <live-pusher> 和 <live-player> 标签），需要在真机上进行运行体验
-- 不支持 uniapp 等开发框架，请使用原生小程序开发环境
 
 ## 特性
 - ⚡️ 功能全面 —— 支持单人/多人/音频/视频通话、支持视频转音频通话、支持自由选择通话设备
@@ -27,7 +26,7 @@
 
 - 如果您想要了解TUiCallKit，请阅读 [组件介绍 TUICallKit](https://cloud.tencent.com/document/product/647/78742)
 
-- 如果您想把我们的功能直接嵌入到您的项目中，请阅读 [快速接入 TUICallKit](https://cloud.tencent.com/document/product/647/78733)
+- 如果您想把我们的功能直接嵌入到您的项目中，请阅读 [快速接入 TUICallKit](https://cloud.tencent.com/document/product/647/78912)
 
 - 如果您想要了解详细 API ，请阅读 [ API 概览](https://cloud.tencent.com/document/product/647/78759)
 
@@ -45,7 +44,7 @@
 
   | 步骤1 | 步骤2 | 步骤3 | 
   |---------|---------|---------|
-  |<img src="https://qcloudimg.tencent-cloud.cn/raw/13bf844da5636f3640da05020800fff9.jpg" width="240"/>|<img src="https://qcloudimg.tencent-cloud.cn/raw/ceed4039c6ce8f9b8ff48deb89199b6e.jpg" width="240">|<img src="https://qcloudimg.tencent-cloud.cn/raw/dc1984904c9790c8a3355ff1c5dada50.jpg" width="240"/>
+  |<img src="https://qcloudimg.tencent-cloud.cn/raw/1ded4a7bba09e0c1d4d7096bb09cde95.jpg" width="240"/>|<img src="https://qcloudimg.tencent-cloud.cn/raw/305ba8bdee2dd3f99ef4b75675b3a1c9.jpg" width="240">|<img src="https://qcloudimg.tencent-cloud.cn/raw/9f224a47f95bd91f49bd3e4ad91f485d.jpg" width="240"/>
 
 **用户 B（userId：222）**
 
@@ -117,30 +116,64 @@ TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/docume
 
 
 ### 步骤四：下载并导入 TUICallKit 组件
-单击进入 [Github](https://github.com/tencentyun/TUICallKit)，选择克隆/下载代码，然后拷贝 MiniProgram 下的 lib 目录、 TUICallKit 和 TUICallEngine 目录到您的工程中。
+选择克隆/下载代码，将项目中的 wxcomponents 中的 TUICallKit 文件夹复制到自己项目的 wxcomponents 中。
 
-<img width="640" src="https://qcloudimg.tencent-cloud.cn/raw/17249d9ba80a21cab0ebab9b82c731a3.png">
+<img width="640" src="https://qcloudimg.tencent-cloud.cn/raw/3409e06c1713d3c0dbf44d26bcffb30d.png">
 
 
-### 步骤五：创建并初始化 TUI 组件库
-1. **添加组件到需要使用 TUICallKit 的页面**，例如示例代码中的 `MiniProgram/pages/videoCall/videoCall.json`：
+### 步骤五：创建并初始化 TUICallKit 组件库
+1. 创建 TIM 实例 （如果您不需要 TIM 实例，可忽略）
+在 app.vue 中，如果您需要使用 tim，请引用 TUICallKit 内部的tim-wx-sdk
 ```javascript
-// 可参考 MiniProgram/pages/videoCall/videoCall.json 或 MiniProgram/pages/audioCall/audioCall.json
+  // 这里需要使用commonJS来引用
+  const TIM = require('./wxcomponents/TUICallKit/lib/tim-wx-sdk')
+	onLaunch() {
+		// 重点注意： 为了 uni-app 更好地接入使用 tim，快速定位和解决问题，请勿修改 uni.$TUIKit 命名。
+		// 如果您已经接入 tim ，请将 uni.tim 修改为 uni.$TUIKit。
+		uni.$TUIKit = TIM.create({
+			SDKAppID: 0, // 替换为您自己账号下的 SDKAppId
+		});
+		uni.$TIM = TIM
+	};
+```
+
+
+2. **添加组件到需要使用 TUICallKit 的页面**，例如示例代码中的 `pages.json文件`：
+```javascript
+// 可参考 pages.json文件
 {
-    "usingComponents": {
-        "TUICallKit": "/TUICallKit/TUICallKit"
-    }
-}
+			"path": "pages/calling/call",
+			"style": {
+				"navigationBarTitleText": "uni-app",
+				"usingComponents": {
+					"tuicallkit": "/wxcomponents/TUICallKit/TUICallKit/TUICallKit"
+				}
+			}
+},
 ```
-2. **在 WXML 模板 中添加一个 TUICallKit 组件**，例如示例代码中的 `MiniProgram/pages/videoCall/videoCall.wxml`：
+3. **在需要使用 TUICallKit 的页面中引入组件。**，例如示例代码中的 `pages/calling/call.vue`：
 ```javascript
-// 可参考 MiniProgram/pages/videoCall/videoCall.wxml 或 MiniProgram/pages/audioCall/audioCall.wxml
-  <TUICallKit
-    id="TUICallKit-component"     //用于获取子组件对象方法
-    config="{{config}}"           //将config中的参数传递给callkit
-  ></TUICallKit>
+// 可参考 pages/calling/call.vue
+<tuicallkit ref="TUICallKit"></tuicallkit>
 ```
-config参数
+
+4. **在生命周期函数中初始化 TUICallKit**
+```javascript
+import { nextTick, shallowRef, reactive } from 'vue';
+let TUICallKit = shallowRef(null);
+
+onLoad(() => {
+    nextTick(() => {
+        TUICallKit.value.init({
+            sdkAppID: 0, // 替换为您自己账号下的 SDKAppId
+            userID: 'jane',   // 填写当前用的 userID
+            userSig: 'xxxxxxxxxxxx', // 通过 genTestUserSig(userID) 生成
+            tim: uni.$TUIKit,   //  如果您不需要 TIM 实例，可忽略
+        })
+    })
+});
+```
+init参数
 | 参数 | 类型 | 说明 | 是否必传 |
 |---------|---------|---------|---------|
 | sdkAppID | String | IM 的应用 ID | 是 |
@@ -149,61 +182,37 @@ config参数
 | type | Number | 通话的媒体类型 | 否 |
 | tim | Any | TIM 实例 | 否 |
 
-3. **用 JS 代码动态设置 config 参数**
-在 JS 逻辑交互例如 `pages/index/index.js` 中填写如下代码，用于设置 wxml 文件中的 {{config}} 变量。这部分工作可参考 `MiniProgram/pages/videoCall/videoCall.js` 或 `MiniProgram/pages/audioCall/audioCall.js` 中的示例代码，如下所示：
-```javascript
-Page({
-    /**
-     * 页面的初始数据
-     */
-    data: {
-        config: {
-            sdkAppID: 123, // 替换为您自己账号下的 SDKAppId
-            userID: 'jane',   // 填写当前用的 userID
-            userSig: 'xxxxxxxxxxxx', // 通过 genTestUserSig(userID) 生成
-            type: 2,  //通话的类型
-            tim: null,   //  tim 参数适用于业务中已存在 TIM 实例，为保证 TIM 实例唯一性
-        }
-    }
-})
 
-```
- 这里详细介绍一下 config 中的几个参数：
+ 这里详细介绍一下 init 中的几个参数：
 - sdkAppID：在步骤三中您已经获取到，这里不再赘述。
 - userId：当前用户的 ID，字符串类型，只允许包含英文字母（a-z 和 A-Z）、数字（0-9）、连词符（-）和下划线（_）。
 - userSig：使用步骤三中获取的 SecretKey 对 sdkAppID、userId 等信息进行加密，就可以得到 UserSig，它是一个鉴权用的票据，用于腾讯云识别当前用户是否能够使用 TRTC 的服务，更多信息请参见 [如何计算及使用 UserSig](https://cloud.tencent.com/document/product/647/17275)。
-4. **在生命周期函数中初始化 TUICallKit**
-```javascript
-onLoad() {
-		this.TUICallKit = this.selectComponent('#TUICallKit-component');
-		this.TUICallKit.init();
-}
-```
+- tim 可以将外部的 tim 实例通过 init 透传给 callkit ，tim 参数适用于业务中已存在 TIM 实例，为保证 TIM 实例唯一性
+
 5. **生命周期函数中监听页面卸载**
 ```javascript
 onUnload() {
-	this.TUICallKit.destroyed();
+	 TUICallKit.value.destroyed();
 },
 ```
 
 ### 步骤六：发起视频通话请求
 在 JS 逻辑交互例如 `pages/index/index.js` 中填写如下代码，就可以实现一对一视频通话。
 ```javascript
-// 发起1对1视频通话，假设被邀请人的userId为: 1111, type 1：语音通话，2：视频通话。
-this.TUICallKit.call({ userID: '1111', type: 2 });
+// 发起1对1视频通话，假设被邀请人的userId为: user1, type 1：语音通话，2：视频通话。
+TUICallKit.value.call({ userID: 'user1', type:2 })
 ```
-
 
 ### 步骤七：更多特性
 #### 设置昵称&头像
 如果您需要自定义昵称或头像，可以使用如下接口进行更新：
 ```javascript
-this.TUICallKit.setSelfInfo("昵称", "头像 URL");
+TUICallKit.value.setSelfInfo("昵称", "头像 URL");
 ```
 
 
 ## 附录
 
-- 如果你遇到了困难，可以先参阅 [常见问题](https://cloud.tencent.com/document/product/647/78733)；
+- 如果你遇到了困难，可以先参阅 [常见问题](https://cloud.tencent.com/document/product/647/78912)；
 - 如果发现了示例代码的 bug，欢迎提交 issue；
 - 欢迎加入 QQ 群：**646165204**，进行技术交流和反馈~
