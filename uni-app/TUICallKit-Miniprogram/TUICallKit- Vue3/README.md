@@ -162,13 +162,16 @@ TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/docume
 
 4. **在生命周期函数中初始化 TUICallKit**
 ```javascript
+import { nextTick, shallowRef, reactive } from 'vue';
+let TUICallKit = shallowRef(null);
+
 onLoad(() => {
     nextTick(() => {
-        this.$refs.TUICallKit.init({
+        TUICallKit.value.init({
             sdkAppID: 0, // 替换为您自己账号下的 SDKAppId
             userID: 'jane',   // 填写当前用的 userID
             userSig: 'xxxxxxxxxxxx', // 通过 genTestUserSig(userID) 生成
-            tim: null,   //  tim 参数适用于业务中已存在 TIM 实例，为保证 TIM 实例唯一性
+            tim: uni.$TUIKit,   //  如果您不需要 TIM 实例，可忽略
         })
     })
 });
@@ -192,7 +195,7 @@ init参数
 5. **生命周期函数中监听页面卸载**
 ```javascript
 onUnload() {
-	 this.$refs.TUICallKit.destroyed();
+	 TUICallKit.value.destroyed();
 },
 ```
 
@@ -200,14 +203,14 @@ onUnload() {
 在 JS 逻辑交互例如 `pages/index/index.js` 中填写如下代码，就可以实现一对一视频通话。
 ```javascript
 // 发起1对1视频通话，假设被邀请人的userId为: user1, type 1：语音通话，2：视频通话。
-this.$refs.TUICallKit.call({ userID: 'user1', type:2 })
+TUICallKit.value.call({ userID: 'user1', type:2 })
 ```
 
 ### 步骤七：更多特性
 #### 设置昵称&头像
 如果您需要自定义昵称或头像，可以使用如下接口进行更新：
 ```javascript
-this.$refs.TUICallKit.setSelfInfo("昵称", "头像 URL");
+TUICallKit.value.setSelfInfo("昵称", "头像 URL");
 ```
 
 

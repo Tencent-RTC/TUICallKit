@@ -14,11 +14,11 @@
 				<view class="search-selfInfo">
 					<label class="search-selfInfo-label">您的ID</label>
 					<view class="search-selfInfo-phone">
-						{{ userID }}
+						{{ data.userID }}
 					</view>
 
-					<view v-if="searchList.length !== 0">
-						<view class="allcheck" @click="allCheck" v-if="ischeck">
+					<view v-if="data.searchList.length !== 0">
+						<view class="allcheck" @click="allCheck" v-if="data.ischeck">
 							全选
 						</view>
 						<view class="allcheck" @click="allCancel" v-else>
@@ -27,9 +27,9 @@
 					</view>
 				</view>
 
-				<scroll-view v-if="callBtn" scroll-y class="trtc-calling-group-user-list">
+				<scroll-view v-if="data.callBtn" scroll-y class="trtc-calling-group-user-list">
 					<view>
-						<view class="trtc-calling-group-user-row" v-for="(item, index) in searchList" :key="index">
+						<view class="trtc-calling-group-user-row" v-for="(item, index) in data.searchList" :key="index">
 							<view class="trtc-calling-group-user-item">
 								<view v-if="!item.checked" class="trtc-calling-group-user-switch" @click="addUser"
 									:data-word="item">
@@ -46,11 +46,11 @@
 					</view>
 				</scroll-view>
 
-				<view v-if="callBtn && searchList.length > 0" class="trtc-calling-group-user-callbtn"
+				<view v-if="data.callBtn && data.searchList.length > 0" class="trtc-calling-group-user-callbtn"
 					@click='groupCall'>
 					开始通话</view>
 
-				<view v-if="!callBtn" class="search-default">
+				<view v-if="!data.callBtn" class="search-default">
 					<view class="search-default-box">
 						<image class="search-default-img" src="../../static/search.png" lazy-load="true" />
 						<view class="search-default-message">
@@ -64,204 +64,189 @@
 
 </template>
 
-<script>
-export default {
-	data() {
-		return {
-			userIDToSearch: '',  // 搜索的结果
-			searchList: [],  // 搜索后展示的列表
-			callBtn: false,  // 控制呼叫按钮的显示隐藏
-			ischeck: true,   // 显示是否全选
-			userID: '',
-			type: 1,
-			groupID: '',
+<script setup>
+import { nextTick, shallowRef, ref, reactive } from 'vue';
+import { onUnload, onLoad } from '@dcloudio/uni-app'
+let TUICallKit = shallowRef(null);
+const data = reactive({
+	searchList: [],
+	callBtn: false,
+	ischeck: true,
+	userID: '',
+	type: 1,
+	userIDToSearch: '',
+	groupID:''
+})
+
+// 监听输入框
+const userIDToSearchInput = (e) => {
+	data.userIDToSearch = e.detail.value
+};
+
+// 搜索
+const searchUser = () => {	
+	// 去掉前后空格
+	data.userIDToSearch = data.userIDToSearch.trim();
+	// 不能呼叫自身
+	if (data.userIDToSearch === getApp().globalData.userID) {
+		uni.showToast({
+			icon: 'none',
+			title: '不能呼叫本机',
+		});
+		return;
+	}
+	// 最大呼叫人数为九人(含自己)
+	if (data.searchList.length > 7) {
+		uni.showToast({
+			icon: 'none',
+			title: '暂支持最多9人通话。如需多人会议，请使用TUIRoom',
+		});
+		return;
+	}
+	for (let i = 0; i < data.searchList.length; i++) {
+		if (data.searchList[i].userID ===data.userIDToSearch) {
+			uni.showToast({
+				icon: 'none',
+				title: 'userId已存在,请勿重复添加',
+			});
+			return;
 		}
-	},
-	methods: {
-		// 监听输入框
-		userIDToSearchInput(e) {
-			this.userIDToSearch = e.detail.value
-		},
-
-		// 搜索
-		searchUser() {
-			// 去掉前后空格
-			const newSearch = this.userIDToSearch.trim();
-			this.userIDToSearch = newSearch;
-
-
-			// 不能呼叫自身
-			if (this.userIDToSearch === getApp().globalData.userID) {
-				uni.showToast({
+	}
+	uni.$TUIKit.getUserProfile({ userIDList: [data.userIDToSearch] })
+		.then((imResponse) => {
+			if (imResponse.data.length === 0) {
+				wx.showToast({
+					title: '未查询到此用户',
 					icon: 'none',
-					title: '不能呼叫本机',
 				});
 				return;
 			}
-			// 最大呼叫人数为九人(含自己)
-			if (this.searchList.length > 7) {
-				uni.showToast({
-					icon: 'none',
-					title: '暂支持最多9人通话。如需多人会议，请使用TUIRoom',
-				});
-				return;
-			}
-			for (let i = 0; i < this.searchList.length; i++) {
-				if (this.searchList[i].userID === this.userIDToSearch) {
-					uni.showToast({
-						icon: 'none',
-						title: 'userId已存在,请勿重复添加',
-					});
-					return;
-				}
-			}
-			uni.$TUIKit.getUserProfile({ userIDList: [this.userIDToSearch] })
-				.then((imResponse) => {
-					if (imResponse.data.length === 0) {
-						wx.showToast({
-							title: '未查询到此用户',
-							icon: 'none',
-						});
-						return;
-					}
-					const list = {
-						userID: this.userIDToSearch,
-						nick: imResponse.data[0].nick,
-						avatar: imResponse.data[0].avatar,
-						checked: false,
-					};
-					this.searchList.push(list);
-					this.searchList = this.searchList;
-					this.callBtn = true;
-					this.userIDToSearch = '';
+			const list = {
+				userID: data.userIDToSearch,
+				nick: imResponse.data[0].nick,
+				avatar: imResponse.data[0].avatar,
+				checked: false,
+			};
+			data.searchList.push(list);
+			data.callBtn = true;
+			data.userIDToSearch = '';
+		});
+};
 
-				});
-		},
+// 群通话
+const groupCall = async () => {
+	// 将需要呼叫的用户从搜索列表中过滤出来
+	const newList = data.searchList.filter(item => item.checked);
+	const userIDList = newList.map(item => item.userID);
+	// 未选中用户无法发起群通话
+	if (userIDList.length === 0) {
+		uni.showToast({
+			icon: 'none',
+			title: '未选择呼叫用户',
+		});
+		return;
+	}
+	// 处理数据
+	const groupList = JSON.parse(JSON.stringify(userIDList));
+	// 将本机userID插入群成员中
+	groupList.unshift(getApp().globalData.userID);
+	for (let i = 0; i < groupList.length; i++) {
+		const user = {
+			userID: groupList[i],
+		};
+		groupList[i] = user;
+	}
+	// 创建群聊
+	await createGroup(groupList);
+	// 判断groupID是否创建成功
+	if (data.groupID) {
+		// 发起群通话
+		TUICallKit.value.groupCall({
+			userIDList,
+			type:data.type,
+			groupID:data.groupID,
+		});
+		// 重置数据
+		data.ischeck = true;
+	} else {
+		uni.showToast({
+			icon: 'none',
+			title: '群创建失败',
+		});
+	}
+};
 
-		// 群通话
-		async groupCall() {
-			// 将需要呼叫的用户从搜索列表中过滤出来
-			const newList = this.searchList.filter(item => item.checked);
-			const userIDList = newList.map(item => item.userID);
-			// 未选中用户无法发起群通话
-			if (userIDList.length === 0) {
-				uni.showToast({
-					icon: 'none',
-					title: '未选择呼叫用户',
-				});
-				return;
-			}
-			// 处理数据
-			const groupList = JSON.parse(JSON.stringify(userIDList));
-			// 将本机userID插入群成员中
-			groupList.unshift(getApp().globalData.userID);
-			for (let i = 0; i < groupList.length; i++) {
-				const user = {
-					userID: groupList[i],
-				};
-				groupList[i] = user;
-			}
-			// 创建群聊
-			await this.createGroup(groupList);
-			// 判断groupID是否创建成功
-			if (this.groupID) {
-				// 发起群通话
-				this.$refs.TUICallKit.groupCall({
-					userIDList,
-					type: this.type,
-					groupID: this.groupID,
-				});
-				// 重置数据
-				this.ischeck = true;
-				// searchList: [],
-
-			} else {
-				uni.showToast({
-					icon: 'none',
-					title: '群创建失败',
-				});
-			}
-		},
-
-		// 选中
-		addUser(event) {
-			// 修改数据
-			for (let i = 0; i < this.searchList.length; i++) {
-				if (this.searchList[i].userID === event.target.dataset.word.userID) {
-					const newlist = this.searchList;
-					newlist[i].checked = true;
-					this.searchList = newlist
-				}
-			}
-		},
-
-		// 取消选中
-		removeUser(event) {
-			for (let i = 0; i < this.searchList.length; i++) {
-				if (this.searchList[i].userID === event.target.dataset.word.userID) {
-					const newlist = this.searchList;
-					newlist[i].checked = false;
-					this.searchList = newlist;
-				}
-			}
-		},
-
-		// 全选
-		allCheck() {
-			const newlist = this.searchList;
-			// 改变搜索列表
-			for (let i = 0; i < newlist.length; i++) {
-				newlist[i].checked = true;
-			}
-			this.searchList = newlist;
-			this.ischeck = false
-		},
-
-		// 全部取消
-		allCancel() {
-			const newlist = this.searchList;
-			// 改变搜索列表
-			for (let i = 0; i < newlist.length; i++) {
-				newlist[i].checked = false;
-			}
-			this.searchList = newlist;
-			this.ischeck = true
-		},
-
-
-		// 创建IM群聊
-		createGroup(userIDList) {
-			return this.$refs.TUICallKit.getTim().createGroup({
-				type: uni.$TIM.TYPES.GRP_MEETING,
-				name: 'WebSDK',
-				memberList: userIDList, // 如果填写了 memberList，则必须填写 userID
-			})
-				.then((imResponse) => { // 创建成功
-					this.groupID = imResponse.data.group.groupID
-				})
-				.catch((imError) => {
-					console.warn('createGroup error:', imError); // 创建群组失败的相关信息
-				});
+// 选中
+const addUser = (event) => {
+	// 修改数据
+	for (let i = 0; i < data.searchList.length; i++) {
+		if (data.searchList[i].userID === event.target.dataset.word.userID) {
+			data.searchList[i].checked = true;
 		}
-	},
-	onLoad(option) {
-		this.userID = getApp().globalData.userID
-		this.type = Number(option.type)
-		this.$nextTick(() => {
-			this.$refs.TUICallKit.init({
-				sdkAppID: getApp().globalData.SDKAppID,
-				userID: getApp().globalData.userID,
-				userSig: getApp().globalData.userSig,
-			})
+	}
+};
+
+// 取消选中
+const removeUser = (event) => {
+	for (let i = 0; i < data.searchList.length; i++) {
+		if (data.searchList[i].userID === event.target.dataset.word.userID) {
+			data.searchList[i].checked = false;
+		}
+	}
+};
+
+// 全选
+const allCheck = () => {
+	const newlist = data.searchList;
+	// 改变搜索列表
+	for (let i = 0; i < newlist.length; i++) {
+		newlist[i].checked = true;
+	}
+	data.searchList = newlist;
+	data.ischeck = false
+};
+
+// 全部取消
+const allCancel = () => {
+	const newlist = data.searchList;
+	// 改变搜索列表
+	for (let i = 0; i < newlist.length; i++) {
+		newlist[i].checked = false;
+	}
+	data.searchList = newlist;
+	data.ischeck = true
+};
+
+
+// 创建IM群聊
+const createGroup = (userIDList) => {
+	return uni.$TUIKit.createGroup({
+		type: uni.$TIM.TYPES.GRP_MEETING,
+		name: 'WebSDK',
+		memberList: userIDList, // 如果填写了 memberList，则必须填写 userID
+	})
+		.then((imResponse) => { // 创建成功
+			data.groupID = imResponse.data.group.groupID
 		})
-	},
-	created() {
+		.catch((imError) => {
+			console.warn('createGroup error:', imError); // 创建群组失败的相关信息
+		});
+};
 
-	},
-	onUnload() {
-        this.$refs.TUICallKit.destroyed();
-    },
-}
+onLoad((option) => {
+	data.userID = getApp().globalData.userID
+	data.type = Number(option.type)
+	nextTick(() => {
+		TUICallKit.value.init({
+			sdkAppID: getApp().globalData.SDKAppID,
+			userID: getApp().globalData.userID,
+			userSig: getApp().globalData.userSig,
+		})
+	})
+});
+onUnload(() => {
+	TUICallKit.value.destroyed();
+})
 </script>
 
 <style>
