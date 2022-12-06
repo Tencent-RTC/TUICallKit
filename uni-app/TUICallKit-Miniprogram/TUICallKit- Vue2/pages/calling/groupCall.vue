@@ -1,8 +1,7 @@
 <template>
 	<view class="container">
-		<tuicallkit ref="TUICallKit" id="TUICallKit-component"></tuicallkit>
+		<tuicallkit ref="TUICallKit"></tuicallkit>
 		<view class="trtc-calling-index">
-
 			<view class="trtc-calling-index-search">
 				<view class="search">
 					<view class="input-box">

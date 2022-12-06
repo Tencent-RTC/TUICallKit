@@ -154,10 +154,7 @@ TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/docume
 3. **在需要使用 TUICallKit 的页面中引入组件。**，例如示例代码中的 `pages/calling/call.vue`：
 ```javascript
 // 可参考 pages/calling/call.vue
-  <TUICallKit
-    ref="TUICallKit"
-    id="TUICallKit-component"  //用于获取子组件对象方法      
-  ></TUICallKit>
+<tuicallkit ref="TUICallKit"></tuicallkit>
 ```
 
 4. **在生命周期函数中初始化 TUICallKit**
@@ -168,7 +165,7 @@ onLoad(() => {
             sdkAppID: 0, // 替换为您自己账号下的 SDKAppId
             userID: 'jane',   // 填写当前用的 userID
             userSig: 'xxxxxxxxxxxx', // 通过 genTestUserSig(userID) 生成
-            tim: null,   //  tim 参数适用于业务中已存在 TIM 实例，为保证 TIM 实例唯一性
+            tim: uni.$TUIKit,   //  如果您不需要 TIM 实例，可忽略
         })
     })
 });
