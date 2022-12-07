@@ -7,10 +7,11 @@ TUICallKit API 是音视频通话组件的**含 UI 接口**，使用 TUICallKit 
 - [`<TUICallKit/>`](#tuicallkit-api-详情)：UI 通话组件主体
 - [`<TUICallKitMini/>`](#tuicallkitmini-api-详情)：UI 通话悬浮窗，若 `<TUICallKit/>` `allowedMinimized` 设置为 `true`，则 `<TUICallKitMini/>` 必须被放置在页面中
 - [`TUICallKitServer`](#tuicallkitserver-api-详情): 通话实例，成员函数：
-  - [init](#init) 初始化 TUICallKit 
-  - [call](#call) 发起 1v1 通话 
-  - [groupCall](#groupcall) 发起群组通话 
-  - [destroyed](#destroyed) 销毁 TUICallKit 
+  - [init](#init) 初始化 TUICallKit
+  - [call](#call) 发起 1v1 通话
+  - [groupCall](#groupcall) 发起群组通话
+  - [setLanguage](#setlanguage) 修改语言
+  - [destroyed](#destroyed) 销毁 TUICallKit
 
 ----
 
@@ -23,7 +24,7 @@ TUICallKit API 是音视频通话组件的**含 UI 接口**，使用 TUICallKit 
 | allowedMinimized | 是否允许最小化，最小化按钮会隐藏 | boolean | 否 | false | 
 | allowedFullScreen | 是否允许全屏，全屏按钮会隐藏 | boolean | 否 | true | 
 
-### 方法 
+### 方法
 
 | 参数 | 说明 | 类型 | 是否必填 | 默认值 |
 | -----|-----|-----|-----|-----|
@@ -31,11 +32,11 @@ TUICallKit API 是音视频通话组件的**含 UI 接口**，使用 TUICallKit 
 | afterCalling | 结束通话后会执行此函数 | function() | 否 | - | 
 | onMinimized | 组件切换最小化状态时会执行此函数 | function(oldStatus, newStatus) | 否 | - | 
 
-## `<TUICallKitMini/>` API 详情 
+## `<TUICallKitMini/>` API 详情
 
 无。
 
-## 示例代码 
+## 示例代码
 
 ```javascript
 /**
@@ -75,6 +76,7 @@ function onMinimized(oldStatus, newStatus) {
 />
 <TUICallKitMini />
 ```
+
 ## TUICallKitServer API 详情
 
 ### init
@@ -101,6 +103,7 @@ TUICallKitServer.init({
 | TIM 实例 | Any | 否 | tim 参数适用于业务中已存在 TIM 实例，为保证 TIM 实例唯一性 |
 
 ### call
+
 拨打电话（1v1通话）。
 
 ```javascript
@@ -130,6 +133,7 @@ TUICallKitServer.call({
 | offlinePushInfo.extension | String | 否 | 离线推送透传内容（选填）（tsignaling 版本 >= 0.9.0） |
 
 ### groupCall
+
 发起群组通话。
 
 ```javascript
@@ -153,7 +157,23 @@ TUICallKitServer.groupCall({
 
 其中对于 `offlinePushInfo`, 与 `call` 接口中一致。
 
+### setLanguage
+
+设置语言。
+
+```javascript
+import { TUICallKitServer } from "./components/TUICallKit/Web";
+TUICallKitServer.setLanguage(lang); // lang = "en" | "zh-cn"
+```
+
+参数如下表所示：
+
+| 参数 | 类型 | 是否必填 | 含义 |
+|-----|-----|-----|-----|
+| lang | String | 是 | 语言类型 `en` 或 `zh-cn` |
+
 ### destroyed
+
 销毁 TUICallKit。
 
 ```javascript
