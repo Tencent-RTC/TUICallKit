@@ -4,7 +4,7 @@
 
 ## 方案一：界面微调方案
 
-通过直接修改我们提供的 UI 源代码，对 TUICallKit 的用户界面进行调整，TUICallKit 的界面源代码位于 [Github](https://github.com/tencentyun/TUICallKit) 中的 `Web/` 文件夹下面：
+通过直接修改我们提供的 UI 源代码，对 TUICallKit 的用户界面进行调整，TUICallKit 的界面源代码位于 [GitHub](https://github.com/tencentyun/TUICallKit) 中的 `Web/` 文件夹下面：
 
 ### 替换图标
 

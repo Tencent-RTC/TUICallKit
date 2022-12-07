@@ -214,6 +214,21 @@ body,
   margin-bottom: 3rem;
 }
 
+.switch-language {
+  cursor: pointer;
+  width: 100px;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 36px;
+  right: 36px;
+}
+
+.language-name {
+  margin: 5px;
+}
+
 .icon {
   height: 24px;
 }

@@ -208,6 +208,11 @@ export default class TUICallKit {
 
   public setLanguage(language: string) {
     console.log("TUICallKit change language: ", language);
+    if (language !== "en" && language !== "zh-cn") {
+      console.warn("TUICallKit change language warning: ", `${language} in not supported, has changed to default English`);
+      language = "en";
+    }
+    console.log("TUICallKit change language: ", language);
     setGlobalLanguage(language);
   }
 

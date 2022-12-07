@@ -1,3 +1,13 @@
+## Version 1.3.2 @2022.12.7
+
+**新增**
+
+- 支持语言切换，接口详情可见 [setLanguage](https://cloud.tencent.com/document/product/1640/81145#setlanguage)。
+- 优化 Basic Demo 设备检测逻辑，手动跳过后不会再主动弹出。
+
+**修复**
+  
+- 修复引入 `defineProps` 导致的警告。
 
 ## Version 1.3.1 @2022.11.29
 

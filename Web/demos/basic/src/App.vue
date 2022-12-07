@@ -11,21 +11,25 @@ import audioWhiteSVG from "./assets/audioWhite.svg";
 import audioBlackSVG from "./assets/audioBlack.svg";
 import searchSVG from "./assets/search.svg";
 import cancelSVG from "./assets/cancel.svg";
-import { ElMessage } from 'element-plus';
+import languageSVG from "./assets/language.svg";
+import { ElMessage } from "element-plus";
 import logReporter from "./utils/aegis";
+import { useI18n } from "vue-i18n";
 import "./App.css";
+
+const { t, locale } = useI18n();
 
 const SDKAppID = ref<number>(0);
 const SecretKey = ref<string>("");
 const userID = ref<string>("");
 const loginUserID = ref<string>("");
 const userList = ref<string[]>([]);
-const currentUserID = ref<string>("未登录");
+const currentUserID = ref<string>("");
+const isLogin = ref<boolean>(false);
 
 const debugDisplayStyle = ref<string>("");
 const isNewTab = ref<boolean>(false);
 const isMinimized = ref<boolean>(false);
-const lang = ref<string>("zh-cn");
 const finishedRTCDetectStatus = ref<string>("");
 const isSkippedRTCDetect = ref<boolean>(false);
 
@@ -41,13 +45,15 @@ onMounted(() => {
     isNewTab.value = true;
   }
   SecretKey.value = getQueryVariable("SecretKey") || "";
-  finishedRTCDetectStatus.value = localStorage.getItem('callkit-basic-demo-finish-rtc-detect') || "";
+  TUICallKitServer.setLanguage(locale.value);
+  finishedRTCDetectStatus.value =
+    localStorage.getItem("callkit-basic-demo-finish-rtc-detect") || "";
 });
 
 onUnmounted(() => {
   TUICallKitServer.destroyed();
   tim.logout();
-})
+});
 
 function logout() {
   TUICallKitServer.destroyed();
@@ -56,15 +62,15 @@ function logout() {
 
 async function login() {
   if (!SDKAppID.value || SDKAppID.value === 0) {
-    alert("请填写 SDKAppID");
+    ElMessage.error(t("input-SDKAppID"));
     return;
   }
   if (!SecretKey.value) {
-    alert("请填写 SecretKey");
+    ElMessage.error(t("input-SecretKey"));
     return;
   }
   if (!loginUserID.value) {
-    alert("请填写 userID");
+    ElMessage.error(t("input-userID"));
     return;
   }
   const { userSig } = GenerateTestUserSig.genTestUserSig(
@@ -83,11 +89,12 @@ async function login() {
       tim,
     });
     currentUserID.value = loginUserID.value;
+    isLogin.value = true;
     debugDisplayStyle.value = "display: none;";
-    if (finishedRTCDetectStatus.value !== "finished") initNetWorkInfo();
+    if (finishedRTCDetectStatus.value !== "finished" && finishedRTCDetectStatus.value !== "skiped") initNetWorkInfo();
     logReporter.loginSuccess(SDKAppID.value);
   } catch (error: any) {
-    if (error.message) ElMessage.error(`登录失败，请检查 SDKAppID 与 SecretKey 是否正确 ${error.message}`);
+    if (error.message) ElMessage.error(`${t("login-failed-message")} ${error.message}`);
     logReporter.loginFailed(SDKAppID.value, error?.message);
   }
 }
@@ -98,8 +105,8 @@ function switchCallType(type: string) {
 }
 
 async function startCall(typeString: string) {
-  if (currentUserID.value === "未登录") {
-    alert("未登录");
+  if (!isLogin.value) {
+    ElMessage.error(t("not-login"));
     return;
   }
   const type = typeString === "audio" ? 1 : 2;
@@ -198,22 +205,18 @@ function newTab(event: any) {
 function copyUserID() {
   copyText(currentUserID.value, undefined, (error: any) => {
     if (error) {
-      ElMessage.warning(`复制失败，请手动填写`);
+      ElMessage.warning(t("copy-failed-message"));
     } else {
-      ElMessage.success(`已复制`);
+      ElMessage.success(t("copied"));
     }
   });
-}
-
-function changeLang() {
-  // if (lang.value === "zh-cn") lang.value = "en";
-  // else lang.value = "zh-cn";
 }
 
 function handleClose() {
   showDeviceDetector.value = false;
   isSkippedRTCDetect.value = true;
-  ElMessage.warning("已跳过设备检测");
+  ElMessage.warning(t("skip-device-detector"));
+  localStorage.setItem('callkit-basic-demo-finish-rtc-detect', 'skiped');
 }
 
 function handleFinishDetect() {
@@ -227,9 +230,9 @@ const showDeviceDetector = ref<boolean>(false);
 
 const initNetWorkInfo = async () => {
   if (!SDKAppID.value || !SecretKey.value) {
-    ElMessage.error("请填写正确的 SDKAppID 与 SecretKey 后重试");
+    ElMessage.error(t("please-input-param"));
     return;
-  };
+  }
   const status = localStorage.getItem('callkit-basic-demo-finish-rtc-detect');
   if (status === 'finished') return;
   const uplinkUserId = currentUserID.value + '_uplink_test';
@@ -261,6 +264,22 @@ const initNetWorkInfo = async () => {
   showDeviceDetector.value = true;
 }
 
+function switchLanguage() {
+  switch (locale.value) {
+    case "zh-cn":
+      locale.value = "en";
+      localStorage.setItem("basic-demo-language", "en");
+      TUICallKitServer.setLanguage("en");
+      break;
+    case "en":
+    default:
+      locale.value = "zh-cn";
+      localStorage.setItem("basic-demo-language", "zh-cn");
+      TUICallKitServer.setLanguage("zh-cn");
+      break;
+  }
+}
+
 </script>
 
 <template>
@@ -283,7 +302,7 @@ const initNetWorkInfo = async () => {
           :src="typeString === 'video' ? videoWhiteSVG : videoBlackSVG"
           class="icon"
         />
-        <span class="switch-name"> 视频通话 </span>
+        <span class="switch-name"> {{ t("video-call") }} </span>
       </div>
       <div
         class="switch-btn"
@@ -295,25 +314,31 @@ const initNetWorkInfo = async () => {
           :src="typeString === 'audio' ? audioWhiteSVG : audioBlackSVG"
           class="icon"
         />
-        <span class="switch-name"> 音频通话 </span>
+        <span class="switch-name"> {{ t("voice-call") }} </span>
+      </div>
+    </div>
+    <div class="switch-language" @click="switchLanguage()">
+      <img :src="languageSVG" class="icon" />
+      <div class="language-name">
+        {{ locale == "en" ? "简体中文" : "English" }}
       </div>
     </div>
     <div class="call-kit-container">
       <div class="hover" v-show="isCalling && isMinimized">
-        已进入最小化模式
+        {{ t("minimized-mode") }}
       </div>
       <div class="search" v-show="!isCalling || isMinimized">
         <div class="search-window search-left">
           <div class="search-title">
-            {{ typeString === "video" ? "视频通话" : "音频通话" }}
+            {{ typeString === "video" ? t("video-call") : t("voice-call") }}
             <span
-              v-if="currentUserID !== '未登录'"
+              v-if="isLogin"
               class="user-id"
               @click="copyUserID"
             >
               userID: {{ currentUserID }}
               <button @click="(event) => newTab(event)" v-if="!isNewTab">
-                登录其他 UserID
+                {{ t("login-other") }} UserID
                 <svg width="16" height="16" viewBox="0 0 16 16">
                   <path
                     fill="currentColor"
@@ -340,10 +365,10 @@ const initNetWorkInfo = async () => {
             <img :src="searchSVG" class="icon-search" />
             <input class="search-input" type="text" v-model="userID" />
           </div>
-          <div class="add-btn" @click="addUser(userID)">添加到拨打列表</div>
+          <div class="add-btn" @click="addUser(userID)">{{t("Add to calling list")}}</div>
         </div>
         <div class="search-window search-right">
-          <div class="selected-title">拨打列表</div>
+          <div class="selected-title">{{t("calling-list")}}</div>
           <div class="search-results">
             <div class="result-item" v-for="item in userList" v-bind:key="item">
               <div class="user-item">
@@ -358,8 +383,8 @@ const initNetWorkInfo = async () => {
             </div>
           </div>
           <div class="call-buttons">
-            <div class="rtc-detector-starter" @click="initNetWorkInfo()" v-show="currentUserID !== '未登录' && finishedRTCDetectStatus !== 'finished'">开始设备检测</div>
-            <div class="call-btn" @click="startCall(typeString)">通话</div>
+            <div class="rtc-detector-starter" @click="initNetWorkInfo()" v-show="isLogin">{{ t("start-to-detector") }}</div>
+            <div class="call-btn" @click="startCall(typeString)">{{t("call")}}</div>
           </div>
         </div>
       </div>
@@ -370,14 +395,12 @@ const initNetWorkInfo = async () => {
         :onMinimized="onMinimized"
         :allowedMinimized="true"
         :allowedFullScreen="true"
-        :lang="lang"
       />
       <TUICallKitMini />
     </div>
     <div id="debug" :style="debugDisplayStyle">
       <div>
-        <span>Debug Panel</span><br />
-        目前 userID: <span>({{ currentUserID }})</span>
+        <b>Debug Panel</b>
       </div>
       <span>SDKAppID: </span>
       <input
@@ -390,17 +413,16 @@ const initNetWorkInfo = async () => {
       <span>SecretKey: </span>
       <input v-model="SecretKey" placeholder="SecretKey" style="width: 500px" />
       <div style="font-size: 12px">
-        注意️：本 Debug Panel 仅用于调试，正式上线前请将 UserSig
-        计算代码和密钥迁移到您的后台服务器上，以避免加密密钥泄露导致的流量盗用。
+        {{ t("alert") }}
         <a
-          href="https://cloud.tencent.com/document/product/647/17275"
+          :href="t('url')"
           target="_blank"
-          >查看文档</a
+          >{{t("view-documents")}}</a
         >
       </div>
       <span>UserID: </span> <input v-model="loginUserID" placeholder="UserID" />
       <br />
-      <button @click="login()">登录</button>
+      <button @click="login()">{{t("login")}}</button>
     </div>
   </div>
 </template>
