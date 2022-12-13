@@ -6,7 +6,7 @@ const aegis = new Aegis({
   id: "iHWefAYqDNAiuxNMQZ",
   reportApiSpeed: true, // 接口测速
   reportAssetSpeed: true, // 静态资源测速
-  version: "1.3.0",
+  version: "1.3.2",
 });
 
 const loginSuccess = (SDKAppID: number) =>  {

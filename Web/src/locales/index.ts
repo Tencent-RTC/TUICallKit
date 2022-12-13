@@ -97,7 +97,7 @@ const languageData: any = {
     "call-failed": "调用失败",
     "microphone-unavailable": "没有可用的麦克风设备",
     "ban-device": "用户禁止使用设备",
-    "not-supported-webrtc": "当前环境不支持 webRTC",
+    "not-supported-webrtc": "当前环境不支持 WebRTC",
     "is-already-calling": "TUICallKit 已在通话状态",
     "need-init": "TUICallKit 发起通话前需先进行初始化",
     "can't call yourself": "不能呼叫自己"
