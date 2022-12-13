@@ -59,7 +59,7 @@ const userIDToSearchInput = (e) => {
 const searchUser = () => {
     // 去掉前后空格
     data.userIDToSearch = data.userIDToSearch.trim();
-    data.invitee = userIDToSearch
+    data.invitee = data.userIDToSearch
     uni.$TUIKit.getUserProfile({ userIDList: [data.userIDToSearch] })
         .then((imResponse) => {
             if (imResponse.data.length === 0) {
@@ -70,7 +70,8 @@ const searchUser = () => {
                 return;
             }
             data.invitee = imResponse.data[0];
-            data.searchResultShow = true
+            data.searchResultShow = true;
+			data.userIDToSearch = ''
         });
 };
 
