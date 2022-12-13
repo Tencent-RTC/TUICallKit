@@ -177,7 +177,7 @@ init参数
 | 参数 | 类型 | 说明 | 是否必传 |
 |---------|---------|---------|---------|
 | sdkAppID | String | IM 的应用 ID | 是 |
-| userId    | String | 当前用户的 ID | 是 |
+| userID    | String | 当前用户的 ID | 是 |
 | userSig | String | 鉴权的票据 | 是 |
 | type | Number | 通话的媒体类型 | 否 |
 | tim | Any | TIM 实例 | 否 |
@@ -185,7 +185,7 @@ init参数
 
  这里详细介绍一下 init 中的几个参数：
 - sdkAppID：在步骤三中您已经获取到，这里不再赘述。
-- userId：当前用户的 ID，字符串类型，只允许包含英文字母（a-z 和 A-Z）、数字（0-9）、连词符（-）和下划线（_）。
+- userID：当前用户的 ID，字符串类型，只允许包含英文字母（a-z 和 A-Z）、数字（0-9）、连词符（-）和下划线（_）。
 - userSig：使用步骤三中获取的 SecretKey 对 sdkAppID、userId 等信息进行加密，就可以得到 UserSig，它是一个鉴权用的票据，用于腾讯云识别当前用户是否能够使用 TRTC 的服务，更多信息请参见 [如何计算及使用 UserSig](https://cloud.tencent.com/document/product/647/17275)。
 - tim 可以将外部的 tim 实例通过 init 透传给 callkit ，tim 参数适用于业务中已存在 TIM 实例，为保证 TIM 实例唯一性
 

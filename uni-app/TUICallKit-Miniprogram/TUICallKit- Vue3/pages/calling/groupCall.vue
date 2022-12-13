@@ -6,7 +6,7 @@
 			<view class="trtc-calling-index-search">
 				<view class="search">
 					<view class="input-box">
-						<input class="input-search-user" :value="userIDToSearch" maxlength="11" type="text"
+						<input class="input-search-user" :value="data.userIDToSearch" maxlength="11" type="text"
 							v-on:input="userIDToSearchInput" placeholder="搜索用户ID" />
 					</view>
 					<view class="btn-search" @click="searchUser">搜索</view>
