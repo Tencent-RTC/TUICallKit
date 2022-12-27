@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { status, remoteList, dialingInfo, callType } from "../store"
+import { status, remoteList, dialingInfo, callType, getVolumeByUserID } from "../store"
 import { STATUS, CALL_TYPE_STRING } from '../constants'
 import MicrophoneIcon from "./MicrophoneIcon.vue";
 import MicrophoneClosedSVG from '../icons/microphoneClosed.vue';
@@ -17,11 +17,10 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  console.log("TUICallKit stopLocalView because status is ", status.value);
   if (status.value === STATUS.IDLE) return;
+  console.log("TUICallKit stopLocalView because status is", status.value);
   TUICallKitServer.stopLocalView();
 })
-
 </script>
 
 <template>
@@ -35,8 +34,7 @@ onUnmounted(() => {
           {{ remoteList[0].userID }}
         </template>
         <div class="microphone-icon-container" v-if="status === STATUS.CALLING_C2C_AUDIO">
-          <MicrophoneIcon :volume="remoteList[0]?.volume" v-if="remoteList[0]?.microphone" />
-          <!-- <img :src="microphoneClosedSVG" v-if="!remoteList[0]?.microphone" /> -->
+          <MicrophoneIcon :volume="getVolumeByUserID(remoteList[0].userID)" v-if="remoteList[0]?.microphone" />
           <MicrophoneClosedSVG v-else />
         </div>
       </div>

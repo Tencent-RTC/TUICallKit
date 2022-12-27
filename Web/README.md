@@ -1,7 +1,6 @@
 <h1 align="center"> TUICallKit </h1>
 
 <p align="center"> 
-<img src="https://camo.githubusercontent.com/0091fcbb836af00ee2e2a10ccb667f56c737e1dd85d3d9adb1d6096812bcfb81/68747470733a2f2f67772e616c697061796f626a656374732e636f6d2f7a6f732f616e7466696e63646e2f5238734e253234474e6468362f6c616e67756167652e737667" style="width: 16px;"> 
 <b> English </b> | <a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/README.zh-CN.md"> 简体中文 </a>
 </p>
 

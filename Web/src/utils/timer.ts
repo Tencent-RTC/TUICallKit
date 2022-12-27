@@ -1,6 +1,7 @@
-import { ref } from 'vue';
+import { ref } from "vue";
 
 let timer = 0;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let timerIncrease: any;
 const timerString = ref<string>("");
 

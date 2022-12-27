@@ -24,13 +24,13 @@ git clone https://github.com/tencentyun/TUICallKit.git
 
 ```shell
 cd ./TUICallKit/Web/demos/basic
-yarn run install:demo      # If you don't have yarn installed, you can run: npm install -g yarn
+npm run install:demo
 ```
 
 3. run the serve
 
 ```shell
-yarn serve
+npm run serve
 ```
 
 ### How to use

@@ -2,7 +2,7 @@
  * 判断设备是否连接网络
  */
 export function isOnline() {
-  const url = 'https://web.sdk.qcloud.com/trtc/webrtc/assets/trtc-logo.png';
+  const url = "https://web.sdk.qcloud.com/trtc/webrtc/assets/trtc-logo.png";
   return new Promise((resolve) => {
     try {
       const xhr = new XMLHttpRequest();
@@ -12,7 +12,7 @@ export function isOnline() {
       xhr.onerror = function () {
         resolve(false);
       };
-      xhr.open('GET', url, true);
+      xhr.open("GET", url, true);
       xhr.send();
     } catch (err) {
       // console.log(err);
@@ -21,35 +21,35 @@ export function isOnline() {
 }
 
 export const NETWORK_QUALITY = {
-  0: '未知',
-  1: '极佳',
-  2: '较好',
-  3: '一般',
-  4: '差',
-  5: '极差',
-  6: '断开',
+  0: "未知",
+  1: "极佳",
+  2: "较好",
+  3: "一般",
+  4: "差",
+  5: "极差",
+  6: "断开",
 };
 
 export const handleGetUserMediaError = (error) => {
-  console.error('getUserMedia error', error);
+  console.error("getUserMedia error", error);
   switch (error.name) {
-    case 'NotReadableError':
-      // 当系统或浏览器异常的时候，可能会出现此错误，您可能需要引导用户重启电脑/浏览器来尝试恢复。
-      console.error('暂时无法访问摄像头/麦克风，请确保系统授予当前浏览器摄像头/麦克风权限，并且没有其他应用占用摄像头/麦克风');
-      return;
-    case 'NotAllowedError':
-      console.error('用户/系统已拒绝授权访问摄像头或麦克风');
-      return;
-    case 'NotFoundError':
-      // 找不到摄像头或麦克风设备
-      console.error('找不到摄像头或麦克风设备');
-      return;
-    case 'OverConstrainedError':
-      console.error('采集属性设置错误，如果您指定了 cameraId/microphoneId，请确保它们是一个有效的非空字符串');
-      return;
-    default:
-      console.error('初始化本地流时遇到未知错误, 请重试');
-      return;
+  case "NotReadableError":
+    // 当系统或浏览器异常的时候，可能会出现此错误，您可能需要引导用户重启电脑/浏览器来尝试恢复。
+    console.error("暂时无法访问摄像头/麦克风，请确保系统授予当前浏览器摄像头/麦克风权限，并且没有其他应用占用摄像头/麦克风");
+    return;
+  case "NotAllowedError":
+    console.error("用户/系统已拒绝授权访问摄像头或麦克风");
+    return;
+  case "NotFoundError":
+    // 找不到摄像头或麦克风设备
+    console.error("找不到摄像头或麦克风设备");
+    return;
+  case "OverConstrainedError":
+    console.error("采集属性设置错误，如果您指定了 cameraId/microphoneId，请确保它们是一个有效的非空字符串");
+    return;
+  default:
+    console.error("初始化本地流时遇到未知错误, 请重试");
+    return;
   }
 };
 

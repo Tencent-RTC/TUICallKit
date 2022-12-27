@@ -1,19 +1,20 @@
 {
-  "name": "tuicallkit",
-  "version": "0.1.0",
+  "name": "basic-demo",
   "private": true,
   "homepage": "./",
   "scripts": {
-    "install:demo": "(cd ../../ && yarn); yarn;",
+    "install:demo": "(cd ../../ && npm i); npm i;",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "npx eslint ./src/App.vue -c ./.eslintrc.js",
+    "lint:component": "npx eslint ../../src -c ./.eslintrc.js"
   },
   "dependencies": {
     "aegis-web-sdk": "^1.36.4",
     "core-js": "^3.8.3",
     "element-plus": "^2.2.18",
     "mitt": "^3.0.0",
+    "rtc-ai-denoiser": "^1.1.1",
     "rtc-detect": "^0.0.5",
     "sass": "^1.55.0",
     "sass-loader": "^13.1.0",
@@ -22,18 +23,18 @@
     "vue3-clipboard": "^1.0.0"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.4.0",
-    "@typescript-eslint/parser": "^5.4.0",
+    "@typescript-eslint/eslint-plugin": "^5.47.0",
+    "@typescript-eslint/parser": "^5.47.0",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-typescript": "~5.0.0",
     "@vue/cli-plugin-vuex": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
-    "@vue/eslint-config-typescript": "^9.1.0",
     "acorn": "^8.8.0",
-    "eslint": "^8.25.0",
-    "eslint-plugin-vue": "^9.6.0",
-    "typescript": "~4.5.5"
+    "eslint": "^8.30.0",
+    "eslint-plugin-vue": "^9.8.0",
+    "typescript": "~4.5.5",
+    "vue-eslint-parser": "^9.1.0"
   },
   "browserslist": [
     "> 1%",

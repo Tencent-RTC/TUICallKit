@@ -83,6 +83,27 @@ body,
   background: linear-gradient(95.14deg, #0052d9 0%, #0676ff 100%);
 }
 
+.add-btn:hover {
+  opacity: 0.9;
+}
+
+.loading-img {
+  display: inline;
+  width: 14px;
+  margin-right: 3px;
+  /*animation (动画) :绑定选择器, 4s完成动画 linear(匀速) infinite(循环) */
+  animation: loading 1.2s linear infinite;
+}
+
+@keyframes loading {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(-360deg);
+  }
+}
+
 .search-input-container {
   border-radius: 18px;
   margin-top: 24px;
@@ -190,13 +211,42 @@ body,
   background: linear-gradient(95.14deg, #0052d9 0%, #0676ff 100%);
   border-radius: 2px;
   height: 32px;
-  width: 82px;
+  padding: 0px 25px;
+  margin-left: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   cursor: pointer;
   user-select: none;
+
+	border: none;
+	font: inherit;
+	outline: inherit;
+}
+
+.call-btn:hover {
+  opacity: 0.9;
+}
+
+.call-btn-gray {
+  background: linear-gradient(95.14deg, #0052d9 0%, #0676ff 100%);
+  border-radius: 2px;
+  height: 32px;
+  padding: 0px 25px;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+  opacity: 0.65;
+  cursor: not-allowed;
+
+	border: none;
+	font: inherit;
+	outline: inherit;
 }
 
 .switch {
@@ -315,4 +365,14 @@ input[type="number"] {
   
     position: relative;
   }
+}
+.invite-container {
+  margin-top: 20px;
+}
+.invite-input {
+  width: 400px;
+  margin-left: 12px;
+}
+.invite-btn {
+  margin-left: 12px;
 }

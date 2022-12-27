@@ -27,24 +27,6 @@ export function getLanguage(): string {
   return language;
 }
 
-export const getParamKey: any = (key: string) => {
-  if (getUrlParam(key)) {
-    return getUrlParam(key);
-  }
-  switch (key) {
-    case "userId":
-      return `user_${Math.floor(Math.random() * 100000000)}`;
-    case "roomId":
-      return Math.floor(Math.random() * 100000);
-    case "sdkAppId":
-      return undefined;
-    case "secretKey":
-      return undefined;
-    default:
-      return undefined;
-  }
-};
-
 /**
  * Judge mobile device
  */
