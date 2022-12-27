@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { TUICallKitServer } from '../index';
-import { onMounted, onUpdated, ref, nextTick } from "vue";
-import { remoteList, profile, t } from '../store/index';
+import { onMounted, watch, ref, nextTick } from "vue";
+import { remoteList, profile, t, getVolumeByUserID } from '../store/index';
 import MicrophoneIcon from './MicrophoneIcon.vue';
 import Switch2SVG from '../icons/switch2.vue';
 import MicrophoneClosedSVG from '../icons/microphoneClosed.vue';
@@ -9,19 +9,22 @@ import { isMobile } from "../utils";
 import "../style.css";
 
 onMounted(() => {
-  refreshUserViewList();
+  TUICallKitServer.startLocalView('local');
+  checkUserViewRender();
 });
 
-onUpdated(() => {
-  refreshUserViewList();
+watch(remoteList, () => {
+  checkUserViewRender();
+}, {
+  flush: "post",
+  deep: true,
 });
 
-const refreshUserViewList = async () => {
-  await nextTick();
-  if (remoteList.value.length >= 1) {
-    TUICallKitServer.startLocalView('local');
-    TUICallKitServer.startRemoteView(remoteList.value[0].userID);
-  }
+const checkUserViewRender = () => {
+  if (remoteList.value.length !== 1) return;
+  const remoteUserItem = remoteList.value[0];
+    if (!remoteUserItem.isEntered || !remoteUserItem.isReadyRender) return;
+  TUICallKitServer.startRemoteView(remoteUserItem.userID);
 }
 
 const localClass = ref('small');
@@ -56,14 +59,12 @@ const h5SwitchUserView = async () => {
     <div id="local" :class="isMobile ? localClassH5 : localClass" @click="h5SwitchUserView">
       <span class="tag" v-show="!isMobile">
         <div class="microphone-icon-container">
-          <MicrophoneIcon :volume="profile?.volume" v-if="profile?.microphone" />
-          <!-- <img :src="microphoneClosedSVG" v-if="!profile?.microphone" /> -->
+          <MicrophoneIcon :volume="getVolumeByUserID(profile.userID)" v-if="profile?.microphone" />
           <MicrophoneClosedSVG v-else />
         </div>
         {{ `${profile.userID} ${t('me')}` }}
       </span>
       <div class="switch-large-small" @click="switchUserView" v-show="!isMobile">
-        <!-- <img :src="switch2SVG" /> -->
         <Switch2SVG />
       </div>
     </div>
@@ -71,14 +72,12 @@ const h5SwitchUserView = async () => {
       <div :id="remoteList[0].userID" :class="remoteClass" @click="h5SwitchUserView">
         <span class="tag" v-show="!isMobile">
           <div class="microphone-icon-container">
-            <MicrophoneIcon :volume="remoteList[0].volume" v-if="remoteList[0]?.microphone" />
-            <!-- <img :src="microphoneClosedSVG"  v-if="!remoteList[0]?.microphone"/> -->
+            <MicrophoneIcon :volume="getVolumeByUserID(remoteList[0]?.userID)" v-if="remoteList[0]?.microphone" />
             <MicrophoneClosedSVG  v-else />
           </div>
           {{ remoteList[0].userID }}
         </span>
         <div class="switch-large-small" @click="switchUserView" v-show="!isMobile">
-          <!-- <img :src="switch2SVG" /> -->
           <Switch2SVG />
         </div>
       </div>

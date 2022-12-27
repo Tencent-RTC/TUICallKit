@@ -21,14 +21,15 @@ const i18n = createI18n({
       "voice-call": "Voice Call",
       "minimized-mode": "Minimized Mode",
       "login-other": "Login other",
-      "Add to calling list": "Add to calling list",
+      "add-to-calling-list": "Add to calling list",
       "calling-list": "Calling List",
       "call": "Call",
       "alert": "Notes: this Demo is only applicable for debugging. Before official launch, please migrate the UserSig calculation code and key to your backend server to avoid unauthorized traffic use caused by the leakage of encryption key.",
       "view-documents": "View Documents",
       "url": "https://www.tencentcloud.com/document/product/647/35166",
       "login": "login",
-      "start-to-detector": "Device Detector"
+      "start-to-detector": "Device Detector",
+      "calling-list-is-empty": "Calling list is empty"
     },
     "zh-cn": {
       "not-login": "未登录",
@@ -44,14 +45,15 @@ const i18n = createI18n({
       "voice-call": "语音通话",
       "minimized-mode": "已进入最小化模式",
       "login-other": "登录其他",
-      "Add to calling list": "添加到拨打列表",
+      "add-to-calling-list": "添加到拨打列表",
       "calling-list": "拨打列表",
       "call": "通话",
       "alert": "注意️：本 Debug Panel 仅用于调试，正式上线前请将 UserSig 计算代码和密钥迁移到您的后台服务器上，以避免加密密钥泄露导致的流量盗用。",
       "view-documents": "查看文档",
       "url": "https://cloud.tencent.com/document/product/647/17275",
       "login": "登录",
-      "start-to-detector": "开始设备检测"
+      "start-to-detector": "开始设备检测",
+      "calling-list-is-empty": "拨打列表为空"
     },
   },
 });

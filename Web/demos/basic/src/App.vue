@@ -14,6 +14,7 @@ import cancelSVG from "./assets/cancel.svg";
 import languageSVG from "./assets/language.svg";
 import { ElMessage } from "element-plus";
 import logReporter from "./utils/aegis";
+import { getUrlParam } from "./utils";
 import { useI18n } from "vue-i18n";
 import "./App.css";
 
@@ -32,22 +33,24 @@ const isNewTab = ref<boolean>(false);
 const isMinimized = ref<boolean>(false);
 const finishedRTCDetectStatus = ref<string>("");
 const isSkippedRTCDetect = ref<boolean>(false);
+const isLoadCalling = ref<boolean>(false);
 
 const typeString = ref<string>("video");
 const isCalling = ref<boolean>(false);
-const groupID = ref<string>("");
+const groupID = ref<string>(""); 
+const isGroupCall = ref<boolean>(true);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let tim: any = null;
 
 onMounted(() => {
-  if (getQueryVariable("SDKAppID") === false) SDKAppID.value = 0;
+  if (!getUrlParam("SDKAppID")) SDKAppID.value = 0;
   else {
-    SDKAppID.value = parseInt(getQueryVariable("SDKAppID") as string);
+    SDKAppID.value = parseInt(getUrlParam("SDKAppID") as string);
     isNewTab.value = true;
   }
-  SecretKey.value = getQueryVariable("SecretKey") || "";
+  SecretKey.value = getUrlParam("SecretKey") || "";
   TUICallKitServer.setLanguage(locale.value);
-  finishedRTCDetectStatus.value =
-    localStorage.getItem("callkit-basic-demo-finish-rtc-detect") || "";
+  finishedRTCDetectStatus.value = localStorage.getItem("callkit-basic-demo-finish-rtc-detect") || "";
 });
 
 onUnmounted(() => {
@@ -86,13 +89,14 @@ async function login() {
       userID: loginUserID.value,
       userSig,
       SDKAppID: SDKAppID.value,
-      tim,
+      tim
     });
     currentUserID.value = loginUserID.value;
     isLogin.value = true;
     debugDisplayStyle.value = "display: none;";
     if (finishedRTCDetectStatus.value !== "finished" && finishedRTCDetectStatus.value !== "skiped") initNetWorkInfo();
     logReporter.loginSuccess(SDKAppID.value);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (error.message) ElMessage.error(`${t("login-failed-message")} ${error.message}`);
     logReporter.loginFailed(SDKAppID.value, error?.message);
@@ -110,10 +114,14 @@ async function startCall(typeString: string) {
     return;
   }
   const type = typeString === "audio" ? 1 : 2;
-  if (userList.value.length <= 0) return;
-  const callType = (userList.value.length === 1) ? "call" : "groupCall";
+  if (userList.value.length <= 0) {
+    ElMessage.error(t("calling-list-is-empty"));
+    return;
+  }
+  const callType = userList.value.length === 1 ? "call" : "groupCall";
+  isLoadCalling.value = true;
   try {
-    if (userList.value.length === 1)
+    if (callType === "call")
       await TUICallKitServer.call({ userID: userList.value[0], type });
     else {
       // you can use existing groups, no need to create a new group every time
@@ -125,13 +133,21 @@ async function startCall(typeString: string) {
       });
     }
     logReporter.callSuccess(SDKAppID.value, callType, typeString);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("startCall", error);
     if (error.message) ElMessage.error(error.message);
-    logReporter.callFailed(SDKAppID.value, callType, typeString, error?.message);
+    logReporter.callFailed(
+      SDKAppID.value,
+      callType,
+      typeString,
+      error?.message
+    );
   }
+  isLoadCalling.value = false;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function beforeCalling(type: string, error: any) {
   console.log("basic demo beforeCalling", type, error);
   if (!error) isCalling.value = true;
@@ -148,7 +164,7 @@ function afterCalling() {
 }
 
 function onMinimized(oldStatus: boolean, newStatus: boolean) {
-  console.warn("onMinimized: " + oldStatus + " -> " + newStatus);
+  console.log("onMinimized: " + oldStatus + " -> " + newStatus);
   if (newStatus === true) {
     isMinimized.value = true;
   } else {
@@ -169,11 +185,11 @@ function removeUser(userID: string) {
 }
 
 async function createGroup() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const memberList: any[] = [];
   userList.value.forEach((user: string) => {
     memberList.push({ userID: user });
   });
-  console.warn(memberList);
   let res = await tim.createGroup({
     type: TIM.TYPES.GRP_PUBLIC,
     name: "group-call",
@@ -182,18 +198,7 @@ async function createGroup() {
   return res.data.group.groupID;
 }
 
-function getQueryVariable(variable: string) {
-  let query = window.location.search.substring(1);
-  let vars = query.split("&");
-  for (let i = 0; i < vars.length; i++) {
-    var pair = vars[i].split("=");
-    if (pair[0] == variable) {
-      return pair[1];
-    }
-  }
-  return false;
-}
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function newTab(event: any) {
   event.stopPropagation();
   window.open(
@@ -203,6 +208,7 @@ function newTab(event: any) {
 }
 
 function copyUserID() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   copyText(currentUserID.value, undefined, (error: any) => {
     if (error) {
       ElMessage.warning(t("copy-failed-message"));
@@ -216,13 +222,13 @@ function handleClose() {
   showDeviceDetector.value = false;
   isSkippedRTCDetect.value = true;
   ElMessage.warning(t("skip-device-detector"));
-  localStorage.setItem('callkit-basic-demo-finish-rtc-detect', 'skiped');
+  localStorage.setItem("callkit-basic-demo-finish-rtc-detect", "skiped");
 }
 
 function handleFinishDetect() {
   showDeviceDetector.value = false;
   finishedRTCDetectStatus.value = "finished";
-  localStorage.setItem('callkit-basic-demo-finish-rtc-detect', 'finished');
+  localStorage.setItem("callkit-basic-demo-finish-rtc-detect", "finished");
 }
 
 const networkDetectInfo = ref();
@@ -233,10 +239,10 @@ const initNetWorkInfo = async () => {
     ElMessage.error(t("please-input-param"));
     return;
   }
-  const status = localStorage.getItem('callkit-basic-demo-finish-rtc-detect');
-  if (status === 'finished') return;
-  const uplinkUserId = currentUserID.value + '_uplink_test';
-  const downlinkUserId = currentUserID.value + '_downlink_test';
+  const status = localStorage.getItem("callkit-basic-demo-finish-rtc-detect");
+  if (status === "finished") return;
+  const uplinkUserId = currentUserID.value + "_uplink_test";
+  const downlinkUserId = currentUserID.value + "_downlink_test";
   const roomId = 999999;
 
   const uplinkUserSig = GenerateTestUserSig.genTestUserSig(
@@ -262,7 +268,7 @@ const initNetWorkInfo = async () => {
     },
   };
   showDeviceDetector.value = true;
-}
+};
 
 function switchLanguage() {
   switch (locale.value) {
@@ -291,30 +297,32 @@ function switchLanguage() {
       :networkDetectInfo="networkDetectInfo"
     >
     </DeviceDetector>
-    <div class="switch">
-      <div
-        class="switch-btn"
-        :class="typeString === 'video' ? 'switch-select' : ''"
-        :style="isCalling ? 'cursor: not-allowed' : 'cursor: pointer'"
-        @click="switchCallType('video')"
-      >
-        <img
-          :src="typeString === 'video' ? videoWhiteSVG : videoBlackSVG"
-          class="icon"
-        />
-        <span class="switch-name"> {{ t("video-call") }} </span>
-      </div>
-      <div
-        class="switch-btn"
-        :class="typeString === 'audio' ? 'switch-select' : ''"
-        :style="isCalling ? 'cursor: not-allowed' : 'cursor: pointer'"
-        @click="switchCallType('audio')"
-      >
-        <img
-          :src="typeString === 'audio' ? audioWhiteSVG : audioBlackSVG"
-          class="icon"
-        />
-        <span class="switch-name"> {{ t("voice-call") }} </span>
+    <div style="display: flex; align-items: center">
+      <div class="switch">
+        <div
+          class="switch-btn"
+          :class="typeString === 'video' ? 'switch-select' : ''"
+          :style="isCalling ? 'cursor: not-allowed' : 'cursor: pointer'"
+          @click="switchCallType('video')"
+        >
+          <img
+            :src="typeString === 'video' ? videoWhiteSVG : videoBlackSVG"
+            class="icon"
+          />
+          <span class="switch-name"> {{ t("video-call") }} </span>
+        </div>
+        <div
+          class="switch-btn"
+          :class="typeString === 'audio' ? 'switch-select' : ''"
+          :style="isCalling ? 'cursor: not-allowed' : 'cursor: pointer'"
+          @click="switchCallType('audio')"
+        >
+          <img
+            :src="typeString === 'audio' ? audioWhiteSVG : audioBlackSVG"
+            class="icon"
+          />
+          <span class="switch-name"> {{ t("voice-call") }} </span>
+        </div>
       </div>
     </div>
     <div class="switch-language" @click="switchLanguage()">
@@ -365,7 +373,7 @@ function switchLanguage() {
             <img :src="searchSVG" class="icon-search" />
             <input class="search-input" type="text" v-model="userID" />
           </div>
-          <div class="add-btn" @click="addUser(userID)">{{t("Add to calling list")}}</div>
+          <div class="add-btn" @click="addUser(userID)">{{t("add-to-calling-list")}}</div>
         </div>
         <div class="search-window search-right">
           <div class="selected-title">{{t("calling-list")}}</div>
@@ -384,7 +392,10 @@ function switchLanguage() {
           </div>
           <div class="call-buttons">
             <div class="rtc-detector-starter" @click="initNetWorkInfo()" v-show="isLogin">{{ t("start-to-detector") }}</div>
-            <div class="call-btn" @click="startCall(typeString)">{{t("call")}}</div>
+            <div :class="!isLoadCalling ? 'call-btn' : 'call-btn-gray'" @click="startCall(typeString)" :disabled="isLoadCalling">
+              <img v-show="isLoadCalling" src="./assets/loading.png" class="loading-img" />
+              {{ t("call") }}
+            </div>
           </div>
         </div>
       </div>
@@ -420,7 +431,8 @@ function switchLanguage() {
           >{{t("view-documents")}}</a
         >
       </div>
-      <span>UserID: </span> <input v-model="loginUserID" placeholder="UserID" />
+      <span>UserID: </span>
+      <input v-model="loginUserID" placeholder="UserID" />
       <br />
       <button @click="login()">{{t("login")}}</button>
     </div>

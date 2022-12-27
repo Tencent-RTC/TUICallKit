@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface TUIInitParam {
   SDKAppID: number;
   tim?: any;
   userID: string;
   userSig: string;
+  assetsPath?: string;
 }
 
 export interface offlinePushInfoType {
@@ -25,14 +27,16 @@ export interface TUIGroupCallParam {
   groupID: string;
   timeout?: number;
   offlinePushInfo?: offlinePushInfoType;
+  roomID?: number
 }
 
 export interface RemoteUser {
   userID: string;
   isEntered: boolean;
+  isReadyRender: boolean;
   microphone?: boolean;
   camera?: boolean;
-  volume?: number;
+  [key: string]: string | boolean | undefined;
 }
 
 export interface CallbackParam {

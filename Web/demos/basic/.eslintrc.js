@@ -1,18 +1,32 @@
 module.exports = {
   root: true,
   env: {
+    browser: true,
+    es2021: true,
     node: true,
   },
   extends: [
-    "plugin:vue/vue3-essential",
     "eslint:recommended",
-    "@vue/typescript/recommended",
+    "plugin:vue/vue3-essential",
+    "plugin:@typescript-eslint/recommended",
   ],
+  parser: "vue-eslint-parser",
   parserOptions: {
-    ecmaVersion: 2020,
+    ecmaVersion: "latest",
+    sourceType: "module",
+    parser: "@typescript-eslint/parser",
   },
+  plugins: ["vue", "@typescript-eslint"],
   rules: {
-    // override/add rules settings here, such as:
-    // 'vue/no-unused-vars': 'error'
+    indent: ["error", 2, { SwitchCase: 1 }],
+    quotes: ["error", "double"],
+    semi: ["error", "always"],
   },
+  settings: {
+    "import/resolver": {
+      "node": {
+        "moduleDirectory": ["node_modules"]
+      }
+    }
+  }
 };

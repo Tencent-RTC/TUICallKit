@@ -11,7 +11,6 @@ import AddSVG from '../icons/add.vue';
 import CameraSVG from '../icons/camera.vue';
 import MicrophoneSVG from '../icons/microphone.vue';
 import SwitchSVG from '../icons/switch.vue';
-// import hangupSVG from '../assets/hangup.vue';
 import HangupSVG from '../icons/hangup.vue'
 import MicrophoneClosedBigSVG from '../icons/microphoneClosedBig.vue';
 import CameraClosedBigSVG from '../icons/cameraClosedBig.vue';
@@ -106,7 +105,6 @@ function reject() {
             {{ t('reject') }}
           </template>
           <template #icon>
-            <!-- <img :src="rejectSVG" /> -->
             <RejectSVG />
           </template>
         </ControlPanelItem>
@@ -117,11 +115,9 @@ function reject() {
           </template>
           <template #icon>
             <template v-if="callType === CALL_TYPE_STRING.AUDIO">
-              <!-- <img :src="acceptAudioSVG" /> -->
               <AcceptAudioSVG />
             </template>
             <template v-else-if="callType === CALL_TYPE_STRING.VIDEO">
-              <!-- <img :src="acceptVideoSVG" /> -->
               <AcceptVideoSVG />
             </template>
           </template>
@@ -134,8 +130,6 @@ function reject() {
             {{ profile?.camera ? t('camera-opened') : t('camera-closed') }}
           </template>
           <template #icon>
-            <!-- <img :src="cameraSVG" v-if="profile?.camera"/> -->
-            <!-- <img :src="cameraClosedBigSVG" v-if="!profile?.camera"/> -->
             <CameraSVG v-if="profile?.camera"/>
             <CameraClosedBigSVG v-if="!profile?.camera"/>
           </template>
@@ -164,8 +158,6 @@ function reject() {
             {{ profile?.microphone ? t('microphone-opened') : t('microphone-closed') }}
           </template>
           <template #icon>
-            <!-- <img :src="microphoneSVG" v-if="profile?.microphone"/> -->
-            <!-- <img :src="microphoneClosedBigSVG" v-if="!profile?.microphone" /> -->
             <MicrophoneSVG v-if="profile?.microphone"/>
             <MicrophoneClosedBigSVG v-if="!profile?.microphone" />
           </template>
@@ -186,7 +178,6 @@ function reject() {
             {{ t('invited-person') }}
           </template>
           <template #icon>
-            <!-- <img :src="addSVG" /> -->
             <AddSVG />
           </template>
         </ControlPanelItem>
@@ -196,7 +187,6 @@ function reject() {
             {{ t('video-to-audio') }}
           </template>
           <template #icon>
-            <!-- <img :src="switchSVG" /> -->
             <SwitchSVG />
           </template>
         </ControlPanelItem>
@@ -206,7 +196,6 @@ function reject() {
             {{ isMobile ? '' : t('hangup') }}
           </template>
           <template #icon>
-            <!-- <img :src="hangupSVG" /> -->
             <HangupSVG />
           </template>
         </ControlPanelItem>
@@ -218,7 +207,6 @@ function reject() {
           {{ isMobile ? '' : t('hangup') }}
         </template>
         <template #icon>
-          <!-- <img :src="hangupSVG" /> -->
           <HangupSVG />
         </template>
       </ControlPanelItem>

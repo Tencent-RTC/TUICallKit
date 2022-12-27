@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { isFromGroup, remoteList, callType, profile, status, t } from '../store/index';
-import { onUpdated, ref, watch, nextTick, watchEffect } from "vue";
+import { isFromGroup, remoteList, callType, profile, makeRenderFlag, t, getVolumeByUserID } from '../store/index';
+import { onUpdated, ref, watch, nextTick, watchEffect, onMounted, onUnmounted } from "vue";
 import MicrophoneIcon from "./MicrophoneIcon.vue";
 import { TUICallKitServer } from '../index';
 import type { RemoteUser } from "../interface";
@@ -18,19 +18,14 @@ const userViewUserId = ref<string>("user-view-user-id");
 
 watch(currentPageRemoteList, async () => {
   const userViewCount = currentPageRemoteList.value.length + 1;
-  await nextTick();
   groupUserViewClass.value = `group-user-view group-user-view-${userViewCount}`;
   groupCallingContainerClass.value = `group-calling-container group-calling-container-${userViewCount}`;
   userViewUserId.value = `user-view-user-id user-view-user-id-${userViewCount}`;
-});
-
-watchEffect(() => {
-  refreshCurrentPageRemoteList();
-});
-
-onUpdated(() => {
-  if (status.value === STATUS.DIALING_GROUP) return;
   renderUserView();
+}, { flush: 'post', deep: true });
+
+watchEffect(async () => {
+  refreshCurrentPageRemoteList();
 });
 
 function refreshCurrentPageRemoteList() {
@@ -42,12 +37,10 @@ function refreshCurrentPageRemoteList() {
 }
 
 async function renderUserView() {
-  await nextTick();
   TUICallKitServer.startLocalView('local');
   currentPageRemoteList.value.forEach((remoteUserItem: RemoteUser) => {
-    if (remoteUserItem.isEntered) {
-      TUICallKitServer.startRemoteView(remoteUserItem.userID);
-    }
+    if (!remoteUserItem.isEntered || !remoteUserItem.isReadyRender) return;
+    TUICallKitServer.startRemoteView(remoteUserItem.userID);
   })
 }
 
@@ -70,13 +63,11 @@ function pageIncrease() {
     <template v-if="remoteList.length > 8">
       <div class="page-turn left" @click="pageReduce">
         <div class="turn-icon-container">
-          <!-- <img :src="leftSVG" /> -->
           <LeftSVG />
         </div>
       </div>
       <div class="page-turn right" @click="pageIncrease">
         <div class="turn-icon-container">
-          <!-- <img :src="rightSVG" /> -->
           <RightSVG />
         </div>
       </div>
@@ -85,8 +76,7 @@ function pageIncrease() {
       <div id="local" :class="groupUserViewClass">
         <span class="tag">
           <div class="microphone-icon-container">
-            <MicrophoneIcon :volume="profile?.volume" v-if="profile?.microphone" />
-            <!-- <img :src="microphoneClosedSVG" v-if="!profile?.microphone" /> -->
+            <MicrophoneIcon :volume="getVolumeByUserID(profile.userID)" v-if="profile?.microphone" />
             <MicrophoneClosedSVG v-else />
           </div>
           {{ `${profile.userID} ${t('me')}` }}
@@ -102,8 +92,7 @@ function pageIncrease() {
           </template>
           <span class="tag">
             <div class="microphone-icon-container">
-              <MicrophoneIcon :volume="remoteUserItem?.volume" v-if="remoteUserItem?.microphone" />
-              <!-- <img :src="microphoneClosedSVG" v-if="!remoteUserItem?.microphone" /> -->
+              <MicrophoneIcon :volume="getVolumeByUserID(remoteUserItem?.userID)" v-if="remoteUserItem?.microphone" />
               <MicrophoneClosedSVG v-else />
             </div>
             {{ remoteUserItem.userID }}

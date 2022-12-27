@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TUICallEngine, TUICallEvent, TUICallType } from "tuicall-engine-webrtc";
 
-import type { TUICallParam, TUIInitParam, TUIGroupCallParam, RemoteUser, CallbackParam, offlinePushInfoType, statusChangedReturnType } from "./interface";
+import type { TUICallParam, TUIInitParam, TUIGroupCallParam, RemoteUser, CallbackParam, statusChangedReturnType } from "./interface";
 import {
   t,
   status,
@@ -18,15 +19,16 @@ import {
   updateRemoteVolumeMap,
   removeRemoteListByUserID,
   changeRemoteDeviceByUserID,
-  changeIsMinimized
-} from './store';
-import { STATUS, CHANGE_STATUS_REASON, CALL_TYPE_STRING } from './constants';
+  makeRenderFlag,
+  changeIsMinimized,
+  remoteList
+} from "./store";
+import { STATUS, CHANGE_STATUS_REASON, CALL_TYPE_STRING } from "./constants";
 import logReporter from "./utils/aegis";
 
 /**
  * class TUICallKit
  *
- * TUIGroup 逻辑主体
  */
 export default class TUICallKit {
   public SDKAppID: number;
@@ -55,17 +57,17 @@ export default class TUICallKit {
    */
   public async init(params: TUIInitParam) {
     let { SDKAppID, tim } = params;
-    const { userID, userSig } = params;
+    const { userID, userSig, assetsPath } = params;
+
     if (this.TUICore) {
       SDKAppID = this.TUICore.SDKAppID;
       tim = this.TUICore.tim;
     }
     this.SDKAppID = SDKAppID;
     try {
-      if (this.tuiCallEngine) await this.tuiCallEngine.destroyInstance();
       this.tuiCallEngine = TUICallEngine.createInstance({ SDKAppID, tim });
       this.bindTIMEvent();
-      await this.tuiCallEngine.login({ userID, userSig });
+      await this.tuiCallEngine.login({ userID, userSig, assetsPath });
       updateProfile(Object.assign(profile.value, { userID }));
       console.log("TUICallKit login successful");
       if (this.TUICore) {
@@ -76,7 +78,6 @@ export default class TUICallKit {
         logReporter.loginSuccess(SDKAppID);
       }
     } catch (error: any) {
-      console.error("TUICallKit login failed", JSON.stringify(error));
       if (this.TUICore) {
         logReporter.loginWithTUICoreFailed(SDKAppID, JSON.stringify(error));
       } else if (!this.TUICore && tim) {
@@ -84,6 +85,7 @@ export default class TUICallKit {
       } else {
         logReporter.loginFailed(SDKAppID, JSON.stringify(error));
       }
+      console.error("TUICallKit login failed", JSON.stringify(error));
       throw new Error(error);
     }
   }
@@ -108,22 +110,22 @@ export default class TUICallKit {
     this.checkStatus();
     const { userID, type, timeout, offlinePushInfo } = params;
     try {
-      const res = await this.tuiCallEngine.call({ userID, type, timeout, offlinePushInfo });
+      await this.tuiCallEngine.call({ userID, type, timeout, offlinePushInfo });
       this.beforeCalling && this.beforeCalling("call");
       changeStatus(STATUS.DIALING_C2C);
-      changeRemoteList([{ userID, isEntered: false, microphone: false, camera: false }]);
+      changeRemoteList([{ userID, isEntered: false, isReadyRender: false }]);
       changeCallType(type);
       changeIsFromGroup(false);
       logReporter.callSuccess(this.SDKAppID, "call", type === 1 ? "audio" : "video");
     } catch (error: any) {
       if (this.error && this.beforeCalling) {
-         this.beforeCalling("call", this.error);
+        this.beforeCalling("call", this.error);
       }
       this.error = null;
       this.callingAPIMutex = "";
-      console.error("TUICallKit call error: " + JSON.stringify(error));
       changeStatus(STATUS.IDLE);
       logReporter.callFailed(this.SDKAppID, "call", type === 1 ? "audio" : "video", JSON.stringify(error));
+      console.error("TUICallKit call error: " + JSON.stringify(error));
       throw new Error(error);
     }
   }
@@ -147,13 +149,13 @@ export default class TUICallKit {
     }
     this.callingAPIMutex = "groupCall";
     this.checkStatus();
-    const { userIDList, type, groupID, timeout, offlinePushInfo } = params;
+    const { userIDList, type, groupID, timeout, offlinePushInfo, roomID } = params;
     try {
-      await this.tuiCallEngine.groupCall({ userIDList, type, groupID, timeout, offlinePushInfo });
+      await this.tuiCallEngine.groupCall({ userIDList, type, groupID, timeout, offlinePushInfo, roomID });
       this.beforeCalling && this.beforeCalling("groupCall");
       const newRemoteList: Array<RemoteUser> = [];
       userIDList.forEach((userID: string) => {
-        newRemoteList.push({ userID, isEntered: false, microphone: false, camera: false });
+        newRemoteList.push({ userID, isEntered: false, isReadyRender: false });
       });
       changeRemoteList(newRemoteList);
       changeStatus(STATUS.DIALING_GROUP);
@@ -162,22 +164,36 @@ export default class TUICallKit {
       logReporter.callSuccess(this.SDKAppID, "groupCall", type === 1 ? "audio" : "video");
     } catch (error: any) {
       if (this.error && this.beforeCalling) {
-         this.beforeCalling("groupCall", this.error);
+        this.beforeCalling("groupCall", this.error);
       }
       this.error = null;
       this.callingAPIMutex = "";
-      console.error("TUICallKit groupCall error: " + JSON.stringify(error));
       logReporter.callFailed(this.SDKAppID, "groupCall", type === 1 ? "audio" : "video", JSON.stringify(error));
+      console.error("TUICallKit groupCall error: " + JSON.stringify(error));
       throw new Error(error);
     }
   }
 
+  public async joinInGroupCall(params: any) {
+    const { roomID, type, groupID } = params;
+    await this.tuiCallEngine.joinInGroupCall({ roomID, type, groupID });
+    this.beforeCalling && this.beforeCalling("groupCall");
+    changeStatus(STATUS.DIALING_GROUP);
+    changeCallType(type);
+    changeIsFromGroup(true);
+    this.getIntoCallingStatus();
+    logReporter.callSuccess(this.SDKAppID, "groupCall", type === 1 ? "audio" : "video");
+  }
+  
+
   private checkStatus() {
     if (status.value !== STATUS.IDLE) {
-      throw new Error(t('is-already-calling'));
+      console.error("TUICallKit groupCall error:", t("is-already-calling"));
+      throw new Error(t("is-already-calling"));
     }
     if (!this.tuiCallEngine) {
-      throw new Error(t('need-init'));
+      console.error("TUICallKit groupCall error:", t("need-init"));
+      throw new Error(t("need-init"));
     }
   }
 
@@ -209,7 +225,7 @@ export default class TUICallKit {
   public setLanguage(language: string) {
     console.log("TUICallKit change language: ", language);
     if (language !== "en" && language !== "zh-cn") {
-      console.warn("TUICallKit change language warning: ", `${language} in not supported, has changed to default English`);
+      console.log("TUICallKit change language warning: ", `${language} in not supported, has changed to default English`);
       language = "en";
     }
     console.log("TUICallKit change language: ", language);
@@ -254,6 +270,7 @@ export default class TUICallKit {
   }
 
   public async startLocalView(local: string) {
+    console.log("TUICallKit startLocalView");
     await this.tuiCallEngine.startLocalView({ userID: profile.value.userID, videoViewDomID: local });
   }
 
@@ -262,6 +279,7 @@ export default class TUICallKit {
   }
 
   public async startRemoteView(userID: string) {
+    console.log("TUICallKit startRemoteView", userID);
     await this.tuiCallEngine.startRemoteView({ userID, videoViewDomID: userID });
   }
 
@@ -336,13 +354,41 @@ export default class TUICallKit {
     this.statusChanged = statusChanged;
   }
 
+  // open/close AI noise reduction
+  public async enableAIVoice(enable: boolean) {
+    try {
+      this.tuiCallEngine.enableAIVoice(enable);
+      console.log("TUICallKit enableAIVoice:", enable);
+    } catch (error: any) {
+      console.error("TUICallKit enableAIVoice failed", error.message);
+    }
+  }
+
+  // inviteUser
+  public async inviteUser(params: any) {
+    const { userIDList = [] } = params;
+    console.log("TUICallKit inviteUser", params);
+    try {
+      const res = this.tuiCallEngine && await this.tuiCallEngine.inviteUser(params);
+      const newRemoteList: Array<RemoteUser> = remoteList.value;
+      userIDList.forEach((userID: string) => {
+        newRemoteList.push({ userID, isEntered: false, isReadyRender: false });
+      });
+      changeRemoteList(newRemoteList);
+      console.log("TUICallKit inviteUser success: ", res);
+    } catch (error: any) {
+      console.error("TUICallKit inviteUser error: " + JSON.stringify(error));
+      throw new Error(error);
+    }
+  }
+
   /**
-   * 组件销毁
+   * component destroyed
    */
   public async destroyed() {
     this.unbindTIMEvent();
     changeStatus(STATUS.IDLE);
-    this.callingAPIMutex = '';
+    this.callingAPIMutex = "";
     try {
       if (this.tuiCallEngine) await this.tuiCallEngine.destroyInstance(); 
       console.log("TUICallKit destroyInstance success");
@@ -362,7 +408,7 @@ export default class TUICallKit {
   /**
    * /////////////////////////////////////////////////////////////////////////////////
    * //
-   * //                                    TUICallEngine 事件监听注册接口
+   * //                                    TUICallEngine listener
    * //
    * /////////////////////////////////////////////////////////////////////////////////
    */
@@ -417,29 +463,29 @@ export default class TUICallKit {
       message: ""
     };
     switch (code) {
-      case 60001: 
-        this.error.type = t('method-call-failed');
-        this.error.message = `switchToAudioCall ${t('call-failed')}`;
+      case 60001:
+        this.error.type = t("method-call-failed");
+        this.error.message = `switchToAudioCall ${t("call-failed")}`;
         break;
       case 60002:
-        this.error.type = t('method-call-failed');
-        this.error.message = `switchToVideoCall ${t('call-failed')}`;
+        this.error.type = t("method-call-failed");
+        this.error.message = `switchToVideoCall ${t("call-failed")}`;
         break;
       case 60003:
-        this.error.type = t('failed-to-obtain-permission');
-        this.error.message = t('microphone-unavailable');
+        this.error.type = t("failed-to-obtain-permission");
+        this.error.message = t("microphone-unavailable");
         break;
       case 60004:
-        this.error.type = t('failed-to-obtain-permission');
-        this.error.message = t('camera-unavailable');
+        this.error.type = t("failed-to-obtain-permission");
+        this.error.message = t("camera-unavailable");
         break;
       case 60005:
-        this.error.type = t('failed-to-obtain-permission');
-        this.error.message = t('ban-device');
+        this.error.type = t("failed-to-obtain-permission");
+        this.error.message = t("ban-device");
         break;
       case 60006:
-        this.error.type = t('environment-detection-failed');
-        this.error.message = t('not-supported-webrtc');
+        this.error.type = t("environment-detection-failed");
+        this.error.message = t("not-supported-webrtc");
         break;
     }
     console.error("TUICallKit Error", JSON.stringify(this.error));
@@ -453,16 +499,19 @@ export default class TUICallKit {
     console.log("TUICallKit SDK is ready.", event);
   }
 
-  private handleKickedOut() {
+  private handleKickedOut(event: any) {
     console.error("TUICallKit Kicked Out", JSON.stringify(event));
   }
 
   private handleUserVideoAvailable(event: any) {
+    console.log("TUICallKit handleUserVideoAvailable", event);
     const { userID, isVideoAvailable } = event;
+    makeRenderFlag("isReadyRender", userID);
     changeRemoteDeviceByUserID(userID, CALL_TYPE_STRING.VIDEO, isVideoAvailable);
   }
 
   private handleUserAudioAvailable(event: any) {
+    console.log("TUICallKit handleUserAudioAvailable", event);
     const { userID, isAudioAvailable } = event;
     changeRemoteDeviceByUserID(userID, CALL_TYPE_STRING.AUDIO, isAudioAvailable);
   }
@@ -483,8 +532,8 @@ export default class TUICallKit {
     const { sponsor, isFromGroup, inviteData } = event;
     const { callType } = inviteData;
     changeStatus(STATUS.BE_INVITED);
-    this.callingAPIMutex = 'be_invited';
-    changeRemoteList([{ userID: sponsor, isEntered: false }]);
+    this.callingAPIMutex = "be_invited";
+    changeRemoteList([{ userID: sponsor, isEntered: false, isReadyRender: false }]);
     changeCallType(callType);
     changeIsFromGroup(isFromGroup);
   }
@@ -520,7 +569,7 @@ export default class TUICallKit {
       return;
     }
     changeStatus(STATUS.IDLE, CHANGE_STATUS_REASON.REJECT, 1000);
-    this.callingAPIMutex = '';
+    this.callingAPIMutex = "";
   }
 
   private handleNoResponse(event: any) {
@@ -529,7 +578,7 @@ export default class TUICallKit {
     userIDList.forEach((userID: string) => {
       if (removeRemoteListByUserID(userID) <= 0) {
         changeStatus(STATUS.IDLE, CHANGE_STATUS_REASON.NO_RESPONSE, isFromGroup.value ? 0 : 1000);
-        this.callingAPIMutex = '';
+        this.callingAPIMutex = "";
       }
     });
   }
@@ -540,13 +589,13 @@ export default class TUICallKit {
     if (removeRemoteListByUserID(userID) <= 0) {
       changeStatus(STATUS.IDLE, CHANGE_STATUS_REASON.LINE_BUSY, isFromGroup.value ? 0 : 1000);
     }
-    this.callingAPIMutex = '';
+    this.callingAPIMutex = "";
   }
 
   private handleCallingCancel(event: any) {
     console.log("TUICallKit handleCallingCancel", event);
     changeStatus(STATUS.IDLE, CHANGE_STATUS_REASON.CALLING_CANCEL, 1000);
-    this.callingAPIMutex = '';
+    this.callingAPIMutex = "";
   }
 
   private handleCallingTimeOut(event: any) {
@@ -555,7 +604,7 @@ export default class TUICallKit {
     userIDList.forEach((userID: string) => {
       if (removeRemoteListByUserID(userID) <= 0 || userID === profile.value.userID) {
         changeStatus(STATUS.IDLE, CHANGE_STATUS_REASON.CALLING_TIMEOUT, isFromGroup.value ? 0 : 1000);
-        this.callingAPIMutex = '';
+        this.callingAPIMutex = "";
       }
     });
   }
@@ -563,7 +612,7 @@ export default class TUICallKit {
   private handleCallingEnd(event: any) {
     console.log("TUICallKit handleCallingEnd", event);
     changeStatus(STATUS.IDLE);
-    this.callingAPIMutex = '';
+    this.callingAPIMutex = "";
   }
 
   private handleCallTypeChanged(event: any) {
@@ -574,7 +623,7 @@ export default class TUICallKit {
 
   private handleMessageSentByMe(event: any) {
     const message = event?.data;
-    console.log('TUICallKit MessageSentByMe', message);
+    console.log("TUICallKit MessageSentByMe", message);
     this.onMessageSentByMe && this.onMessageSentByMe(message);
   }
 }

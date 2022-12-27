@@ -48,7 +48,6 @@ const toggleDetail = (event: Event) => {
         <slot name="icon"> </slot>
       </div>
       <div class="control-item-summary" @click="toggleDetail" v-if="hasDetail">
-        <!-- <img :src="triangleSVG" /> -->
         <TriangleSVG />
       </div>
       <div class="control-item-detail" v-show="openDetail">
