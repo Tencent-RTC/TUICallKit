@@ -49,8 +49,8 @@ class TUICallKit extends PlatformInterface {
   ///
   /// @param userId        callees
   /// @param callMediaType Call type
-  Future<void> call(String userId, TUICallMediaType callMediaType) async {
-    return await TUICallKitPlatform.instance.call(userId, callMediaType);
+  Future<void> call(String userId, TUICallMediaType callMediaType, [TUICallParams? params]) async {
+    return await TUICallKitPlatform.instance.call(userId, callMediaType, params);
   }
 
   ///Make a group call
@@ -59,9 +59,9 @@ class TUICallKit extends PlatformInterface {
   ///@param userIdList    List of userId
   ///@param callMediaType Call type
   Future<void> groupCall(String groupId, List<String> userIdList,
-      TUICallMediaType callMediaType) async {
+      TUICallMediaType callMediaType, [TUICallParams? params]) async {
     return await TUICallKitPlatform.instance
-        .groupCall(groupId, userIdList, callMediaType);
+        .groupCall(groupId, userIdList, callMediaType, params);
   }
 
   ///Join a current call

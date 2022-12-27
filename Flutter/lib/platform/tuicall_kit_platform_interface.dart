@@ -31,13 +31,13 @@ abstract class TUICallKitPlatform extends PlatformInterface {
     return await instance.setSelfInfo(nickname, avatar);
   }
 
-  Future<void> call(String userId, TUICallMediaType callMediaType) async {
-    await instance.call(userId, callMediaType);
+  Future<void> call(String userId, TUICallMediaType callMediaType, [TUICallParams? params]) async {
+    await instance.call(userId, callMediaType, params);
   }
 
   Future<void> groupCall(String groupId, List<String> userIdList,
-      TUICallMediaType callMediaType) async {
-    await instance.groupCall(groupId, userIdList, callMediaType);
+      TUICallMediaType callMediaType, [TUICallParams? params]) async {
+    await instance.groupCall(groupId, userIdList, callMediaType, params);
   }
 
   Future<void> joinInGroupCall(

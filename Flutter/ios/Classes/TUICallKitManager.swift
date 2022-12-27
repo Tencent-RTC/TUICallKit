@@ -46,10 +46,43 @@ class TUICallKitManager {
         let callMediaTypeKey = "callMediaType"
         guard let callMediaTypeInt = MethodUtils.getMethodParams(call: call, key: callMediaTypeKey, resultType: Int.self) else {
             FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "callMediaType", paramKey: callMediaTypeKey, result: result)
-            return 
+            return
         }
         guard let callMediaType = TUICallMediaType(rawValue: callMediaTypeInt) else { return }
-        callkit.call(userId: userId, callMediaType: callMediaType)
+        
+        let params = TUICallParams()
+        let offlinePushInfo = TUIOfflinePushInfo()
+        let paramsKey = "params"
+        if let paramsDic = MethodUtils.getMethodParams(call: call, key: paramsKey, resultType: Dictionary<String, Any>.self) {
+            if let offlinePushInfoDic = paramsDic["offlinePushInfo"] as?  Dictionary<String, Any> {
+                if let title = offlinePushInfoDic["title"] as? String {
+                    offlinePushInfo.title = title
+                }
+                if let desc = offlinePushInfoDic["desc"] as? String {
+                    offlinePushInfo.desc = desc
+                }
+                if let ignoreIOSBadge = offlinePushInfoDic["ignoreIOSBadge"] as? Bool {
+                    offlinePushInfo.ignoreIOSBadge = ignoreIOSBadge
+                }
+                if let iOSSound = offlinePushInfoDic["iOSSound"] as? String {
+                    offlinePushInfo.iOSSound = iOSSound
+                }
+                if let androidSound = offlinePushInfoDic["AndroidSound"] as? String {
+                    offlinePushInfo.androidSound = androidSound
+                }
+                if let androidOPPOChannelID = offlinePushInfoDic["AndroidOPPOChannelID"] as? String {
+                    offlinePushInfo.androidOPPOChannelID = androidOPPOChannelID
+                }
+                if let androidVIVOClassification = offlinePushInfoDic["AndroidVIVOClassification"] as? Int {
+                    offlinePushInfo.androidVIVOClassification = androidVIVOClassification
+                }
+            }
+        }
+        params.offlinePushInfo = offlinePushInfo
+        
+        callkit.call(userId: userId, callMediaType: callMediaType, params: params) {
+            result(NSNumber(value: 0))
+        }
     }
 
     func groupCall(call: FlutterMethodCall, result: @escaping FlutterResult){
@@ -79,7 +112,40 @@ class TUICallKitManager {
         }
         
         guard let callMediaType = TUICallMediaType(rawValue: callMediaTypeInt) else { return }
-        callkit.groupCall(groupId: groupId, userIdList: userIdList ,callMediaType: callMediaType)
+        
+        let params = TUICallParams()
+        let offlinePushInfo = TUIOfflinePushInfo()
+        let paramsKey = "params"
+        if let paramsDic = MethodUtils.getMethodParams(call: call, key: paramsKey, resultType: Dictionary<String, Any>.self) {
+            if let offlinePushInfoDic = paramsDic["offlinePushInfo"] as? Dictionary<String, Any> {
+                if let title = offlinePushInfoDic["title"] as? String {
+                    offlinePushInfo.title = title
+                }
+                if let desc = offlinePushInfoDic["desc"] as? String {
+                    offlinePushInfo.desc = desc
+                }
+                if let ignoreIOSBadge = offlinePushInfoDic["ignoreIOSBadge"] as? Bool {
+                    offlinePushInfo.ignoreIOSBadge = ignoreIOSBadge
+                }
+                if let iOSSound = offlinePushInfoDic["iOSSound"] as? String {
+                    offlinePushInfo.iOSSound = iOSSound
+                }
+                if let androidSound = offlinePushInfoDic["AndroidSound"] as? String {
+                    offlinePushInfo.androidSound = androidSound
+                }
+                if let androidOPPOChannelID = offlinePushInfoDic["AndroidOPPOChannelID"] as? String {
+                    offlinePushInfo.androidOPPOChannelID = androidOPPOChannelID
+                }
+                if let androidVIVOClassification = offlinePushInfoDic["AndroidVIVOClassification"] as? Int {
+                    offlinePushInfo.androidVIVOClassification = androidVIVOClassification
+                }
+            }
+        }
+        params.offlinePushInfo = offlinePushInfo
+
+        callkit.groupCall(groupId: groupId, userIdList: userIdList, callMediaType: callMediaType, params: params) {
+            result(NSNumber(value: 0))
+        }
     }
 
     func joinInGroupCall(call: FlutterMethodCall, result: @escaping FlutterResult){
@@ -151,6 +217,7 @@ class TUICallKitManager {
         }
 
         TUILogin.login(sdkAppId, userID: userId, userSig: userSig) {
+            self.setFramewofk()
             result(NSNumber(value: 0))
         } fail: { code, message in
             let error = FlutterError(code: "\(code)", message: message, details: nil)
@@ -165,5 +232,19 @@ class TUICallKitManager {
             let error = FlutterError(code: "\(code)", message: message, details: nil)
             result(error)
         }
+    }
+}
+
+// MARK: 数据上报
+extension TUICallKitManager {
+    private func setFramewofk() {
+        
+        let jsonParams: [String: Any] = ["api": "setFramework",
+                                         "params": ["framework": 7,
+                                                    "component": 14]]
+        guard let data = try? JSONSerialization.data(withJSONObject: jsonParams,
+                                                     options: JSONSerialization.WritingOptions.init(rawValue: 0)) else { return }
+        guard let paramsString = NSString(data: data, encoding: String.Encoding.utf8.rawValue) as? String else { return }
+        TUICallEngine.createInstance().callExperimentalAPI(jsonObject: paramsString)
     }
 }

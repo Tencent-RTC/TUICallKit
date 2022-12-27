@@ -49,7 +49,7 @@ class _GroupCallPageState extends State<GroupCallPage> {
   _GroupCallPageState({required this.callsUIKitPlugin, required this.userInfo});
 
   String groupId = "";
-  String roomId = "";
+  String userName = "";
 
   @override
   Widget build(BuildContext context) {
@@ -86,8 +86,8 @@ class _GroupCallPageState extends State<GroupCallPage> {
         Padding(padding: EdgeInsets.only(top: 10)),
         TextField(
           autofocus: true,
-          decoration: InputDecoration(hintText: "input RoomId"),
-          onChanged: ((value) => roomId = value),
+          decoration: InputDecoration(hintText: "input UserName"),
+          onChanged: ((value) => userName = value),
         ),
         Padding(padding: EdgeInsets.only(top: 20)),
         Row(
@@ -98,7 +98,7 @@ class _GroupCallPageState extends State<GroupCallPage> {
                 label: Text("Voice Call", style: TextStyle(fontSize: 20.0)),
                 onPressed: () {
                   /// 语音通话
-                  ///
+                  groupVoiceCall(callsUIKitPlugin,[userName],groupId);
                 }),
             Padding(padding: EdgeInsets.only(left: 50)),
             ElevatedButton.icon(
@@ -106,7 +106,7 @@ class _GroupCallPageState extends State<GroupCallPage> {
                 label: Text("Video Call", style: TextStyle(fontSize: 20.0)),
                 onPressed: () {
                   /// 视频通话
-                  ///
+                  groupVideoCall(callsUIKitPlugin,[userName],groupId);
                 }),
           ],
         ),
@@ -130,13 +130,10 @@ class _GroupCallPageState extends State<GroupCallPage> {
   }
 }
 
-void groupViceCall(TUICallKit callsUIKitPlugin, String roomId, String groupId) {
-  TUIRoomId obj = TUIRoomId(intRoomId: int.parse(roomId));
-  callsUIKitPlugin.joinInGroupCall(obj, groupId, TUICallMediaType.audio);
+void groupVoiceCall(TUICallKit callsUIKitPlugin, List<String> userList, String groupId) {
+  callsUIKitPlugin.groupCall(groupId, userList, TUICallMediaType.audio);
 }
 
-void groupVideoCall(
-    TUICallKit callsUIKitPlugin, String roomId, String groupId) {
-  TUIRoomId obj = TUIRoomId(intRoomId: int.parse(roomId));
-  callsUIKitPlugin.joinInGroupCall(obj, groupId, TUICallMediaType.video);
+void groupVideoCall(TUICallKit callsUIKitPlugin, List<String> userList, String groupId) {
+  callsUIKitPlugin.groupCall(groupId, userList,TUICallMediaType.video);
 }

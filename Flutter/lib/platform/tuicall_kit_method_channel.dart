@@ -46,19 +46,21 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
   }
 
   @override
-  Future<void> call(String userId, TUICallMediaType callMediaType) async {
+  Future<void> call(String userId, TUICallMediaType callMediaType, [TUICallParams? params]) async {
     await methodChannel.invokeMethod(
-        'call', {'userId': userId, 'callMediaType': callMediaType.index});
+        'call', {'userId': userId,
+                 'callMediaType': callMediaType.index,
+                 'params': ((params != null) ? params!.toJson() : null)});
   }
 
   @override
   Future<void> groupCall(String groupId, List<String> userIdList,
-      TUICallMediaType callMediaType) async {
+      TUICallMediaType callMediaType, [TUICallParams? params]) async {
     await methodChannel.invokeMethod('groupCall', {
       'groupId': groupId,
       'userIdList': jsonEncode(userIdList),
-      'callMediaType': callMediaType.index
-    });
+      'callMediaType': callMediaType.index,
+      'params': ((params != null) ? params!.toJson() : null)});
   }
 
   @override
