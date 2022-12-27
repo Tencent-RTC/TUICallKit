@@ -141,7 +141,11 @@ class _CallPageState extends State<CallPage> {
 }
 
 void voiceCall(TUICallKit callsUIKitPlugin, String callUserId) {
-  callsUIKitPlugin.call(callUserId, TUICallMediaType.audio);
+  TUIOfflinePushInfo offlinePushInfo = TUIOfflinePushInfo();
+  offlinePushInfo.title = "Flutter TUICallKit";
+  offlinePushInfo.desc = "This is an incoming call from Flutter TUICallkit";
+  TUICallParams params = TUICallParams(offlinePushInfo: offlinePushInfo);
+  callsUIKitPlugin.call(callUserId, TUICallMediaType.audio, params);
 }
 
 void videoCall(TUICallKit callsUIKitPlugin, String callUserId) {

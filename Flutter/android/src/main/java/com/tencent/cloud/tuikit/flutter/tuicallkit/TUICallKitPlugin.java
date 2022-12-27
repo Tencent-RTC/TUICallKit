@@ -7,14 +7,20 @@ import androidx.annotation.NonNull;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.EnumUtils;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.Logger;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.MethodCallUtils;
+import com.tencent.cloud.tuikit.tuicall_engine.utils.ObjectUtils;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.interfaces.TUICallback;
 import com.tencent.qcloud.tuikit.TUICommonDefine;
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
+import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine;
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
@@ -46,11 +52,14 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler {
                     MethodChannel.Result.class);
             method.invoke(this, call, result);
         } catch (NoSuchMethodException e) {
-            Logger.error(TAG, "|method=" + call.method + "|arguments=" + call.arguments + "|error=" + e);
+            Logger.error(TAG, "onMethodCall |method=" + call.method + "|arguments=" + call.arguments + "|error=" + e);
+            e.printStackTrace();
         } catch (IllegalAccessException e) {
-            Logger.error(TAG, "|method=" + call.method + "|arguments=" + call.arguments + "|error=" + e);
+            Logger.error(TAG, "onMethodCall |method=" + call.method + "|arguments=" + call.arguments + "|error=" + e);
+            e.printStackTrace();
         } catch (Exception e) {
-            Logger.error(TAG, "|method=" + call.method + "|arguments=" + call.arguments + "|error=" + e);
+            Logger.error(TAG, "onMethodCall |method=" + call.method + "|arguments=" + call.arguments + "|error=" + e);
+            e.printStackTrace();
         }
     }
 
@@ -65,6 +74,7 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler {
                     @Override
                     public void onSuccess() {
                         result.success(0);
+                        setFramework(mApplicationContext);
                     }
 
                     @Override
@@ -113,22 +123,48 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler {
     public void call(MethodCall call, MethodChannel.Result result) {
         String userId = MethodCallUtils.getMethodRequiredParams(call, "userId", result);
         int mediaTypeIndex = MethodCallUtils.getMethodRequiredParams(call, "callMediaType", result);
+        Map paramsMap = MethodCallUtils.getMethodParams(call, "params");
 
         TUICallDefine.MediaType mediaType = EnumUtils.getMediaType(mediaTypeIndex);
+        TUICallDefine.CallParams params = ObjectUtils.getTUICallParamsByMap(paramsMap);
 
-        TUICallKit.createInstance(mApplicationContext).call(userId, mediaType);
-        result.success(0);
+        TUICallKit.createInstance(mApplicationContext).call(userId, mediaType, params, new TUICommonDefine.Callback() {
+            @Override
+            public void onSuccess() {
+                result.success(0);
+            }
+
+            @Override
+            public void onError(int code, String message) {
+                Logger.error(TAG, "call Error:" + message);
+                result.error("" + code, message, "");
+            }
+        });
+
     }
 
     public void groupCall(MethodCall call, MethodChannel.Result result) {
         String groupId = MethodCallUtils.getMethodRequiredParams(call, "groupId", result);
         List userIdList = MethodCallUtils.getMethodRequiredParams(call, "userIdList", result);
         int mediaTypeIndex = MethodCallUtils.getMethodRequiredParams(call, "callMediaType", result);
+        Map paramsMap = MethodCallUtils.getMethodRequiredParams(call, "params", result);
 
         TUICallDefine.MediaType mediaType = EnumUtils.getMediaType(mediaTypeIndex);
+        TUICallDefine.CallParams params = ObjectUtils.getTUICallParamsByMap(paramsMap);
 
-        TUICallKit.createInstance(mApplicationContext).groupCall(groupId, userIdList, mediaType);
-        result.success(0);
+        TUICallKit.createInstance(mApplicationContext).groupCall(groupId, userIdList, mediaType, params,
+                new TUICommonDefine.Callback() {
+                    @Override
+                    public void onSuccess() {
+                        result.success(0);
+                    }
+
+                    @Override
+                    public void onError(int code, String message) {
+                        Logger.error(TAG, "groupCall Error:" + message);
+                        result.error("" + code, message, "");
+                    }
+                });
     }
 
 
@@ -169,5 +205,21 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler {
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         channel.setMethodCallHandler(null);
+    }
+
+
+    private void setFramework(Context context) {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("framework", 7);
+            params.put("component", 14);
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("api", "setFramework");
+            jsonObject.put("params", params);
+            TUICallEngine.createInstance(context).callExperimentalAPI(jsonObject.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
