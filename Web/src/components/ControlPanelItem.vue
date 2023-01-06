@@ -55,9 +55,7 @@ const toggleDetail = (event: Event) => {
       </div>
     </div>
     <div class="control-item-text">
-      <text>
-        <slot name="text"> </slot>
-      </text>
+      <slot name="text"> </slot>
     </div>
   </div>
 </template>

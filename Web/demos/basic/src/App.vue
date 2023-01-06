@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted } from "vue";
 import { TUICallKit, TUICallKitServer, TUICallKitMini } from "../../..";
 import DeviceDetector from "./components/DeviceDetector/index.vue";
 import * as GenerateTestUserSig from "../public/debug/GenerateTestUserSig.js";
 import TIM from "tim-js-sdk";
-import { copyText } from "vue3-clipboard";
+import copy from "copy-to-clipboard";
 import videoBlackSVG from "./assets/videoBlack.svg";
 import videoWhiteSVG from "./assets/videoWhite.svg";
 import audioWhiteSVG from "./assets/audioWhite.svg";
@@ -52,16 +52,6 @@ onMounted(() => {
   TUICallKitServer.setLanguage(locale.value);
   finishedRTCDetectStatus.value = localStorage.getItem("callkit-basic-demo-finish-rtc-detect") || "";
 });
-
-onUnmounted(() => {
-  TUICallKitServer.destroyed();
-  tim.logout();
-});
-
-function logout() {
-  TUICallKitServer.destroyed();
-  tim.logout();
-}
 
 async function login() {
   if (!SDKAppID.value || SDKAppID.value === 0) {
@@ -208,14 +198,12 @@ function newTab(event: any) {
 }
 
 function copyUserID() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  copyText(currentUserID.value, undefined, (error: any) => {
-    if (error) {
-      ElMessage.warning(t("copy-failed-message"));
-    } else {
-      ElMessage.success(t("copied"));
-    }
-  });
+  const isSuccessCopy = copy(currentUserID.value);
+  if (isSuccessCopy) {
+    ElMessage.success(t("copied"));
+  } else {
+    ElMessage.warning(t("copy-failed-message"));
+  }
 }
 
 function handleClose() {

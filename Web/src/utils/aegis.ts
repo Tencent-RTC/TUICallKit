@@ -1,4 +1,4 @@
-import * as Aegis from "aegis-web-sdk";
+import Aegis from "aegis-web-sdk";
 
 // import packageJson from "../../package.json"; 
 
@@ -6,7 +6,7 @@ const aegis = new Aegis({
   id: "iHWefAYqDNAiuxNMQZ",
   reportApiSpeed: true, // 接口测速
   reportAssetSpeed: true, // 静态资源测速
-  version: "1.3.3",
+  version: "1.4.0",
 });
 
 const loginSuccess = (SDKAppID: number) =>  {

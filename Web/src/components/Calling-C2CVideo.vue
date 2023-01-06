@@ -62,7 +62,7 @@ const h5SwitchUserView = async () => {
           <MicrophoneIcon :volume="getVolumeByUserID(profile.userID)" v-if="profile?.microphone" />
           <MicrophoneClosedSVG v-else />
         </div>
-        {{ `${profile.userID} ${t('me')}` }}
+        {{ `${profile?.nick} ${t('me')}` }}
       </span>
       <div class="switch-large-small" @click="switchUserView" v-show="!isMobile">
         <Switch2SVG />
@@ -75,7 +75,7 @@ const h5SwitchUserView = async () => {
             <MicrophoneIcon :volume="getVolumeByUserID(remoteList[0]?.userID)" v-if="remoteList[0]?.microphone" />
             <MicrophoneClosedSVG  v-else />
           </div>
-          {{ remoteList[0].userID }}
+          {{ remoteList[0]?.nick }}
         </span>
         <div class="switch-large-small" @click="switchUserView" v-show="!isMobile">
           <Switch2SVG />

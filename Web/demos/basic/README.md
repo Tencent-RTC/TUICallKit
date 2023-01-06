@@ -47,7 +47,7 @@ npm run serve
 <img style="width:600px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/205699625-677b95f7-77f8-4b67-8148-570d5576dc17.png"/>
 </div>
 
-1. Click `Login other UserID`, You can login to other users in a new tab.
+2. Click `Login other UserID`, You can login to other users in a new tab.
 
   <div align="center">
     <img style="width:350px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/205699741-97dae997-63d9-4e3c-8bcd-d3c6a6edcce0.png"/>
@@ -59,7 +59,7 @@ npm run serve
     <img style="width:200px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/205699937-d0f6d7ef-4b9e-4da2-a1dd-6cc15bd47fad.png"/>
   </div>
   
-3.Calling
+3. Calling
   
 - Enter `user_B` into `user_A`'s calling list, click to call
     
@@ -70,6 +70,27 @@ npm run serve
 ![Oct-08-2022 20-21-07](https://user-images.githubusercontent.com/57169560/205650396-476e0e20-42a3-493a-8e90-6f7ba50da83e.gif)
 
 </div>
+
+### How to build
+
+1. Copy `Web/src` to `Web/demos/basic/src/components/`;
+
+2. Enter `Web/demos/basic` and install dependencies
+
+    ```bash
+    npm install trtc-js-sdk tsignaling tuicall-engine-webrtc
+    npm install
+    ```
+
+3. Modify the package path: In `src/App.vue`, change `import { TUICallKit, TUICallKitServer, TUICallKitMini } from "../../..";` to `import { TUICallKit, TUICallKitServer, TUICallKitMini } from "./components/src";`
+
+4. build
+
+    ```bash
+    npm run build
+    ```
+
+    In the production mode, **your website should under `https` protocol.**
 
 ## Read more
 

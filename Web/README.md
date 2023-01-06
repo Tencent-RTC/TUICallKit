@@ -4,7 +4,7 @@
 <b> English </b> | <a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/README.zh-CN.md"> 简体中文 </a>
 </p>
 
-<p align="center">  A Vue.js 3 Voice & Video Calling UI Component, easily add calling capabilities to  your web application.</p>
+<p align="center">  A Vue2 & Vue3 Voice & Video Calling UI Component, easily add calling capabilities to  your web application.</p>
 
 <div align="center">
 <img src="https://img.shields.io/npm/v/@tencentcloud/call-uikit-vue">
@@ -35,7 +35,7 @@ Here are a few guidelines for using this component.
 
 - Click [here](https://tcms-demo.tencentcloud.com/exp-center/index.html#/detail?scene=callkit) to try out 1v1 Voice and Video Call online.
 
-- If you want to experience it in your dev mode, please read [Run the Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.md)
+- If you want to experience it in your dev mode, please read [Run the Vue3 Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.md) or [Run the Vue2 Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.md)
 
 - If you want to install this component into your project, please read [TUICallKit Getting Started](https://www.tencentcloud.com/document/product/647/50993)
 
@@ -43,7 +43,7 @@ Here are a few guidelines for using this component.
 
 ## Contents
 
-```
+```text
 .
 ├── README.md
 ├── demos/basic/
@@ -52,8 +52,13 @@ Here are a few guidelines for using this component.
 
 **demos/basic/**
 
-- The `demos/basic/` directory contains the basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
-- A debug panel is integrated at the bottom of the demo page. You can enter your application information directly, please refer to [Run the Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.md) for details.
+- The `demos/basic/` directory contains the Vue3 basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
+- A debug panel is integrated at the bottom of the demo page. You can enter your application information directly, please refer to [Run the Vue3 Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.md).
+
+**demos/basic-vue2/**
+
+- The `demos/basic-vue2/` directory contains the Vue2 basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
+- A debug panel is integrated at the bottom of the demo page. You can enter your application information directly, please refer to [Run the Vue2 Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.md).
 
 **src/** 
 
@@ -68,10 +73,10 @@ Here are a few guidelines for using this component.
 
 - If you have questions, see [FAQs](https://www.tencentcloud.com/document/product/647/51024)；
 - To report bugs in our sample code, please create an issue.
-- Communication & Feedback   
+- Communication & Feedback
 Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you~
 Click to join: [https://t.me/+EPk6TMZEZMM5OGY1](https://t.me/+EPk6TMZEZMM5OGY1)   
-Or scan the QR code   
+Or scan the QR code
   <img src="https://qcloudimg.tencent-cloud.cn/raw/79cbfd13877704ff6e17f30de09002dd.jpg" width="300px">    
 
 ## License

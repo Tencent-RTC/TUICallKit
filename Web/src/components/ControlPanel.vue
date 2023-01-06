@@ -82,6 +82,7 @@ function addPerson_debug() {
     isEntered: false,
     microphone: true,
     camera: true,
+    isReadyRender: false,
   }])
 }
 

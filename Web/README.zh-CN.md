@@ -1,11 +1,10 @@
 <h1 align="center"> TUICallKit </h1>
 
 <p align="center"> 
-<img src="https://camo.githubusercontent.com/0091fcbb836af00ee2e2a10ccb667f56c737e1dd85d3d9adb1d6096812bcfb81/68747470733a2f2f67772e616c697061796f626a656374732e636f6d2f7a6f732f616e7466696e63646e2f5238734e253234474e6468362f6c616e67756167652e737667" style="width: 16px;"> 
 <a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/README.md"> English </a> | <b> 简体中文 </b> 
 </p>
 
-<p align="center">Vue3.js 版本的音视频通话 UI 组件，通过编写几行代码，就可以为您的 Web 应用添加音视频通话功能。</p>
+<p align="center">Vue2 & Vue3 版本的音视频通话 UI 组件，通过编写几行代码，就可以为您的 Web 应用添加音视频通话功能。</p>
 <!-- <p>在线演示 | Demo 跑通 | 快速接入 </p> -->
 
 <div align="center">
@@ -46,7 +45,7 @@ GitHub Release Date: -->
 
 - 如果您想在线体验通话效果，请访问 [1v1音视频通话体验馆](https://web.sdk.qcloud.com/component/experience-center/index.html#/detail?scene=callkit)
 
-- 如果您想要调试通话效果，请阅读 [Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.md)
+- 如果您想要调试通话效果，请阅读 [Vue3 Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.md) 或者 [Vue2 Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue2/README.md)
 
 - 如果您想把我们的功能直接嵌入到您的项目中，请阅读 [快速接入 TUICallKit](https://cloud.tencent.com/document/product/647/78731)
 
@@ -54,21 +53,27 @@ GitHub Release Date: -->
 
 ## 目录说明
 
-```
+```text
 .
 ├── README.md
 ├── demos/basic/
+├── demos/basic-vue2/
 └── src/
 ```
 
 **demos/basic/**
 
-- 此文件夹下是基础版 demo，集成了完整的 TUICallKit 组件功能，可以直接搜索用户拨打音视频通话。
-- demo 页面下方集成了调试面板，可直接输入您的应用信息，具体流程请参考：[Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.md)。
+- 此文件夹下是 Vue3 基础版 demo，集成了完整的 TUICallKit 组件功能，可以直接搜索用户拨打音视频通话。
+- demo 页面下方集成了调试面板，可直接输入您的应用信息，具体流程请参考：[Vue3 Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.md)。
+
+**demos/basic-vue2/**
+
+- 此文件夹下是 Vue2.7 基础版 demo，集成了完整的 TUICallKit 组件功能，可以直接搜索用户拨打音视频通话。
+- demo 页面下方集成了调试面板，可直接输入您的应用信息，具体流程请参考：[Vue2 Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue2/README.md)。
 
 **src/** 
 
-- 此文件夹下是 TUICallKit 组件源文件，包含全部 UI 层与逻辑层代码，入口文件为 `index.ts`。
+- 此文件夹下是 TUICallKit 组件源文件，支持 Vue3 与 Vue2.7+ 的项目直接引入。包含全部 UI 层与逻辑层代码，入口文件为 `index.ts`。
 - 可直接复制此文件到您的工程中进行组件的引入，如 `import { TUICallKit, TUICallKitServer } from './src/index'`, 其中 `src` 可重命名，引入路径做相应的修改即可，更详细的接入组件过程请参考 [快速接入 TUICallKit](https://cloud.tencent.com/document/product/647/78731)。
 
 ## Changelog
