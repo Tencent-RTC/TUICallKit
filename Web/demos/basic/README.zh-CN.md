@@ -47,7 +47,7 @@ npm run serve
 <img style="width:600px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/194749093-c34aab1d-009c-46ba-8191-ee98b507d68f.png"/>
 </div>
 
-1. 点击页面中的按钮 `登录其他 UserID`，可快捷打开新的标签页，用于登录另一用户，进行互通。
+2. 点击页面中的按钮 `登录其他 UserID`，可快捷打开新的标签页，用于登录另一用户，进行互通。
 
   <div align="center">
     <img style="width:450px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/194749170-342c29bc-8943-4d50-b9d0-318b1a3c0048.png"/>
@@ -59,7 +59,7 @@ npm run serve
     <img style="width:300px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/194752183-f2114fcf-6ba2-40ef-893f-9ea1645a2b81.png"/>
   </div>
   
-3.呼叫
+3. 呼叫
   
 - 可直接复制或手动输入 `user_B` 这个 userID，填入 `user_A` 的搜索框中，添加到拨打列表，点击通话。
     
@@ -70,6 +70,27 @@ npm run serve
 ![Oct-08-2022 20-21-07](https://user-images.githubusercontent.com/57169560/194707785-6d2e1aca-5ee7-427a-be62-19699578e684.gif)
 
 </div>
+
+### 第四步：生产环境
+
+1. 拷贝 `Web/src` 目录到 `Web/demos/basic/src/components/`;
+
+2. 进入 `Web/demos/basic` 安装所需依赖
+
+    ```bash
+    npm install trtc-js-sdk tsignaling tuicall-engine-webrtc
+    npm install
+    ```
+
+3. 修改引入路径，将 `src/App.vue` 中的 `import { TUICallKit, TUICallKitServer, TUICallKitMini } from "../../..";` 改为 `import { TUICallKit, TUICallKitServer, TUICallKitMini } from "./components/src";`
+
+4. 打包工程
+
+    ```bash
+    npm run build
+    ```
+
+    然后放在您的服务器上即可，注意，**正式环境需要运行在 `https` 协议下**，否则获取设备会出现异常。
 
 ## 其他文档
 

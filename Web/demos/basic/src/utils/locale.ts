@@ -38,7 +38,7 @@ const i18n = createI18n({
       "input-userID": "请填写 userID",
       "login-failed-message": "登录失败，请检查 SDKAppID 与 SecretKey 是否正确",
       "copy-failed-message": "复制失败，请手动填写",
-      "copied": "copied",
+      "copied": "复制成功",
       "skip-device-detector": "已跳过设备检测",
       "please-input-param": "请填写正确的 SDKAppID 与 SecretKey 后重试",
       "video-call": "视频通话",

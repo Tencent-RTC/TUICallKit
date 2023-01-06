@@ -79,14 +79,13 @@ function pageIncrease() {
             <MicrophoneIcon :volume="getVolumeByUserID(profile.userID)" v-if="profile?.microphone" />
             <MicrophoneClosedSVG v-else />
           </div>
-          {{ `${profile.userID} ${t('me')}` }}
+          {{ `${profile?.nick} ${t('me')}` }}
         </span>
       </div>
-      <template v-for='remoteUserItem in currentPageRemoteList' :key='remoteUserItem.userID'>
-        <div :class="groupUserViewClass" :id='remoteUserItem.userID'>
+        <div :class="groupUserViewClass" :id='remoteUserItem.userID' v-for='remoteUserItem in currentPageRemoteList' :key='remoteUserItem.userID'>
           <template v-if="!remoteUserItem.isEntered || (isFromGroup && callType === CALL_TYPE_STRING.AUDIO)">
             <div class="user-view-text-container">
-              <div :class="userViewUserId"> {{ remoteUserItem.userID }} </div>
+              <div :class="userViewUserId"> {{ remoteUserItem?.nick }} </div>
               <div class="user-view-info"> {{ remoteUserItem.isEntered ? t('already-enter') : t('waiting') }} </div>
             </div>
           </template>
@@ -95,10 +94,9 @@ function pageIncrease() {
               <MicrophoneIcon :volume="getVolumeByUserID(remoteUserItem?.userID)" v-if="remoteUserItem?.microphone" />
               <MicrophoneClosedSVG v-else />
             </div>
-            {{ remoteUserItem.userID }}
+            {{ remoteUserItem?.nick }}
           </span>
         </div>
-      </template>
     </div>
   </div>
 </template>

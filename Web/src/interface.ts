@@ -36,6 +36,7 @@ export interface RemoteUser {
   isReadyRender: boolean;
   microphone?: boolean;
   camera?: boolean;
+  nick?: string;
   [key: string]: string | boolean | undefined;
 }
 

@@ -31,7 +31,7 @@ onUnmounted(() => {
     <div class="dialing-content" v-if="!isMobile || status === STATUS.BE_INVITED || status === STATUS.CALLING_C2C_AUDIO">
       <div class="dialing-user-id">
         <template v-if="remoteList.length >= 1">
-          {{ remoteList[0].userID }}
+          {{ remoteList[0]?.nick }}
         </template>
         <div class="microphone-icon-container" v-if="status === STATUS.CALLING_C2C_AUDIO">
           <MicrophoneIcon :volume="getVolumeByUserID(remoteList[0].userID)" v-if="remoteList[0]?.microphone" />

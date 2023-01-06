@@ -1,4 +1,4 @@
-import { ref, watch } from "vue";
+import { ref, watch, triggerRef } from "vue";
 import type { RemoteUser } from "../interface";
 import { timerStart, timerClear, timerString } from "../utils/timer";
 import { STATUS, CHANGE_STATUS_REASON, CALL_TYPE_STRING } from "../constants";
@@ -6,19 +6,19 @@ import { TUICallType } from "tuicall-engine-webrtc";
 import { TUICallKitServer } from "../index";
 import { languageData } from "../locales/index";
 
-const lang = ref<string>("zh-cn");
+export const lang = ref<string>("zh-cn");
 
-const status = ref<string>(STATUS.IDLE);
-const isMinimized = ref<boolean>(false);
-const dialingInfo = ref<string>("waiting");
-const callType = ref<string>();
-const isFromGroup = ref<boolean>(false);
-const remoteList = ref<Array<RemoteUser>>([]);
-const volumeMap = ref<Map<string, number>>(new Map<string, number>());
-const profile = ref<RemoteUser>({
+export const status = ref<string>(STATUS.IDLE);
+export const isMinimized = ref<boolean>(false);
+export const dialingInfo = ref<string>("waiting");
+export const callType = ref<string>();
+export const isFromGroup = ref<boolean>(false);
+export const remoteList = ref<Array<RemoteUser>>([]);
+export const volumeMap = ref<Map<string, number>>(new Map<string, number>());
+export const profile = ref<RemoteUser>({
   userID: "",
   isEntered: true,
-  isReadyRender: false, 
+  isReadyRender: false,
   microphone: true,
   camera: true,
 });
@@ -48,12 +48,12 @@ watch(status, () => {
   }
 });
 
-function setLanguage(language: string): void {
+export function setLanguage(language: string): void {
   lang.value = language;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function t(key: any): string {
+export function t(key: any): string {
   for(const langKey in languageData) {
     if (langKey === lang.value) {
       const currentLanguage = languageData[langKey];
@@ -69,7 +69,7 @@ function t(key: any): string {
   return enString;
 }
 
-function changeStatus(newValue: string, reason?: string, timeout = 0): void {
+export function changeStatus(newValue: string, reason?: string, timeout = 0): void {
   console.log("TUICallKit Status: " + newValue);
   if (reason !== CHANGE_STATUS_REASON.CALL_TYPE_CHANGED) {
     console.log("TUICallKit timerClear");
@@ -89,7 +89,7 @@ function changeStatus(newValue: string, reason?: string, timeout = 0): void {
   }, timeout);
 }
 
-function addRemoteListByUserID(userID: string): void {
+export function addRemoteListByUserID(userID: string): void {
   const isExisted = remoteList.value.findIndex((item: RemoteUser) => item.userID === userID);
   if (isExisted >= 0) {
     remoteList.value[isExisted].isEntered = true;
@@ -102,7 +102,7 @@ function addRemoteListByUserID(userID: string): void {
   }
 }
 
-function removeRemoteListByUserID(userID: string): number {
+export function removeRemoteListByUserID(userID: string): number {
   const isExisted = remoteList.value.findIndex((item: RemoteUser) => item.userID === userID);
   if (isExisted >= 0) {
     const resArray = remoteList.value;
@@ -112,7 +112,7 @@ function removeRemoteListByUserID(userID: string): number {
   return remoteList.value.length;
 }
 
-function changeRemoteDeviceByUserID(userID: string, deviceType: string, value: boolean): void {
+export function changeRemoteDeviceByUserID(userID: string, deviceType: string, value: boolean): void {
   const isExisted = remoteList.value.findIndex((item: RemoteUser) => item.userID === userID);
   if (isExisted >= 0) {
     if (deviceType === CALL_TYPE_STRING.VIDEO) remoteList.value[isExisted].camera = value;
@@ -121,7 +121,7 @@ function changeRemoteDeviceByUserID(userID: string, deviceType: string, value: b
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function updateRemoteVolumeMap(newVolumeMap: any): void {
+export function updateRemoteVolumeMap(newVolumeMap: any): void {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   newVolumeMap.forEach((item: any) => {
     const { userId, audioVolume } = item;
@@ -129,11 +129,11 @@ function updateRemoteVolumeMap(newVolumeMap: any): void {
   });
 }
 
-function changeDialingInfo(newValue: string): void {
+export function changeDialingInfo(newValue: string): void {
   dialingInfo.value = newValue;
 }
 
-function changeCallType(newValue: number): void {
+export function changeCallType(newValue: number): void {
   // change call type
   switch (newValue) {
     case TUICallType.AUDIO_CALL: 
@@ -158,23 +158,45 @@ function changeCallType(newValue: number): void {
   }
 }
 
-function changeIsFromGroup(newValue: boolean): void {
+export function changeIsFromGroup(newValue: boolean): void {
   isFromGroup.value = newValue;
 }
 
-function changeRemoteList(newValue: RemoteUser[]): void {
+async function getNickByUserID(userID: string) {
+  const tim = TUICallKitServer.getTim();
+  if (!tim) {
+    console.warn("TUICallKit request nick name error, reason: tim is empty/null");
+    return userID;
+  }
+  let nick = userID;
+  const { data } = await tim.getUserProfile({ userIDList: [ userID ] }) || {};
+  if (data && data.length > 0) {
+    nick = data[0].nick;
+  }
+  if (nick === "") nick = userID;
+  return nick;
+}
+
+export async function changeRemoteList(newValue: RemoteUser[]) {
   remoteList.value = newValue;
+  for (const user of remoteList.value) {
+    if (user?.nick) return;
+    user.nick = await getNickByUserID(user.userID);
+    triggerRef(remoteList);
+  }
 }
 
-function updateProfile(newValue: RemoteUser): void {
+export async function updateProfile(newValue: RemoteUser) {
   profile.value = newValue;
+  profile.value.nick = await getNickByUserID(newValue.userID);
+  triggerRef(profile);
 }
 
-function changeIsMinimized(newValue: boolean): void {
+export function changeIsMinimized(newValue: boolean): void {
   isMinimized.value = newValue;
 }
 
-function getVolumeByUserID(userID: string): number {
+export function getVolumeByUserID(userID: string): number {
   return volumeMap.value.get(userID) || 0;
 }
 
@@ -184,27 +206,3 @@ export function makeRenderFlag(flag: string, userID: string) {
     remoteList.value[isExisted][flag] = true;
   }
 }
-
-export {
-  status,
-  profile,
-  dialingInfo,
-  callType,
-  isFromGroup,
-  remoteList,
-  isMinimized,
-  changeStatus,
-  changeCallType,
-  changeIsFromGroup,
-  changeDialingInfo,
-  changeRemoteList,
-  addRemoteListByUserID,
-  removeRemoteListByUserID,
-  changeRemoteDeviceByUserID,
-  updateRemoteVolumeMap,
-  getVolumeByUserID,
-  updateProfile,
-  changeIsMinimized,
-  setLanguage,
-  t
-};
