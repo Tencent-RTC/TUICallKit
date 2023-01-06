@@ -19,12 +19,11 @@ import TUICallKit
     @objc var userId: String
     @objc var userSig: String = ""
     
-    public init(userID: String) {
+    init(userID: String) {
         userId = userID
         token = userID
         phone = userID
         name = userID
-        
         userSig = GenerateTestUserSig.genTestUserSig(identifier: userID)
         avatar = TUI_CALL_DEFAULT_AVATAR
         super.init()

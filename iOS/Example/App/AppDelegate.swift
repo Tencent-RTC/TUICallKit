@@ -35,7 +35,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // MARK: UISceneSession Lifecycle
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+    func application(_ application: UIApplication,
+                     configurationForConnecting connectingSceneSession: UISceneSession,
+                     options: UIScene.ConnectionOptions) -> UISceneConfiguration {
         // Called when a new scene session is being created.
         // Use this method to select a configuration to create the new scene with.
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
@@ -43,13 +45,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
         // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
+        // If any sessions were discarded while the application was not running,
+        // this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
     
     func showMainViewController() {
-        let mainViewController = MainViewController.init()
-        let rootVC = UINavigationController.init(rootViewController: mainViewController)
+        let mainViewController = MainViewController()
+        let rootVC = UINavigationController(rootViewController: mainViewController)
         
         if let keyWindow = SceneDelegate.getKeyWindow() {
             keyWindow.rootViewController = rootVC
@@ -60,7 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func showLoginViewController() {
-        let loginVC = LoginViewController.init()
+        let loginVC = LoginViewController()
         let nav = UINavigationController(rootViewController: loginVC)
         
         if let keyWindow = SceneDelegate.getKeyWindow() {
@@ -103,7 +106,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // MARK: 当用户点击通知时，会触发
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
         completionHandler()
     }
     
@@ -129,8 +134,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 extension AppDelegate: V2TIMConversationListener {
+    // 会话未读总数变更通知, 可以在此处自定义处理逻辑
     func onTotalUnreadMessageCountChanged(_ totalUnreadCount: UInt64) {
-        // 会话未读总数变更通知, 可以在此处自定义处理逻辑
     }
 }
 

@@ -12,21 +12,21 @@ class MainCollectionViewCell: UICollectionViewCell {
     static let reuseIdentifier = "MainCollectionViewCell_Reuse_Identifier"
     
     private let containerView: UIView = {
-        let view = UIView.init(frame: .zero)
+        let view = UIView(frame: .zero)
         view.backgroundColor = .white
         return view
     }()
     
     private let iconImageView: UIImageView = {
-        let imageView = UIImageView.init(frame: .zero)
+        let imageView = UIImageView(frame: .zero)
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
     private let titleLabel: UILabel = {
-        let label = UILabel.init(frame: .zero)
-        label.font = UIFont.init(name: "PingFangSC-Medium", size: 18)
-        label.textColor = UIColor.init("333333")
+        let label = UILabel(frame: .zero)
+        label.font = UIFont(name: "PingFangSC-Medium", size: 18)
+        label.textColor = UIColor("333333")
         label.textAlignment = .center
         label.numberOfLines = 2
         label.adjustsFontSizeToFitWidth = true
@@ -35,9 +35,9 @@ class MainCollectionViewCell: UICollectionViewCell {
     }()
     
     private let descLabel: UILabel = {
-        let label = UILabel.init(frame: .zero)
-        label.font = UIFont.init(name: "PingFangSC-Regular", size: 14)
-        label.textColor = UIColor.init("666666")
+        let label = UILabel(frame: .zero)
+        label.font = UIFont(name: "PingFangSC-Regular", size: 14)
+        label.textColor = UIColor("666666")
         label.textAlignment = .left
         label.numberOfLines = 0
         label.adjustsFontSizeToFitWidth = true
@@ -53,7 +53,7 @@ class MainCollectionViewCell: UICollectionViewCell {
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        roundedRect(rect: containerView.frame, byRoundingCorners: .allCorners, cornerRadii: CGSize.init(width: 10, height: 10))
+        roundedRect(rect: containerView.frame, byRoundingCorners: .allCorners, cornerRadii: CGSize(width: 10, height: 10))
     }
     
     required init?(coder: NSCoder) {
@@ -103,7 +103,7 @@ extension MainCollectionViewCell {
     
     public func config(_ model: MainMenuItemModel) {
         if model.imageName.hasPrefix("http") {
-            if let imageURL = URL.init(string: model.imageName) {
+            if let imageURL = URL(string: model.imageName) {
                 iconImageView.kf.setImage(with: .network(imageURL))
             }
         }

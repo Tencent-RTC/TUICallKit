@@ -164,13 +164,11 @@ extension GroupContactViewController {
     
     func deleteAddedUser(users: [V2TIMUserFullInfo]) {
         guard users.count > 0 else { return }
-        let waitingAddUser: V2TIMUserFullInfo = users.first!
-        var waitingDeleteUser : Int = -1
+        guard let waitingAddUser: V2TIMUserFullInfo = users.first else { return }
         
-        for (index, item) in addedV2TIMUserFullInfo.enumerated() {
-            if (waitingAddUser.userID == item.userID) {
-                waitingDeleteUser = index
-            }
+        var waitingDeleteUser : Int = -1
+        for (index, item) in addedV2TIMUserFullInfo.enumerated() where waitingAddUser.userID == item.userID {
+            waitingDeleteUser = index
         }
         
         guard waitingDeleteUser != -1 else { return }
@@ -180,13 +178,11 @@ extension GroupContactViewController {
     
     func addUser(users: [V2TIMUserFullInfo]) {
         guard users.count > 0 else { return }
-        let waitingAddUser: V2TIMUserFullInfo = users.first!
+        guard let waitingAddUser: V2TIMUserFullInfo = users.first else { return }
         var addedFlag = false
-        
         for _ in addedV2TIMUserFullInfo.filter({$0.userID == waitingAddUser.userID}) {
             addedFlag = true
         }
-        
         guard addedFlag == false else { return }
         addedV2TIMUserFullInfo.append(waitingAddUser)
         addedTable.reloadData()

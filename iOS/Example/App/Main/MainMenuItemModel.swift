@@ -14,7 +14,7 @@ struct MainMenuItemModel {
     let selectHandle: () -> Void
     
     var iconImage: UIImage? {
-        UIImage.init(named: imageName)
+        UIImage(named: imageName)
     }
     
     init(imageName: String, title: String, content: String, selectHandle: @escaping () -> Void) {

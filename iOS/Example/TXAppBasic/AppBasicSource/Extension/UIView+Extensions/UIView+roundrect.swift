@@ -15,8 +15,8 @@ public extension UIView {
     ///   - byRoundingCorners: 裁剪位置
     ///   - cornerRadii: 裁剪半径
     func roundedRect(rect:CGRect, byRoundingCorners: UIRectCorner, cornerRadii: CGSize) {
-        let maskPath = UIBezierPath.init(roundedRect: rect, byRoundingCorners: byRoundingCorners, cornerRadii: cornerRadii)
-        let maskLayer = CAShapeLayer.init()
+        let maskPath = UIBezierPath(roundedRect: rect, byRoundingCorners: byRoundingCorners, cornerRadii: cornerRadii)
+        let maskLayer = CAShapeLayer()
         maskLayer.frame = bounds
         maskLayer.path = maskPath.cgPath
         self.layer.mask = maskLayer

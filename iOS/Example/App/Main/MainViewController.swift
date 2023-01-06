@@ -86,8 +86,11 @@ extension MainViewController {
     private func setupNaviBar() {
         view.backgroundColor = UIColor("F4F5F9")
         navigationController?.navigationBar.topItem?.title = "TRTC"
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor:UIColor.black,
-                                                                   NSAttributedString.Key.font:UIFont(name: "PingFangSC-Semibold", size: 18)!]
+        let uFont = UIFont(name: "PingFangSC-Semibold", size: 18) ?? UIFont.systemFont(ofSize: 18)
+        navigationController?.navigationBar.titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor:UIColor.black,
+            NSAttributedString.Key.font:uFont,
+        ]
         navigationController?.navigationBar.barTintColor = UIColor.white
         navigationController?.navigationBar.isTranslucent = false
         let item = UIBarButtonItem(customView: backBtn)

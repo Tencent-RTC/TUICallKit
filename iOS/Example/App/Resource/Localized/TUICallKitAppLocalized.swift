@@ -22,15 +22,22 @@ func localizeReplaceTwoCharacter(origin: String, xxx_replace: String, yyy_replac
 }
 
 func localizeReplaceThreeCharacter(origin: String, xxx_replace: String, yyy_replace: String, zzz_replace: String) -> String {
-    return localizeReplaceTwoCharacter(origin: origin, xxx_replace: xxx_replace, yyy_replace: yyy_replace).replacingOccurrences(of: "zzz", with: zzz_replace)
+    return localizeReplaceTwoCharacter(origin: origin,
+                                       xxx_replace: xxx_replace,
+                                       yyy_replace: yyy_replace).replacingOccurrences(of: "zzz", with: zzz_replace)
 }
 
 func localizeReplaceFourCharacter(origin: String, xxx_replace: String, yyy_replace: String, zzz_replace: String, mmm_replace: String) -> String {
-    return localizeReplaceThreeCharacter(origin: origin, xxx_replace: xxx_replace, yyy_replace: yyy_replace, zzz_replace: zzz_replace).replacingOccurrences(of: "mmm", with: mmm_replace)
+    return localizeReplaceThreeCharacter(origin: origin,
+                                         xxx_replace: xxx_replace,
+                                         yyy_replace: yyy_replace,
+                                         zzz_replace: zzz_replace).replacingOccurrences(of: "mmm", with: mmm_replace)
 }
 
-func localizeReplaceFiveCharacter(origin: String, xxx_replace: String, yyy_replace: String, zzz_replace: String, mmm_replace: String, nnn_replace: String) -> String {
-    return localizeReplaceFourCharacter(origin: origin, xxx_replace: xxx_replace, yyy_replace: yyy_replace, zzz_replace: zzz_replace, mmm_replace: mmm_replace).replacingOccurrences(of: "nnn", with: nnn_replace)
+func localizeReplaceFiveCharacter(origin: String, xxx_replace: String,yyy_replace: String, zzz_replace: String,
+                                  mmm_replace: String, nnn_replace: String) -> String {
+    return localizeReplaceFourCharacter(origin: origin, xxx_replace: xxx_replace, yyy_replace: yyy_replace,
+                                        zzz_replace: zzz_replace, mmm_replace: mmm_replace).replacingOccurrences(of: "nnn", with: nnn_replace)
 }
 
 let TUICallKitLocalizeTableName = "TUICallKitAppLocalized"
