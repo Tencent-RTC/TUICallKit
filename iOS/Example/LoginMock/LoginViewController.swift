@@ -94,7 +94,7 @@ class LoginViewController: UIViewController {
     }
     
     func showRegisterVC() {
-        let vc = RegisterViewController.init()
+        let vc = RegisterViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
     

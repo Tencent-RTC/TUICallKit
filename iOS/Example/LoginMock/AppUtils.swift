@@ -11,23 +11,13 @@ import UIKit
 import TUICallKit
 
 class AppUtils: NSObject {
-    @objc public static let shared = AppUtils()
+    @objc static let shared = AppUtils()
     private override init() {}
     
     var deviceToken: Data? = nil
     
     @objc var appDelegate: AppDelegate {
         return UIApplication.shared.delegate as! AppDelegate
-    }
-    
-    @objc var curUserId: String {
-        get {
-#if NOT_LOGIN
-            return ""
-#else
-            return V2TIMManager.sharedInstance()?.getLoginUser() ?? ""
-#endif
-        }
     }
     
     // MARK: - UI

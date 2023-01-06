@@ -80,7 +80,11 @@ class LoginRootView: UIView {
         textField.backgroundColor = .white
         textField.font = UIFont(name: "PingFangSC-Regular", size: 16)
         textField.textColor = UIColor(hex: "333333")
-        textField.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.font : UIFont(name: "PingFangSC-Regular", size: 16) ?? UIFont.systemFont(ofSize: 16), NSAttributedString.Key.foregroundColor : UIColor(hex: "BBBBBB") ?? .gray])
+        let attrs = [
+            NSAttributedString.Key.font : UIFont(name: "PingFangSC-Regular", size: 16) ?? UIFont.systemFont(ofSize: 16),
+            NSAttributedString.Key.foregroundColor : UIColor(hex: "BBBBBB") ?? .gray,
+        ]
+        textField.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: attrs)
         textField.delegate = self
         return textField
     }
@@ -105,13 +109,14 @@ class LoginRootView: UIView {
     }
     
     weak var currentTextField: UITextField?
-    
-    public weak var rootVC: LoginViewController?
+    weak var rootVC: LoginViewController?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardFrameChange(noti:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardFrameChange(noti:)),
+                                               name: UIResponder.keyboardWillChangeFrameNotification,
+                                               object: nil)
     }
     
     deinit {

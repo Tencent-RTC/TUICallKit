@@ -34,7 +34,7 @@ extension UIColor {
         var green: CGFloat = 0.0
         var blue: CGFloat  = 0.0
         var alpha: CGFloat = 1.0
-        let scanner = Scanner.init(string: hex)
+        let scanner = Scanner(string: hex)
         var hexValue: CUnsignedLongLong = 0
         if scanner.scanHexInt64(&hexValue) {
             switch (hex.count) {
@@ -77,5 +77,5 @@ extension UIColor {
 }
 
 public extension UIColor {
-    public static let themeTintColor = UIColor.init(0x5E6FA3)
+    static let themeTintColor = UIColor(0x5E6FA3)
 }

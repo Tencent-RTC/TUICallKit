@@ -23,12 +23,10 @@
 		4F3A41832892B3C500EBB5F6 /* GroupContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A41812892B3C500EBB5F6 /* GroupContactViewController.swift */; };
 		4F3F7CA826D65D38002912DE /* RegisterRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7C9A26D65D38002912DE /* RegisterRootView.swift */; };
 		4F3F7CA926D65D38002912DE /* LoginRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7C9B26D65D38002912DE /* LoginRootView.swift */; };
-		4F3F7CAA26D65D38002912DE /* UserAgreementViewController+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7C9C26D65D38002912DE /* UserAgreementViewController+UI.swift */; };
 		4F3F7CAD26D65D38002912DE /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA226D65D38002912DE /* LoginViewController.swift */; };
 		4F3F7CAE26D65D38002912DE /* ProfileManager_Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA326D65D38002912DE /* ProfileManager_Mock.swift */; };
 		4F3F7CAF26D65D38002912DE /* AppUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA426D65D38002912DE /* AppUtils.swift */; };
 		4F3F7CB026D65D38002912DE /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA526D65D38002912DE /* RegisterViewController.swift */; };
-		4F3F7CB126D65D38002912DE /* UserAgreementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA626D65D38002912DE /* UserAgreementViewController.swift */; };
 		4F3F7CB226D65D38002912DE /* LayoutDefine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA726D65D38002912DE /* LayoutDefine.swift */; };
 		4F3F7CB526D65DE3002912DE /* GenerateTestUserSig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CB426D65DE3002912DE /* GenerateTestUserSig.swift */; };
 		4F84BEB127798B4500BE13C5 /* SelectUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEAC27798B4500BE13C5 /* SelectUserTableViewCell.swift */; };
@@ -60,12 +58,10 @@
 		4F3A41812892B3C500EBB5F6 /* GroupContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupContactViewController.swift; sourceTree = "<group>"; };
 		4F3F7C9A26D65D38002912DE /* RegisterRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterRootView.swift; sourceTree = "<group>"; };
 		4F3F7C9B26D65D38002912DE /* LoginRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginRootView.swift; sourceTree = "<group>"; };
-		4F3F7C9C26D65D38002912DE /* UserAgreementViewController+UI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserAgreementViewController+UI.swift"; sourceTree = "<group>"; };
 		4F3F7CA226D65D38002912DE /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		4F3F7CA326D65D38002912DE /* ProfileManager_Mock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileManager_Mock.swift; sourceTree = "<group>"; };
 		4F3F7CA426D65D38002912DE /* AppUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppUtils.swift; sourceTree = "<group>"; };
 		4F3F7CA526D65D38002912DE /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
-		4F3F7CA626D65D38002912DE /* UserAgreementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAgreementViewController.swift; sourceTree = "<group>"; };
 		4F3F7CA726D65D38002912DE /* LayoutDefine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutDefine.swift; sourceTree = "<group>"; };
 		4F3F7CB426D65DE3002912DE /* GenerateTestUserSig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateTestUserSig.swift; sourceTree = "<group>"; };
 		4F84BEAC27798B4500BE13C5 /* SelectUserTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectUserTableViewCell.swift; sourceTree = "<group>"; };
@@ -177,8 +173,6 @@
 			children = (
 				4F3F7CA226D65D38002912DE /* LoginViewController.swift */,
 				4F3F7CA526D65D38002912DE /* RegisterViewController.swift */,
-				4F3F7CA626D65D38002912DE /* UserAgreementViewController.swift */,
-				4F3F7C9C26D65D38002912DE /* UserAgreementViewController+UI.swift */,
 				4F3F7C9A26D65D38002912DE /* RegisterRootView.swift */,
 				4F3F7C9B26D65D38002912DE /* LoginRootView.swift */,
 				4F3F7CA326D65D38002912DE /* ProfileManager_Mock.swift */,
@@ -365,7 +359,6 @@
 				47D9D36C26521A7A0007EE1F /* ViewController.swift in Sources */,
 				4F3F7CAF26D65D38002912DE /* AppUtils.swift in Sources */,
 				4F3F7CB526D65DE3002912DE /* GenerateTestUserSig.swift in Sources */,
-				4F3F7CB126D65D38002912DE /* UserAgreementViewController.swift in Sources */,
 				4F3F7CAD26D65D38002912DE /* LoginViewController.swift in Sources */,
 				4F3A41832892B3C500EBB5F6 /* GroupContactViewController.swift in Sources */,
 				4F84BED72779AB6800BE13C5 /* MainViewController.swift in Sources */,
@@ -374,7 +367,6 @@
 				4F3F7CA826D65D38002912DE /* RegisterRootView.swift in Sources */,
 				4F84BEB127798B4500BE13C5 /* SelectUserTableViewCell.swift in Sources */,
 				4F3F7CA926D65D38002912DE /* LoginRootView.swift in Sources */,
-				4F3F7CAA26D65D38002912DE /* UserAgreementViewController+UI.swift in Sources */,
 				47D9D37226521A7A0007EE1F /* SceneDelegate.swift in Sources */,
 				4F3F7CAE26D65D38002912DE /* ProfileManager_Mock.swift in Sources */,
 			);
@@ -574,7 +566,7 @@
 				CODE_SIGN_ENTITLEMENTS = TUICallKitApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 205;
+				CURRENT_PROJECT_VERSION = 255;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = F8A3GH6Q4W;
 				ENABLE_BITCODE = NO;
@@ -593,7 +585,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -647,7 +639,7 @@
 				CODE_SIGN_ENTITLEMENTS = TUICallKitApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 205;
+				CURRENT_PROJECT_VERSION = 255;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = F8A3GH6Q4W;
 				ENABLE_BITCODE = NO;
@@ -682,7 +674,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
