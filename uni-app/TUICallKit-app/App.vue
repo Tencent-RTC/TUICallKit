@@ -5,6 +5,7 @@ import { genTestUserSig } from './debug/GenerateTestUserSig.js';
 const TUICallKit = uni.requireNativePlugin('TencentCloud-TUICallKit');
 console.error(TUICallKit, 'TencentCloud-TUICallKit ｜ ok');
 const TUICallKitEvent = uni.requireNativePlugin('globalEvent');
+const TUICallEngine = uni.requireNativePlugin('TencentCloud-TUICallKit-TUICallEngine');
 
 export default {
 	globalData: {
@@ -22,6 +23,7 @@ export default {
     // 将原生插件挂载在 uni 上
     uni.$TUICallKit = TUICallKit;
     uni.$TUICallKitEvent = TUICallKitEvent;
+		uni.$TUICallEngine = TUICallEngine;
   },
   onShow() {
     console.log('App Show');
