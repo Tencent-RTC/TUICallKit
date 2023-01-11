@@ -69,7 +69,6 @@
 			userIDToSearchInput(e) {
 				this.userIDToSearch = e.detail.value
 			},
-
 			searchUser() {
 				// 去掉前后空格
 				const newSearch = this.userIDToSearch.trim();
@@ -92,7 +91,6 @@
 						this.searchResultShow = true
 					});
 			},
-
 			call() {
 				if (this.config.userID === this.invitee.userID) {
 					uni.showToast({
@@ -109,6 +107,15 @@
 						},
 						res => {
 							console.log(JSON.stringify(res));
+							// hangup、handleSetVideoRenderParams 接口测试
+							// setTimeout(() => {
+							// 	this.handleSetVideoRenderParams();
+							// }, 3000)
+							// setTimeout(() => {
+							// 	if (this.config.userID === '234') {
+							// 		this.handleHangup();	
+							// 	}
+							// }, 15000)
 						}
 					);
 				} catch (error) {
@@ -118,7 +125,21 @@
 					})
 				}
 			},
-
+			// 手动挂断
+			handleHangup() {
+				uni.$TUICallEngine.hangup();
+			},
+			// 设置参数
+			handleSetVideoRenderParams() {
+				const params = {
+					userID: this.config.userID,
+					fillMode: 0, // 0-填充模式，1一适应模式
+					rotation: 1, // 0~3分别对应值：Rotation_0, Rotation_90, Rotation_180, Rotation_270;
+				};
+				uni.$TUICallEngine.setVideoRenderParams(params, (res) => {
+					console.warn('渲染设置回调 = ', JSON.stringify(res));
+				});
+			},
 		}
 	}
 </script>
