@@ -54,6 +54,51 @@ Component({
    * 组件的方法列表
    */
   methods: {
+    async handleCheckAuthor(e) {
+      const type =this.data.callType;
+      wx.getSetting({
+        success: async (res) => {
+          const isRecord = res.authSetting['scope.record'];
+          const isCamera = res.authSetting['scope.camera'];
+          if (!isRecord && type === 1) {
+            const title = '麦克风权限授权';
+            const content = '使用语音通话，需要在设置中对麦克风进行授权允许';
+            try {
+              await wx.authorize({ scope: 'scope.record' });
+              this.accept(e);
+            } catch (e) {
+              this.handleShowModal(title, content);
+            }
+            return;
+          }
+          if ((!isRecord || !isCamera) && type === 2) {
+            const title = '麦克风、摄像头权限授权';
+            const content = '使用视频通话，需要在设置中对麦克风、摄像头进行授权允许';
+            try {
+              await wx.authorize({ scope: 'scope.record' });
+              await wx.authorize({ scope: 'scope.camera' });
+              this.accept(e);
+            } catch (e) {
+              this.handleShowModal(title, content);
+            }
+            return;
+          }
+          this.accept(e);
+        },
+      });
+    },
+    handleShowModal(title, content) {
+      wx.showModal({
+        title,
+        content,
+        confirmText: '去设置',
+        success: (res) => {
+          if (res.confirm) {
+            wx.openSetting();
+          }
+        },
+      });
+    },
     accept(event) {
       this.setData({
         isClick: false,

@@ -1,6 +1,6 @@
 import { genTestUserSig } from './debug/GenerateTestUserSig';
 import Aegis from './lib/aegis';
-
+import { CallManager } from './TUICallKit/serve/callManager';
 const Signature = genTestUserSig('');
 App({
   onLaunch() {
@@ -18,6 +18,7 @@ App({
     };
     this.aegisInit();
     this.aegisReportEvent('onLaunch', 'onLaunch-success');
+    wx.CallManager = new CallManager();
   },
   aegisInit() {
     wx.aegis = new Aegis({
