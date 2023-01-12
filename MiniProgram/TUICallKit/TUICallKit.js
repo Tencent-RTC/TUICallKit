@@ -387,16 +387,6 @@ Component({
         });
         return;
       }
-      // 查看群是否有效
-      this.getTim().searchGroupByID(params.groupID)
-        .then((imResponse) => {
-        })
-        .catch(() => {
-          wx.showToast({
-            title: '未搜索到该群',
-          });
-          return;
-        });
       this.resetUI();
       if (this.data.callStatus !== STATUS.IDLE) {
         return;
@@ -500,6 +490,7 @@ Component({
         showToatTime: 0,
       });
     },
+
     // 呼叫中的事件处理
     handleCallingEvent(data) {
       const { name } = data.detail;
@@ -626,18 +617,40 @@ Component({
       return wx.$TUICallEngine.getTim();
     },
     // 初始化TRTCCalling
-    async init() {
-      this._addTSignalingEvent();
-      const res = await wx.$TUICallEngine.init({
-        userID: this.data.config.userID,
-        userSig: this.data.config.userSig,
+    async init(params) {
+      // 兼容从config和init中传值
+      const { sdkAppID, tim, userID, userSig, SDKAppID } = { ...this.data.config, ...params };
+      this.setData({
+        ownUserId: userID,
+        config: {
+          ...this.data.config,
+          sdkAppID: sdkAppID || SDKAppID,
+          userID,
+          userSig,
+        },
       });
-      return res;
+      if (!wx.$TUICallEngine) {
+        wx.$TUICallEngine = TUICallEngine.createInstance({
+          tim,
+          sdkAppID: sdkAppID || SDKAppID,
+        });
+        try {
+          await wx.$TUICallEngine.init({
+            userID,
+            userSig,
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      this._addTSignalingEvent();
     },
     // 销毁 TUICallEngine
     destroyed() {
       this._removeTSignalingEvent();
-      TUICallEngine.destroyInstance();
+      if (!wx.$globalCallSign) {
+        TUICallEngine.destroyInstance();
+      }
     },
   },
 
@@ -652,18 +665,17 @@ Component({
 
     },
     ready() {
-      this.setData({
-        ownUserId: this.data.config.userID,
-      });
-      wx.$TUICallEngine = TUICallEngine.createInstance({
-        tim: this.data.config.tim,
-        sdkAppID: this.data.config.sdkAppID,
-      });
       this.reset();
+      if (wx.$globalCallSign) {
+        wx.$CallManagerInstance.removeEngineInvite();
+      }
     },
     detached() {
       this.destroyed();
       this.reset();
+      if (wx.$globalCallSign) {
+        wx.$CallManagerInstance.addEngineInvite();
+      }
     },
     error() {
     },

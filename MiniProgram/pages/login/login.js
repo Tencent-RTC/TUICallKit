@@ -1,3 +1,4 @@
+import { genTestUserSig } from '../../debug/GenerateTestUserSig';
 Page({
   data: {
     userID: '',
@@ -17,7 +18,6 @@ Page({
     });
   },
 
-
   bindInputUserID(e) {
     this.setData({
       userID: e.detail.value,
@@ -32,6 +32,14 @@ Page({
       });
     } else {
       wx.$globalData.userID = this.data.userID;
+      const { userSig } = genTestUserSig(wx.$globalData.userID);
+      wx.$globalData.userSig = userSig;
+      wx.CallManager.init({
+        sdkAppID: wx.$globalData.sdkAppID,
+        userID: wx.$globalData.userID,
+        userSig: wx.$globalData.userSig,
+        globalCallPagePath: 'TUICallKit/pages/globalCall/globalCall',
+      });
       wx.switchTab({
         url: '../index/index',
       });

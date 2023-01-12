@@ -93,7 +93,7 @@ TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/docume
 
 2. 单击刚刚创建出的应用，进入**基本配置**页面，并在页面的右下角找到**开通腾讯实时音视频服务**功能区，单击**免费体验**即可开通 TUICallKit 的 7 天免费试用服务。如果需要正式应用上线，可以单击 [**前往加购**](https://buy.cloud.tencent.com/avc) 即可进入购买页面。
 
-<img width="640" src="https://user-images.githubusercontent.com/72854065/205876830-6c8f119e-8d3c-4f1e-b8d3-0a21788fc47a.png">
+<img width="640" src="https://qcloudimg.tencent-cloud.cn/raw/99a6a70e64f6877bad9406705cbf7be1.png">
 
 > IM 音视频通话能力针对不同的业务需求提供了差异化的付费版本供您选择，您可以在 [IM 购买页](https://buy.cloud.tencent.com/avc) 了解包含功能并选购您适合的版本。
 
@@ -140,15 +140,6 @@ TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/docume
     config="{{config}}"           //将config中的参数传递给callkit
   ></TUICallKit>
 ```
-config参数
-| 参数 | 类型 | 说明 | 是否必传 |
-|---------|---------|---------|---------|
-| sdkAppID | String | IM 的应用 ID | 是 |
-| userId    | String | 当前用户的 ID | 是 |
-| userSig | String | 鉴权的票据 | 是 |
-| type | Number | 通话的媒体类型 | 是 |
-| tim | Any | TIM 实例 | 否 |
-
 3. **用 JS 代码动态设置 config 参数**
 在 JS 逻辑交互例如 `pages/index/index.js` 中填写如下代码，用于设置 wxml 文件中的 {{config}} 变量。这部分工作可参考 `MiniProgram/pages/videoCall/videoCall.js` 或 `MiniProgram/pages/audioCall/audioCall.js` 中的示例代码，如下所示：
 ```javascript

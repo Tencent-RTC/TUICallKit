@@ -12,10 +12,10 @@
                                 <view class="invite-calling-item-loadimg">
                                     <image src="../../static/loading.png"></image>
                                 </view>
-                                <view class="invite-calling-item-id">{{item.userID}}</view>
+                                <view class="invite-calling-item-id">{{item.nick || item.userID}}</view>
                             </view>
                             <image class="avatar" src="{{item.avatar || '../../static/default_avatar.png'}}" binderror="handleErrorImage" />
-                            <view class="invite-calling-item-id">{{item.userID}}</view>
+                            <view class="invite-calling-item-id">{{item.nick || item.userID}}</view>
                         </view>
                     </swiper-item>
                 </block>
@@ -24,14 +24,14 @@
             <view wx:else>
                 <view class="invite-calling-single">
                     <image class="avatar" src="{{allUsers[0].avatar || '../../static/default_avatar.png'}}" id="{{allUsers[0].userID}}" binderror="handleErrorImage" />
-                    <view class="tips">{{allUsers[0].userID}}</view>
+                    <view class="tips">{{allUsers[0].nick || allUsers[0].userID }}</view>
                     <view class="invite-txt">邀请你参加多人通话</view>
                 </view>
                 <view class="invite-other-txt">参与通话的还有：</view>
                 <view class="invite-other-list">
                     <view class="invite-other-item" wx:if="{{index>0}}" wx:for="{{allUsers}}" wx:key="item">
                         <image class="avatar" src="{{item.avatar || '../../static/default_avatar.png'}}" binderror="handleErrorImage" />
-                        <view class="invite-other-item-name">{{ item.userID}}</view>
+                        <view class="invite-other-item-name">{{ item.nick || item.userID}}</view>
                     </view>
                 </view>
             </view>
@@ -65,7 +65,7 @@
                         <text style="color: #666666">挂断</text>
                     </view>
                     <view class="btn-operate-item">
-                        <view class="call-operate" catchtap="{{isClick ? 'accept' :''}}">
+                        <view class="call-operate" catchtap="{{isClick ? 'handleCheckAuthor' :''}}">
                             <image src="../../static/dialing.png" />
                         </view>
                         <text style="color: #666666">接听</text>
@@ -85,10 +85,10 @@
                             <view class="invite-calling-item-loadimg">
                                 <image src="../../static/loading.png"></image>
                             </view>
-                            <view class="invite-calling-item-id">{{item.userID}}</view>
+                            <view class="invite-calling-item-id">{{item.nick || item.userID}}</view>
                         </view>
                         <image class="avatar" src="{{item.avatar || '../../static/default_avatar.png'}}" binderror="handleErrorImage" />
-                        <view class="invite-calling-item-id">{{item.userID}}</view>
+                        <view class="invite-calling-item-id">{{item.nick || item.userID}}</view>
                     </view>
                 </swiper-item>
             </block>
@@ -97,14 +97,14 @@
         <view wx:else>
             <view class="invite-calling-single">
                 <image class="avatar" src="{{allUsers[0].avatar || '../../static/default_avatar.png'}}" id="{{allUsers[0].userID}}" binderror="handleErrorImage" />
-                <view class="tips">{{allUsers[0].userID}}</view>
+                <view class="tips">{{allUsers[0].nick || allUsers[0].userID  }}</view>
                 <view class="invite-txt">邀请你参加多人通话</view>
             </view>
             <view class="invite-other-txt">参与通话的还有：</view>
             <view class="invite-other-list">
                 <view class="invite-other-item" wx:if="{{index>0}}" wx:for="{{allUsers}}" wx:key="item">
                     <image class="avatar" src="{{item.avatar || '../../static/default_avatar.png'}}" binderror="handleErrorImage" />
-                    <view class="invite-other-item-name">{{item.userID}}</view>
+                    <view class="invite-other-item-name">{{item.nick || item.userID}}</view>
                 </view>
             </view>
         </view>
@@ -118,7 +118,7 @@
                     <view style="margin-top:10px;color: #666666">挂断</view>
                 </view>
                 <view class="button-container">
-                    <view class="call-operate" catchtap="{{isClick ? 'accept' :''}}">
+                    <view class="call-operate" catchtap="{{isClick ? 'handleCheckAuthor' :''}}">
                         <image src="../../static/dialing.png" />
                     </view>
                     <view style="margin-top:10px;color: #666666">接听</view>
