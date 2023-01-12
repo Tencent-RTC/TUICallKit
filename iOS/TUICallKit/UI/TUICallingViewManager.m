@@ -297,6 +297,9 @@ static NSString * const TUICallKit_TUIGroupService_UserDataValue = @"TUICallKit"
 }
 
 - (void)initAddOtherUserBtn {
+    if (![TUICore getService:TUICore_TUIGroupService]) {
+        return;
+    }
     [self.addOtherUserBtn removeFromSuperview];
     [self.containerView addSubview:self.addOtherUserBtn];
     [self.addOtherUserBtn mas_makeConstraints:^(MASConstraintMaker *make) {
