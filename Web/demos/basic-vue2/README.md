@@ -1,6 +1,6 @@
 # TUICallKit basic demo
 
-<b> English </b> | <a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.zh-CN.md"> 简体中文 </a>
+<b> English </b> | <a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue2/README.zh-CN.md"> 简体中文 </a>
 
 ## Overview
 
