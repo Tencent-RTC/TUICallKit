@@ -1,6 +1,6 @@
 # TUICallKit basic demo
 
-<a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.md"> English </a> | <b> 简体中文 </b> 
+<a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue2/README.md"> English </a> | <b> 简体中文 </b> 
 
 ## 简介
 
@@ -33,7 +33,7 @@ npm run install:demo
 npm run dev
 ```
 
-### 第三步：示例体验
+### 第二步：示例体验
 
 1. 打开正在运行的页面，在最下方 debug 面板中，填入相关参数（若当前未取得，需阅读文末 [如何获得 SDKAppID 与 SecretKey？](#如何获得-SDKAppID-与-SecretKey？)）：
 
@@ -71,7 +71,7 @@ npm run dev
 
 </div>
 
-### 第四步：生产环境
+### 第三步：生产环境
 
 1. 拷贝 `Web/src` 目录到 `Web/demos/basic-vue2/src/components/`;
 
@@ -115,7 +115,7 @@ TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/docume
 
 <img style="width: 600px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/194735812-cd66873d-583a-4433-bbca-38968432925f.png"/>
 
-3. 在同一页面找到 **SDKAppID** 和 **密钥(SecretKey)** 并记录下来，它们会在后续的 [第三步](#第三步：示例体验) 中被用到。
+3. 在同一页面找到 **SDKAppID** 和 **密钥(SecretKey)** 并记录下来，它们会在后续的 [第二步](#第二步：示例体验) 中被用到。
 
 <img style="width: 600px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/194735831-72fb9498-c596-4289-beb8-e2633b52b4ad.png"/>
 

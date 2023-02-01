@@ -45,7 +45,7 @@ GitHub Release Date: -->
 
 - 如果您想在线体验通话效果，请访问 [1v1音视频通话体验馆](https://web.sdk.qcloud.com/component/experience-center/index.html#/detail?scene=callkit)
 
-- 如果您想要调试通话效果，请阅读 [Vue3 Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.md) 或者 [Vue2 Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue2/README.md)
+- 如果您想要调试通话效果，请阅读 [Vue3 Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.zh-CN.md) 或者 [Vue2 Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue2/README.zh-CN.md)
 
 - 如果您想把我们的功能直接嵌入到您的项目中，请阅读 [快速接入 TUICallKit](https://cloud.tencent.com/document/product/647/78731)
 
@@ -64,12 +64,12 @@ GitHub Release Date: -->
 **demos/basic/**
 
 - 此文件夹下是 Vue3 基础版 demo，集成了完整的 TUICallKit 组件功能，可以直接搜索用户拨打音视频通话。
-- demo 页面下方集成了调试面板，可直接输入您的应用信息，具体流程请参考：[Vue3 Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.md)。
+- demo 页面下方集成了调试面板，可直接输入您的应用信息，具体流程请参考：[Vue3 Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.zh-CN.md)。
 
 **demos/basic-vue2/**
 
 - 此文件夹下是 Vue2.7 基础版 demo，集成了完整的 TUICallKit 组件功能，可以直接搜索用户拨打音视频通话。
-- demo 页面下方集成了调试面板，可直接输入您的应用信息，具体流程请参考：[Vue2 Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue2/README.md)。
+- demo 页面下方集成了调试面板，可直接输入您的应用信息，具体流程请参考：[Vue2 Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue2/README.zh-CN.md)。
 
 **src/** 
 
