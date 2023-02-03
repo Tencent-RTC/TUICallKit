@@ -1,12 +1,12 @@
 # TUICallKit basic demo
 
-<b> English </b> | <a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.zh-CN.md"> 简体中文 </a>
+<b> English </b> | <a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue2/README.zh-CN.md"> 简体中文 </a>
 
 ## Overview
 
 This the basic demo shows how to integrate TUICallKit voice/video calling component in your project.
 
-- Environment: Vue3.js + Vite + TypeScript
+- Environment: Vue2.js + Vite + TypeScript
 - With debug panel to quickly experience calling
 - [Live Demo](https://tcms-demo.tencentcloud.com/exp-center/index.html#/detail?scene=callkit)
 
