@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { isFromGroup, remoteList, callType, profile, makeRenderFlag, t, getVolumeByUserID } from '../store/index';
-import { onUpdated, ref, watch, nextTick, watchEffect, onMounted, onUnmounted } from "vue";
+import { isFromGroup, remoteList, callType, profile, t, getVolumeByUserID } from '../store/index';
+import { ref, watch, watchEffect, onMounted } from "vue";
 import MicrophoneIcon from "./MicrophoneIcon.vue";
 import { TUICallKitServer } from '../index';
 import type { RemoteUser } from "../interface";
-import { CALL_TYPE_STRING, STATUS } from '../constants';
+import { CALL_TYPE_STRING } from '../constants';
 import LeftSVG from "../icons/left.vue";
 import RightSVG from "../icons/right.vue";
 import MicrophoneClosedSVG from '../icons/microphoneClosed.vue';
@@ -16,32 +16,29 @@ const groupUserViewClass = ref<string>("group-user-view");
 const groupCallingContainerClass = ref<string>("group-calling-container");
 const userViewUserId = ref<string>("user-view-user-id");
 
+onMounted(async () => {
+  await TUICallKitServer.renderLocal();
+  await TUICallKitServer.renderRemote();
+});
+
 watch(currentPageRemoteList, async () => {
   const userViewCount = currentPageRemoteList.value.length + 1;
   groupUserViewClass.value = `group-user-view group-user-view-${userViewCount}`;
   groupCallingContainerClass.value = `group-calling-container group-calling-container-${userViewCount}`;
   userViewUserId.value = `user-view-user-id user-view-user-id-${userViewCount}`;
-  renderUserView();
 }, { flush: 'post', deep: true });
 
 watchEffect(async () => {
-  refreshCurrentPageRemoteList();
+  await refreshCurrentPageRemoteList();
 });
 
-function refreshCurrentPageRemoteList() {
+async function refreshCurrentPageRemoteList() {
   let newPageList: RemoteUser[] = [];
   for (let i = (currentPage.value - 1) * 8; i < (currentPage.value) * 8 && i < remoteList.value.length; i++) {
     newPageList.push(remoteList.value[i]);
   }
   currentPageRemoteList.value = newPageList;
-}
-
-async function renderUserView() {
-  TUICallKitServer.startLocalView('local');
-  currentPageRemoteList.value.forEach((remoteUserItem: RemoteUser) => {
-    if (!remoteUserItem.isEntered || !remoteUserItem.isReadyRender) return;
-    TUICallKitServer.startRemoteView(remoteUserItem.userID);
-  })
+  await TUICallKitServer.renderRemote();
 }
 
 function pageReduce() {

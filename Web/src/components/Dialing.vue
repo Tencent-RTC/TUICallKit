@@ -4,23 +4,18 @@ import { STATUS, CALL_TYPE_STRING } from '../constants'
 import MicrophoneIcon from "./MicrophoneIcon.vue";
 import MicrophoneClosedSVG from '../icons/microphoneClosed.vue';
 import "../style.css"
-import { onMounted, onUnmounted } from "vue";
+import { onMounted } from "vue";
 import { TUICallKitServer } from "../";
 import { isMobile } from "../utils";
 
 onMounted(() => {
   if (status.value === STATUS.DIALING_C2C && callType.value === CALL_TYPE_STRING.VIDEO) {
-    TUICallKitServer.startLocalView("local");
+    TUICallKitServer.openCamera("local");
     const dialingWrapper = document.getElementsByClassName("dialing-wrapper")[0] as HTMLElement;
     dialingWrapper.style.opacity = "100%";
   }
 });
 
-onUnmounted(() => {
-  if (status.value === STATUS.IDLE) return;
-  console.log("TUICallKit stopLocalView because status is", status.value);
-  TUICallKitServer.stopLocalView();
-})
 </script>
 
 <template>

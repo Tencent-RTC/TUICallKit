@@ -47,7 +47,12 @@ export const languageData: languageDataType = {
     "not-supported-webrtc": "Your current environment does not support WebRTC",
     "is-already-calling": "TUICallKit is already on a call",
     "need-init": "Before initiating a call with TUICallKit, ensure that the TUICallKitServer.init() method has executed successfully. ",
-    "can't call yourself": "Can't call yourself"
+    "can't call yourself": "Can't call yourself",
+    "Use-phone-and-computer" :"Use your mobile phone and computer to experience video calls",
+    "Wechat scan right QR code":"Wechat scan right QR code",
+    "try":"try",
+    "Scan the QR code above":"Scan the QR code above",
+    "Make video calls yourself":"Make video calls yourself"
   },
   "zh-cn": {
     "call": "通话",
@@ -55,6 +60,11 @@ export const languageData: languageDataType = {
     "audio-call": "音频通话",
     "search": "搜索",
     "search-result": "搜索结果",
+    "Wechat scan right QR code": "微信扫右二维码",
+    "Use-phone-and-computer":"用手机与电脑互打体验视频通话",
+    "try":"试试",
+    "Scan the QR code above":"扫描上方二维码",
+    "Make video calls yourself":"自己玩转视频通话",
     "no-user": "未搜索到用户",
     "member-not-added": "未添加成员",
     "not-login": "未登录",

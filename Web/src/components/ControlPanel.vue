@@ -48,7 +48,7 @@ function switchCameraDevice() {
 }
 
 const switchMicrophoneDevice = () => {
-  TUICallKitServer.switchDevice('audio', currentMicrophone.value);
+  TUICallKitServer.switchDevice("audio", currentMicrophone.value);
   openMicrophoneDetail.value = false;
 };
 
@@ -56,7 +56,7 @@ const toggleCamera = async () => {
   if (profile.value?.camera) {
     await TUICallKitServer.closeCamera();
   } else {
-    await TUICallKitServer.openCamera();
+    await TUICallKitServer.openCamera("local");
   }
 }
 
@@ -82,7 +82,6 @@ function addPerson_debug() {
     isEntered: false,
     microphone: true,
     camera: true,
-    isReadyRender: false,
   }])
 }
 
