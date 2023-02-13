@@ -93,7 +93,7 @@ export default class TUICallKit {
       await this.tuiCallEngine.call({ userID, type, timeout, offlinePushInfo });
       this.beforeCalling && this.beforeCalling("call");
       store.changeStatus(STATUS.DIALING_C2C);
-      store.changeRemoteList([{ userID, isEntered: false, isReadyRender: false }]);
+      store.changeRemoteList([{ userID, isEntered: false }]);
       store.changeCallType(type);
       store.changeIsFromGroup(false);
       logReporter.callSuccess(this.SDKAppID, "call", type === 1 ? "audio" : "video");
@@ -135,7 +135,7 @@ export default class TUICallKit {
       this.beforeCalling && this.beforeCalling("groupCall");
       const newRemoteList: Array<RemoteUser> = [];
       userIDList.forEach((userID: string) => {
-        newRemoteList.push({ userID, isEntered: false, isReadyRender: false });
+        newRemoteList.push({ userID, isEntered: false });
       });
       store.changeRemoteList(newRemoteList);
       store.changeStatus(STATUS.DIALING_GROUP);
@@ -184,7 +184,6 @@ export default class TUICallKit {
   public async switchDevice(deviceType: string, deviceId: string) {
     try {
       await this.tuiCallEngine.switchDevice({ deviceType, deviceId });
-      this.startLocalView("local");
     } catch (error) { 
       console.error("TUICallKit switchDevice error", JSON.stringify(error));
     }
@@ -248,18 +247,29 @@ export default class TUICallKit {
     this.callingAPIMutex = "";
   }
 
+  /**
+   * @deprecated since sdk version 1.3.2
+   */
   public async startLocalView(local: string) {
     console.log("TUICallKit startLocalView");
     await this.tuiCallEngine.startLocalView({ userID: store.profile.value.userID, videoViewDomID: local });
   }
 
+  /**
+   * @deprecated since sdk version 1.3.2
+   */
   public async stopLocalView() {
     await this.tuiCallEngine.stopLocalView({ userID: store.profile.value.userID});
   }
 
   public async startRemoteView(userID: string) {
     console.log("TUICallKit startRemoteView", userID);
-    await this.tuiCallEngine.startRemoteView({ userID, videoViewDomID: userID });
+    if (!userID) return;
+    try {
+      await this.tuiCallEngine.startRemoteView({ userID, videoViewDomID: userID });
+    } catch (err: any) {
+      console.warn("TUICallKit startRemoteView error", err);
+    }
   }
 
   public async stopRemoteView(userID: string) {
@@ -276,12 +286,30 @@ export default class TUICallKit {
     this.callingAPIMutex = "";
   }
 
-  public async openCamera() {
+  public async renderLocal() {
+    if (store.status.value === STATUS.IDLE) {
+      console.log("TUICallKit renderLocal now working because status is idle");
+      return;
+    }
+    store.profile.value.camera ? this.openCamera("local") : this.closeCamera();
+    store.profile.value.microphone ? this.openMicrophone() : this.closeMicrophone();
+  }
+
+  public async renderRemote() {
+    store.remoteList.value
+    for (let i = 0; i < store.remoteList.value.length; i++) {
+      await this.startRemoteView(store.remoteList.value[i].userID);
+    }
+  }
+
+  public async openCamera(videoViewDomID: string) {
+    console.log("TUICallKit openCamera", videoViewDomID);
     try {
-      await this.tuiCallEngine.openCamera();
+      await this.tuiCallEngine.openCamera(videoViewDomID);
       store.updateProfile(Object.assign(store.profile.value, { camera: true }));
     } catch (error: any) {
       console.error("TUICallKit openCamera error:", error);
+      store.updateProfile(Object.assign(store.profile.value, { camera: false }));
     }
   }
 
@@ -300,6 +328,7 @@ export default class TUICallKit {
       store.updateProfile(Object.assign(store.profile.value, { microphone: true }));
     } catch (error: any) {
       console.error("TUICallKit openMicrophone error:", error);
+      store.updateProfile(Object.assign(store.profile.value, { microphone: false }));
     }
   }
 
@@ -351,7 +380,7 @@ export default class TUICallKit {
       const res = this.tuiCallEngine && await this.tuiCallEngine.inviteUser(params);
       const newRemoteList: Array<RemoteUser> = store.remoteList.value;
       userIDList.forEach((userID: string) => {
-        newRemoteList.push({ userID, isEntered: false, isReadyRender: false });
+        newRemoteList.push({ userID, isEntered: false });
       });
       store.changeRemoteList(newRemoteList);
       console.log("TUICallKit inviteUser success: ", res);
@@ -494,7 +523,7 @@ export default class TUICallKit {
   private handleUserVideoAvailable(event: any) {
     console.log("TUICallKit handleUserVideoAvailable", event);
     const { userID, isVideoAvailable } = event;
-    store.makeRenderFlag("isReadyRender", userID);
+    this.startRemoteView(userID);
     store.changeRemoteDeviceByUserID(userID, CALL_TYPE_STRING.VIDEO, isVideoAvailable);
   }
 
@@ -521,7 +550,7 @@ export default class TUICallKit {
     const { callType } = inviteData;
     store.changeStatus(STATUS.BE_INVITED);
     this.callingAPIMutex = "be_invited";
-    store.changeRemoteList([{ userID: sponsor, isEntered: false, isReadyRender: false }]);
+    store.changeRemoteList([{ userID: sponsor, isEntered: false }]);
     store.changeCallType(callType);
     store.changeIsFromGroup(isFromGroup);
   }
