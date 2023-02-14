@@ -1,8 +1,0 @@
-{
-    "usingComponents": {
-      "TUICallKit": "../../TUICallKit"
-    },
-    "navigationStyle": "custom",
-    "disableScroll": true
-  }
-  

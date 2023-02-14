@@ -1,5 +1,5 @@
 import { genTestUserSig } from '../../debug/GenerateTestUserSig';
-import {  MEDIA_TYPE } from '../../TUICallEngine/tuicall-engine-wx.js';
+import { MEDIA_TYPE } from 'tuicall-engine-wx';
 
 Page({
   TUICallKit: null,
