@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "build": "rollup -c build/rollup.prod.config.js",
+    "pre-publish:call-kit": "npm run build && node ./scripts/callKit-npm.js",
+    "publish:github-min": "npm run build && node build/createGitHubCode.js"
+  },
+  "devDependencies": {
+  },
+  "dependencies": {
+    "@tencentcloud/call-uikit-wechat": "^1.3.0"
+  }
+}
