@@ -33,7 +33,6 @@ export interface TUIGroupCallParam {
 export interface RemoteUser {
   userID: string;
   isEntered: boolean;
-  isReadyRender: boolean;
   microphone?: boolean;
   camera?: boolean;
   nick?: string;

@@ -65,6 +65,10 @@
   top: -3rem;
 }
 
+#local {
+  background: black;
+}
+
 .dialing-user-id {
   font-style: normal;
   font-weight: 600;
@@ -269,6 +273,7 @@
   z-index: 11;
 
   display: flex;
+  align-items: center;
 }
 
 .tag .microphone-icon-container {

@@ -1,35 +1,21 @@
 <script setup lang="ts">
-import { TUICallKitServer } from '../index';
-import { onMounted, watch, ref, nextTick } from "vue";
-import { remoteList, profile, t, getVolumeByUserID } from '../store/index';
-import MicrophoneIcon from './MicrophoneIcon.vue';
-import Switch2SVG from '../icons/switch2.vue';
-import MicrophoneClosedSVG from '../icons/microphoneClosed.vue';
+import { TUICallKitServer } from "../index";
+import { onMounted, ref, nextTick } from "vue";
+import { remoteList, profile, t, getVolumeByUserID } from "../store/index";
+import MicrophoneIcon from "./MicrophoneIcon.vue";
+import Switch2SVG from "../icons/switch2.vue";
+import MicrophoneClosedSVG from "../icons/microphoneClosed.vue";
 import { isMobile } from "../utils";
 import "../style.css";
 
-onMounted(() => {
-  TUICallKitServer.startLocalView('local');
-  checkUserViewRender();
+onMounted(async () => {
+  await TUICallKitServer.renderLocal();
+  await TUICallKitServer.renderRemote();
 });
 
-watch(remoteList, () => {
-  checkUserViewRender();
-}, {
-  flush: "post",
-  deep: true,
-});
-
-const checkUserViewRender = () => {
-  if (remoteList.value.length !== 1) return;
-  const remoteUserItem = remoteList.value[0];
-    if (!remoteUserItem.isEntered || !remoteUserItem.isReadyRender) return;
-  TUICallKitServer.startRemoteView(remoteUserItem.userID);
-}
-
-const localClass = ref('small');
-const localClassH5 = ref('small-h5');
-const remoteClass = ref('large');
+const localClass = ref("small");
+const localClassH5 = ref("small-h5");
+const remoteClass = ref("large");
 
 const switchUserView = async () => {
   if (isMobile) {
@@ -38,8 +24,8 @@ const switchUserView = async () => {
     [localClass.value, remoteClass.value] = [remoteClass.value, localClass.value];
     await nextTick();
     // reset to default size
-    const largeView = document.getElementsByClassName('large')[0] as HTMLElement;
-    const smallView = document.getElementsByClassName('small')[0] as HTMLElement;
+    const largeView = document.getElementsByClassName("large")[0] as HTMLElement;
+    const smallView = document.getElementsByClassName("small")[0] as HTMLElement;
     smallView.style.height = "170px";
     smallView.style.width = "260px";
     largeView.style.height = "100%";

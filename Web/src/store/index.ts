@@ -18,7 +18,6 @@ export const volumeMap = ref<Map<string, number>>(new Map<string, number>());
 export const profile = ref<RemoteUser>({
   userID: "",
   isEntered: true,
-  isReadyRender: false,
   microphone: true,
   camera: true,
 });
@@ -70,7 +69,11 @@ export function t(key: any): string {
 }
 
 export function changeStatus(newValue: string, reason?: string, timeout = 0): void {
-  console.log("TUICallKit Status: " + newValue);
+  console.log("TUICallKit changeStatus", newValue, reason, timeout);
+  if (status.value === newValue) {
+    console.log("TUICallKit already be this status: " + newValue);
+    return;
+  }
   if (reason !== CHANGE_STATUS_REASON.CALL_TYPE_CHANGED) {
     console.log("TUICallKit timerClear");
     timerClear();
@@ -86,6 +89,7 @@ export function changeStatus(newValue: string, reason?: string, timeout = 0): vo
   setTimeout(() => {
     TUICallKitServer.statusChanged && TUICallKitServer.statusChanged({oldStatus: status.value, newStatus: newValue});
     status.value = newValue;
+    console.log(`TUICallKit status changed: ${status.value} -> ${newValue}`);
   }, timeout);
 }
 
@@ -97,7 +101,6 @@ export function addRemoteListByUserID(userID: string): void {
     changeRemoteList([...remoteList.value, {
       userID,
       isEntered: true,
-      isReadyRender: false,
     }]);
   }
 }
@@ -198,11 +201,4 @@ export function changeIsMinimized(newValue: boolean): void {
 
 export function getVolumeByUserID(userID: string): number {
   return volumeMap.value.get(userID) || 0;
-}
-
-export function makeRenderFlag(flag: string, userID: string) {
-  const isExisted = remoteList.value.findIndex((item: RemoteUser) => item.userID === userID);
-  if (isExisted >= 0) {
-    remoteList.value[isExisted][flag] = true;
-  }
 }
