@@ -1,6 +1,6 @@
 import { genTestUserSig } from '../../debug/GenerateTestUserSig';
-import { MEDIA_TYPE } from '../../TUICallEngine/tuicall-engine-wx.js';
-import { TIM } from '../../TUICallEngine/libSrcConfig';
+import { MEDIA_TYPE } from 'tuicall-engine-wx';
+import TIM from 'tim-wx-sdk';
 
 Page({
   TUICallKit: null,
