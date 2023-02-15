@@ -21,7 +21,7 @@
    ```
 2. 进入 demo 目录
    ```
-   cd ./TUICallKit/MiniProgram/TUICalling
+   cd ./TUICallKit/MiniProgram
    ```
 3. 安装依赖
    ```
@@ -42,7 +42,7 @@
    
    <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/build-npm.png" width="400" height="600" align="middle" />
 
-4. 修改 `./TUICallKit/MiniProgram/TUICalling/debug/GenerateTestUserSig.js` 文件 的 SDKAPPID 以及 SECRETKEY（阅读文末 [如何获得SDKAppID与SecretKey？](#如何获得-SDKAppID-与-SecretKey？)）
+4. 修改 `./TUICallKit/MiniProgram/debug/GenerateTestUserSig.js` 文件 的 SDKAPPID 以及 SECRETKEY（阅读文末 [如何获得SDKAppID与SecretKey？](#如何获得-SDKAppID-与-SecretKey？)）
    
    <img src="https://cloudcache.tencentcs.com/qcloud/tea/app/trtc.5244f2c94967bc748641720a8c9d500a.png"/>
 
