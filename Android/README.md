@@ -79,5 +79,5 @@ TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/docume
 ## 常见问题
 
 - [TUICallKit (Android) 常见问题](https://cloud.tencent.com/document/product/647/78767)
-- 欢迎加入 QQ 群：**592465424**，进行技术交流和反馈~
+- 欢迎加入 QQ 群：**605115878**，进行技术交流和反馈~
 
