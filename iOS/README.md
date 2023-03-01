@@ -94,4 +94,4 @@ Provisioning profile "XXXXXX" doesn't include the aps-environment entitlement.
 
 ![](https://qcloudimg.tencent-cloud.cn/raw/800bfcdc73e1927e24b5419f09ecef7a.png)
 
->? 更多帮助信息，详见 [TUICallKit (iOS) 常见问题](https://cloud.tencent.com/document/product/647/78768)，欢迎加入 QQ 群：592465424，进行技术交流和反馈~!
+>? 更多帮助信息，详见 [TUICallKit (iOS) 常见问题](https://cloud.tencent.com/document/product/647/78768)，欢迎加入 QQ 群：605115878，进行技术交流和反馈~!
