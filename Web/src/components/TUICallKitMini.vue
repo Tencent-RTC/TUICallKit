@@ -12,11 +12,11 @@ function toggleMinimize() {
   TUICallKitServer.toggleMinimize();
 }
 
-const hangup = () => {
-  TUICallKitServer.hangup();
-};
+async function hangup() {
+  await TUICallKitServer.hangup();
+}
 
-const toggleMicrophone = async () => {
+async function toggleMicrophone() {
   if (profile.value?.microphone) {
     await TUICallKitServer.closeMicrophone();
   } else {

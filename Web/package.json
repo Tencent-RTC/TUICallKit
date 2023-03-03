@@ -1,7 +1,8 @@
 {
   "name": "@tencentcloud/call-uikit-vue",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "main": "./src/index.ts",
+  "types": "src/index.d.ts",
   "description": "An Open-source Voice & Video Calling UI Component Based on Tencent Cloud Service.",
   "homepage": "https://cloud.tencent.com/document/product/647/78731",
   "author": "longyuqi <longyuqi@tencent.com>",
@@ -12,6 +13,7 @@
   },
   "files": [
     "/README.md",
+    "./tsconfig.json",
     "/src/",
     "/demos/basic/public/debug/"
   ],
@@ -43,10 +45,10 @@
     "./src"
   ],
   "dependencies": {
-    "aegis-web-sdk": "^1.36.7",
-    "tim-js-sdk": "^2.26.1",
-    "trtc-js-sdk": "^4.15.2",
-    "tsignaling": "^1.0.4",
-    "tuicall-engine-webrtc": "^1.3.4"
+    "aegis-web-sdk": "^1.36.9",
+    "tim-js-sdk": "^2.26.2",
+    "trtc-js-sdk": "^4.15.3",
+    "tsignaling": "^1.0.5",
+    "tuicall-engine-webrtc": "^1.3.5"
   }
 }

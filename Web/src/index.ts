@@ -2,6 +2,7 @@
 import Server from "./server";
 import TUICallKit from "./components/TUICallKit.vue";
 import TUICallKitMini from "./components/TUICallKitMini.vue";
+import { VideoDisplayMode, VideoResolution } from "./interface";
 import { STATUS } from "./constants";
 
 const TUICallKitServer = new Server();
@@ -26,5 +27,7 @@ export {
   TUICallKit,
   TUICallKitMini,
   TUICallKitServer,
-  STATUS
+  STATUS,
+  VideoDisplayMode,
+  VideoResolution
 };

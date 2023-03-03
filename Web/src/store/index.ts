@@ -1,5 +1,6 @@
 import { ref, watch, triggerRef } from "vue";
 import type { RemoteUser } from "../interface";
+import { VideoDisplayMode, VideoResolution } from "../interface";
 import { timerStart, timerClear, timerString } from "../utils/timer";
 import { STATUS, CHANGE_STATUS_REASON, CALL_TYPE_STRING } from "../constants";
 import { TUICallType } from "tuicall-engine-webrtc";
@@ -7,6 +8,13 @@ import { TUICallKitServer } from "../index";
 import { languageData } from "../locales/index";
 
 export const lang = ref<string>("zh-cn");
+export const currentDisplayMode = ref<VideoDisplayMode>(VideoDisplayMode.COVER);
+export const currentVideoResolution = ref<VideoResolution>(VideoResolution.RESOLUTION_480P);
+
+export const cameraList = ref<any>([]);
+export const microphoneList = ref<any>([]);
+export const currentCamera = ref<string>("");
+export const currentMicrophone = ref<string>("");
 
 export const status = ref<string>(STATUS.IDLE);
 export const isMinimized = ref<boolean>(false);

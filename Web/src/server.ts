@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TUICallEngine, TUICallEvent, TUICallType } from "tuicall-engine-webrtc";
 
-import type { TUICallParam, TUIInitParam, TUIGroupCallParam, RemoteUser, CallbackParam, statusChangedReturnType } from "./interface";
+import type { TUICallParam, TUIInitParam, TUIGroupCallParam, RemoteUser, CallbackParam, statusChangedReturnType, VideoResolution } from "./interface";
 import * as store from "./store";
 import { STATUS, CHANGE_STATUS_REASON, CALL_TYPE_STRING } from "./constants";
 import logReporter from "./utils/aegis";
@@ -59,14 +59,14 @@ export default class TUICallKit {
       }
     } catch (error: any) {
       if (this.TUICore) {
-        logReporter.loginWithTUICoreFailed(SDKAppID, JSON.stringify(error));
+        logReporter.loginWithTUICoreFailed(SDKAppID, error?.message);
       } else if (!this.TUICore && tim) {
-        logReporter.loginWithTIMFailed(SDKAppID, JSON.stringify(error));
+        logReporter.loginWithTIMFailed(SDKAppID, error?.message);
       } else {
-        logReporter.loginFailed(SDKAppID, JSON.stringify(error));
+        logReporter.loginFailed(SDKAppID, error?.message);
       }
-      console.error("TUICallKit login failed", JSON.stringify(error));
-      throw new Error(error);
+      console.error("TUICallKit login failed", error?.message);
+      throw error;
     }
   }
 
@@ -91,12 +91,13 @@ export default class TUICallKit {
     const { userID, type, timeout, offlinePushInfo } = params;
     try {
       await this.tuiCallEngine.call({ userID, type, timeout, offlinePushInfo });
+      await this.setDefaultDevice();
       this.beforeCalling && this.beforeCalling("call");
       store.changeStatus(STATUS.DIALING_C2C);
       store.changeRemoteList([{ userID, isEntered: false }]);
       store.changeCallType(type);
       store.changeIsFromGroup(false);
-      logReporter.callSuccess(this.SDKAppID, "call", type === 1 ? "audio" : "video");
+      logReporter.callSuccess(this.SDKAppID, "call", type === TUICallType.AUDIO_CALL ? "audio" : "video");
     } catch (error: any) {
       if (this.error && this.beforeCalling) {
         this.beforeCalling("call", this.error);
@@ -104,9 +105,9 @@ export default class TUICallKit {
       this.error = null;
       this.callingAPIMutex = "";
       store.changeStatus(STATUS.IDLE);
-      logReporter.callFailed(this.SDKAppID, "call", type === 1 ? "audio" : "video", JSON.stringify(error));
-      console.error("TUICallKit call error: " + JSON.stringify(error));
-      throw new Error(error);
+      logReporter.callFailed(this.SDKAppID, "call", type === TUICallType.AUDIO_CALL ? "audio" : "video", error?.message);
+      console.error("TUICallKit call error: ", error.code, "+" , error?.message);
+      throw error;
     }
   }
 
@@ -141,16 +142,17 @@ export default class TUICallKit {
       store.changeStatus(STATUS.DIALING_GROUP);
       store.changeCallType(type);
       store.changeIsFromGroup(true);
-      logReporter.callSuccess(this.SDKAppID, "groupCall", type === 1 ? "audio" : "video");
+      logReporter.callSuccess(this.SDKAppID, "groupCall", TUICallType.AUDIO_CALL ? "audio" : "video");
+      await this.setDefaultDevice();
     } catch (error: any) {
       if (this.error && this.beforeCalling) {
         this.beforeCalling("groupCall", this.error);
       }
       this.error = null;
       this.callingAPIMutex = "";
-      logReporter.callFailed(this.SDKAppID, "groupCall", type === 1 ? "audio" : "video", JSON.stringify(error));
-      console.error("TUICallKit groupCall error: " + JSON.stringify(error));
-      throw new Error(error);
+      logReporter.callFailed(this.SDKAppID, "groupCall", TUICallType.AUDIO_CALL ? "audio" : "video", error?.message);
+      console.error("TUICallKit groupCall error: " + error?.message);
+      throw error;
     }
   }
 
@@ -162,10 +164,9 @@ export default class TUICallKit {
     store.changeCallType(type);
     store.changeIsFromGroup(true);
     this.getIntoCallingStatus();
-    logReporter.callSuccess(this.SDKAppID, "groupCall", type === 1 ? "audio" : "video");
+    logReporter.callSuccess(this.SDKAppID, "groupCall", TUICallType.AUDIO_CALL ? "audio" : "video");
   }
   
-
   private checkStatus() {
     if (store.status.value !== STATUS.IDLE) {
       console.error("TUICallKit groupCall error:", store.t("is-already-calling"));
@@ -177,15 +178,44 @@ export default class TUICallKit {
     }
   }
 
-  public async getDeviceList(deviceType: string) {
-    return await this.tuiCallEngine.getDeviceList(deviceType);
+  public async updateCameraList() {
+    store.cameraList.value = await this.tuiCallEngine.getDeviceList("camera");
+    console.log("TUICallKit updateDevice camera", store.cameraList.value);
+  }
+
+  public async updateMicrophoneList() {
+    store.microphoneList.value = await this.tuiCallEngine.getDeviceList("microphones");
+    console.log("TUICallKit updateDevice microphones", store.microphoneList.value);
+  }
+
+  private async setDefaultDevice() {
+    await this.updateCameraList();
+    await this.updateMicrophoneList();
+    if (store.cameraList.value.length > 0) {
+      const index = store.cameraList.value.findIndex((cameraItem: any) => cameraItem.deviceId === store.currentCamera.value);
+      const isExisted = (index !== -1);
+      if (!isExisted || store.currentCamera.value === "") {
+        await this.switchDevice("video", store.cameraList.value[0]?.deviceId);
+      }
+    }
+    if (store.microphoneList.value.length > 0) {
+      const index = store.microphoneList.value.findIndex((microphoneItem: any) => microphoneItem.deviceId === store.currentCamera.value);
+      const isExisted = (index !== -1);
+      if (!isExisted || store.currentMicrophone.value === "") {
+        await this.switchDevice("audio", store.microphoneList.value[0]?.deviceId);
+      }
+    }
   }
 
   public async switchDevice(deviceType: string, deviceId: string) {
+    console.log("TUICallKit switchDevice deviceType deviceId", deviceType, deviceId);
     try {
       await this.tuiCallEngine.switchDevice({ deviceType, deviceId });
-    } catch (error) { 
-      console.error("TUICallKit switchDevice error", JSON.stringify(error));
+      if (deviceType === "video") store.currentCamera.value = deviceId;
+      if (deviceType === "audio") store.currentMicrophone.value = deviceId;
+      await this.setVideoQuality(store.currentVideoResolution.value);
+    } catch (error: any) { 
+      console.error("TUICallKit switchDevice error", error?.message);
     }
   }
 
@@ -225,8 +255,9 @@ export default class TUICallKit {
     try {
       await this.tuiCallEngine.accept();
       this.getIntoCallingStatus();
-    } catch (error) {
-      console.error("TUICallKit accept error catch: ", error);
+      await this.setDefaultDevice();
+    } catch (error: any) {
+      console.error("TUICallKit accept error catch: ", error?.message);
       // TODO: 提示无权限
       store.changeStatus(STATUS.IDLE);
       this.callingAPIMutex = "";
@@ -240,8 +271,8 @@ export default class TUICallKit {
     this.callingAPIMutex = "reject";
     try {
       await this.tuiCallEngine.reject();
-    } catch (error) {
-      console.error("TUICallKit reject error catch: ", error);
+    } catch (error: any) {
+      console.error("TUICallKit reject error catch: ", error?.message);
     }
     store.changeStatus(STATUS.IDLE);
     this.callingAPIMutex = "";
@@ -265,8 +296,10 @@ export default class TUICallKit {
   public async startRemoteView(userID: string) {
     console.log("TUICallKit startRemoteView", userID);
     if (!userID) return;
+    const dom = document.getElementById(userID);
+    if (!dom) return;
     try {
-      await this.tuiCallEngine.startRemoteView({ userID, videoViewDomID: userID });
+      await this.tuiCallEngine.startRemoteView({ userID, videoViewDomID: userID, options: { objectFit: store.currentDisplayMode.value }});
     } catch (err: any) {
       console.warn("TUICallKit startRemoteView error", err);
     }
@@ -318,7 +351,7 @@ export default class TUICallKit {
       await this.tuiCallEngine.closeCamera();
       store.updateProfile(Object.assign(store.profile.value, { camera: false }));
     } catch (error: any) {
-      console.error("TUICallKit closeCamera error:", error);
+      console.error("TUICallKit closeCamera error:", error?.message);
     }
   }
 
@@ -337,12 +370,13 @@ export default class TUICallKit {
       await this.tuiCallEngine.closeMicrophone();
       store.updateProfile(Object.assign(store.profile.value, { microphone: false }));
     } catch (error: any) {
-      console.error("TUICallKit closeMicrophone error:", error);
+      console.error("TUICallKit closeMicrophone error:", error?.message);
     }
   }
 
-  public async setVideoQuality(videoProfile: string) {
+  public async setVideoQuality(videoProfile: VideoResolution) {
     await this.tuiCallEngine.setVideoQuality(videoProfile);
+    store.currentVideoResolution.value = videoProfile;
   }
 
   public async switchCallMediaType() {
@@ -354,7 +388,7 @@ export default class TUICallKit {
     try {
       await this.tuiCallEngine.switchCallMediaType(TUICallType.AUDIO_CALL);
     } catch (error: any) {
-      console.error("TUICallKit switchCallMediaType error:", error);
+      console.error("TUICallKit switchCallMediaType error:", error?.message);
     }
   }
 
@@ -385,8 +419,8 @@ export default class TUICallKit {
       store.changeRemoteList(newRemoteList);
       console.log("TUICallKit inviteUser success: ", res);
     } catch (error: any) {
-      console.error("TUICallKit inviteUser error: " + JSON.stringify(error));
-      throw new Error(error);
+      console.error("TUICallKit inviteUser error: " + error?.message);
+      throw error;
     }
   }
 
@@ -411,7 +445,7 @@ export default class TUICallKit {
       console.log("TUICallKit destroyInstance success");
     } catch (error: any) {
       console.error("TUICallKit destroyed error:", error);
-      throw new Error(error);
+      throw error;
     }
   }
 
