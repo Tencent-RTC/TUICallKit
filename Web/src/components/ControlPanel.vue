@@ -1,58 +1,48 @@
 <script setup lang="ts">
-import { TUICallKitServer } from '../index';
-import { onMounted, ref } from 'vue';
-import ControlPanelItem from './ControlPanelItem.vue';
-import { profile, remoteList, changeRemoteList, callType, status, t, dialingInfo } from '../store';
-import { STATUS, CALL_TYPE_STRING } from '../constants'
-import RejectSVG from '../icons/reject.vue';
-import AcceptAudioSVG from '../icons/acceptAudio.vue';
-import AcceptVideoSVG from '../icons/acceptVideo.vue';
-import AddSVG from '../icons/add.vue';
-import CameraSVG from '../icons/camera.vue';
-import MicrophoneSVG from '../icons/microphone.vue';
-import SwitchSVG from '../icons/switch.vue';
-import HangupSVG from '../icons/hangup.vue'
-import MicrophoneClosedBigSVG from '../icons/microphoneClosedBig.vue';
-import CameraClosedBigSVG from '../icons/cameraClosedBig.vue';
-import { isMobile } from '../utils';
+import { TUICallKitServer } from "../index";
+import { onMounted, ref } from "vue";
+import ControlPanelItem from "./ControlPanelItem.vue";
+import { profile, callType, status, remoteList, changeRemoteList, t, dialingInfo, cameraList, microphoneList, currentCamera, currentMicrophone, currentVideoResolution } from '../store';
+import { STATUS, CALL_TYPE_STRING } from "../constants";
+import RejectSVG from "../icons/reject.vue";
+import AcceptAudioSVG from "../icons/acceptAudio.vue";
+import AcceptVideoSVG from "../icons/acceptVideo.vue";
+import AddSVG from "../icons/add.vue";
+import CameraSVG from "../icons/camera.vue";
+import MicrophoneSVG from "../icons/microphone.vue";
+import SwitchSVG from "../icons/switch.vue";
+import HangupSVG from "../icons/hangup.vue";
+import MicrophoneClosedBigSVG from "../icons/microphoneClosedBig.vue";
+import CameraClosedBigSVG from "../icons/cameraClosedBig.vue";
+import { isMobile } from "../utils";
+import { VideoResolution } from "../interface";
 import "../style.css";
-
-const cameraList = ref<any>([]);
-const microphoneList = ref<any>([]);
-const currentCamera = ref<string>("");
-const currentMicrophone = ref("");
-const currentVideoQuality = ref("");
 
 const openCameraDetail = ref<boolean>(false);
 const openMicrophoneDetail = ref<boolean>(false);
 
-const freshDeviceList = async () => {
-  cameraList.value = await TUICallKitServer.getDeviceList('camera');
-  microphoneList.value = await TUICallKitServer.getDeviceList('microphones');
-}
-
 onMounted(() => {
-  freshDeviceList();
-  document.documentElement.addEventListener('click', (e) => {
+  document.documentElement.addEventListener("click", (e) => {
     openCameraDetail.value = false;
     openMicrophoneDetail.value = false;
   });
 });
 
-const hangup = () => {
-  TUICallKitServer.hangup();
+async function hangup() {
+  await TUICallKitServer.hangup();
 }
+
 function switchCameraDevice() {
   TUICallKitServer.switchDevice("video", currentCamera.value);
   openCameraDetail.value = false;
 }
 
-const switchMicrophoneDevice = () => {
+function switchMicrophoneDevice() {
   TUICallKitServer.switchDevice("audio", currentMicrophone.value);
   openMicrophoneDetail.value = false;
-};
+}
 
-const toggleCamera = async () => {
+async function toggleCamera() {
   if (profile.value?.camera) {
     await TUICallKitServer.closeCamera();
   } else {
@@ -60,7 +50,7 @@ const toggleCamera = async () => {
   }
 }
 
-const toggleMicrophone = async () => {
+async function toggleMicrophone() {
   if (profile.value?.microphone) {
     await TUICallKitServer.closeMicrophone();
   } else {
@@ -68,11 +58,11 @@ const toggleMicrophone = async () => {
   }
 }
 
-const setVideoQuality = async () => {
-  await TUICallKitServer.setVideoQuality(currentVideoQuality.value);
+async function setVideoQuality() {
+  await TUICallKitServer.setVideoQuality(currentVideoResolution.value);
 }
 
-const switchCallMediaType = async () => {
+async function switchCallMediaType() {
   await TUICallKitServer.switchCallMediaType();
 }
 
@@ -102,7 +92,7 @@ function reject() {
       <template v-if="status === STATUS.BE_INVITED">
         <ControlPanelItem :action="reject" :isMobile="isMobile" :size="isMobile ? 'medium' : 'small'">
           <template #text>
-            {{ t('reject') }}
+            {{ t("reject") }}
           </template>
           <template #icon>
             <RejectSVG />
@@ -111,7 +101,7 @@ function reject() {
 
         <ControlPanelItem :action="accept" :isMobile="isMobile" :size="isMobile ? 'medium' : 'small'">
           <template #text>
-            {{ t('accept') }}
+            {{ t("accept") }}
           </template>
           <template #icon>
             <template v-if="callType === CALL_TYPE_STRING.AUDIO">
@@ -127,7 +117,7 @@ function reject() {
       <template v-else-if="status !== 'idle'">
         <ControlPanelItem :action="toggleCamera" :hasDetail="!isMobile" v-if="callType === CALL_TYPE_STRING.VIDEO" :isMobile="isMobile" :size="isMobile ? 'medium' : 'small'">
           <template #text>
-            {{ profile?.camera ? t('camera-opened') : t('camera-closed') }}
+            {{ profile?.camera ? t("camera-opened") : t("camera-closed") }}
           </template>
           <template #icon>
             <CameraSVG v-if="profile?.camera"/>
@@ -135,19 +125,19 @@ function reject() {
           </template>
           <template #detail>
             <div class="control-item-detail-row">
-              <div> {{ t('camera') }} </div>
-              <select class="device-select" v-model="currentCamera" @change="switchCameraDevice">
+              <div> {{ t("camera") }} </div>
+              <select class="device-select" v-model="currentCamera" @change="switchCameraDevice" @click="TUICallKitServer.updateCameraList()">
                 <option value="" selected disabled hidden>{{ cameraList && cameraList[0]?.label }}</option>
                 <option v-for="camera in cameraList" :value="camera.deviceId" :key="camera.deviceId"> {{ camera.label }} </option>
               </select>
             </div>
             <div v-if="status === STATUS.DIALING_C2C">
-              <div> {{ t('image-resolution') }} </div>
-              <select class="device-select" v-model="currentVideoQuality" @change="setVideoQuality">
+              <div> {{ t("image-resolution") }} </div>
+              <select class="device-select" v-model="currentVideoResolution" @change="setVideoQuality">
                 <option value="" selected disabled hidden>{{ t('default-image-resolution') }} </option>
-                <option value="480p" selected> 480p </option>
-                <option value="720p" selected> 720p </option>
-                <option value="1080p" selected> 1080p </option>
+                <option :value="VideoResolution.RESOLUTION_480P" selected> 480p </option>
+                <option :value="VideoResolution.RESOLUTION_720P" selected> 720p </option>
+                <option :value="VideoResolution.RESOLUTION_1080P"  selected> 1080p </option>
               </select>
             </div>
           </template>
@@ -155,7 +145,7 @@ function reject() {
 
         <ControlPanelItem :action="toggleMicrophone" :hasDetail="!isMobile" :isMobile="isMobile" :size="isMobile ? 'medium' : 'small'">
           <template #text>
-            {{ profile?.microphone ? t('microphone-opened') : t('microphone-closed') }}
+            {{ profile?.microphone ? t("microphone-opened") : t("microphone-closed") }}
           </template>
           <template #icon>
             <MicrophoneSVG v-if="profile?.microphone"/>
@@ -163,8 +153,8 @@ function reject() {
           </template>
           <template #detail>
             <div>
-              {{ t('microphone') }}
-              <select class="device-select" v-model="currentMicrophone" @change="switchMicrophoneDevice">
+              {{ t("microphone") }}
+              <select class="device-select" v-model="currentMicrophone" @change="switchMicrophoneDevice" @click="TUICallKitServer.updateMicrophoneList()">
                 <option value="" selected disabled hidden>{{ microphoneList && microphoneList[0]?.label }}</option>
                 <option v-for="microphone in microphoneList" :value="microphone.deviceId" :key="microphone.deviceId"> {{ microphone.label }}
                 </option>
@@ -175,7 +165,7 @@ function reject() {
 
         <ControlPanelItem :action="addPerson_debug" v-if="false">
           <template #text>
-            {{ t('invited-person') }}
+            {{ t("invited-person") }}
           </template>
           <template #icon>
             <AddSVG />
@@ -184,7 +174,7 @@ function reject() {
 
         <ControlPanelItem :action="switchCallMediaType" v-if="status === 'calling-c2c-video'" v-show="!isMobile">
           <template #text>
-            {{ t('video-to-audio') }}
+            {{ t("video-to-audio") }}
           </template>
           <template #icon>
             <SwitchSVG />
@@ -193,7 +183,7 @@ function reject() {
 
         <ControlPanelItem :action="hangup" v-show="!isMobile">
           <template #text>
-            {{ isMobile ? '' : t('hangup') }}
+            {{ isMobile ? "" : t("hangup") }}
           </template>
           <template #icon>
             <HangupSVG />
@@ -204,7 +194,7 @@ function reject() {
     <div class="panel-hangup" v-if="status !== STATUS.IDLE && status !== STATUS.BE_INVITED">
       <ControlPanelItem :action="hangup" :size="isMobile ? 'large' : 'small'" v-show="isMobile">
         <template #text>
-          {{ isMobile ? '' : t('hangup') }}
+          {{ isMobile ? "" : t("hangup") }}
         </template>
         <template #icon>
           <HangupSVG />

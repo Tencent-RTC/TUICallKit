@@ -64,7 +64,6 @@ export default {
 
 
     async handleCameraChange(cameraDevice) {
-      console.log('lixin-debug camera', cameraDevice);
       this.choseDevice = cameraDevice;
       const { deviceId, label } = cameraDevice;
       if (this.localStream) {

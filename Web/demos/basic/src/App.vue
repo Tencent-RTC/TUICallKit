@@ -37,7 +37,7 @@ const isLoadCalling = ref<boolean>(false);
 
 const typeString = ref<string>("video");
 const isCalling = ref<boolean>(false);
-const groupID = ref<string>(""); 
+const groupID = ref<string>("");
 const isGroupCall = ref<boolean>(true);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let tim: any = null;
@@ -86,7 +86,7 @@ async function login() {
     debugDisplayStyle.value = "display: none;";
     if (finishedRTCDetectStatus.value !== "finished" && finishedRTCDetectStatus.value !== "skiped") initNetWorkInfo();
     logReporter.loginSuccess(SDKAppID.value);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (error.message) ElMessage.error(`${t("login-failed-message")} ${error.message}`);
     logReporter.loginFailed(SDKAppID.value, error?.message);
@@ -123,7 +123,7 @@ async function startCall(typeString: string) {
       });
     }
     logReporter.callSuccess(SDKAppID.value, callType, typeString);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("startCall", error);
     if (error.message) ElMessage.error(error.message);
@@ -327,31 +327,22 @@ function switchLanguage() {
         <div class="search-window search-left">
           <div class="search-title">
             {{ typeString === "video" ? t("video-call") : t("voice-call") }}
-            <span
-              v-if="isLogin"
-              class="user-id"
-              @click="copyUserID"
-            >
+            <span v-if="isLogin" class="user-id" @click="copyUserID">
               userID: {{ currentUserID }}
               <button @click="(event) => newTab(event)" v-if="!isNewTab">
                 {{ t("login-other") }} UserID
                 <svg width="16" height="16" viewBox="0 0 16 16">
-                  <path
-                    fill="currentColor"
-                    fill-rule="evenodd"
+                  <path fill="currentColor" fill-rule="evenodd"
                     d="M10.75 1a.75.75 0 0 0 0 1.5h1.69L8.22 6.72a.75.75 0 0 0 1.06 1.06l4.22-4.22v1.69a.75.75 0 0 0 1.5 0V1h-4.25ZM2.5 4v9a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V8.75a.75.75 0 0 1 1.5 0V13a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h4.25a.75.75 0 0 1 0 1.5H3a.5.5 0 0 0-.5.5Z"
-                    clip-rule="evenodd"
-                  />
+                    clip-rule="evenodd" />
                 </svg>
               </button>
               <span v-else>
                 <svg width="16" height="16" viewBox="0 0 24 24">
                   <g fill="none">
                     <path d="M0 0h24v24H0z" />
-                    <path
-                      fill="currentColor"
-                      d="M19 2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2V4a2 2 0 0 1 2-2h10Zm-4 6H5v12h10V8Zm-5 7a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h2Zm9-11H9v2h6a2 2 0 0 1 2 2v8h2V4Zm-7 7a1 1 0 0 1 .117 1.993L12 13H8a1 1 0 0 1-.117-1.993L8 11h4Z"
-                    />
+                    <path fill="currentColor"
+                      d="M19 2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2V4a2 2 0 0 1 2-2h10Zm-4 6H5v12h10V8Zm-5 7a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h2Zm9-11H9v2h6a2 2 0 0 1 2 2v8h2V4Zm-7 7a1 1 0 0 1 .117 1.993L12 13H8a1 1 0 0 1-.117-1.993L8 11h4Z" />
                   </g>
                 </svg>
               </span>
@@ -361,26 +352,24 @@ function switchLanguage() {
             <img :src="searchSVG" class="icon-search" />
             <input class="search-input" type="text" v-model="userID" />
           </div>
-          <div class="add-btn" @click="addUser(userID)">{{t("add-to-calling-list")}}</div>
+          <div class="add-btn" @click="addUser(userID)">{{ t("add-to-calling-list") }}</div>
         </div>
         <div class="search-window search-right">
-          <div class="selected-title">{{t("calling-list")}}</div>
+          <div class="selected-title">{{ t("calling-list") }}</div>
           <div class="search-results">
             <div class="result-item" v-for="item in userList" v-bind:key="item">
               <div class="user-item">
                 <div class="userID">{{ item }}</div>
                 <div class="user-email">{{ item }}</div>
               </div>
-              <img
-                :src="cancelSVG"
-                class="checkbox cancel"
-                @click="removeUser(item)"
-              />
+              <img :src="cancelSVG" class="checkbox cancel" @click="removeUser(item)" />
             </div>
           </div>
           <div class="call-buttons">
-            <div class="rtc-detector-starter" @click="initNetWorkInfo()" v-show="isLogin">{{ t("start-to-detector") }}</div>
-            <div :class="!isLoadCalling ? 'call-btn' : 'call-btn-gray'" @click="startCall(typeString)" :disabled="isLoadCalling">
+            <div class="rtc-detector-starter" @click="initNetWorkInfo()" v-show="isLogin">{{ t("start-to-detector") }}
+            </div>
+            <div :class="!isLoadCalling ? 'call-btn' : 'call-btn-gray'" @click="startCall(typeString)"
+              :disabled="isLoadCalling">
               <img v-show="isLoadCalling" src="./assets/loading.png" class="loading-img" />
               {{ t("call") }}
             </div>
@@ -402,27 +391,18 @@ function switchLanguage() {
         <b>Debug Panel</b>
       </div>
       <span>SDKAppID: </span>
-      <input
-        v-model="SDKAppID"
-        placeholder="SDKAppID"
-        type="number"
-        style="width: 100px"
-      />
+      <input v-model="SDKAppID" placeholder="SDKAppID" type="number" style="width: 100px" />
       <br />
       <span>SecretKey: </span>
       <input v-model="SecretKey" placeholder="SecretKey" style="width: 500px" />
       <div style="font-size: 12px">
         {{ t("alert") }}
-        <a
-          :href="t('url')"
-          target="_blank"
-          >{{t("view-documents")}}</a
-        >
+        <a :href="t('url')" target="_blank">{{ t("view-documents") }}</a>
       </div>
       <span>UserID: </span>
       <input v-model="loginUserID" placeholder="UserID" />
       <br />
-      <button @click="login()">{{t("login")}}</button>
+      <button @click="login()">{{ t("login") }}</button>
     </div>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, nextTick, withDefaults, toRefs, defineProps, computed } from 'vue';
-import TriangleSVG from '../icons/triangle.vue';
+import { ref, onMounted, nextTick, withDefaults, toRefs, defineProps, computed } from "vue";
+import TriangleSVG from "../icons/triangle.vue";
 import "../style.css";
 
 const openDetail = ref<boolean>(false);
@@ -34,7 +34,7 @@ async function stayFocus() {
   }
 }
 
-const toggleDetail = (event: Event) => {
+async function toggleDetail(event: Event) {
   event.stopPropagation();
   stayFocus();
   openDetail.value = !openDetail.value;

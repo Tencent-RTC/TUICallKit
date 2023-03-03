@@ -3,11 +3,12 @@ import Dialing from "./Dialing.vue";
 import ControlPanel from "./ControlPanel.vue";
 import CallingGroup from "./Calling-Group.vue";
 import CallingC2CVideo from "./Calling-C2CVideo.vue";
-import { status, isMinimized } from "../store";
+import { status, isMinimized, currentDisplayMode, currentVideoResolution } from "../store";
 import { STATUS } from "../constants";
 import { TUICallKitServer } from "../index";
 import MinimizeSVG from "../icons/minimize.vue";
 import fullScreenSVG from "../icons/fullScreen.vue";
+import { VideoDisplayMode, VideoResolution } from "../interface";
 import { withDefaults, defineProps, toRefs, watchEffect } from "vue";
 import "../style.css";
 
@@ -19,25 +20,33 @@ const props = withDefaults(
     onMessageSentByMe?: (...args: any[]) => void;
     allowedMinimized?: boolean;
     allowedFullScreen?: boolean;
+    videoDisplayMode?: VideoDisplayMode;
+    videoResolution?: VideoResolution;
     lang?: string;
   }>(),
   {
     allowedMinimized: false,
     allowedFullScreen: true,
+    videoDisplayMode: VideoDisplayMode.COVER,
+    videoResolution: VideoResolution.RESOLUTION_480P,
     lang: "zh-cn"
   }
 );
-const { beforeCalling, afterCalling, onMinimized, onMessageSentByMe, allowedMinimized, allowedFullScreen, lang } =
-  toRefs(props);
-TUICallKitServer.setCallback({
-  beforeCalling: beforeCalling && beforeCalling.value,
-  afterCalling: afterCalling && afterCalling.value,
-  onMinimized: onMinimized && onMinimized.value,
-  onMessageSentByMe: onMessageSentByMe && onMessageSentByMe.value,
+
+const { beforeCalling, afterCalling, onMinimized, onMessageSentByMe, allowedMinimized, allowedFullScreen, videoDisplayMode, videoResolution } =
+toRefs(props);
+
+watchEffect(() => {
+  TUICallKitServer.setCallback({
+    beforeCalling: beforeCalling && beforeCalling.value,
+    afterCalling: afterCalling && afterCalling.value,
+    onMinimized: onMinimized && onMinimized.value,
+    onMessageSentByMe: onMessageSentByMe && onMessageSentByMe.value,
+  });
+  currentDisplayMode.value = videoDisplayMode.value;
+  currentVideoResolution.value = videoResolution.value;
 });
-// watchEffect(() => {
-//   TUICallKitServer.setLanguage(lang.value);
-// })
+
 function toggleMinimize() {
   if (document.fullscreenElement) {
     document.exitFullscreen();
