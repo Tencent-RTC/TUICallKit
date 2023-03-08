@@ -566,7 +566,7 @@
 				CODE_SIGN_ENTITLEMENTS = TUICallKitApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 255;
+				CURRENT_PROJECT_VERSION = 305;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = F8A3GH6Q4W;
 				ENABLE_BITCODE = NO;
@@ -585,7 +585,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 1.5;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -639,7 +639,7 @@
 				CODE_SIGN_ENTITLEMENTS = TUICallKitApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 255;
+				CURRENT_PROJECT_VERSION = 305;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = F8A3GH6Q4W;
 				ENABLE_BITCODE = NO;
@@ -674,7 +674,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 1.5;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
