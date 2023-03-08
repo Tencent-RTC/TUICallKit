@@ -103,7 +103,12 @@ static NSString * const TUICallKit_TUIGroupService_UserDataValue = @"TUICallKit"
     [self makeUserViewConstraints:75.0f];
     [self makeFunctionViewConstraints:92.0f];
     [self initMicMute:YES];
-    [self initHandsFree:TUIAudioPlaybackDeviceEarpiece];
+    
+    if ([TUICallingStatusManager shareInstance].callRole == TUICallRoleCall) {
+        [self initHandsFree:TUIAudioPlaybackDeviceEarpiece];
+    } else {
+        [self initHandsFree:TUIAudioPlaybackDeviceSpeakerphone];
+    }
 }
 
 - (void)initSingleVideoWaitingView {
@@ -125,6 +130,7 @@ static NSString * const TUICallKit_TUIGroupService_UserDataValue = @"TUICallKit"
     [self makeUserViewConstraints:20.0f];
     [self makeSwitchToAudioViewConstraints:8.0f];
     [self makeFunctionViewConstraints:92.0f];
+    [self initHandsFree:TUIAudioPlaybackDeviceSpeakerphone];
 }
 
 - (void)initGroupWaitingView {
