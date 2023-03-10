@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "install:demo": "(cd ../../ && npm i); npm i;",
+    "install:demo": "npm i && cd ../../ && npm i",
     "prepare:dev": "(mkdir ./src/components/) && (cp -R ../basic/src/components/DeviceDetector ./src/components/DeviceDetector)",
     "dev": "vite",
     "build": "run-p type-check build-only",
