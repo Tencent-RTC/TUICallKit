@@ -2,7 +2,7 @@
   "private": true,
   "homepage": "./",
   "scripts": {
-    "install:demo": "(cd ../../ && npm i); npm i;",
+    "install:demo": "npm i && cd ../../ && npm i",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "npx eslint ./src/App.vue -c ./.eslintrc.js",
