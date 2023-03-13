@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tencent_calls_uikit/tuicall_kit.dart';
 import 'package:tencent_calls_engine/tuicall_define.dart';
+import 'package:tencent_calls_engine/tuicall_engine.dart';
 import 'package:tuicall_kit_example/store.dart';
 import 'package:tuicall_kit_example/profile_page.dart';
 import 'debug/generate_test_user_sig.dart';
+import 'observer_functions.dart';
 
 class LoginPageRoute extends StatelessWidget {
   TUICallKit callsUIKitPlugin;
@@ -93,6 +95,8 @@ class _LoginPageState extends State<LoginPage> {
               /// 用户注册登陆
               TUIResult result = await userLogin(callsUIKitPlugin, userInfo);
               if (result.code.isEmpty) {
+                /// 注册回调函数
+                setObserverFubction(callsEnginePlugin: TUICallEngine.instance);
                 ///页面跳转
                 Navigator.push(context, MaterialPageRoute(
                   builder: (context) {

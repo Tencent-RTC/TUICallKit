@@ -147,7 +147,7 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler {
         String groupId = MethodCallUtils.getMethodRequiredParams(call, "groupId", result);
         List userIdList = MethodCallUtils.getMethodRequiredParams(call, "userIdList", result);
         int mediaTypeIndex = MethodCallUtils.getMethodRequiredParams(call, "callMediaType", result);
-        Map paramsMap = MethodCallUtils.getMethodRequiredParams(call, "params", result);
+        Map paramsMap = MethodCallUtils.getMethodParams(call, "params");
 
         TUICallDefine.MediaType mediaType = EnumUtils.getMediaType(mediaTypeIndex);
         TUICallDefine.CallParams params = ObjectUtils.getTUICallParamsByMap(paramsMap);
