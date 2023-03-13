@@ -58,7 +58,7 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
       TUICallMediaType callMediaType, [TUICallParams? params]) async {
     await methodChannel.invokeMethod('groupCall', {
       'groupId': groupId,
-      'userIdList': jsonEncode(userIdList),
+      'userIdList': userIdList,
       'callMediaType': callMediaType.index,
       'params': ((params != null) ? params!.toJson() : null)});
   }

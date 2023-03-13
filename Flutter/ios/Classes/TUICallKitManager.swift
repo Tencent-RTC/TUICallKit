@@ -92,7 +92,7 @@ class TUICallKitManager {
             return 
         }
         let userIdListKey = "userIdList"
-        guard let userIdListString = MethodUtils.getMethodParams(call: call, key: userIdListKey, resultType: String.self) else {
+        guard let userIdList = MethodUtils.getMethodParams(call: call, key: userIdListKey, resultType: Array<String>.self) else {
             FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "groupCall", paramKey: userIdListKey, result: result)
             return 
         }
@@ -101,16 +101,7 @@ class TUICallKitManager {
             FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "groupCall", paramKey: callMediaTypeKey, result: result)
             return 
         }
-        
-        var userIdList: [String]
-        do{
-            let userIdListData = userIdListString.data(using: String.Encoding.utf8)!
-            let json : Any! = try JSONSerialization.jsonObject(with: userIdListData, options:JSONSerialization.ReadingOptions.mutableContainers)
-            userIdList = json as! [String]
-        } catch {
-            return
-        }
-        
+                
         guard let callMediaType = TUICallMediaType(rawValue: callMediaTypeInt) else { return }
         
         let params = TUICallParams()
