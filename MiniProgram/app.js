@@ -1,6 +1,6 @@
 import { genTestUserSig } from './debug/GenerateTestUserSig';
 import Aegis from './lib/aegis';
-import { CallManager } from './TUICallKit/serve/callManager';
+import { CallManager } from './TUICallKit/TUICallKit/serve/callManager';
 const Signature = genTestUserSig('');
 App({
   onLaunch() {

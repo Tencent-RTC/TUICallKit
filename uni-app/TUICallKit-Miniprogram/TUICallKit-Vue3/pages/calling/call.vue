@@ -1,42 +1,43 @@
 <template>
-	<view class="container">
-		<tuicallkit ref="TUICallKit"></tuicallkit>
-		<view class="trtc-calling-index">
-			<view class="trtc-calling-index-search">
-				<view class="search">
-					<view class="input-box">
-						<input class="input-search-user" :value="data.userIDToSearch" maxlength="11" type="text"
-							v-on:input="userIDToSearchInput" placeholder="搜索用户ID" />
-					</view>
-					<view class="btn-search" @click="searchUser">搜索</view>
-				</view>
-				<view class="search-selfInfo">
-					<label class="search-selfInfo-label">您的ID</label>
-					<view class="search-selfInfo-phone">
-						{{data.userID }}
-					</view>
-				</view>
-				<view class="search-result" v-if="data.searchResultShow">
-					<view v-if="data.searchResultShow" class="user-to-call">
-						<view class="userInfo-box">
-							<image class="userInfo-avatar" :src="data.invitee.avatar"></image>
-							<text class="userInfo-name">{{ data.invitee.userID }}</text>
-						</view>
-						<view class="btn-userinfo-call" @click="call">呼叫</view>
-					</view>
-					<view v-else>未查询到此用户</view>
-				</view>
-				<view class="search-default" v-else>
-					<view class="search-default-box">
-						<image class="search-default-img" src="../../static/search.png" lazy-load="true" />
-						<view class="search-default-message">
-							搜索添加已注册用户以发起通话
-						</view>
-					</view>
-				</view>
-			</view>
-		</view>
-	</view>
+    <view class="container">
+        <tuicallkit ref="TUICallKit"></tuicallkit>
+        <view class="trtc-calling-index">
+            <view class="trtc-calling-index-search">
+                <view class="search">
+                    <view class="input-box">
+                        <input class="input-search-user" :value="data.userIDToSearch" maxlength="11" type="text"
+                            v-on:input="userIDToSearchInput" placeholder="搜索用户ID" />
+                    </view>
+                    <view class="btn-search" @click="searchUser">搜索</view>
+                </view>
+                <view class="search-selfInfo">
+                    <label class="search-selfInfo-label">您的ID</label>
+                    <view class="search-selfInfo-phone">
+                        {{data.userID }}
+                    </view>
+                </view>
+                <view class="search-result" v-if="data.searchResultShow">
+                    <view v-if="data.searchResultShow" class="user-to-call">
+                        <view class="userInfo-box">
+                            <image class="userInfo-avatar" :src="data.invitee.avatar"></image>
+                            <text class="userInfo-name">{{ data.invitee.userID }}</text>
+                        </view>
+                        <view class="btn-userinfo-call" @click="call">呼叫</view>
+                    </view>
+                    <view v-else>未查询到此用户</view>
+                </view>
+                <view class="search-default" v-else>
+                    <view class="search-default-box">
+                        <image class="search-default-img" src="../../static/search.png" lazy-load="true" />
+                        <view class="search-default-message">
+                            搜索添加已注册用户以发起通话
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+
 </template>
 
 <script setup>
@@ -44,72 +45,73 @@ import { nextTick, shallowRef, reactive } from 'vue';
 import { onUnload, onLoad } from '@dcloudio/uni-app'
 let TUICallKit = shallowRef(null);
 const data = reactive({
-	userID:'',
-	type:1,
-	invitee:{},
+    userID:'',
+    type:1,
+    invitee:{},
 	searchResultShow: false,
-	userIDToSearch:''
+    userIDToSearch:''
 });
 
 const userIDToSearchInput = (e) => {
-	data.userIDToSearch = e.detail.value
+    data.userIDToSearch = e.detail.value
 };
 
 const searchUser = () => {
-// 去掉前后空格
-data.userIDToSearch = data.userIDToSearch.trim();
-data.invitee = data.userIDToSearch
-uni.$TUIKit.getUserProfile({ userIDList: [data.userIDToSearch] })
-	.then((imResponse) => {
-		if (imResponse.data.length === 0) {
-			uni.showToast({
-				title: '未查询到此用户',
-				icon: 'none',
-			});
-			return;
-		}
-		data.invitee = imResponse.data[0];
-		data.searchResultShow = true;
-		data.userIDToSearch = '';
-	});
+    // 去掉前后空格
+    data.userIDToSearch = data.userIDToSearch.trim();
+    data.invitee = data.userIDToSearch
+    uni.$TUIKit.getUserProfile({ userIDList: [data.userIDToSearch] })
+        .then((imResponse) => {
+            if (imResponse.data.length === 0) {
+                uni.showToast({
+                    title: '未查询到此用户',
+                    icon: 'none',
+                });
+                return;
+            }
+            data.invitee = imResponse.data[0];
+            data.searchResultShow = true;
+			data.userIDToSearch = ''
+        });
 };
 
 const call = async () => {
-	if (data.userID === data.invitee.userID) {
-		uni.showToast({
-			icon: 'none',
-			title: '不可呼叫本机',
-		});
-		return;
-	}
-	try {
-		await TUICallKit.value.call({
-			userID: data.invitee.userID,
-			type: data.type,
-		});
-	} catch (error) {
-		uni.showToast({
-			title: '呼叫失败',
-			icon: "none"
-		})
-	}
+    if (data.userID === data.invitee.userID) {
+        uni.showToast({
+            icon: 'none',
+            title: '不可呼叫本机',
+        });
+        return;
+    }
+    try {
+        await TUICallKit.value.call({
+            userID: data.invitee.userID,
+            type: data.type,
+        });
+    } catch (error) {
+        uni.showToast({
+            title: '呼叫失败',
+            icon: "none"
+        })
+    }
 };
 
 onLoad((option) => {
-	data.userID = getApp().globalData.userID
-	data.type = Number(option.type)
-	nextTick(() => {
-		TUICallKit.value.init({
-			sdkAppID: getApp().globalData.SDKAppID,
-			userID: getApp().globalData.userID,
-			userSig: getApp().globalData.userSig,
-			tim: uni.$TUIKit
-		})
-	})
+    data.userID = getApp().globalData.userID
+    data.type = Number(option.type)
+    nextTick(() => {
+        TUICallKit.value.init({
+            sdkAppID: getApp().globalData.SDKAppID,
+            userID: getApp().globalData.userID,
+            userSig: getApp().globalData.userSig,
+            tim: uni.$TUIKit
+        })
+    })
 });
 onUnload(() => {
-	TUICallKit.value.destroyed();
+    TUICallKit.value.destroyed();
 })
+
 </script>
 
 <style>

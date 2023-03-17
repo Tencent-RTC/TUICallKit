@@ -28,47 +28,40 @@
    
    mac端
    ```
-   mkdir -p ./wxcomponents && cp -r node_modules/@tencentcloud/call-uikit-wechat/ ./wxcomponents
+   mkdir -p ./wxcomponents/TUICallKit && cp -r node_modules/@tencentcloud/call-uikit-wechat/ ./wxcomponents/TUICallKit
    ```
 
    windows端
    ```
-   xcopy node_modules\@tencentcloud\call-uikit-wechat .\wxcomponents /i /e
+   xcopy node_modules\@tencentcloud\call-uikit-wechat .\wxcomponents\TUICallKit /i /e
    ```
 4. HBuilder 中导入项目
    
-   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/hbuilder-vue.png" width="400" height="400" align="middle" />
+   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/hbuilder-vue.png" width="400" align="middle" />
 
 5. 修改 `./TUICallKit/uni-app/TUICallKit-Miniprogram/TUICallKit-Vue2/debug/GenerateTestUserSig.js` 文件 的 SDKAPPID 以及 SECRETKEY（阅读文末 [开通服务](#开通服务)）
    
-   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/userSig.png" width="400" height="300" />
+   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/userSig.png" width="400" />
 
 6. 运行到【微信开发者工具】，勾选 **【运行时是否压缩代码】**
    
-   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/exportWechatTool.png" width="400" height="350" align="middle" />
+   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/exportWechatTool.png" width="400" align="middle" />
 
 7. 项目导入到微信开发者工具，目录如下图：
    
-   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/uni-app-wechat.png" width="150" height="250" align="middle" />
+   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/uni-app-wechat.png" width="150" align="middle" />
 
-8. 创建 package.json，安装依赖。因为 HBuilder 运行到小程序后，项目中的 package.json、node_modules 都不存在了。需要【微信开发者工具】的终端里，重新安装 [@tencentcloud/call-uikit-wechat](https://www.npmjs.com/package/@tencentcloud/call-uikit-wechat)，方便下一步在微信开发者工具中【构建 npm】。
-   ```
-   npm init -y
-   npm i @tencentcloud/call-uikit-wechat
-   ```
-   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/uni-app-npm.png" width="150" height="250" align="middle" />
-
-9. 构建 npm，微信开发者工具【工具】->【构建 npm】。具体如下图：
+8. 构建 npm，微信开发者工具【工具】->【构建 npm】。具体如下图：
    
-   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/build-npm.png" width="200" height="300" align="middle" />
+   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/build-npm.png" width="200"  align="middle" />
 
    下图提示可忽略：是因为 [@tencentcloud/call-uikit-wechat](https://www.npmjs.com/package/@tencentcloud/call-uikit-wechat) 是一个小程序组件，需要拷贝使用，该提示可忽略。
 
-   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/tips.png" width="240" height="150" align="middle" />
+   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/tips.png" width="240"  align="middle" />
 
-10. 在微信开发者工具编译运行。 
+9. 在微信开发者工具编译运行。 
     
-    <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/build.png" width="400" height="350" align="middle" />
+    <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/build.png" width="400"  align="middle" />
 
 
 ## 示例体验
