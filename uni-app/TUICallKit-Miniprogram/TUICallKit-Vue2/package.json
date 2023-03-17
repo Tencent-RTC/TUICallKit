@@ -1,13 +1,18 @@
 {
-	"name": "腾讯云小程序音视频插件",
+	"name": "mp-weixin",
 	"version": "1.0.0",
 	"description": "",
-	"main": "main.js",
-	"dependencies": {
-		"@tencentcloud/call-uikit-wechat": "^1.3.2"
+	"main": "app.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"scripts": {},
 	"keywords": [],
 	"author": "",
-	"license": "ISC"
+	"license": "ISC",
+	"dependencies": {
+		"@tencentcloud/call-uikit-wechat": "^1.3.3"
+	},
+	"devDependencies": {
+		"copy-webpack-plugin": "5.0.0"
+	}
 }

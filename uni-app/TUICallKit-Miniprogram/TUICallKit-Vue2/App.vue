@@ -1,5 +1,5 @@
 <script>
-import TIM from 'tim-wx-sdk';
+const TIM = require('tim-wx-sdk');
 const { genTestUserSig } = require('./debug/GenerateTestUserSig.js');
 
 export default {

@@ -1,122 +1,123 @@
 <template>
-	<view class="container">
-		<tuicallkit ref="TUICallKit"></tuicallkit>
-		<view class="trtc-calling-index">
-			<view class="trtc-calling-index-search">
-				<view class="search">
-					<view class="input-box">
-						<input class="input-search-user" :value="userIDToSearch" maxlength="11" type="text"
-							v-on:input="userIDToSearchInput" placeholder="搜索用户ID" />
-					</view>
-					<view class="btn-search" @click="searchUser">搜索</view>
-				</view>
-				<view class="search-selfInfo">
-					<label class="search-selfInfo-label">您的ID</label>
-					<view class="search-selfInfo-phone">
-						{{ userID }}
-					</view>
-				</view>
-				<view class="search-result">
-					<view v-if="invitee.userID" class="user-to-call">
-						<view class="userInfo-box">
-							<image class="userInfo-avatar" :src="invitee.avatar"></image>
-							<text class="userInfo-name">{{ invitee.userID }}</text>
-						</view>
-						<view class="btn-userinfo-call" @click="call">呼叫</view>
-					</view>
-					<view v-else>未查询到此用户</view>
-				</view>
-				<view v-if="!invitee.userID" class="search-default">
-					<view class="search-default-box">
-						<image class="search-default-img" src="../../static/search.png" lazy-load="true" />
-						<view class="search-default-message">
-							搜索添加已注册用户以发起通话
-						</view>
-					</view>
-				</view>
-			</view>
-		</view>
-	</view>
+    <view class="container">
+        <tuicallkit ref="TUICallKit"></tuicallkit>
+        <view class="trtc-calling-index">
+            <view class="trtc-calling-index-search">
+                <view class="search">
+                    <view class="input-box">
+                        <input class="input-search-user" :value="userIDToSearch" maxlength="11" type="text"
+                            v-on:input="userIDToSearchInput" placeholder="搜索用户ID" />
+                    </view>
+                    <view class="btn-search" @click="searchUser">搜索</view>
+                </view>
+                <view class="search-selfInfo">
+                    <label class="search-selfInfo-label">您的ID</label>
+                    <view class="search-selfInfo-phone">
+                        {{ userID }}
+                    </view>
+                </view>
+                <view class="search-result">
+                    <view v-if="invitee.userID" class="user-to-call">
+                        <view class="userInfo-box">
+                            <image class="userInfo-avatar" :src="invitee.avatar"></image>
+                            <text class="userInfo-name">{{ invitee.userID }}</text>
+                        </view>
+                        <view class="btn-userinfo-call" @click="call">呼叫</view>
+                    </view>
+                    <view v-else>未查询到此用户</view>
+                </view>
+                <view v-if="!invitee.userID" class="search-default">
+                    <view class="search-default-box">
+                        <image class="search-default-img" src="../../static/search.png" lazy-load="true" />
+                        <view class="search-default-message">
+                            搜索添加已注册用户以发起通话
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+
 </template>
 
 <script>
 export default {
-	data() {
-		return {
-			userIDToSearch: '',
-			searchResultShow: false,
-			invitee: null,
-			userID: '',
-			type: 1
-		}
-	},
-	methods: {
-		userIDToSearchInput(e) {
-			this.userIDToSearch = e.detail.value
-		},
+    data() {
+        return {
+            userIDToSearch: '',
+            searchResultShow: false,
+            invitee: null,
+            userID: '',
+            type: 1
+        }
+    },
+    methods: {
+        userIDToSearchInput(e) {
+            this.userIDToSearch = e.detail.value
+        },
 
-		searchUser() {
-			// 去掉前后空格
-			const newSearch = this.userIDToSearch.trim();
-			this.userIDToSearch = newSearch
-			this.invitee = this.userIDToSearch
-			uni.$TUIKit.getUserProfile({ userIDList: [this.userIDToSearch] })
-				.then((imResponse) => {
-					if (imResponse.data.length === 0) {
-						uni.showToast({
-							title: '未查询到此用户',
-							icon: 'none',
-						});
-						return;
-					}
-					this.invitee = { ...imResponse.data[0] }
-					this.searchResultShow = true
-				});
-		},
+        searchUser() {
+            // 去掉前后空格
+            const newSearch = this.userIDToSearch.trim();
+            this.userIDToSearch = newSearch
+            this.invitee = this.userIDToSearch
+            uni.$TUIKit.getUserProfile({ userIDList: [this.userIDToSearch] })
+                .then((imResponse) => {
+                    if (imResponse.data.length === 0) {
+                        uni.showToast({
+                            title: '未查询到此用户',
+                            icon: 'none',
+                        });
+                        return;
+                    }
+                    this.invitee = { ...imResponse.data[0] }
+                    this.searchResultShow = true
+                });
+        },
 
-		async call() {
-			if (this.userID ===this.invitee.userID) {
-				uni.showToast({
-					icon: 'none',
-					title: '不可呼叫本机',
-				});
-				return;
-			}
-			try {
-				await this.$refs.TUICallKit.call({
-					userID:this.invitee.userID,
-					type:this.type
-				});
-			} catch (error) {
-				uni.showToast({
-					title: '呼叫失败',
-					icon: "none"
-				})
-			}
-		},
-	},
-	onLoad(option) {
-		this.userID = getApp().globalData.userID
-		this.type = Number(option.type)
-		this.$nextTick(() => {
-			try {
-				this.$refs.TUICallKit.init({
-					sdkAppID: getApp().globalData.SDKAppID,
-					userID: getApp().globalData.userID,
-					userSig: getApp().globalData.userSig,
-					tim: uni.$TUIKit
-				})
-			} catch (error) {
-				console.warn('------ ', error)
-			}
-		})
-	},
-	created() {
+        async call() {
+            if (this.userID ===this.invitee.userID) {
+                uni.showToast({
+                    icon: 'none',
+                    title: '不可呼叫本机',
+                });
+                return;
+            }
+            try {
+                await this.$refs.TUICallKit.call({
+                    userID:this.invitee.userID,
+                    type:this.type
+                });
+            } catch (error) {
+                uni.showToast({
+                    title: '呼叫失败',
+                    icon: "none"
+                })
+            }
+        },
+    },
+    onLoad(option) {
+        this.userID = getApp().globalData.userID
+        this.type = Number(option.type)
+        this.$nextTick(() => {
+            try {
+                this.$refs.TUICallKit.init({
+                    sdkAppID: getApp().globalData.SDKAppID,
+                    userID: getApp().globalData.userID,
+                    userSig: getApp().globalData.userSig,
+                    tim: uni.$TUIKit
+                })
+            } catch (error) {
+                console.warn('------ ', error)
+            }
+        })
+    },
+    created() {
 
-	},
-	onUnload() {
-		this.$refs.TUICallKit.destroyed();
-	},
+    },
+    onUnload() {
+        this.$refs.TUICallKit.destroyed();
+    },
 }
 </script>
 
