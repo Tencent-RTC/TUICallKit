@@ -44,7 +44,7 @@
 
 5. 修改 `./TUICallKit/MiniProgram/TUICalling/debug/GenerateTestUserSig.js` 文件 的 SDKAPPID 以及 SECRETKEY（阅读文末 [如何获得SDKAppID与SecretKey？](#如何获得-SDKAppID-与-SecretKey？)）
    
-   <img src="https://cloudcache.tencentcs.com/qcloud/tea/app/trtc.5244f2c94967bc748641720a8c9d500a.png"/>
+   <img src="https://user-images.githubusercontent.com/72854065/226269630-7d33a694-aad4-414e-bfea-19919fcacb48.png"/>
 
 6. 在微信开发者工具编译运行。
    
