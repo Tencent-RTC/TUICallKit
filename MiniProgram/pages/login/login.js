@@ -38,7 +38,7 @@ Page({
         sdkAppID: wx.$globalData.sdkAppID,
         userID: wx.$globalData.userID,
         userSig: wx.$globalData.userSig,
-        globalCallPagePath: 'TUICallKit/pages/globalCall/globalCall',
+        globalCallPagePath: 'TUICallKit/TUICallKit/pages/globalCall/globalCall',
       });
       wx.switchTab({
         url: '../index/index',
