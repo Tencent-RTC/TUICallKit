@@ -1,12 +1,12 @@
 # TUICallKit basic demo
 
-<a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue2/README.md"> English </a> | <b> 简体中文 </b>
+<a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue3/README.en.md"> English </a> | <b> 简体中文 </b> 
 
 ## 简介
 
 本 demo 演示了如何在项目中集成 TUICallKit 音视频通话组件。
 
-- 环境：Vue2.js + Vite + TypeScript
+- 环境：Vue3.js + webpack + TypeScript
 - 附有调试面板可快速体验电话互通
 - 可[在线体验](https://web.sdk.qcloud.com/component/experience-center/index.html#/detail?scene=callkit)
 
@@ -20,17 +20,22 @@
 git clone https://github.com/tencentyun/TUICallKit.git
 ```
 
-2. 进入 demo 目录，并安装依赖
+2. 进入 demo 目录
 
 ```shell
-cd ./TUICallKit/Web/demos/basic-vue2
-npm run install:demo
+cd ./TUICallKit/Web/demos/basic-vue3
 ```
 
-3. 运行 demo
+3. 安装依赖
 
 ```shell
-npm run dev
+npm install
+```
+
+4. 运行 demo
+
+```shell
+npm run serve
 ```
 
 ### 第二步：示例体验
@@ -70,28 +75,6 @@ npm run dev
 ![Oct-08-2022 20-21-07](https://user-images.githubusercontent.com/57169560/194707785-6d2e1aca-5ee7-427a-be62-19699578e684.gif)
 
 </div>
-
-### 第三步：生产环境
-
-1. 拷贝 `Web/src` 目录到 `Web/demos/basic-vue2/src/components/`;
-
-2. 进入 `Web/demos/basic-vue2` 安装所需依赖
-
-    ```bash
-    npm install trtc-js-sdk tsignaling tuicall-engine-webrtc
-    npm install
-    ```
-
-3. 修改引入路径，将 `src/App.vue` 中的 `import { TUICallKit, TUICallKitServer, TUICallKitMini } from "../../..";` 改为 `import { TUICallKit, TUICallKitServer, TUICallKitMini } from "./components/src";`
-
-4. 打包工程
-
-    ```bash
-    npm run build
-    ```
-
-    然后放在您的服务器上即可，注意，**正式环境需要运行在 `https` 协议下**，否则获取设备会出现异常。
-
 
 ## 其他文档
 
