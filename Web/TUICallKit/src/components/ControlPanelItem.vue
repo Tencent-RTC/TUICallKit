@@ -29,8 +29,8 @@ onMounted(() => {
 async function stayFocus() {
   await nextTick();
   const els = document.getElementsByClassName("control-item-detail");
-  for (let el of els) {
-    el.addEventListener('click', (e: any) => e.stopPropagation());
+  for (let i = 0; i < els.length; i++) {
+    els[i].addEventListener('click', (e: any) => e.stopPropagation());
   }
 }
 

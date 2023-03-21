@@ -1,12 +1,12 @@
 # TUICallKit basic demo
 
-<b> English </b> | <a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic/README.zh-CN.md"> 简体中文 </a>
+<b> English </b> | <a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue2/README.md"> 简体中文 </a>
 
 ## Overview
 
 This the basic demo shows how to integrate TUICallKit voice/video calling component in your project.
 
-- Environment: Vue3.js + webpack + TypeScript
+- Environment: Vue2.js + Vite + TypeScript
 - With debug panel to quickly experience calling
 - [Live Demo](https://tcms-demo.tencentcloud.com/exp-center/index.html#/detail?scene=callkit)
 
@@ -20,19 +20,23 @@ This the basic demo shows how to integrate TUICallKit voice/video calling compon
 git clone https://github.com/tencentyun/TUICallKit.git
 ```
 
-2. enter the demo directory and install dependencies
+2. enter the demo directory
 
 ```shell
-cd ./TUICallKit/Web/demos/basic
-npm run install:demo
+cd ./TUICallKit/Web/demos/basic-vue2
 ```
 
-3. run the serve
+3. install dependencies
 
 ```shell
-npm run serve
+npm install
 ```
 
+4. run the demo
+
+```shell
+npm run dev
+```
 ### How to use
 
 1. Open the running page, fill in the parameters in the bottom debug panel (if not currently available, read the [hint](#How-to-get-SDKAppID-and-SecretKey？) first).
@@ -70,27 +74,6 @@ npm run serve
 ![Oct-08-2022 20-21-07](https://user-images.githubusercontent.com/57169560/205650396-476e0e20-42a3-493a-8e90-6f7ba50da83e.gif)
 
 </div>
-
-### How to build
-
-1. Copy `Web/src` to `Web/demos/basic/src/components/`;
-
-2. Enter `Web/demos/basic` and install dependencies
-
-    ```bash
-    npm install trtc-js-sdk tsignaling tuicall-engine-webrtc
-    npm install
-    ```
-
-3. Modify the package path: In `src/App.vue`, change `import { TUICallKit, TUICallKitServer, TUICallKitMini } from "../../..";` to `import { TUICallKit, TUICallKitServer, TUICallKitMini } from "./components/src";`
-
-4. build
-
-    ```bash
-    npm run build
-    ```
-
-    In the production mode, **your website should under `https` protocol.**
 
 ## Read more
 
