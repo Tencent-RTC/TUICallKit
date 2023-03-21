@@ -1,12 +1,12 @@
 import Aegis from "aegis-web-sdk";
 
-import packageJson from "../../../../package.json";
+import { Version } from "@tencentcloud/call-uikit-vue";
 
 const aegis = new Aegis({
   id: "iHWefAYqVIpivZBath",
   reportApiSpeed: true, // 接口测速
   reportAssetSpeed: true, // 静态资源测速
-  version: packageJson.version,
+  version: Version
 });
 
 const loginSuccess = (SDKAppID: number) =>  {
