@@ -1,7 +1,8 @@
 {
+  "name": "basic-vue2",
+  "private": true,
+  "homepage": "./",
   "scripts": {
-    "install:demo": "npm i && cd ../../ && npm i",
-    "prepare:dev": "(mkdir ./src/components/) && (cp -R ../basic/src/components/DeviceDetector ./src/components/DeviceDetector)",
     "dev": "vite",
     "build": "run-p type-check build-only",
     "preview": "vite preview --port 4173",
@@ -9,19 +10,21 @@
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@tencentcloud/call-uikit-vue2": "^2.0.0",
     "aegis-web-sdk": "^1.36.5",
     "copy-to-clipboard": "^3.3.3",
     "element-ui": "^2.15.12",
     "lodash": "^4.17.21",
     "rtc-detect": "^0.0.5",
-    "sass": "^1.57.1",
+    "sass": "^1.58.3",
     "sass-loader": "^13.2.0",
     "tim-js-sdk": "^2.25.0",
-    "vue": "^2.7.7",
-    "vue-i18n": "8",
+    "vue": "^2.7.14",
+    "vue-i18n": "^8.28.2",
     "vue-i18n-bridge": "^9.2.2"
   },
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^15.0.1",
     "@types/node": "^16.11.45",
     "@vitejs/plugin-legacy": "^2.0.0",
     "@vitejs/plugin-vue2": "^1.1.2",
