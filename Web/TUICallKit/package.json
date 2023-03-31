@@ -1,6 +1,6 @@
 {
   "name": "@tencentcloud/call-uikit-vue",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "dist/tuicall-uikit-vue.umd.js",
   "module": "dist/tuicall-uikit-vue.es.js",
   "types": "dist/types/src/index.d.ts",
@@ -15,6 +15,7 @@
   },
   "scripts": {
     "build": "vite build && npm run build:types",
+    "build-only": "vite build",
     "build:types": "vue-tsc --project tsconfig.build-types.json --declaration --emitDeclarationOnly --outDir dist/types",
     "typecheck": "vue-tsc --project tsconfig.build-types.json --noEmit",
     "npm": "npm publish --access public"
@@ -42,7 +43,7 @@
     "tim-js-sdk": "^2.26.6",
     "trtc-js-sdk": "^4.15.5",
     "tsignaling": "^1.0.5",
-    "tuicall-engine-webrtc": "^1.3.6"
+    "tuicall-engine-webrtc": "^1.3.7"
   },
   "devDependencies": {
     "@babel/types": "^7.20.7",

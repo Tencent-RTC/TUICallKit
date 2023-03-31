@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import '../style.css';
 import { defineProps, toRefs } from 'vue';
 const props = defineProps<{
   volume?: number;
@@ -29,3 +28,7 @@ const { volume } = toRefs(props);
       fill="#fff" />
   </svg>
 </template>
+
+<style scoped>
+@import "../style.css";
+</style>

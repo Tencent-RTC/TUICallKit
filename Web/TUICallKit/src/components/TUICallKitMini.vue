@@ -6,7 +6,6 @@ import FloatCallEnd from "../icons/floatCallEnd.vue";
 import FloatMicrophoneSVG from "../icons/floatMicrophone.vue";
 import FloatMicrophoneClosedSVG from "../icons/floatMicrophoneClosed.vue";
 import FloatFullScreenSVG from "../icons/floatFullScreen.vue";
-import "../style.css";
 
 function toggleMinimize() {
   TUICallKitServer.toggleMinimize();
@@ -49,3 +48,7 @@ async function toggleMicrophone() {
     </div>
   </div>
 </template>
+
+<style scoped>
+@import "../style.css";
+</style>

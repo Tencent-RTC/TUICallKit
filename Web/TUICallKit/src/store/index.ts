@@ -15,6 +15,7 @@ export const cameraList = ref<any>([]);
 export const microphoneList = ref<any>([]);
 export const currentCamera = ref<string>("");
 export const currentMicrophone = ref<string>("");
+export const remoteWaitList = ref(new Set<string>());
 
 export const status = ref<string>(STATUS.IDLE);
 export const isMinimized = ref<boolean>(false);
@@ -76,7 +77,7 @@ export function t(key: any): string {
   return enString;
 }
 
-export function changeStatus(newValue: string, reason?: string, timeout = 0): void {
+export function changeStatus(newValue: string, reason = "", timeout = 0): void {
   console.log("TUICallKit changeStatus", newValue, reason, timeout);
   if (status.value === newValue) {
     console.log("TUICallKit already be this status: " + newValue);
@@ -96,8 +97,8 @@ export function changeStatus(newValue: string, reason?: string, timeout = 0): vo
   }
   setTimeout(() => {
     TUICallKitServer.statusChanged && TUICallKitServer.statusChanged({oldStatus: status.value, newStatus: newValue});
-    status.value = newValue;
     console.log(`TUICallKit status changed: ${status.value} -> ${newValue}`);
+    status.value = newValue;
   }, timeout);
 }
 
@@ -114,20 +115,28 @@ export function addRemoteListByUserID(userID: string): void {
 }
 
 export function removeRemoteListByUserID(userID: string): number {
-  const isExisted = remoteList.value.findIndex((item: RemoteUser) => item.userID === userID);
+  let isExisted = remoteList.value.findIndex((item: RemoteUser) => item.userID === userID);
   if (isExisted >= 0) {
     const resArray = remoteList.value;
     resArray.splice(isExisted, 1);
     changeRemoteList([...resArray]);
   }
+  remoteWaitList.value.delete(userID); // 等待渲染的队列也要删除此用户
   return remoteList.value.length;
 }
 
-export function changeRemoteDeviceByUserID(userID: string, deviceType: string, value: boolean): void {
+export function changeRemoteDeviceStatusByUserID(userID: string, deviceType: string, value: boolean): void {
   const isExisted = remoteList.value.findIndex((item: RemoteUser) => item.userID === userID);
   if (isExisted >= 0) {
     if (deviceType === CALL_TYPE_STRING.VIDEO) remoteList.value[isExisted].camera = value;
     else if (deviceType === CALL_TYPE_STRING.AUDIO) remoteList.value[isExisted].microphone = value;
+  }
+}
+
+export function changeRenderReadyStatusByUserID(userID: string, value: boolean): void {
+  const isExisted = remoteList.value.findIndex((item: RemoteUser) => item.userID === userID);
+  if (isExisted >= 0) {
+    remoteList.value[isExisted].isReadyRender = value;
   }
 }
 
@@ -191,7 +200,7 @@ async function getNickByUserID(userID: string) {
 export async function changeRemoteList(newValue: RemoteUser[]) {
   remoteList.value = newValue;
   for (const user of remoteList.value) {
-    if (user?.nick) return;
+    if (user?.nick) continue;
     user.nick = await getNickByUserID(user.userID);
     triggerRef(remoteList);
   }

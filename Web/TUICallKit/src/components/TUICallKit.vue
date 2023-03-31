@@ -10,7 +10,6 @@ import MinimizeSVG from "../icons/minimize.vue";
 import fullScreenSVG from "../icons/fullScreen.vue";
 import { VideoDisplayMode, VideoResolution } from "../interface";
 import { withDefaults, defineProps, toRefs, watchEffect } from "vue";
-import "../style.css";
 
 const props = withDefaults(
   defineProps<{
@@ -108,3 +107,7 @@ function toggleFullscreen() {
     <ControlPanel v-if="status !== STATUS.IDLE" />
   </div>
 </template>
+
+<style scoped>
+@import "../style.css";
+</style>
