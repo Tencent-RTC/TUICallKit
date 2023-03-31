@@ -6,11 +6,10 @@ import MicrophoneIcon from "./MicrophoneIcon.vue";
 import Switch2SVG from "../icons/switch2.vue";
 import MicrophoneClosedSVG from "../icons/microphoneClosed.vue";
 import { isMobile } from "../utils";
-import "../style.css";
 
 onMounted(async () => {
   await TUICallKitServer.renderLocal();
-  await TUICallKitServer.renderRemote();
+  await TUICallKitServer.renderRemoteWaitList();
 });
 
 const localClass = ref("small");
@@ -42,7 +41,7 @@ const h5SwitchUserView = async () => {
     
 <template>
   <div class="calling-wrapper">
-    <div id="local" :class="isMobile ? localClassH5 : localClass" @click="h5SwitchUserView">
+    <div id="local-c2c" :class="isMobile ? localClassH5 : localClass" @click="h5SwitchUserView">
       <span class="tag" v-show="!isMobile">
         <div class="microphone-icon-container">
           <MicrophoneIcon :volume="getVolumeByUserID(profile.userID)" v-if="profile?.microphone" />
@@ -70,3 +69,7 @@ const h5SwitchUserView = async () => {
     </template>
   </div>
 </template>
+
+<style scoped>
+@import "../style.css";
+</style>

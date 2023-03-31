@@ -1,10 +1,18 @@
 {
-  "include": ["src/**/*", "*.json"],
-  "exclude": ["node_modules", "**/*.cy.ts", "**/*.spec.ts", "**/__tests__/**/*"],
+	"include": [
+		"src/**/*",
+		"*.json"
+	],
+	"exclude": [
+		"node_modules",
+		"**/*.cy.ts",
+		"**/*.spec.ts",
+		"**/__tests__/**/*"
+	],
 	"compilerOptions": {
 		"composite": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
 		"skipLibCheck": true
 	}
 }

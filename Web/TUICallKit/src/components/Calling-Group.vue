@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { isFromGroup, remoteList, callType, profile, t, getVolumeByUserID } from '../store/index';
+import { isFromGroup, remoteList, callType, profile, t, getVolumeByUserID, status } from '../store/index';
 import { ref, watch, watchEffect, onMounted } from "vue";
 import MicrophoneIcon from "./MicrophoneIcon.vue";
 import { TUICallKitServer } from '../index';
 import type { RemoteUser } from "../interface";
-import { CALL_TYPE_STRING } from '../constants';
+import { CALL_TYPE_STRING, STATUS } from '../constants';
 import LeftSVG from "../icons/left.vue";
 import RightSVG from "../icons/right.vue";
 import MicrophoneClosedSVG from '../icons/microphoneClosed.vue';
-import '../style.css';
 
 const currentPage = ref<number>(1);
 const currentPageRemoteList = ref<RemoteUser[]>([]);
@@ -17,8 +16,10 @@ const groupCallingContainerClass = ref<string>("group-calling-container");
 const userViewUserId = ref<string>("user-view-user-id");
 
 onMounted(async () => {
-  await TUICallKitServer.renderLocal();
-  await TUICallKitServer.renderRemote();
+  if (status.value === STATUS.CALLING_GROUP_VIDEO || status.value === STATUS.CALLING_GROUP_AUDIO) {
+    await TUICallKitServer.renderLocal();
+  }
+  await TUICallKitServer.renderRemoteWaitList();
 });
 
 watch(currentPageRemoteList, async () => {
@@ -26,6 +27,7 @@ watch(currentPageRemoteList, async () => {
   groupUserViewClass.value = `group-user-view group-user-view-${userViewCount}`;
   groupCallingContainerClass.value = `group-calling-container group-calling-container-${userViewCount}`;
   userViewUserId.value = `user-view-user-id user-view-user-id-${userViewCount}`;
+  TUICallKitServer.renderRemoteList(currentPageRemoteList.value);
 }, { flush: 'post', deep: true });
 
 watchEffect(async () => {
@@ -38,7 +40,6 @@ async function refreshCurrentPageRemoteList() {
     newPageList.push(remoteList.value[i]);
   }
   currentPageRemoteList.value = newPageList;
-  await TUICallKitServer.renderRemote();
 }
 
 function pageReduce() {
@@ -70,7 +71,7 @@ function pageIncrease() {
       </div>
     </template>
     <div :class="groupCallingContainerClass">
-      <div id="local" :class="groupUserViewClass">
+      <div id="local-group" :class="groupUserViewClass">
         <span class="tag">
           <div class="microphone-icon-container">
             <MicrophoneIcon :volume="getVolumeByUserID(profile.userID)" v-if="profile?.microphone" />
@@ -97,3 +98,7 @@ function pageIncrease() {
     </div>
   </div>
 </template>
+
+<style scoped>
+@import "../style.css";
+</style>

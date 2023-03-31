@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick, withDefaults, toRefs, defineProps, computed } from "vue";
 import TriangleSVG from "../icons/triangle.vue";
-import "../style.css";
 
 const openDetail = ref<boolean>(false);
 const props = withDefaults(
@@ -59,3 +58,7 @@ async function toggleDetail(event: Event) {
     </div>
   </div>
 </template>
+
+<style scoped>
+@import "../style.css";
+</style>

@@ -111,6 +111,7 @@ async function startCall(typeString: string) {
   const callType = userList.value.length === 1 ? "call" : "groupCall";
   isLoadCalling.value = true;
   try {
+    isCalling.value = true;
     if (callType === "call")
       await TUICallKitServer.call({ userID: userList.value[0], type });
     else {
@@ -125,6 +126,7 @@ async function startCall(typeString: string) {
     logReporter.callSuccess(SDKAppID.value, callType, typeString);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
+    isCalling.value = false;
     console.error("startCall", error);
     if (error.message) ElMessage.error(error.message);
     logReporter.callFailed(
@@ -388,7 +390,6 @@ function switchLanguage() {
         </div>
       </div>
       <TUICallKit
-        v-show="isCalling"
         :beforeCalling="beforeCalling"
         :afterCalling="afterCalling"
         :onMinimized="onMinimized"

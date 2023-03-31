@@ -2,7 +2,7 @@
 import { TUICallKitServer } from "../index";
 import { onMounted, ref } from "vue";
 import ControlPanelItem from "./ControlPanelItem.vue";
-import { profile, callType, status, remoteList, changeRemoteList, t, dialingInfo, cameraList, microphoneList, currentCamera, currentMicrophone, currentVideoResolution } from '../store';
+import { profile, callType, status, remoteList, isFromGroup, changeRemoteList, t, dialingInfo, cameraList, microphoneList, currentCamera, currentMicrophone, currentVideoResolution } from '../store';
 import { STATUS, CALL_TYPE_STRING } from "../constants";
 import RejectSVG from "../icons/reject.vue";
 import AcceptAudioSVG from "../icons/acceptAudio.vue";
@@ -16,7 +16,6 @@ import MicrophoneClosedBigSVG from "../icons/microphoneClosedBig.vue";
 import CameraClosedBigSVG from "../icons/cameraClosedBig.vue";
 import { isMobile } from "../utils";
 import { VideoResolution } from "../interface";
-import "../style.css";
 
 const openCameraDetail = ref<boolean>(false);
 const openMicrophoneDetail = ref<boolean>(false);
@@ -46,7 +45,8 @@ async function toggleCamera() {
   if (profile.value?.camera) {
     await TUICallKitServer.closeCamera();
   } else {
-    await TUICallKitServer.openCamera("local");
+    const localDomName = isFromGroup.value ? "local-group" : "local-c2c";
+    await TUICallKitServer.openCamera(localDomName);
   }
 }
 
@@ -203,3 +203,7 @@ function reject() {
     </div>
   </div>
 </template>
+
+<style scoped>
+@import "../style.css";
+</style>
