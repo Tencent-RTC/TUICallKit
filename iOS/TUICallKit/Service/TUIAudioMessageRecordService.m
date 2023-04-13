@@ -214,7 +214,8 @@ NS_ASSUME_NONNULL_END
 - (void)onCallReceived:(NSString *)callerId
           calleeIdList:(NSArray<NSString *> *)calleeIdList
                groupId:(NSString *)groupId
-         callMediaType:(TUICallMediaType)callMediaType {
+         callMediaType:(TUICallMediaType)callMediaType
+              userData:(NSString *)userData{
     // 收到通话邀请,停止录制
     [self stopRecordAudioMessage];
 }
