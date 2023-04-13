@@ -482,7 +482,8 @@ callMediaType:(TUICallMediaType)callMediaType
 - (void)onCallReceived:(nonnull NSString *)callerId
           calleeIdList:(nonnull NSArray<NSString *> *)calleeIdList
                groupId:(NSString *)groupId
-         callMediaType:(TUICallMediaType)callMediaType {
+         callMediaType:(TUICallMediaType)callMediaType
+              userData:(NSString *)userData {
     if (![TUICallingCommon checkArrayValid:calleeIdList]) {
         return;
     }
@@ -612,12 +613,12 @@ callMediaType:(TUICallMediaType)callMediaType
 - (void)registerNotifications {
     if (@available(iOS 13.0, *)) {
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(appWillEnterForeground)
-                                                     name:UISceneWillEnterForegroundNotification object:nil];
+                                                 selector:@selector(appDidBecomeActive)
+                                                     name:UISceneDidActivateNotification object:nil];
     } else {
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(appWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification object:nil];
+                                                 selector:@selector(appDidBecomeActive)
+                                                     name:UIApplicationDidBecomeActiveNotification object:nil];
     }
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(loginSuccessNotification)
@@ -630,7 +631,11 @@ callMediaType:(TUICallMediaType)callMediaType
                                                  name:EventSubCallStatusChanged object:nil];
 }
 
-- (void)appWillEnterForeground {
+- (void)appDidBecomeActive {
+    if ([TUICallingStatusManager shareInstance].callStatus != TUICallStatusNone) {
+        [self.callingViewManager showCallingView];
+    }
+    
     if (self.needContinuePlaying) {
         [self playAudioToCalled];
     }
@@ -699,7 +704,9 @@ callMediaType:(TUICallMediaType)callMediaType
 
 - (void)callStart:(NSArray *)userIDs type:(TUICallMediaType)type role:(TUICallRole)role {
     if (!self.enableCustomViewRoute) {
-        [self.callingViewManager showCallingView];
+        if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+            [self.callingViewManager showCallingView];
+        }
     }
     
     if (self.enableMuteMode) {

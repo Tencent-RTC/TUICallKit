@@ -32,6 +32,7 @@
 #import "TUICallingUserModel.h"
 #import "TUICallEngineHeader.h"
 #import "TUICore.h"
+#import "TUICallingNavigationController.h"
 
 static NSString * const TUICallKit_TUIGroupService_UserDataValue = @"TUICallKit";
 
@@ -53,6 +54,7 @@ static NSString * const TUICallKit_TUIGroupService_UserDataValue = @"TUICallKit"
 @property (nonatomic, strong) CallingUserModel *remoteUser;
 /// Is Enable FloatWindow
 @property (nonatomic, assign) BOOL enableFloatWindow;
+@property (nonatomic, assign) BOOL alreadyShownCallKitView;
 
 @end
 
@@ -477,9 +479,16 @@ static NSString * const TUICallKit_TUIGroupService_UserDataValue = @"TUICallKit"
 }
 
 - (void)showCallingView {
+    if (self.alreadyShownCallKitView) {
+        return;
+    }
+    self.alreadyShownCallKitView = YES;
+    
     UIViewController *viewController = [[UIViewController alloc] init];
     [viewController.view addSubview:self.containerView];
-    self.callingWindow.rootViewController = viewController;
+    TUICallingNavigationController *nvc = [[TUICallingNavigationController alloc] initWithRootViewController: viewController];
+    [nvc setNavigationBarHidden:true];
+    self.callingWindow.rootViewController = nvc;
     self.callingWindow.hidden = NO;
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self->_callingWindow != nil) {
@@ -493,6 +502,7 @@ static NSString * const TUICallKit_TUIGroupService_UserDataValue = @"TUICallKit"
     [self.containerView removeFromSuperview];
     self.callingWindow.hidden = YES;
     self.callingWindow = nil;
+    self.alreadyShownCallKitView = NO;
     [[TUICallingFloatingWindowManager shareInstance] closeMicroFloatingWindow:nil];
 }
 
