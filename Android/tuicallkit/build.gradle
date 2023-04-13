@@ -44,6 +44,6 @@ dependencies {
     } else {
         api "com.google.code.gson:gson:2.9.1"
         api "com.tencent.liteav:LiteAVSDK_TRTC:10.9.0.13092"
-        api 'com.tencent.liteav.tuikit:tuicallengine:1.5.0.305'
+        api 'com.tencent.liteav.tuikit:tuicallengine:1.5.1.310'
     }
 }

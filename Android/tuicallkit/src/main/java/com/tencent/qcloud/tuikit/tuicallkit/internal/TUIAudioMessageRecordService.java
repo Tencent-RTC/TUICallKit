@@ -152,9 +152,9 @@ public class TUIAudioMessageRecordService implements ITUIService, ITUINotificati
 
     private TUICallObserver mCallObserver = new TUICallObserver() {
         @Override
-        public void onCallReceived(String callerId, List<String> calleeIdList,
-                                   String groupId, TUICallDefine.MediaType callMediaType) {
-            super.onCallReceived(callerId, calleeIdList, groupId, callMediaType);
+        public void onCallReceived(String callerId, List<String> calleeIdList, String groupId,
+                                   TUICallDefine.MediaType callMediaType, String userData) {
+            super.onCallReceived(callerId, calleeIdList, groupId, callMediaType, userData);
             //收到通话邀请,停止录制
             stopRecordAudioMessage();
         }
