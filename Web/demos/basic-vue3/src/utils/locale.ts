@@ -29,7 +29,8 @@ const i18n = createI18n({
       "url": "https://www.tencentcloud.com/document/product/647/35166",
       "login": "login",
       "start-to-detector": "Device Detector",
-      "calling-list-is-empty": "Calling list is empty"
+      "calling-list-is-empty": "Calling list is empty",
+      "logout": "Logout",
     },
     "zh-cn": {
       "not-login": "未登录",
@@ -53,7 +54,8 @@ const i18n = createI18n({
       "url": "https://cloud.tencent.com/document/product/647/17275",
       "login": "登录",
       "start-to-detector": "开始设备检测",
-      "calling-list-is-empty": "拨打列表为空"
+      "calling-list-is-empty": "拨打列表为空",
+      "logout": "登出",
     },
   },
 });

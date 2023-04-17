@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-import { TUICallKit, TUICallKitServer, TUICallKitMini } from "@tencentcloud/call-uikit-vue2";
+import { TUICallKit, TUICallKitServer, TUICallKitMini, STATUS } from "@tencentcloud/call-uikit-vue2";
 import DeviceDetector from "./components/DeviceDetector/index.vue";
-import * as GenerateTestUserSig from "../public/debug/GenerateTestUserSig.js";
+import * as GenerateTestUserSig from "../public/debug/GenerateTestUserSig-es.js";
 import TIM from "tim-js-sdk";
 import copy from "copy-to-clipboard";
 import videoBlackSVG from "./assets/videoBlack.svg";
@@ -28,7 +28,6 @@ const userList = ref<string[]>([]);
 const currentUserID = ref<string>("");
 const isLogin = ref<boolean>(false);
 
-const debugDisplayStyle = ref<string>("");
 const isNewTab = ref<boolean>(false);
 const isMinimized = ref<boolean>(false);
 const finishedRTCDetectStatus = ref<string>("");
@@ -66,11 +65,11 @@ async function login() {
     ElMessage.error(t("input-userID"));
     return;
   }
-  const { userSig } = GenerateTestUserSig.genTestUserSig(
-    loginUserID.value,
-    SDKAppID.value,
-    SecretKey.value
-  );
+  const { userSig } = GenerateTestUserSig.genTestUserSig({
+    userID: loginUserID.value,
+    SDKAppID: SDKAppID.value,
+    SecretKey: SecretKey.value
+  });
   tim = TIM.create({
     SDKAppID: SDKAppID.value,
   });
@@ -83,7 +82,6 @@ async function login() {
     });
     currentUserID.value = loginUserID.value;
     isLogin.value = true;
-    debugDisplayStyle.value = "display: none;";
     if (finishedRTCDetectStatus.value !== "finished" && finishedRTCDetectStatus.value !== "skiped") initNetWorkInfo();
     logReporter.loginSuccess(SDKAppID.value);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -235,16 +233,19 @@ const initNetWorkInfo = async () => {
   const downlinkUserId = currentUserID.value + "_downlink_test";
   const roomId = 999999;
 
-  const uplinkUserSig = GenerateTestUserSig.genTestUserSig(
-    uplinkUserId,
-    SDKAppID.value,
-    SecretKey.value
-  ).userSig;
-  const downlinkUserSig = GenerateTestUserSig.genTestUserSig(
-    downlinkUserId,
-    SDKAppID.value,
-    SecretKey.value
-  ).userSig;
+  const uplinkUserSig = GenerateTestUserSig.genTestUserSig({
+    userID: uplinkUserId,
+    SDKAppID: SDKAppID.value,
+    SecretKey: SecretKey.value
+  }).userSig;
+  tim = TIM.create({
+    SDKAppID: SDKAppID.value,
+  });
+  const downlinkUserSig = GenerateTestUserSig.genTestUserSig({
+    userID: downlinkUserId,
+    SDKAppID: SDKAppID.value,
+    SecretKey: SecretKey.value
+  }).userSig;
   networkDetectInfo.value = {
     sdkAppId: SDKAppID,
     roomId,
@@ -276,6 +277,51 @@ function switchLanguage() {
   }
 }
 
+function handleKickedOut() {
+  console.error("The user has been kicked out");
+  isLogin.value = false;
+}
+
+let TUICallKitStatus: string = STATUS.IDLE;
+function handleStatusChanged(args: { oldStatus: string; newStatus: string; }) {
+  const { oldStatus, newStatus } = args;
+  console.log("通话状态变更: " + oldStatus + " -> " + newStatus);
+  TUICallKitStatus = newStatus;
+}
+
+async function accept() {
+  try {
+    if (TUICallKitStatus === STATUS.BE_INVITED) {
+      await TUICallKitServer.accept();
+      ElMessage.warning("已自动接听");
+    }
+  } catch (error: any) {
+    alert(`自动接听失败，原因：${error}`);
+  }
+}
+
+async function reject() {
+  try {
+    if (TUICallKitStatus === STATUS.BE_INVITED) {
+      await TUICallKitServer.reject();
+      ElMessage.warning("已自动拒绝");
+    }
+  } catch (error: any) {
+    alert(`自动拒绝失败，原因：${error}`);
+  }
+}
+
+async function hangup() {
+  try {
+    if (TUICallKitStatus === STATUS.CALLING_C2C_AUDIO || TUICallKitStatus === STATUS.CALLING_C2C_VIDEO || TUICallKitStatus === STATUS.CALLING_GROUP_AUDIO || TUICallKitStatus === STATUS.CALLING_GROUP_VIDEO) {
+      await TUICallKitServer.hangup();
+      ElMessage.warning("已自动挂断");
+    }
+  } catch (error: any) {
+    alert(`自动挂断失败，原因：${error}`);
+  }
+}
+
 </script>
 
 <template>
@@ -288,6 +334,9 @@ function switchLanguage() {
     >
     </DeviceDetector>
     <div style="display: flex; align-items: center">
+      <!-- <button @click="accept"> accept </button>
+      <button @click="reject"> reject </button>
+      <button @click="hangup"> hangup </button> -->
       <div class="switch">
         <div
           class="switch-btn"
@@ -395,10 +444,12 @@ function switchLanguage() {
         :onMinimized="onMinimized"
         :allowedMinimized="true"
         :allowedFullScreen="true"
+        @kicked-out="handleKickedOut"
+        @status-changed="handleStatusChanged"
       />
       <TUICallKitMini />
     </div>
-    <div id="debug" :style="debugDisplayStyle">
+    <div id="debug" v-show="!isLogin">
       <div>
         <b>Debug Panel</b>
       </div>

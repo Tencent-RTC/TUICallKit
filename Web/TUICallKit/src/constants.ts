@@ -15,7 +15,10 @@ export const CHANGE_STATUS_REASON = {
   LINE_BUSY: "change-status-because-of-line-busy",
   CALLING_CANCEL: "change-status-because-of-calling-cancel",
   CALLING_TIMEOUT: "change-status-because-of-calling-timeout",
-  CALL_TYPE_CHANGED: " call-type-changed",
+  CALL_TYPE_CHANGED: "call-type-changed",
+  ACCEPT_DEVICE_ERROR: "accept-device-error",
+  ACCEPT_ERROR: "accept-error",
+  CALL_ERROR: "call-error",
 } as const;
 
 export const CALL_TYPE_STRING = {

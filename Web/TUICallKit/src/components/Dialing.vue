@@ -17,8 +17,8 @@ const opacityValue = computed(() => {
     <!-- Preview local video when dialing 1v1 video call -->
     <div id="local-dialing" class="dialing-local" v-if="status === STATUS.DIALING_C2C && callType === CALL_TYPE_STRING.VIDEO"> 
     </div>
-    <!-- The hint of calling. Displayed when 1.it is not in the h5 mode (desktop mode) 2.it is in the h5 mode, be invited by other users 3.during the audio call-->
-    <div class="dialing-content" v-if="!isMobile || status === STATUS.BE_INVITED || status === STATUS.CALLING_C2C_AUDIO">
+    <!-- The hint of calling. When previewing video in H5 mode, this component is not displayed.-->
+    <div class="dialing-content" v-show="!(isMobile && status === STATUS.DIALING_C2C && callType === CALL_TYPE_STRING.VIDEO)">
       <div class="dialing-user-id">
         <template v-if="remoteList.length >= 1">
           {{ remoteList[0]?.nick }}

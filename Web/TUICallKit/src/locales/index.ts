@@ -48,11 +48,14 @@ export const languageData: languageDataType = {
     "is-already-calling": "TUICallKit is already on a call",
     "need-init": "Before initiating a call with TUICallKit, ensure that the TUICallKitServer.init() method has executed successfully. ",
     "can't call yourself": "Can't call yourself",
-    "Use-phone-and-computer" :"Use your mobile phone and computer to experience video calls",
-    "Wechat scan right QR code":"Wechat scan right QR code",
-    "try":"try",
-    "Scan the QR code above":"Scan the QR code above",
-    "Make video calls yourself":"Make video calls yourself"
+    "Use-phone-and-computer": "Use your mobile phone and computer to experience video calls",
+    "Wechat scan right QR code": "Wechat scan right QR code",
+    "try": "try",
+    "Scan the QR code above": "Scan the QR code above",
+    "Make video calls yourself": "Make video calls yourself",
+    "accept-error": "Accept failed",
+    "accept-device-error": "Accept failed, unable to auth calling device",
+    "call-error": "Start call failed",
   },
   "zh-cn": {
     "call": "通话",
@@ -107,7 +110,10 @@ export const languageData: languageDataType = {
     "not-supported-webrtc": "当前环境不支持 WebRTC",
     "is-already-calling": "TUICallKit 已在通话状态",
     "need-init": "TUICallKit 发起通话前需保证 TUICallKitServer.init() 方法执行成功",
-    "can't call yourself": "不能呼叫自己"
+    "can't call yourself": "不能呼叫自己",
+    "accept-error": "接通失败",
+    "accept-device-error": "接通失败，通话设备获取失败",
+    "call-error": "发起通话失败"
   }
 };
 

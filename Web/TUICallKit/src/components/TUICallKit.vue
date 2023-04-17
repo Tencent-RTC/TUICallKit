@@ -3,13 +3,20 @@ import Dialing from "./Dialing.vue";
 import ControlPanel from "./ControlPanel.vue";
 import CallingGroup from "./Calling-Group.vue";
 import CallingC2CVideo from "./Calling-C2CVideo.vue";
-import { status, isMinimized, currentDisplayMode, currentVideoResolution } from "../store";
+import { status, isMinimized, currentDisplayMode, currentVideoResolution, componentEmits } from "../store";
 import { STATUS } from "../constants";
 import { TUICallKitServer } from "../index";
 import MinimizeSVG from "../icons/minimize.vue";
 import fullScreenSVG from "../icons/fullScreen.vue";
 import { VideoDisplayMode, VideoResolution } from "../interface";
-import { withDefaults, defineProps, toRefs, watchEffect } from "vue";
+import { withDefaults, defineProps, toRefs, watchEffect, defineEmits } from "vue";
+
+const emits = defineEmits<{
+  (e: "kicked-out", value: any): void;
+  (e: "status-changed", value: { oldStatus: string, newStatus: string }): void;
+}>();
+
+componentEmits.value = emits;
 
 const props = withDefaults(
   defineProps<{
