@@ -72,7 +72,7 @@ function addPerson_debug() {
     isEntered: false,
     microphone: true,
     camera: true,
-  }])
+  }]);
 }
 
 function accept() {
@@ -87,7 +87,7 @@ function reject() {
 
 <template>
   <div class="control-wrapper">
-    <div v-if="isMobile && status !== STATUS.CALLING_C2C_AUDIO"> {{ dialingInfo }} </div>
+    <div v-show="isMobile && status === STATUS.DIALING_C2C && callType === CALL_TYPE_STRING.VIDEO"> {{ dialingInfo }} </div>
     <div class="panel-button-area"> 
       <template v-if="status === STATUS.BE_INVITED">
         <ControlPanelItem :action="reject" :isMobile="isMobile" :size="isMobile ? 'medium' : 'small'">

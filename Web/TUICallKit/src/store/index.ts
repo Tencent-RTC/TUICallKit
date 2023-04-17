@@ -7,6 +7,8 @@ import { TUICallType } from "tuicall-engine-webrtc";
 import { TUICallKitServer } from "../index";
 import { languageData } from "../locales/index";
 
+export const componentEmits = ref<any>(null);
+
 export const lang = ref<string>("zh-cn");
 export const currentDisplayMode = ref<VideoDisplayMode>(VideoDisplayMode.COVER);
 export const currentVideoResolution = ref<VideoResolution>(VideoResolution.RESOLUTION_480P);
@@ -56,6 +58,15 @@ watch(status, () => {
   }
 });
 
+export function triggerEvents(...params: any[]) {
+  if (typeof componentEmits.value === "function") {
+    componentEmits.value(...params);
+    console.log("[TUICallKit] trigger event", ...params);
+  } else {
+    console.error("[TUICallKit] emit event error: componentEmits is not a function", componentEmits.value);
+  }
+}
+
 export function setLanguage(language: string): void {
   lang.value = language;
 }
@@ -77,7 +88,7 @@ export function t(key: any): string {
   return enString;
 }
 
-export function changeStatus(newValue: string, reason = "", timeout = 0): void {
+export async function changeStatus(newValue: string, reason = "", timeout = 0): Promise<void> {
   console.log("TUICallKit changeStatus", newValue, reason, timeout);
   if (status.value === newValue) {
     console.log("TUICallKit already be this status: " + newValue);
@@ -93,13 +104,19 @@ export function changeStatus(newValue: string, reason = "", timeout = 0): void {
     case CHANGE_STATUS_REASON.LINE_BUSY: changeDialingInfo(`${t("be-line-busy")}${callType.value === CALL_TYPE_STRING.AUDIO ? t("voice-call-end") : t("video-call-end")}`); break;
     case CHANGE_STATUS_REASON.CALLING_CANCEL: changeDialingInfo(t("be-canceled")); break;
     case CHANGE_STATUS_REASON.CALLING_TIMEOUT: changeDialingInfo(t("timeout")); break;
+    case CHANGE_STATUS_REASON.ACCEPT_DEVICE_ERROR: changeDialingInfo(t("accept-device-error")); break;
+    case CHANGE_STATUS_REASON.CALL_ERROR: changeDialingInfo(t("call-error")); break;
     default: changeDialingInfo(""); break;
   }
-  setTimeout(() => {
-    TUICallKitServer.statusChanged && TUICallKitServer.statusChanged({oldStatus: status.value, newStatus: newValue});
-    console.log(`TUICallKit status changed: ${status.value} -> ${newValue}`);
-    status.value = newValue;
-  }, timeout);
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      TUICallKitServer.statusChanged && TUICallKitServer.statusChanged({oldStatus: status.value, newStatus: newValue});
+      triggerEvents("status-changed", { oldStatus: status.value, newStatus: newValue })
+      console.log(`TUICallKit status changed: ${status.value} -> ${newValue}`);
+      status.value = newValue;
+      resolve();
+    }, timeout);
+  });
 }
 
 export function addRemoteListByUserID(userID: string): void {

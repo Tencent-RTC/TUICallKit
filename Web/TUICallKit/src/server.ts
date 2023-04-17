@@ -14,19 +14,21 @@ export default class TUICallKit {
   public tuiCallEngine: any;
   public TUICore: any;
   public version: string;
-  public beforeCalling: ((...args: any[]) => void) | undefined;
+  public beforeCalling: ((...args: any[]) => void) | undefined; // 历史原因：收到邀请时（但自身设备权限不满足），beforeCalling 的作用时把异步的 ERROR 和 INVITED 事件变为同步的。后 SDK 改版为在收到邀请时不全局抛错，在 reject 和 accept 时再报错。
   public afterCalling: ((...args: any[]) => void) | undefined;
   public onMinimized: ((...args: any[]) => void) | undefined;
   public onMessageSentByMe: ((...args: any[]) => void) | undefined;
   public statusChanged: ((...args: any[]) => statusChangedReturnType) | undefined;
   public error: any;
   public tim: any;
+  public userID: string;
   constructor() {
     this.TUICore = null;
     this.tuiCallEngine = null;
     this.SDKAppID = 0;
     this.version = packageJson.version;
-    console.log("TUICallKit version: " + this.version);
+    this.userID = "";
+    console.log("[TUICallKit] version: " + this.version);
   }
 
   /**
@@ -46,14 +48,15 @@ export default class TUICallKit {
     }
     this.tim = tim;
     this.SDKAppID = SDKAppID;
+    this.userID = userID;
     try {
+      if (this.tuiCallEngine !== null) this.unbindTIMEvent();
       this.tuiCallEngine = TUICallEngine.createInstance({ SDKAppID, tim });
       this.bindTIMEvent();
       await this.tuiCallEngine.login({ userID, userSig, assetsPath });
-      store.updateProfile(Object.assign(store.profile.value, { userID }));
-      console.log("TUICallKit init successful");
+      console.log("[TUICallKit] init successful");
     } catch (error: any) {
-      console.error("TUICallKit init failed", error?.message);
+      console.error("[TUICallKit] init failed", error?.message);
       throw error;
     }
   }
@@ -87,8 +90,8 @@ export default class TUICallKit {
         this.beforeCalling("call", this.error);
       }
       this.error = null;
-      store.changeStatus(STATUS.IDLE);
-      console.error("TUICallKit call error: ", error.code, "+" , error?.message);
+      console.error("[TUICallKit] call error: ", error?.message);
+      await store.changeStatus(STATUS.IDLE, CHANGE_STATUS_REASON.CALL_ERROR, 1000);
       throw error;
     }
   }
@@ -124,7 +127,8 @@ export default class TUICallKit {
         this.beforeCalling("groupCall", this.error);
       }
       this.error = null;
-      console.error("TUICallKit groupCall error: " + error?.message);
+      store.changeStatus(STATUS.IDLE);
+      console.error("[TUICallKit] groupCall error: " + error?.message);
       throw error;
     }
   }
@@ -137,27 +141,28 @@ export default class TUICallKit {
     store.changeCallType(type);
     store.changeIsFromGroup(true);
     this.getIntoCallingStatus();
+    // TODO 增加错误处理
   }
   
   private checkStatus() {
     if (store.status.value !== STATUS.IDLE) {
-      console.error("TUICallKit groupCall error:", store.t("is-already-calling"));
+      console.error("[TUICallKit] call/groupCall error:", store.t("is-already-calling"));
       throw new Error(store.t("is-already-calling"));
     }
     if (!this.tuiCallEngine) {
-      console.error("TUICallKit groupCall error:", store.t("need-init"));
+      console.error("[TUICallKit] call/groupCall error:", store.t("need-init"));
       throw new Error(store.t("need-init"));
     }
   }
 
   public async updateCameraList() {
     store.cameraList.value = await this.tuiCallEngine.getDeviceList("camera");
-    console.log("TUICallKit updateDevice camera", store.cameraList.value);
+    console.log("[TUICallKit] updateDevice camera", store.cameraList.value);
   }
 
   public async updateMicrophoneList() {
     store.microphoneList.value = await this.tuiCallEngine.getDeviceList("microphones");
-    console.log("TUICallKit updateDevice microphones", store.microphoneList.value);
+    console.log("[TUICallKit] updateDevice microphones", store.microphoneList.value);
   }
 
   private async setDefaultDevice(options: { camera: boolean }) {
@@ -171,7 +176,7 @@ export default class TUICallKit {
         }
       }
     } catch (error: any) {
-      console.error("TUICallKit set default microphone error", error?.message);
+      console.error("[TUICallKit] set default microphone error", error?.message);
     }
     try {
       if (!options.camera) return;
@@ -184,19 +189,19 @@ export default class TUICallKit {
         }
       }
     } catch (error: any) {
-      console.error("TUICallKit set default camera error", error?.message);
+      console.error("[TUICallKit] set default camera error", error?.message);
     }
   }
 
   public async switchDevice(deviceType: string, deviceId: string) {
-    console.log("TUICallKit switchDevice deviceType deviceId", deviceType, deviceId);
+    console.log("[TUICallKit] switchDevice deviceType deviceId", deviceType, deviceId);
     try {
       await this.tuiCallEngine.switchDevice({ deviceType, deviceId });
       if (deviceType === "video") store.currentCamera.value = deviceId;
       if (deviceType === "audio") store.currentMicrophone.value = deviceId;
       await this.setVideoQuality(store.currentVideoResolution.value);
     } catch (error: any) { 
-      console.error("TUICallKit switchDevice error", error?.message);
+      console.error("[TUICallKit] switchDevice error", error?.message);
     }
   }
 
@@ -213,38 +218,48 @@ export default class TUICallKit {
   }
 
   public setLanguage(language: string) {
-    console.log("TUICallKit change language: ", language);
+    console.log("[TUICallKit] change language: ", language);
     if (language !== "en" && language !== "zh-cn") {
-      console.warn("TUICallKit change language warning: ", `${language} in not supported, has changed to default English`);
+      console.warn("[TUICallKit] change language warning: ", `${language} in not supported, has changed to default English`);
       language = "en";
     }
     store.setLanguage(language);
   }
 
   public toggleMinimize() {
-    console.log("TUICallKit toggleMinimize called", store.isMinimized.value, "->", !store.isMinimized.value);
+    console.log("[TUICallKit] toggleMinimize called", store.isMinimized.value, "->", !store.isMinimized.value);
     this.onMinimized && this.onMinimized(store.isMinimized.value, !store.isMinimized.value);
     store.changeIsMinimized(!store.isMinimized.value);
-    // logReporter.MinimizeSuccess(this.SDKAppID);
   }
 
   public async accept() {
+    if (store.status.value !== STATUS.BE_INVITED) {
+      throw new Error("[TUICallKit] accept() should be called when be invited. 此接口应该在收到通话邀请时使用。");
+    }
     try {
       await this.tuiCallEngine.accept();
       this.getIntoCallingStatus();
-      await this.setDefaultDevice({ camera: store.callType.value ===  CALL_TYPE_STRING.VIDEO });
+      await this.setDefaultDevice({ camera: (store.callType.value ===  CALL_TYPE_STRING.VIDEO) });
     } catch (error: any) {
-      console.error("TUICallKit accept error catch: ", error?.message);
-      // TODO: 提示无权限
-      store.changeStatus(STATUS.IDLE);
+      console.error("[TUICallKit] accept error catch:", error?.message);
+      if (error?.message === "TUICallEngine.accept failed, error: Error: NotAllowedError: Permission denied") {
+        await store.changeStatus(STATUS.IDLE, CHANGE_STATUS_REASON.ACCEPT_DEVICE_ERROR, 1000);
+      } else {
+        await store.changeStatus(STATUS.IDLE, CHANGE_STATUS_REASON.ACCEPT_ERROR, 1000);
+      }
+      await this.tuiCallEngine.reject();
+      throw error;
     }
   }
 
   public async reject() {
+    if (store.status.value !== STATUS.BE_INVITED) {
+      throw new Error("[TUICallKit] reject() should be called when be invited. 此接口应该在收到通话邀请时使用。");
+    }
     try {
       await this.tuiCallEngine.reject();
     } catch (error: any) {
-      console.error("TUICallKit reject error catch: ", error?.message);
+      console.error("[TUICallKit] reject error catch: ", error?.message);
     }
     store.changeStatus(STATUS.IDLE);
   }
@@ -253,7 +268,7 @@ export default class TUICallKit {
    * @deprecated since sdk version 1.3.2
    */
   public async startLocalView(local: string) {
-    console.log("TUICallKit startLocalView");
+    console.log("[TUICallKit] startLocalView");
     await this.tuiCallEngine.startLocalView({ userID: store.profile.value.userID, videoViewDomID: local });
   }
 
@@ -266,18 +281,18 @@ export default class TUICallKit {
 
   public async startRemoteView(userID: string) {
     if (!userID) {
-      console.log("TUICallKit startRemoteView userID is empty");
+      console.log("[TUICallKit] startRemoteView userID is empty");
       return;
     }
     if (!document.getElementById(userID)) {
-      console.log("TUICallKit startRemoteView can't find HTMLElement id =", userID);
+      console.log("[TUICallKit] startRemoteView can't find HTMLElement id =", userID);
       return;
     }
     try {
       await this.tuiCallEngine.startRemoteView({ userID, videoViewDomID: userID, options: { objectFit: store.currentDisplayMode.value }});
-      console.log("TUICallKit startRemoteView success", userID);
+      console.log("[TUICallKit] startRemoteView success", userID);
     } catch (error: any) {
-      console.warn("TUICallKit startRemoteView error", error, userID);
+      console.warn("[TUICallKit] startRemoteView error", error, userID);
     }
   }
 
@@ -286,13 +301,21 @@ export default class TUICallKit {
   }
 
   public async hangup() {
-    await this.tuiCallEngine.hangup();
+    if (store.status.value == STATUS.BE_INVITED || store.status.value === STATUS.IDLE) {
+      throw new Error("[TUICallKit] hangup() should be called when be dialing or calling status. 此接口应该在呼叫状态或在接通状态使用。");
+    }
+    try {
+      await this.tuiCallEngine.hangup();
+    } catch (error: any) {
+      console.error("[TUICallKit] hangup error catch: ", error?.message);
+      throw error;
+    }
     store.changeStatus(STATUS.IDLE);
   }
 
   public async renderLocal() {
     if (store.status.value === STATUS.IDLE) {
-      console.log("TUICallKit renderLocal not working because status is idle");
+      console.log("[TUICallKit] renderLocal not working because status is idle");
       return;
     }
     store.profile.value.microphone ? this.openMicrophone() : this.closeMicrophone();
@@ -304,7 +327,7 @@ export default class TUICallKit {
   }
 
   public async renderRemoteWaitList() {
-    console.log("TUICallKit renderRemoteWaitList", store.remoteWaitList.value);
+    console.log("[TUICallKit] renderRemoteWaitList", store.remoteWaitList.value);
     while (store.remoteWaitList.value.size > 0) {
       const iterator = store.remoteWaitList.value.values();
       const value = iterator.next().value;
@@ -314,7 +337,7 @@ export default class TUICallKit {
   }
 
   public async renderRemoteList(list: RemoteUser[]) {
-    console.log("TUICallKit renderRemoteList", list);
+    console.log("[TUICallKit] renderRemoteList", list);
     for (let i = 0; i < list.length; i++) {
       const { userID, isEntered, isReadyRender } = list[i];
       isEntered && isReadyRender && await this.startRemoteView(userID);
@@ -322,13 +345,12 @@ export default class TUICallKit {
   }
 
   public async openCamera(videoViewDomID: string) {
-    console.log("TUICallKit openCamera", videoViewDomID);
+    console.log("[TUICallKit] openCamera", videoViewDomID);
     try {
       await this.tuiCallEngine.openCamera(videoViewDomID);
       store.updateProfile(Object.assign(store.profile.value, { camera: true }));
     } catch (error: any) {
-      console.error("TUICallKit openCamera error:", error);
-      store.updateProfile(Object.assign(store.profile.value, { camera: false }));
+      console.error("[TUICallKit] openCamera error:", error);
     }
   }
 
@@ -337,7 +359,7 @@ export default class TUICallKit {
       await this.tuiCallEngine.closeCamera();
       store.updateProfile(Object.assign(store.profile.value, { camera: false }));
     } catch (error: any) {
-      console.error("TUICallKit closeCamera error:", error?.message);
+      console.error("[TUICallKit] closeCamera error:", error?.message);
     }
   }
 
@@ -346,7 +368,7 @@ export default class TUICallKit {
       await this.tuiCallEngine.openMicrophone();
       store.updateProfile(Object.assign(store.profile.value, { microphone: true }));
     } catch (error: any) {
-      console.error("TUICallKit openMicrophone error:", error);
+      console.error("[TUICallKit] openMicrophone error:", error);
       store.updateProfile(Object.assign(store.profile.value, { microphone: false }));
     }
   }
@@ -356,7 +378,7 @@ export default class TUICallKit {
       await this.tuiCallEngine.closeMicrophone();
       store.updateProfile(Object.assign(store.profile.value, { microphone: false }));
     } catch (error: any) {
-      console.error("TUICallKit closeMicrophone error:", error?.message);
+      console.error("[TUICallKit] closeMicrophone error:", error?.message);
     }
   }
 
@@ -366,11 +388,11 @@ export default class TUICallKit {
   }
 
   public async switchCallMediaType() {
-    console.log("TUICallKit switchCallMediaType", TUICallType.AUDIO_CALL);
+    console.log("[TUICallKit] switchCallMediaType", TUICallType.AUDIO_CALL);
     try {
       await this.tuiCallEngine.switchCallMediaType(TUICallType.AUDIO_CALL);
     } catch (error: any) {
-      console.error("TUICallKit switchCallMediaType error:", error?.message);
+      console.error("[TUICallKit] switchCallMediaType error:", error?.message);
     }
   }
 
@@ -382,16 +404,17 @@ export default class TUICallKit {
   public async enableAIVoice(enable: boolean) {
     try {
       this.tuiCallEngine.enableAIVoice(enable);
-      console.log("TUICallKit enableAIVoice:", enable);
+      console.log("[TUICallKit] enableAIVoice:", enable);
     } catch (error: any) {
-      console.error("TUICallKit enableAIVoice failed", error.message);
+      console.error("[TUICallKit] enableAIVoice failed", error.message);
+      throw error;
     }
   }
 
   // inviteUser
   public async inviteUser(params: any) {
     const { userIDList = [] } = params;
-    console.log("TUICallKit inviteUser", params);
+    console.log("[TUICallKit] inviteUser", params);
     try {
       const res = this.tuiCallEngine && await this.tuiCallEngine.inviteUser(params);
       const newRemoteList: Array<RemoteUser> = store.remoteList.value;
@@ -399,9 +422,9 @@ export default class TUICallKit {
         newRemoteList.push({ userID, isEntered: false });
       });
       store.changeRemoteList(newRemoteList);
-      console.log("TUICallKit inviteUser success: ", res);
+      console.log("[TUICallKit] inviteUser success: ", res);
     } catch (error: any) {
-      console.error("TUICallKit inviteUser error: " + error?.message);
+      console.error("[TUICallKit] inviteUser error: " + error?.message);
       throw error;
     }
   }
@@ -409,8 +432,8 @@ export default class TUICallKit {
   public getTim() {
     if (this.tim) return this.tim;
     if (!this.tuiCallEngine) {
-      console.warn("TUICallKit getTim warning: tuiCallEngine Instance is not available");
-      return;
+      console.warn("[TUICallKit] getTim warning: tuiCallEngine Instance is not available");
+      return null;
     }
     return this.tuiCallEngine.tim;
   }
@@ -419,13 +442,15 @@ export default class TUICallKit {
    * component destroyed
    */
   public async destroyed() {
-    this.unbindTIMEvent();
-    store.changeStatus(STATUS.IDLE);
     try {
+      if (store.status.value !== STATUS.IDLE) {
+        throw new Error(`please destroyed when status is calling end (idle), now status: ${store.status.value}`);
+      }
+      this.unbindTIMEvent();
       if (this.tuiCallEngine) await this.tuiCallEngine.destroyInstance(); 
-      console.log("TUICallKit destroyInstance success");
+      console.log("[TUICallKit] destroyInstance success");
     } catch (error: any) {
-      console.error("TUICallKit destroyed error:", error);
+      console.error("[TUICallKit] destroyed error:", error);
       throw error;
     }
   }
@@ -520,7 +545,7 @@ export default class TUICallKit {
         this.error.message = store.t("not-supported-webrtc");
         break;
     }
-    console.error("TUICallKit Error", JSON.stringify(this.error));
+    console.error("[TUICallKit] Error", JSON.stringify(this.error));
     if (store.status.value === STATUS.BE_INVITED) {
       this.beforeCalling && this.beforeCalling("invited", this.error);
     }
@@ -528,21 +553,25 @@ export default class TUICallKit {
   }
 
   private handleSDKReady(event: any) {
-    console.log("TUICallKit SDK is ready.", event);
+    console.log("[TUICallKit] SDK is ready.", event);
+    store.updateProfile(Object.assign(store.profile.value, { userID: this.userID }));
   }
 
   private handleKickedOut(event: any) {
-    console.error("TUICallKit Kicked Out", JSON.stringify(event));
+    console.error("[TUICallKit] Kicked Out", event);
+    this.unbindTIMEvent();
+    store.triggerEvents("kicked-out", event);
+    store.changeStatus(STATUS.IDLE);
   }
 
   private async handleUserVideoAvailable(event: any) {
-    console.log("TUICallKit handleUserVideoAvailable", event);
+    console.log("[TUICallKit] handleUserVideoAvailable", event);
     const { userID, isVideoAvailable } = event;
     store.changeRenderReadyStatusByUserID(userID, true);
     store.changeRemoteDeviceStatusByUserID(userID, CALL_TYPE_STRING.VIDEO, isVideoAvailable);
     if (!isVideoAvailable) return;
     if (!document.getElementById(userID)) {
-      console.log("TUICallKit add remoteWaitList", userID);
+      console.log("[TUICallKit] add remoteWaitList", userID);
       store.remoteWaitList.value.add(userID);
     } else {
       await this.startRemoteView(userID);
@@ -550,7 +579,7 @@ export default class TUICallKit {
   }
 
   private handleUserAudioAvailable(event: any) {
-    console.log("TUICallKit handleUserAudioAvailable", event);
+    console.log("[TUICallKit] handleUserAudioAvailable", event);
     const { userID, isAudioAvailable } = event;
     store.changeRemoteDeviceStatusByUserID(userID, CALL_TYPE_STRING.AUDIO, isAudioAvailable);
   }
@@ -561,7 +590,7 @@ export default class TUICallKit {
   }
 
   private handleInvited(event: any) {
-    console.log("TUICallKit handleInvited", event);
+    console.log("[TUICallKit] handleInvited", event);
     this.beforeCalling && this.beforeCalling("invited", this.error);
     if (this.error) { 
       this.reject();
@@ -577,7 +606,7 @@ export default class TUICallKit {
   }
 
   private handleUserAccept(event: any) {
-    console.log("TUICallKit handleUserAccept", event);
+    console.log("[TUICallKit] handleUserAccept", event);
     const { userID } = event;
     if (store.status.value === STATUS.BE_INVITED) {
       console.log(`TUICallKit userID=${userID} accept the call`);
@@ -587,19 +616,19 @@ export default class TUICallKit {
   }
 
   private handleUserEnter(event: any) {
-    console.log("TUICallKit handleUserEnter", event);
+    console.log("[TUICallKit] handleUserEnter", event);
     const { userID } = event;
     store.addRemoteListByUserID(userID);
   }
 
   private handleUserLeave(event: any) {
-    console.log("TUICallKit handleUserLeave", event);
+    console.log("[TUICallKit] handleUserLeave", event);
     const { userID } = event;
     store.removeRemoteListByUserID(userID);
   }
 
   private handleReject(event: any) {
-    console.log("TUICallKit handleReject", event);
+    console.log("[TUICallKit] handleReject", event);
     const { userID } = event;
     if (store.status.value === STATUS.BE_INVITED) return;
     if (store.status.value === STATUS.CALLING_GROUP_AUDIO || store.status.value === STATUS.CALLING_GROUP_VIDEO || store.status.value === STATUS.DIALING_GROUP) {
@@ -610,7 +639,7 @@ export default class TUICallKit {
   }
 
   private handleNoResponse(event: any) {
-    console.log("TUICallKit handleNoResponse", event);
+    console.log("[TUICallKit] handleNoResponse", event);
     const { userIDList } = event;
     userIDList.forEach((userID: string) => {
       if (store.removeRemoteListByUserID(userID) <= 0) {
@@ -620,7 +649,7 @@ export default class TUICallKit {
   }
 
   private handleLineBusy(event: any) {
-    console.log("TUICallKit handleLineBusy", event);
+    console.log("[TUICallKit] handleLineBusy", event);
     const { userID } = event;
     if (store.removeRemoteListByUserID(userID) <= 0) {
       store.changeStatus(STATUS.IDLE, CHANGE_STATUS_REASON.LINE_BUSY, store.isFromGroup.value ? 0 : 1000);
@@ -628,12 +657,12 @@ export default class TUICallKit {
   }
 
   private handleCallingCancel(event: any) {
-    console.log("TUICallKit handleCallingCancel", event);
+    console.log("[TUICallKit] handleCallingCancel", event);
     store.changeStatus(STATUS.IDLE, CHANGE_STATUS_REASON.CALLING_CANCEL, 1000);
   }
 
   private handleCallingTimeOut(event: any) {
-    console.log("TUICallKit handleCallingTimeOut", event);
+    console.log("[TUICallKit] handleCallingTimeOut", event);
     const { userIDList } = event;
     userIDList.forEach((userID: string) => {
       if (store.removeRemoteListByUserID(userID) <= 0 || userID === store.profile.value.userID) {
@@ -643,19 +672,19 @@ export default class TUICallKit {
   }
 
   private handleCallingEnd(event: any) {
-    console.log("TUICallKit handleCallingEnd", event);
+    console.log("[TUICallKit] handleCallingEnd", event);
     store.changeStatus(STATUS.IDLE);
   }
 
   private handleCallTypeChanged(event: any) {
-    console.log("TUICallKit handleCallTypeChanged", event);
+    console.log("[TUICallKit] handleCallTypeChanged", event);
     const { newCallType } = event;
     store.changeCallType(newCallType);
   }
 
   private handleMessageSentByMe(event: any) {
     const message = event?.data;
-    console.log("TUICallKit MessageSentByMe", message);
+    console.log("[TUICallKit] MessageSentByMe", message);
     this.onMessageSentByMe && this.onMessageSentByMe(message);
   }
 }

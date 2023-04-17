@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-import { TUICallKit, TUICallKitServer, TUICallKitMini } from "@tencentcloud/call-uikit-vue";
+import { TUICallKit, TUICallKitServer, TUICallKitMini, STATUS } from "@tencentcloud/call-uikit-vue";
 import DeviceDetector from "./components/DeviceDetector/index.vue";
-import * as GenerateTestUserSig from "../public/debug/GenerateTestUserSig.js";
+import * as GenerateTestUserSig from "../public/debug/GenerateTestUserSig-es.js";
 import TIM from "tim-js-sdk";
 import copy from "copy-to-clipboard";
 import videoBlackSVG from "./assets/videoBlack.svg";
@@ -28,7 +28,6 @@ const userList = ref<string[]>([]);
 const currentUserID = ref<string>("");
 const isLogin = ref<boolean>(false);
 
-const debugDisplayStyle = ref<string>("");
 const isNewTab = ref<boolean>(false);
 const isMinimized = ref<boolean>(false);
 const finishedRTCDetectStatus = ref<string>("");
@@ -65,11 +64,11 @@ async function login() {
     ElMessage.error(t("input-userID"));
     return;
   }
-  const { userSig } = GenerateTestUserSig.genTestUserSig(
-    loginUserID.value,
-    SDKAppID.value,
-    SecretKey.value
-  );
+  const { userSig } = GenerateTestUserSig.genTestUserSig({
+    userID: loginUserID.value,
+    SDKAppID: SDKAppID.value,
+    SecretKey: SecretKey.value
+  });
   tim = TIM.create({
     SDKAppID: SDKAppID.value,
   });
@@ -82,7 +81,6 @@ async function login() {
     });
     currentUserID.value = loginUserID.value;
     isLogin.value = true;
-    debugDisplayStyle.value = "display: none;";
     if (finishedRTCDetectStatus.value !== "finished" && finishedRTCDetectStatus.value !== "skiped") initNetWorkInfo();
     logReporter.loginSuccess(SDKAppID.value);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -233,17 +231,19 @@ const initNetWorkInfo = async () => {
   const uplinkUserId = currentUserID.value + "_uplink_test";
   const downlinkUserId = currentUserID.value + "_downlink_test";
   const roomId = 999999;
-
-  const uplinkUserSig = GenerateTestUserSig.genTestUserSig(
-    uplinkUserId,
-    SDKAppID.value,
-    SecretKey.value
-  ).userSig;
-  const downlinkUserSig = GenerateTestUserSig.genTestUserSig(
-    downlinkUserId,
-    SDKAppID.value,
-    SecretKey.value
-  ).userSig;
+  const uplinkUserSig = GenerateTestUserSig.genTestUserSig({
+    userID: uplinkUserId,
+    SDKAppID: SDKAppID.value,
+    SecretKey: SecretKey.value
+  }).userSig;
+  tim = TIM.create({
+    SDKAppID: SDKAppID.value,
+  });
+  const downlinkUserSig = GenerateTestUserSig.genTestUserSig({
+    userID: downlinkUserId,
+    SDKAppID: SDKAppID.value,
+    SecretKey: SecretKey.value
+  }).userSig;
   networkDetectInfo.value = {
     sdkAppId: SDKAppID,
     roomId,
@@ -275,6 +275,57 @@ function switchLanguage() {
   }
 }
 
+async function logout() {
+  await TUICallKitServer.destroyed();
+  tim.logout();
+  isLogin.value = false;
+}
+
+function handleKickedOut() {
+  console.log("The user has been kicked out");
+  isLogin.value = false;
+}
+
+let TUICallKitStatus: string = STATUS.IDLE;
+function handleStatusChanged(args: { oldStatus: string; newStatus: string; }) {
+  const { oldStatus, newStatus } = args;
+  console.log("通话状态变更: " + oldStatus + " -> " + newStatus);
+  TUICallKitStatus = newStatus;
+}
+
+async function accept() {
+  try {
+    if (TUICallKitStatus === STATUS.BE_INVITED) {
+      await TUICallKitServer.accept();
+      ElMessage.warning("已自动接听");
+    }
+  } catch (error: any) {
+    alert(`自动接听失败，原因：${error}`);
+  }
+}
+
+async function reject() {
+  try {
+    if (TUICallKitStatus === STATUS.BE_INVITED) {
+      await TUICallKitServer.reject();
+      ElMessage.warning("已自动拒绝");
+    }
+  } catch (error: any) {
+    alert(`自动拒绝失败，原因：${error}`);
+  }
+}
+
+async function hangup() {
+  try {
+    if (TUICallKitStatus === STATUS.CALLING_C2C_AUDIO || TUICallKitStatus === STATUS.CALLING_C2C_VIDEO || TUICallKitStatus === STATUS.CALLING_GROUP_AUDIO || TUICallKitStatus === STATUS.CALLING_GROUP_VIDEO) {
+      await TUICallKitServer.hangup();
+      ElMessage.warning("已自动挂断");
+    }
+  } catch (error: any) {
+    alert(`自动挂断失败，原因：${error}`);
+  }
+}
+
 </script>
 
 <template>
@@ -287,6 +338,9 @@ function switchLanguage() {
     >
     </DeviceDetector>
     <div style="display: flex; align-items: center">
+      <!-- <button @click="accept"> accept </button>
+      <button @click="reject"> reject </button>
+      <button @click="hangup"> hangup </button> -->
       <div class="switch">
         <div
           class="switch-btn"
@@ -332,14 +386,14 @@ function switchLanguage() {
               userID: {{ currentUserID }}
               <button @click="(event) => newTab(event)" v-if="!isNewTab">
                 {{ t("login-other") }} UserID
-                <svg width="16" height="16" viewBox="0 0 16 16">
+                <svg width="14" height="14" viewBox="0 0 16 16">
                   <path fill="currentColor" fill-rule="evenodd"
                     d="M10.75 1a.75.75 0 0 0 0 1.5h1.69L8.22 6.72a.75.75 0 0 0 1.06 1.06l4.22-4.22v1.69a.75.75 0 0 0 1.5 0V1h-4.25ZM2.5 4v9a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V8.75a.75.75 0 0 1 1.5 0V13a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h4.25a.75.75 0 0 1 0 1.5H3a.5.5 0 0 0-.5.5Z"
                     clip-rule="evenodd" />
                 </svg>
               </button>
               <span v-else>
-                <svg width="16" height="16" viewBox="0 0 24 24">
+                <svg width="14" height="14" viewBox="0 0 24 24">
                   <g fill="none">
                     <path d="M0 0h24v24H0z" />
                     <path fill="currentColor"
@@ -347,6 +401,7 @@ function switchLanguage() {
                   </g>
                 </svg>
               </span>
+              <button @click.stop="logout()"> {{ t("logout") }} </button>
             </span>
           </div>
           <div class="search-input-container">
@@ -383,10 +438,12 @@ function switchLanguage() {
         :onMinimized="onMinimized"
         :allowedMinimized="true"
         :allowedFullScreen="true"
+        @kicked-out="handleKickedOut"
+        @status-changed="handleStatusChanged"
       />
       <TUICallKitMini />
     </div>
-    <div id="debug" :style="debugDisplayStyle">
+    <div id="debug" v-show="!isLogin">
       <div>
         <b>Debug Panel</b>
       </div>
