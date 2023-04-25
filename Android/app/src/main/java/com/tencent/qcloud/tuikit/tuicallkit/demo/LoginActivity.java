@@ -14,15 +14,17 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.tencent.imsdk.v2.V2TIMManager;
+import com.tencent.imsdk.v2.V2TIMUserFullInfo;
+import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.interfaces.TUICallback;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.tencent.qcloud.tuikit.debug.GenerateTestUserSig;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.basic.UserModel;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.basic.UserModelManager;
-import com.tencent.qcloud.tuikit.tuicallkit.base.CallingUserModel;
-import com.tencent.qcloud.tuikit.tuicallkit.utils.UserInfoUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
@@ -86,20 +88,24 @@ public class LoginActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(userModel.userId)) {
             return;
         }
-
-        UserInfoUtils userInfoUtils = new UserInfoUtils();
-        userInfoUtils.getUserInfo(userModel.userId, new UserInfoUtils.UserCallback() {
+        List<String> userList = new ArrayList<>();
+        userList.add(userModel.userId);
+        V2TIMManager.getInstance().getUsersInfo(userList, new V2TIMValueCallback<List<V2TIMUserFullInfo>>() {
             @Override
-            public void onSuccess(List<CallingUserModel> list) {
-                if (list == null || list.isEmpty()) {
-                    Log.e(TAG, "getUserInfo failed, list is empty");
+            public void onError(int errorCode, String errorMsg) {
+                Log.e(TAG, "getUserInfo failed, code:" + errorCode + " msg: " + errorMsg);
+            }
+
+            @Override
+            public void onSuccess(List<V2TIMUserFullInfo> userFullInfoList) {
+                if (null == userFullInfoList || userFullInfoList.isEmpty()) {
+                    Log.e(TAG, "getUserInfo result is empty");
                     return;
                 }
-                CallingUserModel callingUserModel = list.get(0);
-                String userName = callingUserModel.userName;
-                String userAvatar = callingUserModel.userAvatar;
+                V2TIMUserFullInfo timUserFullInfo = userFullInfoList.get(0);
+                String userName = timUserFullInfo.getNickName();
+                String userAvatar = timUserFullInfo.getFaceUrl();
                 Log.d(TAG, "getUserInfo success: userName = " + userName + " , userAvatar = " + userAvatar);
-
                 if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(userAvatar)) {
                     Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
                     startActivity(intent);
@@ -108,16 +114,10 @@ public class LoginActivity extends AppCompatActivity {
                     userModel.userAvatar = userAvatar;
                     userModel.userName = userName;
                     manager.setUserModel(userModel);
-
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 }
-            }
-
-            @Override
-            public void onFailed(int errorCode, String errorMsg) {
-                Log.e(TAG, "getUserInfo failed, code:" + errorCode + " msg: " + errorMsg);
             }
         });
     }

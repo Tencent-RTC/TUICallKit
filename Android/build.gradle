@@ -8,6 +8,9 @@ buildscript {
         maven { url "https://mirrors.tencent.com/nexus/repository/maven-public/" }
         // TUIOfflinePush : configure HMS Core SDK Maven address, delete it without the Huawei offline push function.
         maven { url 'https://developer.huawei.com/repo/' }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.1'
@@ -17,6 +20,8 @@ buildscript {
 
         // TUIOfflinePush : Google(FCM), delete it without Google offline push function
         classpath 'com.google.gms:google-services:4.3.10'
+
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
     }
 }
 

@@ -25,16 +25,18 @@ import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.tencent.imsdk.v2.V2TIMManager;
+import com.tencent.imsdk.v2.V2TIMUserFullInfo;
+import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit;
-import com.tencent.qcloud.tuikit.tuicallkit.base.CallingUserModel;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.basic.IntentUtils;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.basic.UserModel;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.basic.UserModelManager;
 import com.tencent.qcloud.tuikit.tuicallkit.utils.ImageLoader;
-import com.tencent.qcloud.tuikit.tuicallkit.utils.UserInfoUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TUICallingEntranceActivity extends Activity {
@@ -214,29 +216,30 @@ public class TUICallingEntranceActivity extends Activity {
         if (TextUtils.isEmpty(userId)) {
             return;
         }
-        UserInfoUtils userInfoUtils = new UserInfoUtils();
-        userInfoUtils.getUserInfo(userId, new UserInfoUtils.UserCallback() {
+        List<String> userList = new ArrayList<>();
+        userList.add(userId);
+        V2TIMManager.getInstance().getUsersInfo(userList, new V2TIMValueCallback<List<V2TIMUserFullInfo>>() {
             @Override
-            public void onSuccess(List<CallingUserModel> list) {
-                if (null == list || list.isEmpty() || null == list.get(0)) {
-                    return;
-                }
-                CallingUserModel model = list.get(0);
-                mSearchModel = new UserModel();
-                mSearchModel.userId = model.userId;
-                mSearchModel.userAvatar = model.userAvatar;
-                mSearchModel.userName = model.userName;
-                showSearchUserModel(mSearchModel);
-            }
-
-            @Override
-            public void onFailed(int errorCode, String errorMsg) {
+            public void onError(int errorCode, String errorMsg) {
                 showSearchUserModel(null);
                 if (errorCode == ERROR_CODE_USER_NOT_EXIST) {
                     ToastUtil.toastLongMessage(getString(R.string.app_user_not_exist));
                 } else {
                     ToastUtil.toastLongMessage(getString(R.string.app_toast_search_fail, errorMsg));
                 }
+            }
+
+            @Override
+            public void onSuccess(List<V2TIMUserFullInfo> userFullInfoList) {
+                if (null == userFullInfoList || userFullInfoList.isEmpty() || null == userFullInfoList.get(0)) {
+                    return;
+                }
+                V2TIMUserFullInfo model = userFullInfoList.get(0);
+                mSearchModel = new UserModel();
+                mSearchModel.userId = model.getUserID();
+                mSearchModel.userAvatar = model.getFaceUrl();
+                mSearchModel.userName = model.getNickName();
+                showSearchUserModel(mSearchModel);
             }
         });
     }

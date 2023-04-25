@@ -11,7 +11,7 @@ import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
-import com.tencent.qcloud.tuicore.interfaces.TUICallback;
+import com.tencent.qcloud.tuicore.permission.PermissionCallback;
 import com.tencent.qcloud.tuicore.util.SPUtils;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.tencent.qcloud.tuikit.TUICommonDefine;
@@ -129,9 +129,9 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
             return;
         }
 
-        checkCallingPermission(callMediaType, new TUICallback() {
+        PermissionRequest.requestPermissions(mContext, callMediaType, new PermissionCallback() {
             @Override
-            public void onSuccess() {
+            public void onGranted() {
                 TUICommonDefine.RoomId roomId = new TUICommonDefine.RoomId();
                 roomId.intRoomId = generateRoomId();
 
@@ -163,8 +163,8 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
             }
 
             @Override
-            public void onError(int errorCode, String errorMessage) {
-                callbackError(callback, errorCode, errorMessage);
+            public void onDenied() {
+                callbackError(callback, TUICallDefine.ERROR_PERMISSION_DENIED, "permission denied");
                 resetCall();
             }
         });
@@ -209,14 +209,14 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
             return;
         }
 
-        checkCallingPermission(callMediaType, new TUICallback() {
+        PermissionRequest.requestPermissions(mContext, callMediaType, new PermissionCallback() {
             @Override
-            public void onSuccess() {
+            public void onGranted() {
                 TUICommonDefine.RoomId roomId = new TUICommonDefine.RoomId();
                 roomId.intRoomId = generateRoomId();
 
-                TUICallEngine.createInstance(mContext).groupCall(roomId, groupId, userIdList, callMediaType,
-                        params, new TUICommonDefine.Callback() {
+                TUICallEngine.createInstance(mContext).groupCall(roomId, groupId, userIdList, callMediaType, params,
+                        new TUICommonDefine.Callback() {
                             @Override
                             public void onSuccess() {
                                 for (String userId : userIdList) {
@@ -248,8 +248,8 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
             }
 
             @Override
-            public void onError(int errorCode, String errorMessage) {
-                callbackError(callback, errorCode, errorMessage);
+            public void onDenied() {
+                callbackError(callback, TUICallDefine.ERROR_PERMISSION_DENIED, "permission denied");
                 resetCall();
             }
         });
@@ -284,9 +284,9 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
             return;
         }
 
-        checkCallingPermission(mediaType, new TUICallback() {
+        PermissionRequest.requestPermissions(mContext, mediaType, new PermissionCallback() {
             @Override
-            public void onSuccess() {
+            public void onGranted() {
                 TUICallEngine.createInstance(mContext).joinInGroupCall(roomId, groupId, mediaType,
                         new TUICommonDefine.Callback() {
                             @Override
@@ -313,7 +313,7 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
             }
 
             @Override
-            public void onError(int errorCode, String errorMessage) {
+            public void onDenied() {
                 resetCall();
             }
         });
@@ -377,9 +377,9 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
 
             mInviter.userId = callerId;
 
-            checkCallingPermission(callMediaType, new TUICallback() {
+            PermissionRequest.requestPermissions(mContext, callMediaType, new PermissionCallback() {
                 @Override
-                public void onSuccess() {
+                public void onGranted() {
                     if (TextUtils.isEmpty(mInviter.userId)) {
                         return;
                     }
@@ -408,7 +408,7 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
                 }
 
                 @Override
-                public void onError(int errorCode, String errorMessage) {
+                public void onDenied() {
                     TUICallEngine.createInstance(mContext).reject(null);
                     resetCall();
                 }
@@ -735,32 +735,6 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
                 ToastUtil.toastShortMessage(mContext.getString(R.string.tuicalling_other_party_network_low_quality));
                 mOtherUserLowQualityTime = currentTime;
             }
-        }
-    }
-
-    private void checkCallingPermission(TUICallDefine.MediaType mediaType, TUICallback callback) {
-        PermissionRequest.PermissionCallback permissionCallback = new PermissionRequest.PermissionCallback() {
-            @Override
-            public void onGranted() {
-                super.onGranted();
-                if (callback != null) {
-                    callback.onSuccess();
-                }
-            }
-
-            @Override
-            public void onDialogRefused() {
-                super.onDialogRefused();
-                if (callback != null) {
-                    callback.onError(TUICallDefine.ERROR_PERMISSION_DENIED, "permission denied");
-                }
-            }
-        };
-        if (TUICallDefine.MediaType.Video.equals(mediaType)) {
-            PermissionRequest.requestPermission(mContext, PermissionRequest.PERMISSION_MICROPHONE,
-                    PermissionRequest.PERMISSION_CAMERA, permissionCallback);
-        } else {
-            PermissionRequest.requestPermission(mContext, PermissionRequest.PERMISSION_MICROPHONE, permissionCallback);
         }
     }
 

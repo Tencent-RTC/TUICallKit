@@ -18,13 +18,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tencent.qcloud.tuicore.component.RoundCornerImageView
+    <ImageView
         android:id="@+id/iv_user_avatar"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="30dp"
         android:src="@drawable/ic_avatar"
-        app:corner_radius="50dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title" />
