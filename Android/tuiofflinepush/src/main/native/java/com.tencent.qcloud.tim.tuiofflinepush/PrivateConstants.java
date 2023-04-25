@@ -54,7 +54,7 @@ public class PrivateConstants {
     public static long oppoPushBussinessId = 0;
     // 海外证书 ID，需要在海外控制台配置，不使用不用填写  // The overseas certificate ID, which needs to be configured on the overseas console, does not need to be filled in if it is not used.
     public static long oppoPushBussinessIdAbroad = 0;
-    // oppo开放平台分配的应用APPID及APPKEY  // APPID APPKEY, Allocated by OPPO Open Platform
+    // oppo开放平台分配的应用 AppKey 和 AppSecret // Allocated by OPPO Open Platform
     public static String oppoPushAppKey = "";
     public static String oppoPushAppSecret = "";
     /****** oppo end ******/
