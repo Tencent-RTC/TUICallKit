@@ -77,7 +77,7 @@ public class SelectUserTableViewCell: UITableViewCell {
         
         let faceURL = model.faceURL ?? TUI_CALL_DEFAULT_AVATAR
         if let imageURL = URL(string: faceURL) {
-            userImageView.kf.setImage(with: .network(imageURL), placeholder: TUICallingCommon.getBundleImage(withName: "userIcon"))
+            userImageView.kf.setImage(with: .network(imageURL), placeholder: getBundleImage(withName: "userIcon"))
         }
         
         userImageView.layer.masksToBounds = true
@@ -102,5 +102,15 @@ public class SelectUserTableViewCell: UITableViewCell {
         if let action = self.buttonAction {
             action()
         }
+    }
+}
+
+extension SelectUserTableViewCell {
+    
+    func getBundleImage(withName: String) -> UIImage {
+        guard let callingKitBundleURL = Bundle.main.url(forResource: "TUICallingKitBundle", withExtension: "bundle") else { return UIImage() }
+        let bundle = Bundle(url: callingKitBundleURL)
+        guard let image = UIImage(named: withName, in: bundle, compatibleWith: nil) else { return UIImage() }
+        return image
     }
 }

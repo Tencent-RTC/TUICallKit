@@ -36,6 +36,7 @@
 		4F84BED12779A28100BE13C5 /* MainMenuItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BEC12779A28100BE13C5 /* MainMenuItemModel.swift */; };
 		4F84BED72779AB6800BE13C5 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F84BED62779AB6800BE13C5 /* MainViewController.swift */; };
 		4FE7A785275E3A89009CCB09 /* phone_ringing.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4FE7A784275E3A89009CCB09 /* phone_ringing.mp3 */; };
+		B832DE652966B12E003120CB /* DataDefine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B832DE642966B12E003120CB /* DataDefine.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,6 +76,7 @@
 		704D44628D9621C9B6C42E48 /* Pods_TUICallKitApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TUICallKitApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91F2AB471EFA1B512F559859 /* Pods-TUICallKitApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TUICallKitApp.debug.xcconfig"; path = "Target Support Files/Pods-TUICallKitApp/Pods-TUICallKitApp.debug.xcconfig"; sourceTree = "<group>"; };
 		978AEE3D0185AD9D68A3E8A7 /* Pods-TUICallKitApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TUICallKitApp.release.xcconfig"; path = "Target Support Files/Pods-TUICallKitApp/Pods-TUICallKitApp.release.xcconfig"; sourceTree = "<group>"; };
+		B832DE642966B12E003120CB /* DataDefine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDefine.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,6 +180,7 @@
 				4F3F7CA326D65D38002912DE /* ProfileManager_Mock.swift */,
 				4F3F7CA426D65D38002912DE /* AppUtils.swift */,
 				4F3F7CA726D65D38002912DE /* LayoutDefine.swift */,
+				B832DE642966B12E003120CB /* DataDefine.swift */,
 			);
 			path = LoginMock;
 			sourceTree = SOURCE_ROOT;
@@ -221,7 +224,7 @@
 				474E0FE22644DFAE002AFADB /* Frameworks */,
 				474E0FE32644DFAE002AFADB /* Resources */,
 				8FE026B3F7BE01BC7F9DB305 /* [CP] Embed Pods Frameworks */,
-				7B125D5D5EF280D6BE0D9DE4 /* [CP] Copy Pods Resources */,
+				0FD264A225EFBDE6F60D5FB6 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -287,6 +290,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		0FD264A225EFBDE6F60D5FB6 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TUICallKitApp/Pods-TUICallKitApp-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TUICallKitApp/Pods-TUICallKitApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TUICallKitApp/Pods-TUICallKitApp-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		13AD8BEF83F6C34C3FD50D30 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -307,23 +327,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7B125D5D5EF280D6BE0D9DE4 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TUICallKitApp/Pods-TUICallKitApp-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TUICallKitApp/Pods-TUICallKitApp-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TUICallKitApp/Pods-TUICallKitApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8FE026B3F7BE01BC7F9DB305 /* [CP] Embed Pods Frameworks */ = {
@@ -366,6 +369,7 @@
 				4F3F7CB226D65D38002912DE /* LayoutDefine.swift in Sources */,
 				4F3F7CA826D65D38002912DE /* RegisterRootView.swift in Sources */,
 				4F84BEB127798B4500BE13C5 /* SelectUserTableViewCell.swift in Sources */,
+				B832DE652966B12E003120CB /* DataDefine.swift in Sources */,
 				4F3F7CA926D65D38002912DE /* LoginRootView.swift in Sources */,
 				47D9D37226521A7A0007EE1F /* SceneDelegate.swift in Sources */,
 				4F3F7CAE26D65D38002912DE /* ProfileManager_Mock.swift in Sources */,
@@ -566,7 +570,7 @@
 				CODE_SIGN_ENTITLEMENTS = TUICallKitApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 310;
+				CURRENT_PROJECT_VERSION = 360;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = F8A3GH6Q4W;
 				ENABLE_BITCODE = NO;
@@ -585,7 +589,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5;
+				MARKETING_VERSION = 1.6;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -639,7 +643,7 @@
 				CODE_SIGN_ENTITLEMENTS = TUICallKitApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 310;
+				CURRENT_PROJECT_VERSION = 360;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = F8A3GH6Q4W;
 				ENABLE_BITCODE = NO;
@@ -674,7 +678,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5;
+				MARKETING_VERSION = 1.6;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
