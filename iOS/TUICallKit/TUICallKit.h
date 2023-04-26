@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * 创建 TUICallKit 实例（单例模式）
+ *
+ * @param context 仅适用于 Android 平台，TUICallKit 内部会将其转化为 Android 平台的 ApplicationContext。
  */
 + (instancetype)createInstance NS_SWIFT_NAME(createInstance());
 
