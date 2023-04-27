@@ -10,7 +10,7 @@ import UIKit
 import Foundation
 import Toast_Swift
 import TUICallKit
-
+import ImSDK_Plus
 public class ContactView: UIView {
     var selectedFinished: (([V2TIMUserFullInfo])->Void)? = nil
     var btnType: SelectUserButtonType = .call

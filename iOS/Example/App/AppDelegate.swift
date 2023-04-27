@@ -9,7 +9,8 @@
 import UIKit
 import TUICallKit
 import UserNotifications
-
+import ImSDK_Plus
+import TXLiteAVSDK_TRTC
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     

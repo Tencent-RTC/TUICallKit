@@ -14,7 +14,8 @@ TUICallKit
     ├─ LoginMock        // 登录UI及业务逻辑代码文件夹
     └─ TXAppBasic       // 工程依赖的基础组件
 ├─ Resources            // 视频/语音通话功能所需的图片、国际化字符串资源文件夹
-├─ TUICallKit           // 视频/语音通话核心业务逻辑代码文件夹
+├─ TUICallKit           // 视频/语音通话核心业务逻辑代码文件夹(Objective-C)
+├─ TUICallKit-Swift     // 视频/语音通话核心业务逻辑代码文件夹(Swift)
 ```
 
 ## 环境准备
@@ -80,6 +81,11 @@ Tips：TUICallKit 通话体验，至少需要两台设备，如果用户A/B分�
 
 - 步骤 1：在欢迎页，输入用户名(<font color=red>请确保用户名唯一性，不能与其他用户重复</font>)，比如222；
 - 步骤 2：进入主页，等待接听来电即可；
+
+## 切换为Swift版本
+从1.6.0版本开始，TUICallKit开始支持Swift版本，具体使用方式为：
+1. 打开‘Example/Podfile’文件，将 ‘pod 'TUICallKit', :path => "../", :subspecs => ["TRTC"]’ 替换为 ‘pod 'TUICallKit_Swift', :path => "../TUICallKit_Swift.podspec", :subspecs => ["TRTC"]’
+2. 打开Example工程，将所有的‘import TUICallKit’替换为‘import TUICallKit_Swift’
 
 ## 常见问题
 
