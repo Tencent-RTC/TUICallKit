@@ -14,7 +14,8 @@ TUICalling
     ├─ LoginMock        // Folder of the login UI and business logic code
     └─ TXAppBasic       // Dependent basic components of the project
 ├─ Resources            // Folder of images and internationalization string resources required by the audio/video call feature
-├─ Source               // Folder of the core business logic code of audio/video call
+├─ TUICallKit           // Folder of the core business logic code of audio/video call(Objective-C)
+├─ TUICallKit-Swift     // Folder of the core business logic code of audio/video call（Swift）
 ```
 
 ## Environment Requirements
@@ -65,6 +66,11 @@ Note: You need to prepare at least two devices to try out the call feature of TU
 
 - Step 1: On the welcome page, enter the username (<font color=red>which must be unique</font>), such as `222`.
 - Step 2: Enter the homepage and wait for the call.
+
+## Switch to Swift version
+Starting from version 1.6.0, TUICallKit began to support the Swift version. The specific usage method is as follows:
+1. Open ‘Example/Podfile’，Replace ‘pod 'TUICallKit', :path => "../", :subspecs => ["TRTC"]’ with ‘pod 'TUICallKit_Swift', :path => "../TUICallKit_Swift.podspec", :subspecs => ["TRTC"]’
+2. Open Example Project, Replace all ‘import TUICallKit’ with ‘import TUICallKit_Swift’
 
 ## FAQs
 
