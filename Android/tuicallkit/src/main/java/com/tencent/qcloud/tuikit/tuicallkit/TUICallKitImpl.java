@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 public final class TUICallKitImpl extends TUICallKit implements ITUINotification {
     private static final String TAG = "TUICallKit";
@@ -132,10 +131,7 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
         PermissionRequest.requestPermissions(mContext, callMediaType, new PermissionCallback() {
             @Override
             public void onGranted() {
-                TUICommonDefine.RoomId roomId = new TUICommonDefine.RoomId();
-                roomId.intRoomId = generateRoomId();
-
-                TUICallEngine.createInstance(mContext).call(roomId, userId, callMediaType, params,
+                TUICallEngine.createInstance(mContext).call(userId, callMediaType, params,
                         new TUICommonDefine.Callback() {
                             @Override
                             public void onSuccess() {
@@ -212,10 +208,7 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
         PermissionRequest.requestPermissions(mContext, callMediaType, new PermissionCallback() {
             @Override
             public void onGranted() {
-                TUICommonDefine.RoomId roomId = new TUICommonDefine.RoomId();
-                roomId.intRoomId = generateRoomId();
-
-                TUICallEngine.createInstance(mContext).groupCall(roomId, groupId, userIdList, callMediaType, params,
+                TUICallEngine.createInstance(mContext).groupCall(groupId, userIdList, callMediaType, params,
                         new TUICommonDefine.Callback() {
                             @Override
                             public void onSuccess() {
@@ -271,7 +264,8 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
         TUILog.i(TAG, "joinInGroupCall, roomId: " + roomId + " ,groupId: " + groupId + " ,mediaType: " + mediaType);
 
         int intRoomId = (roomId != null) ? roomId.intRoomId : 0;
-        if (intRoomId <= 0 || intRoomId >= Constants.ROOM_ID_MAX) {
+        String strRoomId = (roomId != null) ? roomId.strRoomId : "";
+        if (intRoomId <= 0 && TextUtils.isEmpty(strRoomId)) {
             TUILog.e(TAG, "joinInGroupCall failed, roomId is invalid");
             return;
         }
@@ -480,6 +474,7 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
             if (userModel == null) {
                 userModel = new CallingUserModel();
                 userModel.userId = userId;
+                mInviteeList.add(userModel);
             }
             mCallingViewManager.userEnter(userModel);
         }
@@ -736,10 +731,6 @@ public final class TUICallKitImpl extends TUICallKit implements ITUINotification
                 mOtherUserLowQualityTime = currentTime;
             }
         }
-    }
-
-    private int generateRoomId() {
-        return new Random().nextInt(Constants.ROOM_ID_MAX - Constants.ROOM_ID_MIN + 1) + Constants.ROOM_ID_MIN;
     }
 
     private void initCallEngine() {

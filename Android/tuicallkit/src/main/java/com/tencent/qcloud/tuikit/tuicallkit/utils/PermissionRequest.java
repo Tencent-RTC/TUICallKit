@@ -57,24 +57,24 @@ public class PermissionRequest {
         if (PermissionUtils.hasPermission(context)) {
             return;
         }
-        if (BrandUtils.isBrandVivo()) {
-            requestVivoFloatPermission(context);
-        } else {
-            startCommonSettings(context);
-        }
+        startCommonSettings(context);
     }
 
     private static void startCommonSettings(Context context) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-            intent.setData(Uri.parse("package:" + context.getPackageName()));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                intent.setData(Uri.parse("package:" + context.getPackageName()));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     private static void requestVivoFloatPermission(Context context) {
-        Intent vivoIntent = new Intent();
+        Intent intent = new Intent();
         String model = BrandUtils.getModel();
         boolean isVivoY85 = false;
         if (!TextUtils.isEmpty(model)) {
@@ -82,17 +82,21 @@ public class PermissionRequest {
         }
 
         if (!TextUtils.isEmpty(model) && (isVivoY85 || model.contains("vivo Y53L"))) {
-            vivoIntent.setClassName("com.vivo.permissionmanager",
+            intent.setClassName("com.vivo.permissionmanager",
                     "com.vivo.permissionmanager.activity.PurviewTabActivity");
-            vivoIntent.putExtra("tabId", "1");
+            intent.putExtra("tabId", "1");
         } else {
-            vivoIntent.setClassName("com.vivo.permissionmanager",
+            intent.setClassName("com.vivo.permissionmanager",
                     "com.vivo.permissionmanager.activity.SoftPermissionDetailActivity");
-            vivoIntent.setAction("secure.intent.action.softPermissionDetail");
+            intent.setAction("secure.intent.action.softPermissionDetail");
         }
 
-        vivoIntent.putExtra("packagename", context.getPackageName());
-        vivoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(vivoIntent);
+        intent.putExtra("packagename", context.getPackageName());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
