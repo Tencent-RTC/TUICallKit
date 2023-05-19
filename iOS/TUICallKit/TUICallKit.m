@@ -122,10 +122,8 @@ callMediaType:(TUICallMediaType)callMediaType
     
     self.currentCallingType = callMediaType;
     self.currentCallingRole = TUICallRoleCall;
-    TUIRoomId *roomId = [[TUIRoomId alloc] init];
-    roomId.intRoomId = 1 + arc4random() % (INT32_MAX - 1);
     __weak typeof(self) weakSelf = self;
-    [[TUICallEngine createInstance] call:roomId userId:userId callMediaType:callMediaType params:params succ:^{
+    [[TUICallEngine createInstance] call:userId callMediaType:callMediaType params:params succ:^{
         __strong typeof(self) strongSelf = weakSelf;
         if (succ) {
             succ();
@@ -197,10 +195,8 @@ callMediaType:(TUICallMediaType)callMediaType
     self.groupID = groupId;
     self.currentCallingType = callMediaType;
     self.currentCallingRole = TUICallRoleCall;
-    TUIRoomId *roomId = [[TUIRoomId alloc] init];
-    roomId.intRoomId = 1 + arc4random() % (INT32_MAX - 1);
     __weak typeof(self) weakSelf = self;
-    [[TUICallEngine createInstance] groupCall:roomId groupId:groupId
+    [[TUICallEngine createInstance] groupCall:groupId
                                    userIdList:userIdList
                                 callMediaType:callMediaType
                                        params:params
