@@ -8,7 +8,7 @@
 
 #import "TUICallingCommon.h"
 #import "TUICallEngineHeader.h"
-#import "ImSDK_Plus/ImSDK_Plus.h"
+#import "TUICallKitHeader.h"
 #import "TUICallingUserModel.h"
 #import "CallingLocalized.h"
 
