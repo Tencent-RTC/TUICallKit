@@ -13,7 +13,7 @@
 #import "NSDictionary+TUISafe.h"
 #import "TUILog.h"
 #import "TUILogin.h"
-#import "TRTCCloud.h"
+#import "TUICallKitHeader.h"
 #import "TUICallObserver.h"
 #import "TUICallingCommon.h"
 #import "TUICallingStatusManager.h"

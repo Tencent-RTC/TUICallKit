@@ -9,7 +9,6 @@
 #import "TUICallKit.h"
 #import <AVFoundation/AVCaptureDevice.h>
 #import "TUICallEngineHeader.h"
-#import "ImSDK_Plus/ImSDK_Plus.h"
 #import "CallingLocalized.h"
 #import "TUICallingAudioPlayer.h"
 #import "TUICallingFloatingWindowManager.h"
@@ -20,7 +19,7 @@
 #import "TUICallingCommon.h"
 #import "TUICallingAction.h"
 #import "TUICallingStatusManager.h"
-#import "TRTCCloud.h"
+#import "TUICallKitHeader.h"
 #import "TUICallingUserModel.h"
 #import "TUICallKitGCDTimer.h"
 #import "TUICallEngineHeader.h"
@@ -232,6 +231,7 @@ callMediaType:(TUICallMediaType)callMediaType
         TUILog(@"TUICallKit - joinInGroupCall failed, mediaType is unknown");
         return;
     }
+    self.groupID = groupId;
     self.currentCallingRole = TUICallRoleCalled;
     self.currentCallingType = callMediaType;
     [self.callingViewManager createGroupCallingAcceptView:callMediaType callRole:TUICallRoleCalled callScene:TUICallSceneGroup];
@@ -431,14 +431,17 @@ callMediaType:(TUICallMediaType)callMediaType
     __weak typeof(self) weakSelf = self;
     [[V2TIMManager sharedInstance] getUsersInfo:@[userId] succ:^(NSArray<V2TIMUserFullInfo *> *infoList) {
         __strong typeof(self) strongSelf = weakSelf;
-        V2TIMUserFullInfo *userInfo =  [infoList firstObject];
-        CallingUserModel *newUser = [TUICallingCommon covertUser:userInfo];
-        newUser.isEnter = YES;
-        newUser.isAudioAvailable = isAudioAvailable;
-        if (isAudioAvailable) {
-            [TUICallingUserManager cacheUser:newUser];
+        CallingUserModel *userModel = [TUICallingUserManager getUser:userId];
+        if (!userModel) {
+            V2TIMUserFullInfo *userInfo = [infoList firstObject];
+            userModel = [TUICallingCommon covertUser:userInfo];
         }
-        [strongSelf.callingViewManager updateUser:newUser];
+        userModel.isEnter = YES;
+        userModel.isAudioAvailable = isAudioAvailable;
+        if (isAudioAvailable) {
+            [TUICallingUserManager cacheUser:userModel];
+        }
+        [strongSelf.callingViewManager updateUser:userModel];
     } fail:nil];
 }
 
@@ -455,13 +458,18 @@ callMediaType:(TUICallMediaType)callMediaType
     __weak typeof(self) weakSelf = self;
     [[V2TIMManager sharedInstance] getUsersInfo:@[userId] succ:^(NSArray<V2TIMUserFullInfo *> *infoList) {
         __strong typeof(self) strongSelf = weakSelf;
-        V2TIMUserFullInfo *userInfo =  [infoList firstObject];
-        CallingUserModel *newUser = [TUICallingCommon covertUser:userInfo];
-        newUser.isVideoAvailable = isVideoAvailable;
-        if (isVideoAvailable) {
-            [TUICallingUserManager cacheUser:newUser];
+        
+        CallingUserModel *userModel = [TUICallingUserManager getUser:userId];
+        if (!userModel) {
+            V2TIMUserFullInfo *userInfo = [infoList firstObject];
+            userModel = [TUICallingCommon covertUser:userInfo];
         }
-        [strongSelf.callingViewManager updateUser:newUser];
+        userModel.isEnter = YES;
+        userModel.isVideoAvailable = isVideoAvailable;
+        if (isVideoAvailable) {
+            [TUICallingUserManager cacheUser:userModel];
+        }
+        [strongSelf.callingViewManager updateUser:userModel];
     } fail:nil];
 }
 
