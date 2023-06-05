@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:tuicall_kit_example/call_page.dart';
 import 'package:tuicall_kit_example/store.dart';
 import 'package:tencent_calls_engine/tuicall_define.dart';
+import 'package:tuicall_kit_example/i18n/i18n_utils.dart';
 
 import 'debug/generate_test_user_sig.dart';
 
@@ -28,7 +29,7 @@ class ProfileRoute extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
-        title: const Text('Plugin example app'),
+        title: Text(TIM_t("TUICallKit 示例工程")),
       ),
       body: Center(
           child: ProfilePage(
@@ -55,8 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
   _ProfilePageState(
       {Key? key, required this.callsUIKitPlugin, required this.userInfo});
 
-  String notesText =
-      "Notes: TUICallKit support offline calling and multiple platforms such as Android,iOS,Web,Flutter etc.";
+  String notesText = TIM_t("注意：TUICallKit支持离线调用，支持Android、iOS、Web、Flutter等多平台");
 
   @override
   Widget build(BuildContext context) {
@@ -78,14 +78,9 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
         Padding(padding: EdgeInsets.symmetric(vertical: 100)),
-        Text(
-          "Set Your Name",
-          style: TextStyle(fontSize: 15.0),
-        ),
-        Padding(padding: EdgeInsets.symmetric(vertical: 10)),
         TextField(
           autofocus: true,
-          decoration: InputDecoration(hintText: "Input your userName"),
+          decoration: InputDecoration(hintText: TIM_t("输入你的用户昵称")),
           onChanged: ((value) => userInfo.userName = value),
         ),
         Padding(padding: EdgeInsets.symmetric(vertical: 20)),
@@ -107,7 +102,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: const Text("Set Fail！"),
+                      title: Text(TIM_t("登录失败")),
                       content: Text(
                           "result.code:${result.code}, result.message: ${result.message}？"),
                       actions: [
@@ -115,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: const Text("确定"),
+                          child: Text(TIM_t("继续")),
                         ),
                       ],
                     );
@@ -124,7 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
               }
             }
           },
-          child: Text("Login"),
+          child: Text(TIM_t("确定")),
           style: ElevatedButton.styleFrom(
             minimumSize: const Size(100, 50),
           ),
@@ -132,6 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
         Padding(padding: EdgeInsets.symmetric(vertical: 100)),
         Text(
           notesText,
+          textAlign: TextAlign.center,
           style: TextStyle(fontSize: 12.0),
         ),
         Padding(padding: EdgeInsets.only(top: 10)),
@@ -144,7 +140,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             Padding(padding: EdgeInsets.only(left: 10)),
             Text(
-              "Tencent Cloud",
+              TIM_t("腾讯云"),
               style: TextStyle(fontSize: 15.0),
             ),
           ],

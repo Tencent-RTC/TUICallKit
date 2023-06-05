@@ -4,6 +4,7 @@ import 'package:tencent_calls_uikit/tuicall_kit.dart';
 import 'dart:async';
 
 import 'package:tuicall_kit_example/group_call_page.dart';
+import 'package:tuicall_kit_example/i18n/i18n_utils.dart';
 import 'package:tuicall_kit_example/store.dart';
 import 'package:tencent_calls_engine/tuicall_define.dart';
 
@@ -24,7 +25,7 @@ class CallPageRoute extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
-        title: const Text('Plugin example app'),
+        title:  Text(TIM_t("TUICallKit 示例工程")),
       ),
       body: Center(
           child:
@@ -54,7 +55,7 @@ class _CallPageState extends State<CallPage> {
     return ListView(
       padding: const EdgeInsets.all(40),
       children: [
-        Padding(padding: EdgeInsets.only(top: 100)),
+        Padding(padding: EdgeInsets.only(top: 50)),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Image(
             image: NetworkImage(userInfo.userAvatar),
@@ -64,12 +65,12 @@ class _CallPageState extends State<CallPage> {
           Column(
             children: [
               Text(
-                "NickName: ${userInfo.userName}",
+                "${TIM_t("昵称")}: ${userInfo.userName}",
                 style: TextStyle(fontSize: 20.0),
               ),
               Padding(padding: EdgeInsets.only(top: 40)),
               Text(
-                "UserId: ${userInfo.userId}",
+                "ID: ${userInfo.userId}",
                 style: TextStyle(fontSize: 20.0),
               )
             ],
@@ -80,7 +81,7 @@ class _CallPageState extends State<CallPage> {
           autofocus: true,
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          decoration: InputDecoration(hintText: "Enter the uderId to call"),
+          decoration: InputDecoration(hintText: TIM_t("输入你的用户昵称")),
           onChanged: ((value) => callUserId = value),
         ),
         Padding(padding: EdgeInsets.symmetric(vertical: 10)),
@@ -89,17 +90,18 @@ class _CallPageState extends State<CallPage> {
           children: [
             ElevatedButton.icon(
                 icon: Icon(Icons.call),
-                label: Text("Voice Call", style: TextStyle(fontSize: 20.0)),
+                label: Text(TIM_t("语音通话"), style: TextStyle(fontSize: 20.0)),
                 onPressed: () {
+                  callsUIKitPlugin.enableFloatWindow(true);
                   if (!callUserId.isEmpty) {
                     /// 语音通话
                     voiceCall(callsUIKitPlugin, callUserId);
                   }
                 }),
-            Padding(padding: EdgeInsets.only(left: 50)),
+            Padding(padding: EdgeInsets.only(left: 10)),
             ElevatedButton.icon(
                 icon: Icon(Icons.video_camera_front),
-                label: Text("Video Call", style: TextStyle(fontSize: 20.0)),
+                label: Text(TIM_t("视频通话"), style: TextStyle(fontSize: 20.0)),
                 onPressed: () {
                   if (!callUserId.isEmpty) {
                     /// 视频通话
@@ -108,7 +110,7 @@ class _CallPageState extends State<CallPage> {
                 }),
           ],
         ),
-        Padding(padding: EdgeInsets.only(top: 200)),
+        Padding(padding: EdgeInsets.only(top: 100)),
         TextButton(
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(
@@ -118,7 +120,7 @@ class _CallPageState extends State<CallPage> {
               },
             ));
           },
-          child: Text("Going Group Calls", style: TextStyle(fontSize: 20.0)),
+          child: Text(TIM_t("群组通话"), style: TextStyle(fontSize: 20.0)),
         ),
         Padding(padding: EdgeInsets.only(top: 50)),
         Row(
@@ -130,7 +132,7 @@ class _CallPageState extends State<CallPage> {
             ),
             Padding(padding: EdgeInsets.only(left: 10)),
             Text(
-              "Tencent Cloud",
+              TIM_t("腾讯云"),
               style: TextStyle(fontSize: 15.0),
             ),
           ],

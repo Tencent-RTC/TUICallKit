@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tencent_calls_uikit/tuicall_kit.dart';
-import 'dart:async';
-
 import 'package:tuicall_kit_example/store.dart';
 import 'package:tencent_calls_engine/tuicall_define.dart';
+
+import 'package:tuicall_kit_example/i18n/i18n_utils.dart';
 
 class GroupCallPageRoute extends StatelessWidget {
   UserInfo userInfo;
@@ -22,7 +22,7 @@ class GroupCallPageRoute extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
-        title: const Text('Plugin example app'),
+        title: Text(TIM_t("TUICallKit 示例工程")),
       ),
       body: Center(
           child: GroupCallPage(
@@ -49,14 +49,14 @@ class _GroupCallPageState extends State<GroupCallPage> {
   _GroupCallPageState({required this.callsUIKitPlugin, required this.userInfo});
 
   String groupId = "";
-  String userName = "";
+  List<String> userIds = [];
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(40),
       children: [
-        Padding(padding: EdgeInsets.only(top: 100)),
+        Padding(padding: EdgeInsets.only(top: 10)),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Image(
             image: NetworkImage(userInfo.userAvatar),
@@ -66,12 +66,12 @@ class _GroupCallPageState extends State<GroupCallPage> {
           Column(
             children: [
               Text(
-                "NickName: ${userInfo.userName}",
+                "${TIM_t("昵称")}: ${userInfo.userName}",
                 style: TextStyle(fontSize: 20.0),
               ),
               Padding(padding: EdgeInsets.only(top: 20)),
               Text(
-                "UserId: ${userInfo.userId}",
+                "ID: ${userInfo.userId}",
                 style: TextStyle(fontSize: 20.0),
               )
             ],
@@ -80,14 +80,16 @@ class _GroupCallPageState extends State<GroupCallPage> {
         Padding(padding: EdgeInsets.only(top: 150)),
         TextField(
           autofocus: true,
-          decoration: InputDecoration(hintText: "input GroupId"),
+          decoration: InputDecoration(hintText: TIM_t("输入群组ID")),
           onChanged: ((value) => groupId = value),
         ),
         Padding(padding: EdgeInsets.only(top: 10)),
         TextField(
           autofocus: true,
-          decoration: InputDecoration(hintText: "input UserName"),
-          onChanged: ((value) => userName = value),
+          decoration: InputDecoration(hintText: TIM_t("输入用户ID")),
+          onChanged: ((value) {
+            userIds = value.split(',');
+          }),
         ),
         Padding(padding: EdgeInsets.only(top: 20)),
         Row(
@@ -95,22 +97,22 @@ class _GroupCallPageState extends State<GroupCallPage> {
           children: [
             ElevatedButton.icon(
                 icon: Icon(Icons.call),
-                label: Text("Voice Call", style: TextStyle(fontSize: 20.0)),
+                label: Text(TIM_t("语音通话"), style: TextStyle(fontSize: 20.0)),
                 onPressed: () {
                   /// 语音通话
-                  groupVoiceCall(callsUIKitPlugin,[userName],groupId);
+                  groupVoiceCall(callsUIKitPlugin,userIds,groupId);
                 }),
-            Padding(padding: EdgeInsets.only(left: 50)),
+            Padding(padding: EdgeInsets.only(left: 10)),
             ElevatedButton.icon(
                 icon: Icon(Icons.video_camera_front),
-                label: Text("Video Call", style: TextStyle(fontSize: 20.0)),
+                label: Text(TIM_t("视频通话"), style: TextStyle(fontSize: 20.0)),
                 onPressed: () {
                   /// 视频通话
-                  groupVideoCall(callsUIKitPlugin,[userName],groupId);
+                  groupVideoCall(callsUIKitPlugin,userIds,groupId);
                 }),
           ],
         ),
-        Padding(padding: EdgeInsets.only(top: 200)),
+        Padding(padding: EdgeInsets.only(top: 100)),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -120,7 +122,7 @@ class _GroupCallPageState extends State<GroupCallPage> {
             ),
             Padding(padding: EdgeInsets.only(left: 10)),
             Text(
-              "Tencent Cloud",
+              TIM_t("腾讯云"),
               style: TextStyle(fontSize: 15.0),
             ),
           ],

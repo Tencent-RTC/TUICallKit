@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:tencent_calls_uikit/tuicall_kit.dart';
 import 'package:tencent_calls_engine/tuicall_define.dart';
 import 'package:tencent_calls_engine/tuicall_engine.dart';
+import 'package:tuicall_kit_example/i18n/i18n_utils.dart';
 import 'package:tuicall_kit_example/store.dart';
 import 'package:tuicall_kit_example/profile_page.dart';
 import 'debug/generate_test_user_sig.dart';
@@ -18,7 +19,7 @@ class LoginPageRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Plugin example app'),
+        title: Text(TIM_t("TUICallKit 示例工程")),
       ),
       body: Center(
           child: LoginPage(
@@ -44,12 +45,9 @@ class _LoginPageState extends State<LoginPage> {
   _LoginPageState(
       {Key? key, required this.callsUIKitPlugin, required this.userInfo});
 
-  String appIntrduceText =
-      "TUICallKit is a UIKit about voice&video calls launched by Tencent Cloud.";
-  String functionIntrduceText =
-      "By integrating this component, you can write a few lines of code to use the video calling function.";
-  String notesText =
-      "Notes: TUICallKit support offline calling and multiple platforms such as Android,iOS,Web,Flutter etc.";
+  String appIntrduceText = TIM_t("TUICallKit是腾讯云推出的音视频通话UI组件。");
+  String functionIntrduceText = TIM_t("集成这个组件，写几行代码就可以使用视频通话功能。");
+  String notesText = TIM_t("注意：TUICallKit支持离线调用，支持Android、iOS、Web、Flutter等多平台");
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ],
         ),
-        Padding(padding: EdgeInsets.symmetric(vertical: 20)),
+        Padding(padding: EdgeInsets.symmetric(vertical: 100)),
         Text(
           appIntrduceText,
           style: TextStyle(fontSize: 15.0),
@@ -80,12 +78,12 @@ class _LoginPageState extends State<LoginPage> {
           functionIntrduceText,
           style: TextStyle(fontSize: 15.0),
         ),
-        Padding(padding: EdgeInsets.symmetric(vertical: 100)),
+        Padding(padding: EdgeInsets.symmetric(vertical: 10)),
         TextField(
           autofocus: true,
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          decoration: InputDecoration(hintText: "Input your userId"),
+          decoration: InputDecoration(hintText: TIM_t("输入User ID")),
           onChanged: ((value) => userInfo.userId = value),
         ),
         Padding(padding: EdgeInsets.symmetric(vertical: 20)),
@@ -109,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: const Text("Login Fail！"),
+                      title: Text(TIM_t("登录失败")),
                       content: Text(
                           "result.code:${result.code}, result.message: ${result.message}？"),
                       actions: [
@@ -117,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: const Text("确定"),
+                          child: Text(TIM_t("继续")),
                         ),
                       ],
                     );
@@ -126,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
               }
             }
           },
-          child: Text("Login"),
+          child: Text(TIM_t("登录")),
           style: ElevatedButton.styleFrom(
             minimumSize: const Size(100, 50),
           ),
@@ -134,6 +132,7 @@ class _LoginPageState extends State<LoginPage> {
         Padding(padding: EdgeInsets.symmetric(vertical: 100)),
         Text(
           notesText,
+          textAlign: TextAlign.center,
           style: TextStyle(fontSize: 12.0),
         ),
         Padding(padding: EdgeInsets.only(top: 10)),
@@ -146,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Padding(padding: EdgeInsets.only(left: 10)),
             Text(
-              "Tencent Cloud",
+              TIM_t("腾讯云"),
               style: TextStyle(fontSize: 15.0),
             ),
           ],

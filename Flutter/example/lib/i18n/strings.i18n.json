@@ -1,0 +1,21 @@
+{
+  "k_1fdhj9g": "TUICallKit Plugin Example",
+  "k_06pujtm": "TUICallKit is a UIKit about voice&video calls launched by Tencent Cloud.",
+  "k_05nspni": "By integrating this component, you can write a few lines of code to use the video calling function.",
+  "k_03fchyy": "Notes: TUICallKit support offline calling and multiple platforms such as Android,iOS,Web,Flutter etc",
+  "k_03i9mfe": "Input your userId",
+  "k_03agq58": "Login Fail！",
+  "k_039xqny": "Continue",
+  "k_003tr0a": "Login",
+  "k_002wddw": "Tencent Cloud",
+  "k_0got6f7": "Set Your Name",
+  "k_1uaqed6": "Input your userName",
+  "k_0z2z7rx": "Confirm",
+  "k_0y39ngu": "Name",
+  "k_0y1a2my": "Enter the uderId to call",
+  "k_0z4fib8": "Voice Call",
+  "k_0y24mcg": "Video Call",
+  "k_0pewpd1": "Going Group Calls",
+  "k_13s8d9p": "Input GroupId",
+  "k_003qkx2": "Input UserId"
+}

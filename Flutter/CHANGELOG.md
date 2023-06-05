@@ -1,4 +1,52 @@
+## 1.6.3
+### 缺陷修复
+- iOS：修复调用 `joinInGroupCall` 后中途加人页面为空的问题。
+- iOS：修复调用 `joinInGroupCall` 后用户画面遮挡的问题。
 
+## 1.6.2
+### 缺陷修复
+- Android：修复调用 `joinInGroupCall` api引起Crash问题 。
+
+## 1.6.1
+### 缺陷修复
+- Android：修复在 Vivo 特定机型上申请悬浮窗权限时偶现的崩溃问题。
+### 依赖说明
+- 升级依赖的客户端 SDK 版本：Android LiteAVSDK_Professional: 11.1.0.13111、iOS TXLiteAVSDK_Professional: 11.1.14143。
+
+## 1.6.0
+
+### 新特性
+- Android&iOS：增加hangup挂断接口。
+- Android&iOS：增加用户自定义字段、增加用户自定义通话超时时长。
+- Android&iOS：群组通话增加中途加人页面。
+### 功能优化
+- Android：优化单人视频通话头像显示。
+- Android&iOS：群组通话中，默认支持邀请其他群成员加入通话。
+### 缺陷修复
+- Android：修复 Android 12及其以上 设备链接蓝牙后无声的问题。
+- Android：修复被叫端偶现静音设置不生效问题。
+- iOS：修复重新登录后偶现设备接收不到来电邀请的问题。
+- iOS：修复 VoIP 推送页面昵称显示错误的问题。
+
+### 依赖说明
+- 升级依赖的客户端 SDK 版本：Android LiteAVSDK_Professional: 11.1.0.13111、iOS TXLiteAVSDK_Professional: 11.1.14143。
+
+ ## 1.5.4
+ ### 新特性
+- iOS：支持 VoIP 消息推送功能，提供更好的通话接听体验。
+- Android&iOS：增加 小米、华为、VIVO 离线推送高级参数。
+- Android&iOS：支持设置编码分辨率，画面方向等。
+- Android&iOS：支持设置渲染方向、渲染模式（自适应、填充）等。
+ ### 功能优化
+- Android：优化 `onCallEnd`回调中 totaltime 参数单位为毫秒。
+ ### 缺陷修复
+- Android&iOS：修复`onCallReceived`回调异常问题。
+- iOS：修复屏幕旋转时通话页面显示不全的问题。
+
+## 1.5.3
+### 缺陷修复
+- Android：修复打包失败问题。
+- Android&iOS：修复回调方法未实现时抛出异常的问题。
 ## 1.5.2
 ### 缺陷修复
 - Android：修复 `TUICallDefine.OfflinePushInfo` API变更导致的编译报错。
