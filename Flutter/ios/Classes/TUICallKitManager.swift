@@ -45,7 +45,7 @@ class TUICallKitManager {
         }
         let callMediaTypeKey = "callMediaType"
         guard let callMediaTypeInt = MethodUtils.getMethodParams(call: call, key: callMediaTypeKey, resultType: Int.self) else {
-            FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "callMediaType", paramKey: callMediaTypeKey, result: result)
+            FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "call", paramKey: callMediaTypeKey, result: result)
             return
         }
         guard let callMediaType = TUICallMediaType(rawValue: callMediaTypeInt) else { return }
@@ -67,18 +67,44 @@ class TUICallKitManager {
                 if let iOSSound = offlinePushInfoDic["iOSSound"] as? String {
                     offlinePushInfo.iOSSound = iOSSound
                 }
-                if let androidSound = offlinePushInfoDic["AndroidSound"] as? String {
+                if let androidSound = offlinePushInfoDic["androidSound"] as? String {
                     offlinePushInfo.androidSound = androidSound
                 }
-                if let androidOPPOChannelID = offlinePushInfoDic["AndroidOPPOChannelID"] as? String {
+                if let androidOPPOChannelID = offlinePushInfoDic["androidOPPOChannelID"] as? String {
                     offlinePushInfo.androidOPPOChannelID = androidOPPOChannelID
                 }
-                if let androidVIVOClassification = offlinePushInfoDic["AndroidVIVOClassification"] as? Int {
+                if let androidVIVOClassification = offlinePushInfoDic["androidVIVOClassification"] as? Int {
                     offlinePushInfo.androidVIVOClassification = androidVIVOClassification
                 }
+                if let androidXiaoMiChannelID = offlinePushInfoDic["androidXiaoMiChannelID"] as? String {
+                    offlinePushInfo.androidXiaoMiChannelID = androidXiaoMiChannelID
+                }
+                if let androidFCMChannelID = offlinePushInfoDic["androidFCMChannelID"] as? String {
+                    offlinePushInfo.androidFCMChannelID = androidFCMChannelID
+                }
+                if let androidHuaWeiCategory = offlinePushInfoDic["androidHuaWeiCategory"] as? String {
+                    offlinePushInfo.androidHuaWeiCategory = androidHuaWeiCategory
+                }
+                if let isDisablePush = offlinePushInfoDic["isDisablePush"] as? Bool {
+                    offlinePushInfo.isDisablePush = isDisablePush
+                }
+                if let iOSPushType = offlinePushInfoDic["iOSPushType"] as? Int {
+                    offlinePushInfo.iOSPushType = TUICallIOSOfflinePushType.apns
+                    if iOSPushType == 1 {
+                        offlinePushInfo.iOSPushType = TUICallIOSOfflinePushType.voIP
+                    }
+                }
+                params.offlinePushInfo = offlinePushInfo
+            }
+            
+            if let timeout =  paramsDic["timeout"] as? Int32 {
+                params.timeout = timeout
+            }
+            
+            if let userData = paramsDic["userData"] as? String {
+                params.userData = userData
             }
         }
-        params.offlinePushInfo = offlinePushInfo
         
         callkit.call(userId: userId, callMediaType: callMediaType, params: params) {
             result(NSNumber(value: 0))
@@ -130,9 +156,23 @@ class TUICallKitManager {
                 if let androidVIVOClassification = offlinePushInfoDic["AndroidVIVOClassification"] as? Int {
                     offlinePushInfo.androidVIVOClassification = androidVIVOClassification
                 }
+                if let iOSPushType = offlinePushInfoDic["iOSPushType"] as? Int {
+                    offlinePushInfo.iOSPushType = TUICallIOSOfflinePushType.apns
+                    if iOSPushType == 1 {
+                        offlinePushInfo.iOSPushType = TUICallIOSOfflinePushType.voIP
+                    }
+                }
+                params.offlinePushInfo = offlinePushInfo
+            }
+            
+            if let timeout =  paramsDic["timeout"] as? Int32 {
+                params.timeout = timeout
+            }
+            
+            if let userData = paramsDic["userData"] as? String {
+                params.userData = userData
             }
         }
-        params.offlinePushInfo = offlinePushInfo
 
         callkit.groupCall(groupId: groupId, userIdList: userIdList, callMediaType: callMediaType, params: params) {
             result(NSNumber(value: 0))

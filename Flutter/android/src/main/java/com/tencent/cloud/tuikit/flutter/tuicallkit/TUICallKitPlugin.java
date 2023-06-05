@@ -169,12 +169,15 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler {
 
 
     public void joinInGroupCall(MethodCall call, MethodChannel.Result result) {
-        int intRoomId = MethodCallUtils.getMethodRequiredParams(call, "roomId", result);
-        String groupId = MethodCallUtils.getMethodRequiredParams(call, "groupId", result);
-        int mediaTypeIndex = MethodCallUtils.getMethodRequiredParams(call, "callMediaType", result);
-
         TUICommonDefine.RoomId roomId = new TUICommonDefine.RoomId();
-        roomId.intRoomId = intRoomId;
+        Map roomIdMap = MethodCallUtils.getMethodRequiredParams(call, "roomId", result);
+        if (roomIdMap != null && roomIdMap.containsKey("intRoomId")) {
+            roomId.intRoomId = (int) roomIdMap.get("intRoomId");
+        }
+
+        String groupId = MethodCallUtils.getMethodRequiredParams(call, "groupId", result);
+
+        int mediaTypeIndex = MethodCallUtils.getMethodRequiredParams(call, "callMediaType", result);
         TUICallDefine.MediaType mediaType = EnumUtils.getMediaType(mediaTypeIndex);
 
         TUICallKit.createInstance(mApplicationContext).joinInGroupCall(roomId, groupId, mediaType);
