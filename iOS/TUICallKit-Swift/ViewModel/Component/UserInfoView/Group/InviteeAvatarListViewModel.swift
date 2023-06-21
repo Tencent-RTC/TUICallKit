@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import TUICallEngine
+
 class InviteeAvatarListViewModel {
 
     let remoteUserListObserver = Observer()

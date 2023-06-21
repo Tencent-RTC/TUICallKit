@@ -7,10 +7,9 @@
 //
 
 #import "TUICallRecordCallsViewModel.h"
-#import "TUICallEngine.h"
+#import "TUICallEngineHeader.h"
 #import "TUIDefine.h"
 #import "TUICore.h"
-#import "TUICallDefine.h"
 #import "TUICallRecordCallsCellViewModel.h"
 #import "TUICallKit.h"
 #import "TUICallKitOfflinePushInfoConfig.h"
@@ -72,9 +71,18 @@
     }
     
     if (groupId && groupId.length > 0) {
-        UIViewController *groupProfileVC = [self getGroupProfileVCWithGroupId:groupId];
-        if (groupProfileVC) {
-            [nav pushViewController:groupProfileVC animated:YES];
+        NSDictionary *param = @{
+            TUICore_TUIGroupObjectFactory_GetGroupInfoVC_GroupID:groupId
+        };
+        
+        if (TUICallKitRecordCallsUIStyleClassic == self.recordCallsUIStyle) {
+            [nav pushViewController:TUICore_TUIGroupObjectFactory_GetGroupInfoVC_Classic
+                              param:param
+                          forResult:nil];
+        } else {
+            [nav pushViewController:TUICore_TUIGroupObjectFactory_GetGroupInfoVC_Minimalist
+                              param:param
+                          forResult:nil];
         }
     } else if (userId && userId.length > 0) {
         [self getUserOrFriendProfileVCWithUserID:userId
@@ -84,25 +92,6 @@
             [TUITool makeToastError:code msg:desc];
         }];
     }
-}
-
-- (UIViewController *)getGroupProfileVCWithGroupId:(NSString *)groupId {
-    NSDictionary *param = @{
-        TUICore_TUIGroupObjectFactory_GetGroupInfoControllerMethod_GroupIDKey:groupId
-    };
-    
-    UIViewController *viewController = nil;
-    if (TUICallKitRecordCallsUIStyleClassic == self.recordCallsUIStyle) {
-        viewController = [TUICore createObject:TUICore_TUIGroupObjectFactory
-                                           key:TUICore_TUIGroupObjectFactory_GetGroupInfoControllerMethod
-                                         param:param];
-    } else {
-        viewController = [TUICore createObject:TUICore_TUIGroupObjectFactory_Minimalist
-                                           key:TUICore_TUIGroupObjectFactory_GetGroupInfoControllerMethod
-                                         param:param];
-    }
-    
-    return viewController;
 }
 
 - (void)getUserOrFriendProfileVCWithUserID:(NSString *)userID

@@ -19,7 +19,13 @@
 "TUICallKitApp.done" = "完成";
 "TUICallKitApp.tips" = "未添加成员，请搜索添加成员";
 
-"TUICallKitApp.audio.call" = "语音通话";
+"TUICallKitApp.Call" = "拨打";
+"TUICallKitApp.SingleCall" = "单人通话";
+"TUICallKitApp.GroupCall" = "群组通话";
+"TUICallKitApp.UseGroupCall" = "使用群组通话";
+"TUICallKitApp.JoinGroupCall" = "加入群组通话";
+"TUICallKitApp.MediaType" = "媒体类型";
+"TUICallKitApp.Audio.call" = "语音通话";
 "TUICallKitApp.Video.call" = "视频通话";
 
 "TUICallKitApp.Home.highqualityspeech" = "48kHz高音质语音，60%丢包可正常语音，领先行业的3A处理，杜绝回声和啸叫";
@@ -35,7 +41,16 @@
 "TUICallKitApp.Home.videocalldesc" = "丢包率50%仍可正常视频通话";
 "TUICallKitApp.Home.logout" = "退出登录";
 
+"TUICallKitApp.Call.UserId" = "用户ID";
+"TUICallKitApp.Call.InputUserId" = "请输入要呼叫的User ID";
+"TUICallKitApp.Call.GroupId" = "群组ID";
+"TUICallKitApp.Call.InputGroupId" = "请输入Group ID";
+"TUICallKitApp.Call.InputUserIds" = "请输入User ID，以“，”分隔";
+"TUICallKitApp.Call.RoomIdInt" = "房间Id(数字)";
+"TUICallKitApp.Call.RoomIdString" = "房间Id(字符串)";
+"TUICallKitApp.Call.InputRoomId" = "请输入Room ID";
 
+"TUICallKitApp.Login.tencentcloud" = "腾讯云音视频";
 "TUICallKitApp.Login.welcome" = "欢迎使用腾讯云实时音视频";
 "TUICallKitApp.Login.enterphonenumber" = "请输入用户名";
 "TUICallKitApp.Login.enterverificationcode" = "请输入验证码";
@@ -47,3 +62,53 @@
 "TUICallKitApp.Login.enterusername" = "请输入用户昵称";
 "TUICallKitApp.Login.limit20count" = "仅限中文、字母、数字和下划线，2-20个字";
 "TUICallKitApp.Login.registersuccess" = "注册成功";
+
+"TUICallKitApp.Login.Introduce" = "TUICallKit是腾讯云推出的一款音视频通话UI组件，通过集成该组件，您只需要编写几行代码就可以为您的App添加音视频通话能力。";
+"TUICallKitApp.Login.Platform" = "TUICallKit支持离线唤醒能力，支持Android、iOS、Web、小程序、Flutter、uni-app等多个平台。";
+"TUICallKitApp.Login.Purchase" = "套餐购买";
+"TUICallKitApp.Login.Access" = "快速接入";
+"TUICallKitApp.Login.APIDocumentation" = "API文档";
+"TUICallKitApp.Login.Problem" = "常见问题";
+
+"TUICallKitApp.Setting" = "设置";
+"TUICallKitApp.Setting.CallSettings" = "通话设置";
+"TUICallKitApp.Setting.BasicSetting" = "基础设置";
+"TUICallKitApp.Setting.CallParamsSetting" = "通话自定义参数设置";
+"TUICallKitApp.Setting.VideoSetting" = "视频设置";
+
+"TUICallKitApp.Setting.UserInfo" = "用户信息";
+"TUICallKitApp.UserInfo.Avatar" = "头像";
+"TUICallKitApp.UserInfo.NickName" = "昵称";
+"TUICallKitApp.Setting.RingSetting" = "铃声设置";
+"TUICallKitApp.Setting.MuteMode" = "静音模式";
+"TUICallKitApp.Setting.EnableFloating" = "开启悬浮窗";
+"TUICallKitApp.Setting.IntRoomId" = "整型房间号";
+"TUICallKitApp.Setting.StrRoomId" = "字符串房间号";
+"TUICallKitApp.Setting.Timeout" = "呼叫超时时长";
+"TUICallKitApp.Setting.ExpendedInfo" = "扩展信息";
+"TUICallKitApp.Setting.OfflinePushInfo" = "离线推送信息";
+"TUICallKitApp.Setting.Resolution" = "分辨率";
+"TUICallKitApp.Setting.ResolutionMode" = "横竖屏";
+"TUICallKitApp.Setting.ResolutionMode.Horizontal" = "横屏";
+"TUICallKitApp.Setting.ResolutionMode.Vertical" = "竖屏";
+"TUICallKitApp.Setting.FillMode" = "填充模式";
+"TUICallKitApp.Setting.FillMode.Fit" = "自适应";
+"TUICallKitApp.Setting.FillMode.Fill" = "充满";
+"TUICallKitApp.Setting.Rotation" = "旋转角度";
+"TUICallKitApp.Setting.BeautyLevel" = "美颜级别";
+"TUICallKitApp.Setting.NotSet" = "未设置";
+"TUICallKitApp.Setting.GoToSettings" = "去设置";
+"TUICallKitApp.Setting.SetAvatar" = "设置头像";
+"TUICallKitApp.Setting.SetRing" = "设置铃声";
+"TUICallKitApp.Setting.SetExtend" = "设置扩展信息";
+"TUICallKitApp.Setting.SetOffInleInfo" = "设置离线推送消息";
+"TUICallKitApp.Setting.SetAvatarTip" = "请输入头像的URL地址。";
+"TUICallKitApp.Setting.SetRingTip" = "请输入铃声地址。";
+"TUICallKitApp.Setting.SetExtendTip" = "请输入扩展信息。";
+"TUICallKitApp.Setting.SetOffInleInfoTip" = "请输入离线推送消息的json串。";
+
+"TUICallKitApp.GroupCall.Intrduce" = "使用群组通话前需要创建IM群组，群组创建详见：";
+"TUICallKitApp.GroupCall.GroupManage" = "群组管理";
+
+"TUICallKitApp.QuickAccess" = "快速访问";
+"TUICallKitApp.Version" = "版本";

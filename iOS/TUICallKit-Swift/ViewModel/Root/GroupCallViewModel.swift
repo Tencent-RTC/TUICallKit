@@ -7,6 +7,7 @@
 
 import Foundation
 import TUICallEngine
+
 class GroupCallViewModel {
     let callStatusObserver = Observer()
     let mediaTypeObserver = Observer()
