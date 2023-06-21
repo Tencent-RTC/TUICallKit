@@ -94,7 +94,6 @@ class RegisterRootView: UIView {
         UIView.animate(withDuration: 0.3) {
             self.transform = .identity
         }
-        checkRegisterBtnState()
     }
     
     weak var rootVC: RegisterViewController?
@@ -142,11 +141,12 @@ class RegisterRootView: UIView {
         activateConstraints()
         bindInteraction()
         
-        if let url = ProfileManager.shared.curUserModel?.avatar, url.count > 0 {
+        let url = SettingsConfig.share.avatar
+        if !url.isEmpty {
             headImageView.kf.setImage(with: URL(string: url))
         } else {
             let url = "https://liteav.sdk.qcloud.com/app/res/picture/voiceroom/avatar/user_avatar1.png"
-            ProfileManager.shared.curUserModel?.avatar = url
+            SettingsConfig.share.avatar = url
             headImageView.kf.setImage(with: URL(string: url))
         }
     }
@@ -219,7 +219,7 @@ class RegisterRootView: UIView {
         guard let name = textField.text else {
             return
         }
-        ProfileManager.shared.curUserModel?.name = name
+        SettingsConfig.share.name = name
         rootVC?.register(name)
     }
     
@@ -242,7 +242,8 @@ extension RegisterRootView : UITextFieldDelegate {
         UIView.animate(withDuration: 0.3) {
             self.transform = .identity
         }
-        checkRegisterBtnState()
+        guard let text = textField.text else { return }
+        checkRegisterBtnState(text.count)
     }
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()

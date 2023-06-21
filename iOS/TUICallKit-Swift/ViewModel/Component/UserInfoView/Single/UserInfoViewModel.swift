@@ -7,6 +7,7 @@
 
 import Foundation
 import TUICallEngine
+
 class UserInfoViewModel {
     let callStatusObserver = Observer()
     let remoteUserListObserver = Observer()

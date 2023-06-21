@@ -7,8 +7,9 @@
 
 import Foundation
 import ImSDK_Plus
-import TUICore
 import TUICallEngine
+import TUICore
+
 class User {
 
     let id: Observable<String> = Observable("")
@@ -21,6 +22,14 @@ class User {
     let audioAvailable: Observable<Bool> = Observable(false)
     let videoAvailable: Observable<Bool> = Observable(false)
     let playoutVolume: Observable<Float> = Observable(0)
+    
+    static func convertUserFromImFullInfo(user: V2TIMGroupMemberFullInfo) -> User {
+        var dstUser = User()
+        dstUser.nickname.value = user.nickName ?? ""
+        dstUser.avatar.value = user.faceURL ?? ""
+        dstUser.id.value = user.userID ?? ""
+        return dstUser
+    }
     
     static func convertUser(user: V2TIMUserInfo) -> User {
         return self.convertUser(user: user, volume: 0)

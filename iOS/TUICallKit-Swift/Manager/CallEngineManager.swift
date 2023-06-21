@@ -8,6 +8,7 @@
 import Foundation
 import TUICore
 import TUICallEngine
+
 #if USE_TRTC
 import TXLiteAVSDK_TRTC
 #else
@@ -76,6 +77,7 @@ class CallEngineManager {
                           params: params) {
             
             TUICallState.instance.roomId.value = roomId
+            TUICallState.instance.groupId.value = groupId
             
             User.getUserInfosFromIM(userIDs: userIdList) { mInviteeList in
                 TUICallState.instance.remoteUserList.value = mInviteeList
@@ -86,9 +88,9 @@ class CallEngineManager {
             }
             
             TUICallState.instance.mediaType.value = callMediaType
-            TUICallState.instance.scene.value = .group
+            TUICallState.instance.scene.value = TUICallScene.group
 
-            TUICallState.instance.selfUser.value.callRole.value = .call
+            TUICallState.instance.selfUser.value.callRole.value = TUICallRole.call
             TUICallState.instance.selfUser.value.callStatus.value = TUICallStatus.waiting
             
             let _ = CallingBellFeature.instance.playCallingBell(type: .CallingBellTypeDial)
@@ -105,12 +107,13 @@ class CallEngineManager {
             TUICallState.instance.roomId.value = roomId
         
             TUICallState.instance.mediaType.value = callMediaType
-            TUICallState.instance.scene.value = .group
+            TUICallState.instance.scene.value = TUICallScene.group
             TUICallState.instance.groupId.value = groupId
 
             TUICallState.instance.selfUser.value.callRole.value = TUICallRole.called
             TUICallState.instance.selfUser.value.callStatus.value = TUICallStatus.accept
-                                    
+                
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: Constants.EVENT_SHOW_TUICALLKIT_VIEWCONTROLLER), object: nil)
         } fail: { code, message in
             
         }
@@ -154,7 +157,7 @@ class CallEngineManager {
     }
     
     func changeSpeaker() {
-        if TUICallState.instance.audioDevice.value == .speakerphone {
+        if TUICallState.instance.audioDevice.value == TUIAudioPlaybackDevice.speakerphone {
             engine.selectAudioPlaybackDevice(.earpiece)
             TUICallState.instance.audioDevice.value = .earpiece
         } else {

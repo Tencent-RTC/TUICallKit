@@ -8,8 +8,14 @@
 // 用于TRTC_SceneDemo
 
 import UIKit
-import TUICallKit
 import ImSDK_Plus
+
+#if USE_TUICALLKIT_SWIFT
+import TUICallKit_Swift
+#else
+import TUICallKit
+#endif
+
 #if DEBUG
 let APNSBusiId: Int32 = 0
 #else
@@ -28,7 +34,7 @@ class AppUtils: NSObject {
     
     // MARK: - UI
     @objc func showMainController() {
-        appDelegate.showMainViewController()
+        appDelegate.showMainController()
     }
     
     @objc func alertUserTips(_ vc: UIViewController) {
@@ -50,4 +56,10 @@ extension AppUtils {
         })
     }
     
+    static func getBundleImage(withName: String) -> UIImage {
+        guard let callingKitBundleURL = Bundle.main.url(forResource: "TUICallingKitBundle", withExtension: "bundle") else { return UIImage() }
+        let bundle = Bundle(url: callingKitBundleURL)
+        guard let image = UIImage(named: withName, in: bundle, compatibleWith: nil) else { return UIImage() }
+        return image
+    }
 }

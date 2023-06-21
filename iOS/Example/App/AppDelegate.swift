@@ -7,10 +7,28 @@
 //
 
 import UIKit
-import TUICallKit
 import UserNotifications
 import ImSDK_Plus
 import TXLiteAVSDK_TRTC
+
+/// 若使用 TUICallKit_Swift,  需要设置预编译宏， 设置方法如下：
+///   1. 选中 target ---> Build Settings ---> 搜索 Swift Compiler - Custom Flags
+///   2. 展开 “Other Swift Flags” 设置 “USE_TUICALLKIT_SWIFT”，需要这样写：“-D” 、“TEST”，填完后是 “-D” 和 “USE_TUICALLKIT_SWIFT” 分成两行的，
+#if USE_TUICALLKIT_SWIFT
+import TUICallKit_Swift
+#else
+import TUICallKit
+#endif
+
+/// 若使用 TXLiteAVSDK_Professional,  需要设置预编译宏， 设置方法如下：
+///   1. 选中 target ---> Build Settings ---> 搜索 Swift Compiler - Custom Flags
+///   2. 展开 “Other Swift Flags” 设置 “USE_PRODESSIONAL”，需要这样写：“-D” 、“TEST”，填完后是 “-D” 和 “USE_PRODESSIONAL” 分成两行的，
+#if USE_PRODESSIONAL
+import TXLiteAVSDK_Professional
+#else
+import TXLiteAVSDK_TRTC
+#endif
+
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
@@ -51,10 +69,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
     
-    func showMainViewController() {
+    func showMainController() {
         let mainViewController = MainViewController()
         let rootVC = UINavigationController(rootViewController: mainViewController)
-        
+
         if let keyWindow = SceneDelegate.getKeyWindow() {
             keyWindow.rootViewController = rootVC
             keyWindow.makeKeyAndVisible()

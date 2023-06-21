@@ -11,6 +11,13 @@ import Toast_Swift
 import TXAppBasic
 import SnapKit
 import UIKit
+import TUICore
+
+#if USE_TUICALLKIT_SWIFT
+import TUICallKit_Swift
+#else
+import TUICallKit
+#endif
 
 class RegisterViewController: UIViewController {
 
@@ -30,13 +37,13 @@ class RegisterViewController: UIViewController {
     
     func register(_ nickName: String) {
         loading.startAnimating()
-        ProfileManager.shared.synchronizUserInfo()
-        ProfileManager.shared.setNickName(name: nickName) { [weak self] in
+        
+        TUICallKit.createInstance().setSelfInfo(nickname: nickName, avatar: SettingsConfig.share.avatar) { [weak self] in
             guard let `self` = self else { return }
             self.registerSuccess()
-        } failed: { (err) in
+        } fail: { code, message in
+            TUITool.makeToast("login failed, code:\(code), error: \(message ?? "nil")")
             self.loading.stopAnimating()
-            self.view.makeToast(err)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.navigationController?.popViewController(animated: true)
             }
