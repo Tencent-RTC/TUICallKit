@@ -12,9 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
+
         <activity
-            android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.SplashActivity"
-            android:screenOrientation="portrait">
+            android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.MainActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,13 +24,14 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.LoginActivity"
-            android:launchMode="singleTask"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
-            android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.MainActivity"
+            android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.LoginActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+        </activity>
+
+        <activity
+            android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.CallActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.tencent.liteav.action.portal" />
@@ -51,10 +53,24 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
-            android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.TUICallingEntranceActivity"
+            android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.GroupCallActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
+        <activity
+            android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.JoinInGroupCallActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <activity
+            android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.setting.SettingsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <activity
+            android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.setting.SettingDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
 
 </manifest>

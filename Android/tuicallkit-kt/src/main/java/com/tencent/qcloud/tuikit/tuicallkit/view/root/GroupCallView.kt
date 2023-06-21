@@ -168,10 +168,12 @@ class GroupCallView(context: Context) : BaseCallView(context) {
     private fun refreshInviteUserIconView() {
         if (TUICallDefine.Role.Caller == viewModel.callRole.get()) {
             layoutInviteUserIcon?.removeAllViews()
+            inviteUserButton?.clear()
             inviteUserButton = InviteUserButton(context)
             layoutInviteUserIcon?.addView(inviteUserButton)
         } else {
             layoutInviteUserIcon?.removeAllViews()
+            inviteUserButton?.clear()
             inviteUserButton = null
         }
     }

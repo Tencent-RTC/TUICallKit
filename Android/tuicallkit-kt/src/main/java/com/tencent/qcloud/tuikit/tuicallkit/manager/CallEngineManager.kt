@@ -14,12 +14,14 @@ import com.tencent.qcloud.tuicore.util.ToastUtil
 import com.tencent.qcloud.tuikit.TUICommonDefine
 import com.tencent.qcloud.tuikit.TUIVideoView
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
+import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine.CallParams
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine
 import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.data.Constants
+import com.tencent.qcloud.tuikit.tuicallkit.data.OfflinePushInfoConfig
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
-import com.tencent.qcloud.tuikit.tuicallkit.feature.CallingBellFeature
+import com.tencent.qcloud.tuikit.tuicallkit.extensions.CallingBellFeature
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.utils.PermissionRequest.checkCallingPermission
 import java.util.*
@@ -191,7 +193,11 @@ class CallEngineManager private constructor(context: Context) {
                             TUICallState.instance.selfUser.get().callRole.set(TUICallDefine.Role.Called)
                             TUICallState.instance.selfUser.get().callStatus.set(TUICallDefine.Status.Accept)
 
-                            TUICore.notifyEvent(Constants.EVENT_TUICALLKIT_CHANGED, Constants.EVENT_START_ACTIVITY, HashMap())
+                            TUICore.notifyEvent(
+                                Constants.EVENT_TUICALLKIT_CHANGED,
+                                Constants.EVENT_START_ACTIVITY,
+                                HashMap()
+                            )
                         }
 
                         override fun onError(errCode: Int, errMsg: String) {
@@ -347,5 +353,48 @@ class CallEngineManager private constructor(context: Context) {
                 model.avatar.set(list[0]?.faceUrl)
             }
         })
+    }
+
+    fun inviteUser(userIdList: List<String?>?) {
+        val params = CallParams()
+        params.offlinePushInfo = OfflinePushInfoConfig.createOfflinePushInfo(context)
+        params.timeout = Constants.SIGNALING_MAX_TIME
+        TUICallEngine.createInstance(context)
+            .inviteUser(userIdList, params, object : TUICommonDefine.ValueCallback<Any?> {
+                override fun onSuccess(data: Any?) {
+                    if (data !is List<*>) {
+                        return
+                    }
+                    val userList = data as List<String>
+                    TUILog.i(TAG, "inviteUsersToGroupCall success, list:$userList")
+                    V2TIMManager.getInstance()
+                        .getUsersInfo(userList, object : V2TIMValueCallback<List<V2TIMUserFullInfo>?> {
+                            override fun onError(errorCode: Int, errorMsg: String) {
+                                TUILog.e(TAG, "getUsersInfo onError errorCode = $errorCode , errorMsg = $errorMsg")
+                            }
+
+                            override fun onSuccess(list: List<V2TIMUserFullInfo>?) {
+                                if (null == list || list.isEmpty() || null == list[0] || TextUtils.isEmpty(list[0]!!.userID)) {
+                                    TUILog.e(TAG, "getUsersInfo onSuccess list = null")
+                                    return
+                                }
+                                for (info in list) {
+                                    val user = User()
+                                    user.id = info.userID
+                                    if (TextUtils.isEmpty(info.nickName)) {
+                                        user.nickname.set(info.userID)
+                                    } else {
+                                        user.nickname.set(info.nickName)
+                                    }
+                                    user.avatar.set(info.faceUrl)
+                                    user.callStatus.set(TUICallDefine.Status.Waiting)
+                                    TUICallState.instance.remoteUserList.add(user)
+                                }
+                            }
+                        })
+                }
+
+                override fun onError(errCode: Int, errMsg: String) {}
+            })
     }
 }

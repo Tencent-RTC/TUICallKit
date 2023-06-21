@@ -14,9 +14,21 @@ class InviteUserButton(context: Context) : ImageView(context) {
 
     init {
         initView()
+
+        addObserver()
     }
 
-    fun clear() {}
+    private fun addObserver() {
+        viewModel.registerEvent()
+    }
+
+    fun clear() {
+        removeObserver()
+    }
+
+    private fun removeObserver() {
+        viewModel.unRegisterEvent()
+    }
 
     private fun initView() {
         if (TUICallDefine.MediaType.Video == viewModel.mediaType.get()) {

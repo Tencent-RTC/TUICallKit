@@ -12,7 +12,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class BaseApplication extends MultiDexApplication {
-    private static String TAG = "BaseApplication";
 
     @Override
     public void onCreate() {

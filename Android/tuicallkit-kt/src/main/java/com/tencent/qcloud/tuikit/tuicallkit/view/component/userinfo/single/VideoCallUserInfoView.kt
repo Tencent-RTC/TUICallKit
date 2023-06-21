@@ -57,6 +57,12 @@ class VideoCallUserInfoView(context: Context) : BaseCallView(context) {
         }
         textInviteHint?.setTextColor(textColor)
         textUserName?.setTextColor(textColor)
+        if(mViewModel.callStatus.get() == TUICallDefine.Status.Accept
+            || mViewModel.mediaType.get() == TUICallDefine.MediaType.Audio) {
+            this.visibility = GONE
+        } else {
+            this.visibility = VISIBLE
+        }
     }
 
     private fun addObserver() {

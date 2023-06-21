@@ -19,8 +19,8 @@ import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine
 import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
 import com.tencent.qcloud.tuikit.tuicallkit.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.data.OfflinePushInfoConfig
-import com.tencent.qcloud.tuikit.tuicallkit.feature.CallingBellFeature
-import com.tencent.qcloud.tuikit.tuicallkit.feature.CallingKeepAliveFeature
+import com.tencent.qcloud.tuikit.tuicallkit.extensions.CallingBellFeature
+import com.tencent.qcloud.tuikit.tuicallkit.extensions.CallingKeepAliveFeature
 import com.tencent.qcloud.tuikit.tuicallkit.manager.CallEngineManager
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.utils.PermissionRequest

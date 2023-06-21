@@ -58,7 +58,7 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
 
     private var avatarObserver = Observer<String> {
         if (!TextUtils.isEmpty(it)) {
-            ImageLoader.loadImage(context, imageAvatar, it, R.drawable.tuicallkit_ic_avatar)
+            ImageLoader.loadImage(context.applicationContext, imageAvatar, it, R.drawable.tuicallkit_ic_avatar)
         }
     }
 
@@ -119,11 +119,19 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
             && !viewModel?.user?.id.equals(TUILogin.getLoginUser())
         ) {
             imageLoading?.visibility = VISIBLE
-            ImageLoader.loadImage(context, imageAvatar, viewModel?.user?.avatar?.get(), R.drawable.tuicallkit_ic_avatar)
+            ImageLoader.loadImage(context.applicationContext, imageAvatar, viewModel?.user?.avatar?.get(), R.drawable.tuicallkit_ic_avatar)
             textUserName?.text = if (TextUtils.isEmpty(viewModel?.user?.nickname?.get())) {
                 viewModel?.user?.id
             } else {
                 viewModel?.user?.nickname?.get()
+            }
+        } else if (TUICallDefine.Status.Accept == viewModel?.user?.callStatus?.get()){
+            if (viewModel?.user?.videoAvailable?.get() == true) {
+                tuiVideoView?.visibility = VISIBLE
+                imageAvatar?.visibility = GONE
+            } else {
+                tuiVideoView?.visibility = GONE
+                imageAvatar?.visibility = VISIBLE
             }
         } else {
             imageLoading?.visibility = GONE
@@ -138,8 +146,8 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
         imageAudioInput = findViewById(R.id.iv_audio_input)
         imageLoading = findViewById<View>(R.id.img_loading) as ImageView
 
-        ImageLoader.loadGifImage(context, imageLoading, R.drawable.tuicallkit_loading)
-        ImageLoader.loadImage(context, imageAvatar, viewModel?.user?.avatar?.get(), R.drawable.tuicallkit_ic_avatar)
+        ImageLoader.loadGifImage(context.applicationContext, imageLoading, R.drawable.tuicallkit_loading)
+        ImageLoader.loadImage(context.applicationContext, imageAvatar, viewModel?.user?.avatar?.get(), R.drawable.tuicallkit_ic_avatar)
         textUserName?.text = if (TextUtils.isEmpty(viewModel?.user?.nickname?.get())) {
             viewModel?.user?.id
         } else {

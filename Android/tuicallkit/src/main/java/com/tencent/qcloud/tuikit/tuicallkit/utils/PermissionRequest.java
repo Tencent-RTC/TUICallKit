@@ -9,6 +9,8 @@ import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
 
+import com.tencent.qcloud.tuicore.TUIConstants;
+import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.permission.PermissionCallback;
 import com.tencent.qcloud.tuicore.permission.PermissionRequester;
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
@@ -23,14 +25,29 @@ public class PermissionRequest {
 
     public static void requestPermissions(Context context, TUICallDefine.MediaType type, PermissionCallback callback) {
         StringBuilder title = new StringBuilder().append(context.getString(R.string.tuicalling_permission_microphone));
-        StringBuilder reason = new StringBuilder().append(context.getString(R.string.tuicalling_permission_mic_reason));
+        StringBuilder reason = new StringBuilder();
+        String microphonePermissionsDescription = (String) TUICore.createObject(
+                TUIConstants.Privacy.PermissionsFactory.FACTORY_NAME,
+                TUIConstants.Privacy.PermissionsFactory.PermissionsName.MICROPHONE_PERMISSIONS, null);
+        if (!TextUtils.isEmpty(microphonePermissionsDescription)) {
+            reason.append(microphonePermissionsDescription);
+        } else {
+            reason.append(context.getString(R.string.tuicalling_permission_mic_reason));
+        }
         List<String> permissionList = new ArrayList<>();
         permissionList.add(Manifest.permission.RECORD_AUDIO);
 
         if (TUICallDefine.MediaType.Video.equals(type)) {
             title.append(context.getString(R.string.tuicalling_permission_separator));
             title.append(context.getString(R.string.tuicalling_permission_camera));
-            reason.append(context.getString(R.string.tuicalling_permission_camera_reason));
+            String cameraPermissionsDescription = (String) TUICore.createObject(
+                    TUIConstants.Privacy.PermissionsFactory.FACTORY_NAME,
+                    TUIConstants.Privacy.PermissionsFactory.PermissionsName.CAMERA_PERMISSIONS, null);
+            if (!TextUtils.isEmpty(cameraPermissionsDescription)) {
+                reason.append(cameraPermissionsDescription);
+            } else {
+                reason.append(context.getString(R.string.tuicalling_permission_camera_reason));
+            }
             permissionList.add(Manifest.permission.CAMERA);
         }
         //Android S(31) need apply for this permission,refer to:https://developer.android.com/about/versions/12/features/bluetooth-permissions?hl=zh-cn
@@ -48,7 +65,7 @@ public class PermissionRequest {
         PermissionRequester.newInstance(permissions)
                 .title(context.getString(R.string.tuicalling_permission_title, appName, title))
                 .description(reason.toString())
-                .settingsTip(context.getString(R.string.tuicalling_permission_tips, title))
+                .settingsTip(context.getString(R.string.tuicalling_permission_tips, title) + "\n" + reason.toString())
                 .callback(callback)
                 .request();
     }

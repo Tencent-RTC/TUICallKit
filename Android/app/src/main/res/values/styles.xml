@@ -1,10 +1,14 @@
 <resources>
 
-    <style name="logoutDialogStyle" parent="@android:style/Theme.Holo.Dialog">
+    <style name="LogoutDialogStyle" parent="@android:style/Theme.Holo.Dialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
-        <item name="android:windowBackground">@color/color_bg_dialog</item>
+        <item name="android:windowBackground">@color/app_color_bg_dialog</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+    <style name="AppSpinnerStyle">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:color">@color/white</item>
     </style>
 </resources>

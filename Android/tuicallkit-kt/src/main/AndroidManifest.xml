@@ -27,7 +27,7 @@
             android:exported="false" />
 
         <service
-            android:name="com.tencent.qcloud.tuikit.tuicallkit.feature.TUICallService"
+            android:name="com.tencent.qcloud.tuikit.tuicallkit.extensions.TUICallService"
             android:enabled="true"
             android:exported="false" />
 
@@ -35,6 +35,12 @@
             android:name="com.tencent.qcloud.tuikit.tuicallkit.view.component.floatview.FloatWindowService"
             android:enabled="true"
             android:exported="false" />
+
+        <activity
+            android:name=".extensions.inviteuser.SelectGroupMemberActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
 
 </manifest>
