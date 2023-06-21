@@ -1,7 +1,6 @@
 package com.tencent.qcloud.tuikit.tuicallkit.data
 
 object Constants {
-    const val TUICALLKIT = "TUICallKit"
     const val ROOM_ID_MIN = 1
     const val ROOM_ID_MAX = Int.MAX_VALUE
     const val SIGNALING_MAX_TIME = 30
@@ -10,4 +9,8 @@ object Constants {
     const val EVENT_TUICALLKIT_CHANGED = "eventTUICallKitChanged"
     const val EVENT_START_FEATURE = "eventStartFeature"
     const val EVENT_START_ACTIVITY = "eventStartActivity"
+    const val GROUP_ID = "groupId"
+    const val SELECT_MEMBER_LIST = "selectMemberList"
+    const val EVENT_TUICALLING_CHANGED = "eventTUICallingChanged"
+    const val EVENT_SUB_GROUP_MEMBER_SELECTED = "eventSubGroupMemberSelected"
 }

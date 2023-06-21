@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="app_room_id">
+        <item>@string/app_room_id_num</item>
+        <item>@string/app_room_id_str</item>
+    </string-array>
+
+    <string-array name="app_resolution">
+        <item>Resolution_640_360</item>
+        <item>Resolution_640_480</item>
+        <item>Resolution_960_540</item>
+        <item>Resolution_960_720</item>
+        <item>Resolution_1280_720</item>
+        <item>Resolution_1920_1080</item>
+    </string-array>
+
+    <string-array name="app_resolution_mode">
+        <item>@string/app_horizontal_screen</item>
+        <item>@string/app_vertical_screen</item>
+    </string-array>
+
+    <string-array name="app_rotation">
+        <item>0</item>
+        <item>90</item>
+        <item>180</item>
+        <item>270</item>
+    </string-array>
+
+    <string-array name="app_fit_mode">
+        <item>@string/app_fit_mode_fill</item>
+        <item>@string/app_fit_mode_fit</item>
+    </string-array>
+</resources>

@@ -50,7 +50,7 @@ class FloatingWindowButton(context: Context) : ImageView(context) {
 
         setOnClickListener {
             if (PermissionUtils.hasPermission(ServiceInitializer.getAppContext())) {
-                viewModel.startFloatService(FloatingWindowView(context))
+                viewModel.startFloatService(FloatingWindowView(context.applicationContext))
                 CallKitActivity.finishActivity()
             } else {
                 PermissionRequest.requestFloatPermission(ServiceInitializer.getAppContext())

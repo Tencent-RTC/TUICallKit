@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/app_color_white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="62dp"
+        android:background="@color/app_color_white">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="30dp"
+            android:layout_height="38dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:src="@drawable/app_back" />
+
+        <TextView
+            android:id="@+id/main_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/app_1v1_call"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="38dp">
+
+        <TextView
+            android:id="@+id/tv_phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="22dp"
+            android:text="@string/app_user_id"
+            android:textColor="@color/app_color_black"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/et_userId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="right"
+            android:background="@null"
+            android:hint="@string/app_call_user_id"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="#ACB6C5"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="22dp"
+            android:text="@string/app_media_type"
+            android:textColor="@color/tuicalling_color_black"
+            android:textSize="16sp" />
+
+        <RadioGroup
+            android:id="@+id/rg_media_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@null"
+                android:button="@drawable/app_bg_rb_selector"
+                android:drawableLeft="@drawable/app_bg_rb_selector"
+                android:drawablePadding="5dp"
+                android:gravity="center"
+                android:text="@string/app_video_call"
+                android:textColor="@color/tuicalling_color_black"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/rb_audio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:background="@null"
+                android:button="@drawable/app_bg_rb_selector"
+                android:drawableLeft="@drawable/app_bg_rb_selector"
+                android:drawablePadding="5dp"
+                android:gravity="center"
+                android:text="@string/app_audio_call"
+                android:textColor="@color/tuicalling_color_black"
+                android:textSize="16sp"
+                android:checked="true" />
+        </RadioGroup>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="45dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_call_setting"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#0062E3"
+            android:textSize="16sp"/>
+
+        <ImageView
+            android:layout_marginLeft="9.5dp"
+            android:layout_width="5.3dp"
+            android:layout_height="9dp"
+            android:background="@drawable/app_right"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/btn_call"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginBottom="46dp"
+        android:background="@drawable/app_bg_button"
+        android:text="@string/app_start_call"
+        android:textColor="@color/app_color_white"
+        android:textSize="16sp" />
+</LinearLayout>

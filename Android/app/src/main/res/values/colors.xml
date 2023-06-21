@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="color_white">#ffffff</color>
-    <color name="color_black">#000000</color>
-    <color name="color_transparent">#00000000</color>
-    <color name="text_color_hint">#BBBBBB</color>
-    <color name="color_blue">#006EFF</color>
-    <color name="color_bg_dialog">#66000000</color>
-    <color name="color_line">#DDDDDD</color>
-    <color name="color_input_normal">#BBBBBB</color>
-    <color name="color_input_no_match">#FA585E</color>
-    <color name="color_main_bg">#F1F3F8</color>
-    <color name="color_main_text">#333333</color>
+    <color name="app_color_white">#ffffff</color>
+    <color name="app_color_black">#000000</color>
+    <color name="app_color_transparent">#00000000</color>
+    <color name="app_text_color_hint">#BBBBBB</color>
+    <color name="app_color_blue">#006EFF</color>
+    <color name="app_color_bg_dialog">#66000000</color>
+    <color name="app_color_input_normal">#BBBBBB</color>
+    <color name="app_color_input_no_match">#FA585E</color>
 </resources>

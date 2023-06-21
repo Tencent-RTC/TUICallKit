@@ -1,43 +1,44 @@
 package com.tencent.qcloud.tuikit.tuicallkit.demo;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.tencent.imsdk.v2.V2TIMCallback;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMUserFullInfo;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
-import com.tencent.qcloud.tuikit.tuicallkit.demo.basic.AvatarConstant;
-import com.tencent.qcloud.tuikit.tuicallkit.demo.basic.UserModel;
-import com.tencent.qcloud.tuikit.tuicallkit.demo.basic.UserModelManager;
+import com.tencent.qcloud.tuikit.tuicallkit.demo.setting.SettingsConfig;
 import com.tencent.qcloud.tuikit.tuicallkit.utils.ImageLoader;
 
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ProfileActivity extends AppCompatActivity {
-    private static final String    TAG = "ProfileActivity";
-    private              ImageView mImageAvatar;
-    private              EditText  mEditUserName;
-    private              Button    mButtonRegister;
-    private              TextView  mTvInputTips;     //nickname constraints
-    private              String    mAvatarUrl;
+public class ProfileActivity extends BaseActivity {
+    private static final String TAG = "ProfileActivity";
+
+    private ImageView mImageAvatar;
+    private EditText  mEditUserName;
+    private Button    mButtonRegister;
+    private TextView  mTvInputTips;     //nickname constraints
+    private String    mAvatarUrl;
+
+    private static final String USER_AVATAR_ARRAY[] = {
+            "https://liteav.sdk.qcloud.com/app/res/picture/voiceroom/avatar/user_avatar1.png",
+            "https://liteav.sdk.qcloud.com/app/res/picture/voiceroom/avatar/user_avatar2.png",
+            "https://liteav.sdk.qcloud.com/app/res/picture/voiceroom/avatar/user_avatar3.png",
+            "https://liteav.sdk.qcloud.com/app/res/picture/voiceroom/avatar/user_avatar4.png",
+            "https://liteav.sdk.qcloud.com/app/res/picture/voiceroom/avatar/user_avatar5.png",
+    };
 
     private static final int[] CUSTOM_NAME_ARRAY = {
             R.string.app_custom_name_1,
@@ -45,39 +46,28 @@ public class ProfileActivity extends AppCompatActivity {
             R.string.app_custom_name_3,
             R.string.app_custom_name_4,
             R.string.app_custom_name_5,
-            R.string.app_custom_name_6,
-            R.string.app_custom_name_7,
-            R.string.app_custom_name_8,
-            R.string.app_custom_name_9,
-            R.string.app_custom_name_10,
-            R.string.app_custom_name_11,
-            R.string.app_custom_name_12,
     };
 
     private void startMainActivity() {
-        Intent intent = new Intent();
-        intent.addCategory("android.intent.category.DEFAULT");
-        intent.setAction("com.tencent.liteav.action.portal");
+        Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
         startActivity(intent);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_profile);
-        initStatusBar();
+        setContentView(R.layout.app_activity_login_profile);
         initView();
     }
 
     private void initView() {
-        mImageAvatar = (ImageView) findViewById(R.id.iv_user_avatar);
-        mEditUserName = (EditText) findViewById(R.id.et_user_name);
-        mButtonRegister = (Button) findViewById(R.id.tv_register);
-        mTvInputTips = (TextView) findViewById(R.id.tv_tips_user_name);
-        String[] avatarArr = AvatarConstant.USER_AVATAR_ARRAY;
-        int index = new Random().nextInt(avatarArr.length);
-        mAvatarUrl = avatarArr[index];
-        ImageLoader.loadImage(this, mImageAvatar, mAvatarUrl, R.drawable.ic_avatar);
+        mImageAvatar = findViewById(R.id.iv_user_avatar);
+        mEditUserName = findViewById(R.id.et_user_name);
+        mButtonRegister = findViewById(R.id.tv_register);
+        mTvInputTips = findViewById(R.id.tv_tips_user_name);
+        int index = new Random().nextInt(USER_AVATAR_ARRAY.length);
+        mAvatarUrl = USER_AVATAR_ARRAY[index];
+        ImageLoader.loadImage(this, mImageAvatar, mAvatarUrl, R.drawable.app_avatar);
 
         mButtonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,9 +94,9 @@ public class ProfileActivity extends AppCompatActivity {
                 Pattern p = Pattern.compile("^[a-z0-9A-Z\\u4e00-\\u9fa5\\_]{2,20}$");
                 Matcher m = p.matcher(editable);
                 if (!m.matches()) {
-                    mTvInputTips.setTextColor(getResources().getColor(R.color.color_input_no_match));
+                    mTvInputTips.setTextColor(getResources().getColor(R.color.app_color_input_no_match));
                 } else {
-                    mTvInputTips.setTextColor(getResources().getColor(R.color.text_color_hint));
+                    mTvInputTips.setTextColor(getResources().getColor(R.color.app_text_color_hint));
                 }
             }
 
@@ -124,10 +114,10 @@ public class ProfileActivity extends AppCompatActivity {
         }
         String reg = "^[a-z0-9A-Z\\u4e00-\\u9fa5\\_]{2,20}$";
         if (!userName.matches(reg)) {
-            mTvInputTips.setTextColor(getResources().getColor(R.color.color_input_no_match));
+            mTvInputTips.setTextColor(getResources().getColor(R.color.app_color_input_no_match));
             return;
         }
-        mTvInputTips.setTextColor(getResources().getColor(R.color.text_color_hint));
+        mTvInputTips.setTextColor(getResources().getColor(R.color.app_text_color_hint));
         V2TIMUserFullInfo v2TIMUserFullInfo = new V2TIMUserFullInfo();
         v2TIMUserFullInfo.setFaceUrl(mAvatarUrl);
         v2TIMUserFullInfo.setNickname(userName);
@@ -145,27 +135,11 @@ public class ProfileActivity extends AppCompatActivity {
             public void onSuccess() {
                 Log.i(TAG, "set profile success.");
                 ToastUtil.toastLongMessage(getString(R.string.app_toast_register_success_and_logging_in));
-                //save user data
-                UserModel userModel = UserModelManager.getInstance().getUserModel();
-                userModel.userName = userName;
-                userModel.userAvatar = mAvatarUrl;
-                UserModelManager.getInstance().setUserModel(userModel);
+                SettingsConfig.userName = userName;
+                SettingsConfig.userAvatar = mAvatarUrl;
                 startMainActivity();
                 finish();
             }
         });
-    }
-
-    private void initStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
     }
 }

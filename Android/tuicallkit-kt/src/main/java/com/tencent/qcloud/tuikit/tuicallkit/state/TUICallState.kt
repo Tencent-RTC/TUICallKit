@@ -21,7 +21,7 @@ import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallEvent.Companion.EVENT_K
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallEvent.Companion.EVENT_KEY_USER_ID
 import com.tencent.qcloud.tuikit.tuicallkit.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
-import com.tencent.qcloud.tuikit.tuicallkit.feature.CallingBellFeature
+import com.tencent.qcloud.tuikit.tuicallkit.extensions.CallingBellFeature
 
 class TUICallState {
     public var selfUser = LiveData<User>()
