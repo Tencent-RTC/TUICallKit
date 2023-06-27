@@ -1,0 +1,40 @@
+@import "./base.css";
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+.el-icon-single-person {
+  margin-right: 8px;
+  background: url('@/assets/singlePerson.png') center no-repeat;
+  font-size: 20px;
+  background-size: contain;
+}
+
+.el-icon-single-person:before {
+  content: '替';
+  font-size: 20px;
+  visibility: hidden;
+}
+
+.el-icon-group-person {
+  margin-right: 8px;
+  font-size: 20px;
+  background: url('@/assets/groupPerson.png') center no-repeat;
+  background-size: cover;
+}
+
+.el-icon-group-person:before {
+  content: '替';
+  font-size: 20px;
+  visibility: hidden;
+}
