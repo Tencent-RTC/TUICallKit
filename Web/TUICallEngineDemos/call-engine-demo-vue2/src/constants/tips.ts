@@ -1,0 +1,12 @@
+export const USERID_SHOULD_NOT_EMPTY = '用户名不应该为空';
+export const LOGIN_FAIL = '登录失败';
+export const LOGOUT_FAIL = '登出失败';
+export const HANGUP_FAIL = '挂断失败';
+export const CALL_FAIL = '呼叫失败';
+export const START_REMOTE_VIEW_FAIL = '启动远端渲染失败';
+export const STOP_REMOTE_VIEW_FAIL = '停止远端渲染失败';
+export const NICKNAME_MODIFY_SUCCESS = '修改昵称成功';
+export const NICKNAME_MODIFY_FAIL = '修改昵称失败';
+export const AVATAR_MODIFY_SUCCESS = '修改头像成功';
+export const AVATAR_MODIFY_FAIL = '修改头像失败';
+export const SDK_NOT_READY = 'SDK未准备好，请稍后再试';
