@@ -156,7 +156,7 @@ const handleCallControl = async (type: { key: string, value: any }) => {
   switch (key) {
     case 'call':
       if (!isSDKReady.value) {
-        ElMessageBox.error(SDK_NOT_READY);
+        ElMessage.error(SDK_NOT_READY);
         return;
       }
 
