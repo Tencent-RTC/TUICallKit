@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
@@ -74,7 +75,22 @@ public class PermissionRequest {
         if (PermissionUtils.hasPermission(context)) {
             return;
         }
-        startCommonSettings(context);
+        //小米云测平台Android13手机特殊处理
+        if (BrandUtils.isBrandXiaoMi() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            startXiaomiPermissionActivity(context);
+            Toast.makeText(context, "请同时打开后台拉起应用权限和悬浮窗权限", Toast.LENGTH_SHORT).show();
+        } else {
+            startCommonSettings(context);
+        }
+    }
+
+    private static void startXiaomiPermissionActivity(Context context) {
+        Intent intent = new Intent("miui.intent.action.APP_PERM_EDITOR");
+        intent.setClassName("com.miui.securitycenter",
+                "com.miui.permcenter.permissions.PermissionsEditorActivity");
+        intent.putExtra("extra_pkgname", context.getPackageName());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     private static void startCommonSettings(Context context) {
