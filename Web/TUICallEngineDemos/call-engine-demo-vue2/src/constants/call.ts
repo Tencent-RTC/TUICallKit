@@ -26,8 +26,8 @@ export enum CallState {
   CONNECTED,
 }
 export const DefaultAvatarUrl = 'https://sdk-web-1252463788.cos.ap-hongkong.myqcloud.com/trtc/call/test/call-engine-demo/assets/defaultavatar.png';
-export const DefaultSdkAppId = 1400704311;
-export const DefaultSecretKey = '8b897045d1ee4f067a745b1b6a3fb834d1bd4c5951de43282c21b945f98ec982';
+export const DefaultSdkAppId = 0;
+export const DefaultSecretKey = '';
 export enum ObjectFit {
   Contain = 'contain',
   Cover = 'cover',

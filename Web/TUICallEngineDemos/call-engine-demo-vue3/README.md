@@ -17,10 +17,10 @@ Vue3.js + vite + TypeScript
 git clone https://github.com/tencentyun/TUICallKit.git
 ```
 
-2. 进入 examples 目录
+2. 进入 demo 目录
 
 ```shell
-cd ./trtc-calling-webrtc/examples/call-engine-demo-vue3
+cd ./TUICallKit/Web/TUICallEngineDemos/call-engine-demo-vue3
 ```
 
 3. 安装依赖
@@ -29,9 +29,9 @@ cd ./trtc-calling-webrtc/examples/call-engine-demo-vue3
 npm install
 ```
 
-4. 修改sdkAppId
+4. 修改sdkAppId和SecretKey
 
-打开src/constants/call.ts文件，修改DefaultSdkAppId为自己应用的sdkAppId
+打开src/constants/call.ts文件，修改DefaultSdkAppId为自己应用的sdkAppId，DefaultSecretKey为自己应用的SecretKey。点击[这里](#如何获得-sdkappid-与-secretkey)查看如何获取sdkAppId和SecretKey
 
 5. 运行 demo
 

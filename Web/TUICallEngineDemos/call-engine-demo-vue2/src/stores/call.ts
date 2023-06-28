@@ -17,11 +17,13 @@ export const useCallInfoStore = defineStore('callInfo', {
   }),
   actions: {
     updateRemoteUserList({ userID, isVideoAvailable }: TRemoteUser) {
-      if (this.remoteUserList.find(item => item.userID === userID)) {
-        return;
-      }
+      const index = this.remoteUserList.findIndex(item => item.userID === userID);
 
-      this.remoteUserList.push({ userID, isVideoAvailable });
+      if (index !== -1) {
+        this.remoteUserList[index].isVideoAvailable = isVideoAvailable;
+      } else {
+        this.remoteUserList.push({ userID, isVideoAvailable });
+      }
     },
     removeRemoteUser({ userID }: { userID: string }) {
       const index = this.remoteUserList.findIndex(item => item.userID === userID);
