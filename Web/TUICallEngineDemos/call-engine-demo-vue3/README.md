@@ -44,13 +44,13 @@ npm run dev
 1. 打开正在运行的页面，登录框中输入userID，例如user_A，点击登录，再打开同样地址的页面，输入user_B并登录。
 
 <div align="center">
-<img style="width:450px; max-width: inherit;" src="https://sdk-web-1252463788.cos.ap-hongkong.myqcloud.com/trtc/call/test/call-engine-demo/assets/WX20230619-170647%402x.png"/>
+<img style="width:450px; max-width: inherit;" src="https://web.sdk.qcloud.com/trtc/call/test/call-engine-demo/assets/WX20230619-170647%402x.png"/>
 </div>
 
 2. 选择单人通话或者群组通话
 
   <div align="center">
-    <img style="width:450px; max-width: inherit;" src="https://sdk-web-1252463788.cos.ap-hongkong.myqcloud.com/trtc/call/test/call-engine-demo/assets/WX20230619-170533%402x.png"/>
+    <img style="width:450px; max-width: inherit;" src="https://web.sdk.qcloud.com/trtc/call/test/call-engine-demo/assets/WX20230619-170533%402x.png"/>
   </div>
   
 3. 进入呼叫配置页
@@ -60,7 +60,7 @@ npm run dev
 - `user_B` 会收到来电，点击接听即可开始通话。
 
 <div align="center">
-<img style="width:800px; max-width: inherit;" src="https://web.sdk.qcloud.com/trtc/call/test/call-engine-demo/assets/calldemo1.gif"/>
+<img style="width:800px; max-width: inherit;" src="https://web.sdk.qcloud.com/trtc/call/test/call-engine-demo/assets/%E5%B1%8F%E5%B9%95%E5%BD%95%E5%88%B62023-06-30%2017.26.33.gif"/>
 
 </div>
 4. 视频设置
@@ -90,6 +90,7 @@ npm run dev
 │   ├── router/         # 业务路由
 │   ├── utils/          # 公共工具方法
 │   ├── stores/         # 状态管理相关
+│   ├── views/          # 存放页面
 │   ├── main.ts         
 │   └── App.vue
 ├── README.md

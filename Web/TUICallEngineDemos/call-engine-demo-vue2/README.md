@@ -61,7 +61,7 @@ npm run dev
 
 <div align="center">
 
-<img style="width:800px; max-width: inherit;" src="https://web.sdk.qcloud.com/trtc/call/test/call-engine-demo/assets/calldemo1.gif"/>
+<img style="width:800px; max-width: inherit;" src="https://web.sdk.qcloud.com/trtc/call/test/call-engine-demo/assets/%E5%B1%8F%E5%B9%95%E5%BD%95%E5%88%B62023-06-30%2017.26.33.gif"/>
 
 </div>
 4. 视频设置
@@ -90,6 +90,7 @@ npm run dev
 │   ├── hooks/          # Hook 相关，公共逻辑
 │   ├── router/         # 业务路由
 │   ├── utils/          # 公共工具方法
+│   ├── views/          # 存放页面
 │   ├── stores/         # 状态管理相关
 │   ├── main.ts         
 │   └── App.vue
