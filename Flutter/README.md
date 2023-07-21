@@ -48,7 +48,6 @@ Here is an example of integration with UI (ie TUICallKit),  which is also our re
 - If you want to learn more about the projects maintained by Tencent Cloud  Media Services Team, you can check our [Product Official Website](https://trtc.tencentcloud.com/), [Github Organizations](https://github.com/LiteAVSDK) etc.
 
 
-
 ## Have any questions?
 - Welcome to submit [**issue**](https://github.com/tencentyun/TUICallKit/issues),  
 - Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you，Click to join: https://t.me/+EPk6TMZEZMM5OGY1
