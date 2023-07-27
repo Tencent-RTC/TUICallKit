@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-import { TUICallKit, TUICallKitServer, TUICallKitMini, STATUS } from "@tencentcloud/call-uikit-vue2";
+import { TUICallKit, TUICallKitServer, STATUS } from "@tencentcloud/call-uikit-vue2";
 import DeviceDetector from "./components/DeviceDetector/index.vue";
 import * as GenerateTestUserSig from "../public/debug/GenerateTestUserSig-es.js";
 import TIM from "tim-js-sdk";
@@ -371,9 +371,6 @@ async function hangup() {
       </div>
     </div>
     <div class="call-kit-container">
-      <div class="hover" v-show="isCalling && isMinimized">
-        {{ t("minimized-mode") }}
-      </div>
       <div class="search" v-show="!isCalling || isMinimized">
         <div class="search-window search-left">
           <div class="search-title">
@@ -444,10 +441,9 @@ async function hangup() {
         :onMinimized="onMinimized"
         :allowedMinimized="true"
         :allowedFullScreen="true"
-        @kicked-out="handleKickedOut"
-        @status-changed="handleStatusChanged"
+        :kickedOut="handleKickedOut"
+        :statusChanged="handleStatusChanged"
       />
-      <TUICallKitMini />
     </div>
     <div id="debug" v-show="!isLogin">
       <div>
