@@ -3,7 +3,7 @@ import { ref, onMounted } from "vue";
 import { TUICallKit, TUICallKitServer, STATUS } from "@tencentcloud/call-uikit-vue";
 import DeviceDetector from "./components/DeviceDetector/index.vue";
 import * as GenerateTestUserSig from "../public/debug/GenerateTestUserSig-es.js";
-import TIM from "tim-js-sdk";
+import TIM from "@tencentcloud/chat";
 import copy from "copy-to-clipboard";
 import videoBlackSVG from "./assets/videoBlack.svg";
 import videoWhiteSVG from "./assets/videoWhite.svg";

@@ -8,7 +8,7 @@
     "lint": "npx eslint ./src/App.vue -c ./.eslintrc.js"
   },
   "dependencies": {
-    "@tencentcloud/call-uikit-vue": "^2.3.2",
+    "@tencentcloud/call-uikit-vue": "^3.0.0",
     "aegis-web-sdk": "^1.36.6",
     "copy-to-clipboard": "^3.3.3",
     "core-js": "^3.8.3",
