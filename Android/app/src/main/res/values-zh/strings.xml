@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">音视频通话</string>
+    <string name="app_main_title">腾讯云音视频</string>
     <string name="app_toast_login_fail">登录IM失败，所有功能不可用[%d]%s</string>
     <string name="app_toast_not_call_myself">不能呼叫自己</string>
     <string name="app_audio_call">语音通话</string>
@@ -58,7 +59,7 @@
     <string name="app_call_setting">通话设置</string>
     <string name="app_show_float_button">显示悬浮窗按钮</string>
     <string name="app_call_params_setting">通话自定义参数设置</string>
-    <string name="app_please_set_call_waitting_timeout">请设置呼叫等待超时时间</string>
+    <string name="app_please_set_call_waiting_timeout">请设置呼叫等待超时时间</string>
     <string name="app_user_data">扩展信息</string>
     <string name="app_invite_cmd_extra_info">请输入邀请信令中的扩展信息</string>
     <string name="app_timeout">超时时间</string>

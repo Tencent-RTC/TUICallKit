@@ -164,5 +164,11 @@ public class MainActivity extends BaseActivity {
             logout();
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        TUILogin.removeLoginListener(mLoginListener);
+    }
 }
 

@@ -238,7 +238,7 @@ public class SettingsActivity extends BaseActivity {
     private void setCallTimeout() {
         String text = mEditTimeout.getText().toString().trim();
         if (TextUtils.isEmpty(text)) {
-            ToastUtil.toastShortMessage(getString(R.string.app_please_set_call_waitting_timeout));
+            ToastUtil.toastShortMessage(getString(R.string.app_please_set_call_waiting_timeout));
             return;
         }
         try {
