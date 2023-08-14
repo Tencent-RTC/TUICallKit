@@ -32,9 +32,8 @@
             android:text="@string/app_1v1_call"
             android:textColor="#000000"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
     </RelativeLayout>
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -56,8 +55,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:gravity="right"
+            android:layout_marginStart="4dp"
+            android:layout_toRightOf="@+id/tv_phone_number"
             android:background="@null"
+            android:gravity="right"
             android:hint="@string/app_call_user_id"
             android:maxLines="1"
             android:singleLine="true"
@@ -147,7 +148,7 @@
     <View
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <Button
         android:id="@+id/btn_call"
@@ -158,6 +159,7 @@
         android:layout_marginBottom="46dp"
         android:background="@drawable/app_bg_button"
         android:text="@string/app_start_call"
+        android:textAllCaps="false"
         android:textColor="@color/app_color_white"
         android:textSize="16sp" />
 </LinearLayout>
