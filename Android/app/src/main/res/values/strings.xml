@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">TRTC</string>
+    <string name="app_main_title">Tencent \n Real-Time \n Communication</string>
     <string name="app_toast_login_fail">Login failed [%d]%s</string>
     <string name="app_toast_not_call_myself">You cannot call yourself.</string>
     <string name="app_audio_call">Voice Call</string>
@@ -9,7 +10,7 @@
     <string name="app_btn_confirm">Confirm</string>
     <string name="app_user_id">UserId</string>
     <string name="app_hint_user_id">Enter a userId</string>
-    <string name="app_call_user_id">Please enter the user ID you want to call</string>
+    <string name="app_call_user_id">Enter the user ID you want to call</string>
     <string name="app_btn_login">Log In</string>
 
     <string name="app_welcome_tips">Welcome to Tencent\nReal-Time Communication</string>
@@ -22,7 +23,7 @@
     <string name="app_toast_register_success_and_logging_in">Registered successfully</string>
     <string name="app_toast_failed_to_set">Failed: %s</string>
 
-    <string name="app_start_call">Call</string>
+    <string name="app_start_call">Initiate a call</string>
     <string name="app_login_out">Log out</string>
 
     <string name="app_custom_name_1">Martijn</string>
@@ -39,14 +40,14 @@
     <string name="app_custom_name_12">virelai</string>
     <string name="app_tuicallkit_describe">TUICallKit is an audio and video calling UI component launched by Tencent Cloud. By integrating this component, you only need to write a few lines of code to add audio and video calling functions to your app.</string>
     <string name="app_tuicallkit_support">TUICallKit supports offline wake-up capability, and supports Android, iOS, Web, applets, Flutter, uni-app and other platforms</string>
-    <string name="app_quick_access">quick access</string>
+    <string name="app_quick_access">Quick Access</string>
     <string name="app_quick_access_purchase">package purchase</string>
     <string name="app_quick_access_enter">quick access</string>
     <string name="app_quick_access_api">API documentation</string>
     <string name="app_quick_access_problem">common problem</string>
     <string name="app_group_id">GroupId</string>
     <string name="app_user_id_list">UserIdList</string>
-    <string name="app_join_group_call">join group call</string>
+    <string name="app_join_group_call">Join group call</string>
     <string name="app_media_type">Media Type</string>
     <string name="app_group_call_button">Experience group calling</string>
 
@@ -58,16 +59,16 @@
     <string name="app_set_ring">set ringtone</string>
     <string name="app_set_ring_path">set ringtone path</string>
     <string name="app_mute_mode">silent mode</string>
-    <string name="app_call_setting">call settings</string>
+    <string name="app_call_setting">Call Settings</string>
     <string name="app_show_float_button">Show floating</string>
-    <string name="app_call_params_setting">Call parameter</string>
-    <string name="app_please_set_call_waitting_timeout">Please set call waiting timeout</string>
+    <string name="app_call_params_setting">Call Parameters</string>
+    <string name="app_please_set_call_waiting_timeout">Please set call waiting timeout</string>
     <string name="app_user_data">Extended</string>
     <string name="app_invite_cmd_extra_info">Extended information in invitation signaling</string>
     <string name="app_timeout">Timeout</string>
-    <string name="app_offline_message">offline message</string>
+    <string name="app_offline_message">Offline message</string>
     <string name="app_resolution">Resolution</string>
-    <string name="app_vertical_screen">vertical</string>
+    <string name="app_vertical_screen">Vertical</string>
     <string name="app_horizontal_screen">Horizontal</string>
     <string name="app_screen_orientation">Screen orientation</string>
     <string name="app_fit_mode">Fill pattern</string>
@@ -87,7 +88,7 @@
     <string name="app_room_id_str">RoomID（String）</string>
     <string name="app_please_input_room_id">Please enter the room ID</string>
     <string name="app_offline_message_json_string">Please enter the json string of offline message information</string>
-    <string name="app_video_setting">Video settings</string>
+    <string name="app_video_setting">Video Settings</string>
     <string name="app_please_input_avatar_and_nickname">Please enter your avatar and username</string>
     <string name="app_set_success">successfully set</string>
     <string name="app_set_fail">Setup failed</string>

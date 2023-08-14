@@ -176,7 +176,7 @@
     <View
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <TextView
         android:id="@+id/tv_join_group_call"
@@ -200,6 +200,7 @@
         android:layout_marginRight="20dp"
         android:background="@drawable/app_bg_button"
         android:text="@string/app_start_call"
+        android:textAllCaps="false"
         android:textColor="@color/app_color_white"
         android:textSize="16sp"
         android:layout_below="@+id/ll_media_type"/>
