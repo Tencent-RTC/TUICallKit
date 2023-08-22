@@ -3,8 +3,10 @@
 
 import Flutter
 import UIKit
+import TUICallEngine
 
-public class TUICallKitPlugin: NSObject {
+public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, TUICallKitServiceDelegate {
+        
     static let channelName = "tuicall_kit"
     private let channel: FlutterMethodChannel
     let registrar: FlutterPluginRegistrar
@@ -17,22 +19,51 @@ public class TUICallKitPlugin: NSObject {
         self.registrar = registrar
         
         super.init()
+        
+        FloatWindowManger.instance.backToFlutterWidgetDelegate = self
+        TUICallKitService.instance.callKitServiceDelegate = self
     }
     
     enum Mehtod: String {
-        case call
-        case setSelfInfo
-        case groupCall
-        case joinInGroupCall
-        case setCallingBell
-        case enableMuteMode
-        case enableFloatWindow
-        case login
-        case logout
+        case startRing
+        case stopRing
+        case updateCallStateToNative
+        case stopFloatWindow
+        case startFloatWindow
+        case initResources
+    }
+}
+
+extension TUICallKitPlugin {
+    // MARK: BackToFlutterWidgetDelegate
+    func backToFlutterWidget() {
+        channel.invokeMethod("gotoCallingPage", arguments: nil)
     }
     
-    deinit {
-        print("deinit \(TUICallKitPlugin.self)")
+    // MARK: TUICallKitServiceDelegate
+    func callMethodHandleLoginSuccess(sdkAppID: Int, userId: String, userSig: String) {
+        channel.invokeMethod("handleLoginSuccess", arguments: ["sdkAppId": sdkAppID,
+                                                               "userId": userId,
+                                                               "userSig": userSig] as [String : Any])
+    }
+
+    func callMethodHandleLogoutSuccess() {
+        channel.invokeMethod("handleLogoutSuccess", arguments: nil)
+    }
+
+    func callMethodCall(userId: String, callMediaType: TUICallMediaType) {
+        channel.invokeMethod("call", arguments: ["userId": userId,
+                                                 "mediaType": callMediaType.rawValue] as [String : Any])
+    }
+
+    func callMethodGroupCall(groupId: String, userIdList: [String], callMediaType: TUICallMediaType) {
+        channel.invokeMethod("groupCall", arguments: ["groupId": groupId,
+                                                      "userIdList": userIdList,
+                                                      "mediaType": callMediaType.rawValue] as [String : Any])
+    }
+
+    func callMethodEnabelFloatWindow(enable: Bool) {
+        channel.invokeMethod("enabelFloatWindow", arguments: ["enable": enable])
     }
 }
 
@@ -44,38 +75,26 @@ extension TUICallKitPlugin: FlutterPlugin {
     }
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        // TODO:添加Log
-        
         let method = Mehtod.init(rawValue: call.method)
         switch method {
-            case .setSelfInfo:
-                TUICallKitManager.shared.setSelfInfo(call: call, result: result)
-                break
-            case .call:
-                TUICallKitManager.shared.call(call: call, result: result)
-                break
-            case .groupCall:
-                TUICallKitManager.shared.groupCall(call: call, result: result)
-                break
-            case .joinInGroupCall:
-                TUICallKitManager.shared.joinInGroupCall(call: call, result: result)
-                break
-            case .setCallingBell:
-                TUICallKitManager.shared.setCallingBell(call: call, result: result)
-                break
-            case .enableMuteMode:
-                TUICallKitManager.shared.enableMuteMode(call: call, result: result)
-                break
-            case .enableFloatWindow:
-                TUICallKitManager.shared.enableFloatWindow(call: call, result: result)
-                break
-            case .login:
-                TUICallKitManager.shared.login(call: call, result: result)
-            case .logout:
-                TUICallKitManager.shared.logout(call: call, result: result)
-            default:
-                // TODO:添加Log打印错误
-                break
+        case .startRing:
+            TUICallKitManager.shared.startRing(call: call, result: result)
+            break
+        case .stopRing:
+            TUICallKitManager.shared.stopRing(call: call, result: result)
+            break
+        case .updateCallStateToNative:
+            TUICallKitManager.shared.updateCallStateToNative(call: call, result: result)
+        case .startFloatWindow:
+            TUICallKitManager.shared.startFloatWindow(call: call, result: result)
+            break
+        case .stopFloatWindow:
+            TUICallKitManager.shared.stopFloatWindow(call: call, result: result)
+            break
+        case .initResources:
+            TUICallKitManager.shared.initResources(call: call, result: result)
+        default:
+            break
         }
     }
 }

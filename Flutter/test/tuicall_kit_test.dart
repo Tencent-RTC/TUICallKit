@@ -1,74 +1,93 @@
 // Copyright (c) 2021 Tencent. All rights reserved.
 // Author: tatemin
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tencent_calls_uikit/tuicall_kit.dart';
-import 'package:tencent_calls_uikit/platform/tuicall_kit_platform_interface.dart';
-import 'package:tencent_calls_uikit/platform/tuicall_kit_method_channel.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
+import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
 
 class MockCallsUikitPlatform
     with MockPlatformInterfaceMixin
     implements TUICallKitPlatform {
-  @override
-  Future<String?> getPlatformVersion() => Future.value('42');
 
   @override
-  Future<void> call(String userId, callMediaType) {
-    // TODO: implement call
+  Future<void> startForegroundService() {
+    // TODO: implement startForegroundService
+    throw UnimplementedError();
+  }
+
+
+  @override
+  Future<void> stopForegroundService() {
+    // TODO: implement stopForegroundService
+    throw UnimplementedError();
+  }
+
+
+  @override
+  Future<void> startRing(String filePath) {
+    // TODO: implement startRing
     throw UnimplementedError();
   }
 
   @override
-  Future<void> enableFloatWindow(bool enable) {
-    // TODO: implement enableFloatWindow
+  Future<void> stopRing() {
+    // TODO: implement stopRing
     throw UnimplementedError();
   }
 
   @override
-  Future<void> enableMuteMode(bool enable) {
-    // TODO: implement enableMuteMode
+  Future<void> updateCallStateToNative() {
+    // TODO: implement updateCallStateToNative
     throw UnimplementedError();
   }
 
   @override
-  Future<void> groupCall(
-      String groupId, List<String> userIdList, callMediaType) {
-    // TODO: implement groupCall
+  Future<void> startFloatWindow() {
+    // TODO: implement startFloatWindow
     throw UnimplementedError();
   }
 
   @override
-  Future<void> joinInGroupCall(roomId, String groupId, callMediaType) {
-    // TODO: implement joinInGroupCall
+  Future<void> stopFloatWindow() {
+    // TODO: implement stopFloatWindow
     throw UnimplementedError();
   }
 
   @override
-  Future<void> setCallingBell(String filePath) {
-    // TODO: implement setCallingBell
+  Future<bool> hasFloatPermission() {
+    // TODO: implement hasFloatPermission
     throw UnimplementedError();
   }
 
   @override
-  Future<void> setSelfInfo(String nickname, String avatar) {
-    // TODO: implement setSelfInfo
+  Future<bool> isAppInForeground() {
+    // TODO: implement isAppInForeground
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> moveAppToFront(String event) {
+    // TODO: implement moveAppToFront
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> initResources(Map<dynamic, dynamic> resources) {
+    // TODO: implement initResources
     throw UnimplementedError();
   }
 }
 
 void main() {
-  final TUICallKitPlatform initialPlatform = TUICallKitPlatform.instance;
+  test('StringsUtils', () async {
+    String? a = '';
+    String? b;
+    debugPrint(StringStream.makeNull(a, "a default"));
+    debugPrint(StringStream.makeNull(b, "b default"));
 
-  test('$MethodChannelTUICallKit is the default instance', () {
-    expect(initialPlatform, isInstanceOf<MethodChannelTUICallKit>());
-  });
-
-  test('getPlatformVersion', () async {
-    TUICallKit callsUIKitPlugin = TUICallKit();
-    MockCallsUikitPlatform fakePlatform = MockCallsUikitPlatform();
-    TUICallKitPlatform.instance = fakePlatform;
-
-    expect(await callsUIKitPlugin.getPlatformVersion(), '42');
+    String c = '';
+    debugPrint(StringStream.makeNonNull(c, "c default"));
   });
 }

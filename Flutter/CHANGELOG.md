@@ -1,3 +1,47 @@
+## 1.8.1
+### 缺陷修复：
+- Android&iOS：修复群组通话语音通话会显示对方视频流。
+
+## 1.8.0
+### 新特性
+- Android&iOS：基于 Dart 语言构建全新的 TUICallkit，可以更方便的定制自己的 UI 风格。
+- Android&iOS：TUICallEngine 新增诸如 hangup、accept、reject等多个业务接口。
+
+## 1.7.6-preview
+### 功能优化：
+- Android&iOS：优化未设置用户名、用户头像时用户信息显示的问题。
+- Android&iOS：优化单人视频通话 UI。
+### 缺陷修复：
+- Android&iOS：修复通话过程中退出登录产生的页面异常问题。
+- Android: 修复通话过程中被踢下线产生的页面异常问题。
+
+## 1.7.5-preview
+### 新特性
+- Android&iOS：基于 Dart 语言构建全新的 TUICallkit，可以更方便的定制自己的 UI 风格。
+- Android&iOS：TUICallEngine 新增诸如 hangup、accept、reject等多个业务接口。
+
+## 1.7.4
+### 功能优化：
+- Android：默认关闭重力感应，优化在大屏、定制设备的通话体验。
+### 缺陷修复：
+- Android&iOS：A呼叫B(离线)后取消，A再次呼叫B，B登录上线，B的云端通话记录异常问题。
+
+## 1.7.3
+### 功能优化
+- Android: 支持使用模拟器进行开发&调试。
+### 依赖说明
+- 升级依赖的客户端 SDK 版本：Android LiteAVSDK_Professional: 11.3.0.13176。
+
+## 1.7.2
+### 缺陷修复
+- iOS: 升级客户端 SDK版本，修复因为 Non-public API usage 问题导致的 AppStore 上架失败的问题。
+
+## 1.7.1
+### 新特性
+- Android&iOS：新增云端通话记录，您可以在控制台开通服务进行体验查询。
+### 功能优化
+- Android：降低通话时系统保活的级别，只在状态栏显示保活提示，去掉通知和震动。
+
 ## 1.6.3
 ### 缺陷修复
 - iOS：修复调用 `joinInGroupCall` 后中途加人页面为空的问题。
@@ -31,15 +75,15 @@
 ### 依赖说明
 - 升级依赖的客户端 SDK 版本：Android LiteAVSDK_Professional: 11.1.0.13111、iOS TXLiteAVSDK_Professional: 11.1.14143。
 
- ## 1.5.4
- ### 新特性
+## 1.5.4
+### 新特性
 - iOS：支持 VoIP 消息推送功能，提供更好的通话接听体验。
 - Android&iOS：增加 小米、华为、VIVO 离线推送高级参数。
 - Android&iOS：支持设置编码分辨率，画面方向等。
 - Android&iOS：支持设置渲染方向、渲染模式（自适应、填充）等。
- ### 功能优化
+### 功能优化
 - Android：优化 `onCallEnd`回调中 totaltime 参数单位为毫秒。
- ### 缺陷修复
+### 缺陷修复
 - Android&iOS：修复`onCallReceived`回调异常问题。
 - iOS：修复屏幕旋转时通话页面显示不全的问题。
 
