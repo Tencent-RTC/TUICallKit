@@ -1,19 +1,24 @@
 name: tencent_calls_uikit
 description: TUICallKit is a UIKit about audio&video calls launched by Tencent Cloud.
-version: 1.6.3
+version: 1.8.1
 repository: https://github.com/tencentyun/TUICallKit
-homepage: https://trtc.tencentcloud.com/
+homepage: https://trtc.io/
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.12.0 <4.0.0"
   flutter: ">=2.5.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  file: ^6.1.4
+  sprintf: ^7.0.0
+  path_provider: ^2.0.12
   plugin_platform_interface: ^2.0.2
-
-  tencent_calls_engine: ^1.6.1
+  shared_preferences: ^2.2.0
+  tencent_calls_engine: ^1.8.0
+  tencent_cloud_uikit_core: ^1.1.0
+  tencent_cloud_chat_sdk: ^5.1.8
 
 dev_dependencies:
   flutter_test:
@@ -25,6 +30,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  uses-material-design: true
   # This section identifies this Flutter project as a plugin project.
   # The 'pluginClass' specifies the class (in Java, Kotlin, Swift, Objective-C, etc.)
   # which should be registered in the plugin registry. This is required for
@@ -44,9 +50,9 @@ flutter:
         pluginClass: CallsUikitPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/audios/
+    - assets/images/
   #
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages

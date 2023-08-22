@@ -15,9 +15,13 @@ A new Flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'TUICallKit/Professional', '1.6.1.420'
+  s.dependency 'TUICallEngine/Professional'
+  s.dependency 'TUICore'
+  s.dependency 'SnapKit'
   s.platform = :ios, '9.0'
   s.static_framework = true
+  
+  s.resource_bundles = {'TUICallKitBundle' => ['Assets/*.xcassets']}
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }

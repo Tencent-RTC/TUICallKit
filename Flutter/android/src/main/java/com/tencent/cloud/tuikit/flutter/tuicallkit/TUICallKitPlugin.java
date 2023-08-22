@@ -1,24 +1,32 @@
 package com.tencent.cloud.tuikit.flutter.tuicallkit;
 
+import static com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.FloatCallView.KEY_TUISTATE_CHANGE;
+import static com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.FloatCallView.SUBKEY_REFRESH_VIEW;
+
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.FloatWindowService;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.service.CallingBellService;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.service.ForegroundService;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.state.TUICallState;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.state.User;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitAppUtils;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitEnumUtils;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitObjectUtils;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitPermissionUtils;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.EnumUtils;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.Logger;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.MethodCallUtils;
-import com.tencent.cloud.tuikit.tuicall_engine.utils.ObjectUtils;
+import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.TUILogin;
-import com.tencent.qcloud.tuicore.interfaces.TUICallback;
-import com.tencent.qcloud.tuikit.TUICommonDefine;
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine;
-import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,24 +40,26 @@ import io.flutter.plugin.common.MethodChannel.Result;
  * TUICallKitPlugin
  */
 public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler {
-    private static final String        TAG = "TUICallKitPlugin";
-    private              MethodChannel channel;
-    private              Context       mApplicationContext;
+    private static final String TAG = "TUICallKitPlugin";
+
+    private static MethodChannel      mChannel;
+    private        Context            mApplicationContext;
+    private        CallingBellService mCallingBellService;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "tuicall_kit");
-        channel.setMethodCallHandler(this);
+        mChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "tuicall_kit");
+        mChannel.setMethodCallHandler(this);
 
         mApplicationContext = flutterPluginBinding.getApplicationContext();
+        mCallingBellService = new CallingBellService();
     }
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         Logger.info(TAG, "onMethodCall -> method:" + call.method + ", arguments:" + call.arguments);
         try {
-            Method method = TUICallKitPlugin.class.getDeclaredMethod(call.method, MethodCall.class,
-                    MethodChannel.Result.class);
+            Method method = TUICallKitPlugin.class.getDeclaredMethod(call.method, MethodCall.class, MethodChannel.Result.class);
             method.invoke(this, call, result);
         } catch (NoSuchMethodException e) {
             Logger.error(TAG, "onMethodCall |method=" + call.method + "|arguments=" + call.arguments + "|error=" + e);
@@ -63,166 +73,153 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler {
         }
     }
 
-    public void login(MethodCall call, MethodChannel.Result result) {
-
-        int sdkAppId = MethodCallUtils.getMethodRequiredParams(call, "sdkAppId", result);
-        String userId = MethodCallUtils.getMethodRequiredParams(call, "userId", result);
-        String userSig = MethodCallUtils.getMethodRequiredParams(call, "userSig", result);
-
-        TUILogin.login(mApplicationContext, sdkAppId, userId, userSig,
-                new TUICallback() {
-                    @Override
-                    public void onSuccess() {
-                        result.success(0);
-                        setFramework(mApplicationContext);
-                    }
-
-                    @Override
-                    public void onError(int code, String message) {
-                        Logger.error(TAG, "TUILogin Error:" + message);
-                        result.error("" + code, message, "");
-                    }
-                });
-
+    public void startForegroundService(MethodCall call, MethodChannel.Result result) {
+        ForegroundService.start(mApplicationContext);
+        result.success(0);
     }
 
-    public void logout(MethodCall call, MethodChannel.Result result) {
-        TUILogin.logout(new TUICallback() {
-            @Override
-            public void onSuccess() {
-                result.success(0);
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                result.error("" + code, message, "");
-            }
-        });
-
+    public void stopForegroundService(MethodCall call, MethodChannel.Result result) {
+        ForegroundService.stop(mApplicationContext);
+        result.success(0);
     }
 
-    public void setSelfInfo(MethodCall call, MethodChannel.Result result) {
-
-        String nickname = MethodCallUtils.getMethodRequiredParams(call, "nickname", result);
-        String avatar = MethodCallUtils.getMethodRequiredParams(call, "avatar", result);
-
-        TUICallKit.createInstance(mApplicationContext).setSelfInfo(nickname, avatar, new TUICommonDefine.Callback() {
-            @Override
-            public void onSuccess() {
-                result.success(0);
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                Logger.error(TAG, "setSelfInfo Error:" + message);
-                result.error("" + code, message, "");
-            }
-        });
+    public void startRing(MethodCall call, MethodChannel.Result result) {
+        String filePath = MethodCallUtils.getMethodRequiredParams(call, "filePath", result);
+        mCallingBellService.startRing(filePath);
+        result.success(0);
     }
 
-    public void call(MethodCall call, MethodChannel.Result result) {
-        String userId = MethodCallUtils.getMethodRequiredParams(call, "userId", result);
-        int mediaTypeIndex = MethodCallUtils.getMethodRequiredParams(call, "callMediaType", result);
-        Map paramsMap = MethodCallUtils.getMethodParams(call, "params");
-
-        TUICallDefine.MediaType mediaType = EnumUtils.getMediaType(mediaTypeIndex);
-        TUICallDefine.CallParams params = ObjectUtils.getTUICallParamsByMap(paramsMap);
-
-        TUICallKit.createInstance(mApplicationContext).call(userId, mediaType, params, new TUICommonDefine.Callback() {
-            @Override
-            public void onSuccess() {
-                result.success(0);
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                Logger.error(TAG, "call Error:" + message);
-                result.error("" + code, message, "");
-            }
-        });
-
+    public void stopRing(MethodCall call, MethodChannel.Result result) {
+        mCallingBellService.stopRing();
+        result.success(0);
     }
 
-    public void groupCall(MethodCall call, MethodChannel.Result result) {
-        String groupId = MethodCallUtils.getMethodRequiredParams(call, "groupId", result);
-        List userIdList = MethodCallUtils.getMethodRequiredParams(call, "userIdList", result);
-        int mediaTypeIndex = MethodCallUtils.getMethodRequiredParams(call, "callMediaType", result);
-        Map paramsMap = MethodCallUtils.getMethodParams(call, "params");
-
-        TUICallDefine.MediaType mediaType = EnumUtils.getMediaType(mediaTypeIndex);
-        TUICallDefine.CallParams params = ObjectUtils.getTUICallParamsByMap(paramsMap);
-
-        TUICallKit.createInstance(mApplicationContext).groupCall(groupId, userIdList, mediaType, params,
-                new TUICommonDefine.Callback() {
-                    @Override
-                    public void onSuccess() {
-                        result.success(0);
-                    }
-
-                    @Override
-                    public void onError(int code, String message) {
-                        Logger.error(TAG, "groupCall Error:" + message);
-                        result.error("" + code, message, "");
-                    }
-                });
-    }
-
-
-    public void joinInGroupCall(MethodCall call, MethodChannel.Result result) {
-        TUICommonDefine.RoomId roomId = new TUICommonDefine.RoomId();
-        Map roomIdMap = MethodCallUtils.getMethodRequiredParams(call, "roomId", result);
-        if (roomIdMap != null && roomIdMap.containsKey("intRoomId")) {
-            roomId.intRoomId = (int) roomIdMap.get("intRoomId");
+    public void updateCallStateToNative(MethodCall call, Result result) {
+        boolean needRefreshView = false;
+        Map selfUserMap = MethodCallUtils.getMethodParams(call, "selfUser");
+        User selfUser = KitObjectUtils.getUserByMap(selfUserMap);
+        if (!TUICallState.getInstance().mSelfUser.isSameUser(selfUser)) {
+            if (selfUser.callStatus != TUICallState.getInstance().mSelfUser.callStatus) {
+                needRefreshView = true;
+            }
+            TUICallState.getInstance().mSelfUser = selfUser;
         }
 
-        String groupId = MethodCallUtils.getMethodRequiredParams(call, "groupId", result);
+        Map remoteUserMap = MethodCallUtils.getMethodParams(call, "remoteUser");
+        User remoteUser = KitObjectUtils.getUserByMap(remoteUserMap);
+        if (!TUICallState.getInstance().mRemoteUser.isSameUser(remoteUser)) {
+            if (remoteUser.videoAvailable != TUICallState.getInstance().mRemoteUser.videoAvailable) {
+                needRefreshView = true;
+            }
+            TUICallState.getInstance().mRemoteUser = remoteUser;
+        }
 
-        int mediaTypeIndex = MethodCallUtils.getMethodRequiredParams(call, "callMediaType", result);
-        TUICallDefine.MediaType mediaType = EnumUtils.getMediaType(mediaTypeIndex);
+        int sceneIndex = MethodCallUtils.getMethodParams(call, "scene");
+        TUICallState.getInstance().mScene = KitEnumUtils.getSceneType(sceneIndex);
 
-        TUICallKit.createInstance(mApplicationContext).joinInGroupCall(roomId, groupId, mediaType);
+        int mediaTypeIndex = MethodCallUtils.getMethodParams(call, "mediaType");
+        if (TUICallState.getInstance().mMediaType != EnumUtils.getMediaType(mediaTypeIndex)) {
+            needRefreshView = true;
+            TUICallState.getInstance().mMediaType = EnumUtils.getMediaType(mediaTypeIndex);
+        }
+
+        TUICallState.getInstance().mStartTime = MethodCallUtils.getMethodParams(call, "startTime");
+
+        int cameraIndex = MethodCallUtils.getMethodParams(call, "camera");
+        TUICallState.getInstance().mCamera = EnumUtils.getCameraType(cameraIndex);
+
+        if (needRefreshView) {
+            TUICore.notifyEvent(KEY_TUISTATE_CHANGE, SUBKEY_REFRESH_VIEW, new HashMap<>());
+        }
+        Log.i(TAG, TUICallState.getInstance().toString());
         result.success(0);
     }
 
-
-    public void setCallingBell(MethodCall call, MethodChannel.Result result) {
-        String filePath = MethodCallUtils.getMethodRequiredParams(call, "filePath", result);
-        TUICallKit.createInstance(mApplicationContext).setCallingBell(filePath);
+    public void startFloatWindow(MethodCall call, MethodChannel.Result result) {
+        FloatWindowService.startFloatWindow(mApplicationContext);
         result.success(0);
     }
 
-
-    public void enableMuteMode(MethodCall call, MethodChannel.Result result) {
-        boolean enable = MethodCallUtils.getMethodRequiredParams(call, "enable", result);
-        TUICallKit.createInstance(mApplicationContext).enableMuteMode(enable);
+    public void stopFloatWindow(MethodCall call, MethodChannel.Result result) {
+        FloatWindowService.stopFloatWindow(mApplicationContext);
         result.success(0);
     }
 
-    public void enableFloatWindow(MethodCall call, MethodChannel.Result result) {
-        boolean enable = MethodCallUtils.getMethodRequiredParams(call, "enable", result);
-        TUICallKit.createInstance(mApplicationContext).enableFloatWindow(enable);
+    public void hasFloatPermission(MethodCall call, MethodChannel.Result result) {
+        if (KitPermissionUtils.hasPermission(mApplicationContext)) {
+            result.success(true);
+        } else {
+            result.success(false);
+        }
+        KitPermissionUtils.requestFloatPermission(mApplicationContext);
+    }
+
+    public void isAppInForeground(MethodCall call, MethodChannel.Result result) {
+        if (KitAppUtils.isAppInForeground(mApplicationContext)) {
+            result.success(true);
+        } else {
+            result.success(false);
+        }
+    }
+
+    public void moveAppToFront(MethodCall call, MethodChannel.Result result) {
+        String event = MethodCallUtils.getMethodParams(call, KitAppUtils.EVENT_KEY);
+        KitAppUtils.moveAppToForeground(mApplicationContext, event);
         result.success(0);
     }
 
+    public void initResources(MethodCall call, MethodChannel.Result result) {
+        Map resources = MethodCallUtils.getMethodParams(call, "resources");
+        TUICallState.getInstance().mResourceMap.clear();
+        TUICallState.getInstance().mResourceMap.putAll(resources);
+        result.success(0);
+    }
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        channel.setMethodCallHandler(null);
+        mChannel.setMethodCallHandler(null);
     }
 
-
-    private void setFramework(Context context) {
-        try {
-            JSONObject params = new JSONObject();
-            params.put("framework", 7);
-            params.put("component", 14);
-
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("api", "setFramework");
-            jsonObject.put("params", params);
-            TUICallEngine.createInstance(context).callExperimentalAPI(jsonObject.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public static void gotoCallingPage() {
+        mChannel.invokeMethod("gotoCallingPage", new HashMap());
     }
+
+    public static void handleCallReceived() {
+        mChannel.invokeMethod("handleCallReceived", new HashMap());
+    }
+
+    public static void enableFloatWindow(boolean enable) {
+        Map paramMap = new HashMap();
+        paramMap.put("enable", enable);
+        mChannel.invokeMethod("enableFloatWindow", paramMap);
+    }
+
+    public static void groupCall(String groupId, List<String> userIdList, TUICallDefine.MediaType mediaType) {
+        Map paramMap = new HashMap();
+        paramMap.put("groupId", groupId);
+        paramMap.put("userIdList", userIdList);
+        paramMap.put("mediaType", mediaType.ordinal());
+        mChannel.invokeMethod("groupCall", paramMap);
+    }
+
+    public static void call(String userId, TUICallDefine.MediaType mediaType) {
+        Map paramMap = new HashMap();
+        paramMap.put("userId", userId);
+        paramMap.put("mediaType", mediaType.ordinal());
+        mChannel.invokeMethod("call", paramMap);
+    }
+
+    public static void handleLoginSuccess() {
+        Map paramMap = new HashMap();
+        paramMap.put("userId", TUILogin.getUserId());
+        paramMap.put("sdkAppId", TUILogin.getSdkAppId());
+        paramMap.put("userSig", TUILogin.getUserSig());
+        mChannel.invokeMethod("handleLoginSuccess", paramMap);
+    }
+
+    public static void handleLogoutSuccess() {
+        Map paramMap = new HashMap();
+        mChannel.invokeMethod("handleLogoutSuccess", paramMap);
+    }
+
 }
