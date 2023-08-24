@@ -2,13 +2,18 @@ package com.tencent.qcloud.tuikit.tuicallkit.utils
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import android.text.TextUtils
 import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.permission.PermissionCallback
 import com.tencent.qcloud.tuicore.permission.PermissionRequester
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
+import com.tencent.qcloud.tuikit.tuicallengine.utils.BrandUtils
+import com.tencent.qcloud.tuikit.tuicallengine.utils.PermissionUtils
 import com.tencent.qcloud.tuikit.tuicallkit.R
 
 object PermissionRequest {
@@ -101,12 +106,48 @@ object PermissionRequest {
             .request()
     }
 
-    fun requestFloatPermission(context: Context?) {
-        if (PermissionRequester.newInstance(PermissionRequester.FLOAT_PERMISSION).has()) {
+    fun requestFloatPermission(context: Context) {
+        if (PermissionUtils.hasPermission(context)) {
             return
         }
-        //In TUICallKit,Please open both OverlayWindows and Background pop-ups permission.
-        PermissionRequester.newInstance(PermissionRequester.FLOAT_PERMISSION, PermissionRequester.BG_START_PERMISSION)
-            .request()
+        if (BrandUtils.isBrandVivo()) {
+            requestVivoFloatPermission(context)
+        } else {
+            startCommonSettings(context)
+        }
+    }
+
+    private fun startCommonSettings(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+            intent.data = Uri.parse("package:" + context.packageName)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(intent)
+        }
+    }
+
+    private fun requestVivoFloatPermission(context: Context) {
+        val vivoIntent = Intent()
+        val model = BrandUtils.getModel()
+        var isVivoY85 = false
+        if (!TextUtils.isEmpty(model)) {
+            isVivoY85 = model.contains("Y85") && !model.contains("Y85A")
+        }
+        if (!TextUtils.isEmpty(model) && (isVivoY85 || model.contains("vivo Y53L"))) {
+            vivoIntent.setClassName(
+                "com.vivo.permissionmanager",
+                "com.vivo.permissionmanager.activity.PurviewTabActivity"
+            )
+            vivoIntent.putExtra("tabId", "1")
+        } else {
+            vivoIntent.setClassName(
+                "com.vivo.permissionmanager",
+                "com.vivo.permissionmanager.activity.SoftPermissionDetailActivity"
+            )
+            vivoIntent.action = "secure.intent.action.softPermissionDetail"
+        }
+        vivoIntent.putExtra("packagename", context.packageName)
+        vivoIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(vivoIntent)
     }
 }
