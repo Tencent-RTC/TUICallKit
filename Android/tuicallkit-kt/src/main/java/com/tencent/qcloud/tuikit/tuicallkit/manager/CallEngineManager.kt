@@ -8,7 +8,7 @@ import com.tencent.imsdk.v2.V2TIMValueCallback
 import com.tencent.qcloud.tuicore.TUIConfig
 import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.TUILogin
-import com.tencent.qcloud.tuicore.interfaces.TUICallback
+import com.tencent.qcloud.tuicore.permission.PermissionCallback
 import com.tencent.qcloud.tuicore.util.SPUtils
 import com.tencent.qcloud.tuicore.util.ToastUtil
 import com.tencent.qcloud.tuikit.TUICommonDefine
@@ -23,8 +23,7 @@ import com.tencent.qcloud.tuikit.tuicallkit.data.OfflinePushInfoConfig
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
 import com.tencent.qcloud.tuikit.tuicallkit.extensions.CallingBellFeature
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
-import com.tencent.qcloud.tuikit.tuicallkit.utils.PermissionRequest.checkCallingPermission
-import java.util.*
+import com.tencent.qcloud.tuikit.tuicallkit.utils.PermissionRequest.requestPermissions
 
 class CallEngineManager private constructor(context: Context) {
 
@@ -56,11 +55,9 @@ class CallEngineManager private constructor(context: Context) {
         TUICallState.instance.selfUser.get().avatar.set(TUILogin.getFaceUrl())
         TUICallState.instance.selfUser.get().nickname.set(TUILogin.getNickName())
         TUICallState.instance.selfUser.get().id = TUILogin.getLoginUser()
-        checkCallingPermission(callMediaType!!, object : TUICallback() {
-            override fun onSuccess() {
-                val roomId = TUICommonDefine.RoomId()
-                roomId.intRoomId = generateRoomId()
-                TUICallEngine.createInstance(context).call(roomId, userId, callMediaType, params,
+        requestPermissions(context, callMediaType!!, object : PermissionCallback() {
+            override fun onGranted() {
+                TUICallEngine.createInstance(context).call(userId, callMediaType, params,
                     object : TUICommonDefine.Callback {
                         override fun onSuccess() {
                             val user = User()
@@ -86,8 +83,8 @@ class CallEngineManager private constructor(context: Context) {
                     })
             }
 
-            override fun onError(errorCode: Int, errorMessage: String) {
-                callback?.onError(errorCode, errorMessage)
+            override fun onDenied() {
+                callback?.onError(1, "request Permissions failed")
             }
         })
     }
@@ -120,11 +117,9 @@ class CallEngineManager private constructor(context: Context) {
         TUICallState.instance.selfUser.get().avatar.set(TUILogin.getFaceUrl())
         TUICallState.instance.selfUser.get().nickname.set(TUILogin.getNickName())
         TUICallState.instance.selfUser.get().id = TUILogin.getLoginUser()
-        checkCallingPermission(callMediaType, object : TUICallback() {
-            override fun onSuccess() {
-                val roomId = TUICommonDefine.RoomId()
-                roomId.intRoomId = generateRoomId()
-                TUICallEngine.createInstance(context).groupCall(roomId, groupId, userIdList, callMediaType,
+        requestPermissions(context, callMediaType, object : PermissionCallback() {
+            override fun onGranted() {
+                TUICallEngine.createInstance(context).groupCall(groupId, userIdList, callMediaType,
                     params, object : TUICommonDefine.Callback {
                         override fun onSuccess() {
                             for (userId in userIdList) {
@@ -140,7 +135,6 @@ class CallEngineManager private constructor(context: Context) {
                             TUICallState.instance.mediaType.set(callMediaType)
                             TUICallState.instance.scene.set(TUICallDefine.Scene.GROUP_CALL)
                             TUICallState.instance.groupId.set(groupId)
-                            TUICallState.instance.roomId.set(roomId)
 
                             TUICallState.instance.selfUser.get().callRole.set(TUICallDefine.Role.Caller)
                             TUICallState.instance.selfUser.get().callStatus.set(TUICallDefine.Status.Waiting)
@@ -158,15 +152,16 @@ class CallEngineManager private constructor(context: Context) {
                     })
             }
 
-            override fun onError(errorCode: Int, errorMessage: String) {
-                callback?.onError(errorCode, errorMessage)
+            override fun onDenied() {
+                callback?.onError(1, "request Permissions failed")
             }
         })
     }
 
     fun joinInGroupCall(roomId: TUICommonDefine.RoomId?, groupId: String?, mediaType: TUICallDefine.MediaType?) {
         val intRoomId = roomId?.intRoomId ?: 0
-        if (intRoomId <= 0 || intRoomId >= Constants.ROOM_ID_MAX) {
+        val strRoomId = roomId?.strRoomId ?: ""
+        if (intRoomId <= 0 && TextUtils.isEmpty(strRoomId)) {
             TUILog.e(TAG, "joinInGroupCall failed, roomId is invalid")
             return
         }
@@ -181,8 +176,8 @@ class CallEngineManager private constructor(context: Context) {
         TUICallState.instance.selfUser.get().avatar.set(TUILogin.getFaceUrl())
         TUICallState.instance.selfUser.get().nickname.set(TUILogin.getNickName())
         TUICallState.instance.selfUser.get().id = TUILogin.getLoginUser()
-        checkCallingPermission(mediaType!!, object : TUICallback() {
-            override fun onSuccess() {
+        requestPermissions(context, mediaType!!, object : PermissionCallback() {
+            override fun onGranted() {
                 TUICallEngine.createInstance(context).joinInGroupCall(roomId, groupId, mediaType,
                     object : TUICommonDefine.Callback {
                         override fun onSuccess() {
@@ -210,8 +205,8 @@ class CallEngineManager private constructor(context: Context) {
                     })
             }
 
-            override fun onError(errorCode: Int, errorMessage: String) {
-                TUILog.e(TAG, "checkCallingPermission failed, errorCode:${errorCode},message:${errorMessage}")
+            override fun onDenied() {
+                TUILog.e(TAG, "requestPermissions failed")
             }
         })
     }
@@ -260,6 +255,11 @@ class CallEngineManager private constructor(context: Context) {
 
     fun switchCallMediaType(callMediaType: TUICallDefine.MediaType?) {
         TUICallEngine.createInstance(context).switchCallMediaType(callMediaType)
+        if (callMediaType == TUICallDefine.MediaType.Audio) {
+            selectAudioPlaybackDevice(TUICommonDefine.AudioPlaybackDevice.Earpiece)
+        } else {
+            selectAudioPlaybackDevice(TUICommonDefine.AudioPlaybackDevice.Speakerphone)
+        }
     }
 
     fun openCamera(camera: TUICommonDefine.Camera?, videoView: TUIVideoView?, callback: TUICommonDefine.Callback?) {
@@ -293,13 +293,26 @@ class CallEngineManager private constructor(context: Context) {
     }
 
     fun openMicrophone(callback: TUICommonDefine.Callback?) {
-        TUICallEngine.createInstance(context).openMicrophone(callback)
-        TUICallState.instance.isMicrophoneMute.set(false)
+        TUICallEngine.createInstance(context).openMicrophone(object : TUICommonDefine.Callback {
+            override fun onSuccess() {
+                val status: TUICallDefine.Status = TUICallState.instance.selfUser.get().callStatus.get()
+                if (TUICallDefine.Status.None != status) {
+                    TUICallState.instance.isMicrophoneMute.set(false)
+                    TUICallState.instance.selfUser.get().audioAvailable.set(true)
+                }
+                callback?.onSuccess()
+            }
+
+            override fun onError(errCode: Int, errMsg: String) {
+                callback?.onError(errCode, errMsg)
+            }
+        })
     }
 
     fun closeMicrophone() {
         TUICallEngine.createInstance(context).closeMicrophone()
         TUICallState.instance.isMicrophoneMute.set(true)
+        TUICallState.instance.selfUser.get().audioAvailable.set(false)
     }
 
     fun selectAudioPlaybackDevice(device: TUICommonDefine.AudioPlaybackDevice?) {
@@ -322,10 +335,6 @@ class CallEngineManager private constructor(context: Context) {
     fun enableMuteMode(enable: Boolean) {
         TUICallState.instance.enableMuteMode = enable
         SPUtils.getInstance(CallingBellFeature.PROFILE_TUICALLKIT).put(CallingBellFeature.PROFILE_MUTE_MODE, enable)
-    }
-
-    private fun generateRoomId(): Int {
-        return Random().nextInt(Constants.ROOM_ID_MAX - Constants.ROOM_ID_MIN + 1) + Constants.ROOM_ID_MIN
     }
 
     private fun updateUserInfo(model: User) {

@@ -120,29 +120,22 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
     }
 
     private fun refreshView() {
+        ImageLoader.loadImage(
+            context.applicationContext,
+            imageAvatar,
+            viewModel?.user?.avatar?.get(),
+            R.drawable.tuicallkit_ic_avatar
+        )
+        textUserName?.text = if (TextUtils.isEmpty(viewModel?.user?.nickname?.get())) {
+            viewModel?.user?.id
+        } else {
+            viewModel?.user?.nickname?.get()
+        }
         if (TUICallDefine.Scene.GROUP_CALL == viewModel?.scene?.get()
             && TUICallDefine.Status.Waiting == viewModel?.user?.callStatus?.get()
         ) {
-            if (viewModel?.user?.id.equals(TUILogin.getLoginUser())) {
-                ImageLoader.loadImage(
-                    context.applicationContext,
-                    imageAvatar,
-                    viewModel?.user?.avatar?.get(),
-                    R.drawable.tuicallkit_ic_avatar
-                )
-            } else {
+            if (!viewModel?.user?.id.equals(TUILogin.getLoginUser())) {
                 imageLoading?.visibility = VISIBLE
-                ImageLoader.loadImage(
-                    context.applicationContext,
-                    imageAvatar,
-                    viewModel?.user?.avatar?.get(),
-                    R.drawable.tuicallkit_ic_avatar
-                )
-                textUserName?.text = if (TextUtils.isEmpty(viewModel?.user?.nickname?.get())) {
-                    viewModel?.user?.id
-                } else {
-                    viewModel?.user?.nickname?.get()
-                }
             }
         } else if (TUICallDefine.Status.Accept == viewModel?.user?.callStatus?.get()) {
             if (viewModel?.user?.videoAvailable?.get() == true) {

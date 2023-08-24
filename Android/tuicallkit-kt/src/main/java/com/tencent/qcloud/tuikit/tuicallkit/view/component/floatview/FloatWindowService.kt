@@ -12,8 +12,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import com.tencent.qcloud.tuicore.ServiceInitializer
+import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallkit.view.CallKitActivity
 import com.tencent.qcloud.tuikit.tuicallkit.R
+import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.view.floatwindow.FloatingWindowView
 
 class FloatWindowService : Service() {
@@ -37,9 +39,11 @@ class FloatWindowService : Service() {
             this.callView = callView
             this.callView?.setOnClickListener {
                 stopService()
-                val intent = Intent(ServiceInitializer.getAppContext(), CallKitActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                ServiceInitializer.getAppContext().startActivity(intent)
+                if (TUICallState.instance.selfUser.get().callStatus.get() != TUICallDefine.Status.None) {
+                    val intent = Intent(ServiceInitializer.getAppContext(), CallKitActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    ServiceInitializer.getAppContext().startActivity(intent)
+                }
             }
             var serviceIntent = Intent(ServiceInitializer.getAppContext(), FloatWindowService::class.java)
             ServiceInitializer.getAppContext().startService(serviceIntent)

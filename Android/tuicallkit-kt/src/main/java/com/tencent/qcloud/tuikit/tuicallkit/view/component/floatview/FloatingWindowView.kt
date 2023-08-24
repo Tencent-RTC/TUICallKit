@@ -1,7 +1,6 @@
 package com.tencent.qcloud.tuikit.tuicallkit.view.floatwindow
 
 import android.content.Context
-import android.media.Image
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -16,13 +15,10 @@ import com.tencent.qcloud.tuikit.tuicallkit.manager.CallEngineManager
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallEvent
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.utils.ImageLoader
-import com.tencent.qcloud.tuikit.tuicallkit.view.root.BaseCallView
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout.VideoView
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout.VideoViewFactory
+import com.tencent.qcloud.tuikit.tuicallkit.view.root.BaseCallView
 import com.tencent.qcloud.tuikit.tuicallkit.viewmodel.component.floatview.FloatingWindowViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class FloatingWindowView(context: Context) : BaseCallView(context) {
 
@@ -42,22 +38,32 @@ class FloatingWindowView(context: Context) : BaseCallView(context) {
                 (TUICallEvent.Event.USER_REJECT) -> {
                     var userId = it.param?.get(TUICallEvent.EVENT_KEY_USER_ID) as String
                     showUserToast(userId, R.string.tuicalling_toast_user_reject_call)
+                    viewModel.stopFloatService()
                 }
+
                 (TUICallEvent.Event.USER_LEAVE) -> {
                     var userId = it.param?.get(TUICallEvent.EVENT_KEY_USER_ID) as String
                     showUserToast(userId, R.string.tuicalling_toast_user_end)
+                    viewModel.stopFloatService()
                 }
+
                 (TUICallEvent.Event.USER_LINE_BUSY) -> {
                     var userId = it.param?.get(TUICallEvent.EVENT_KEY_USER_ID) as String
                     showUserToast(userId, R.string.tuicalling_toast_user_busy)
+                    viewModel.stopFloatService()
                 }
+
                 (TUICallEvent.Event.USER_NO_RESPONSE) -> {
                     var userId = it.param?.get(TUICallEvent.EVENT_KEY_USER_ID) as String
                     showUserToast(userId, R.string.tuicalling_toast_user_not_response)
+                    viewModel.stopFloatService()
                 }
+
                 (TUICallEvent.Event.USER_EXCEED_LIMIT) -> {
                     ToastUtil.toastLongMessage(context.getString(R.string.tuicalling_user_exceed_limit))
+                    viewModel.stopFloatService()
                 }
+
                 else -> {}
             }
         } else if (TUICallEvent.EventType.ERROR == it.eventType && TUICallEvent.Event.ERROR_COMMON == it.event) {
@@ -106,7 +112,7 @@ class FloatingWindowView(context: Context) : BaseCallView(context) {
 
     private fun updateView(it: Any?) {
         if (it != null && it is Int) {
-            GlobalScope.launch(Dispatchers.Main) {
+            textCallStatus?.post {
                 textCallStatus?.text = context.getString(
                     R.string.tuicalling_called_time_format, it / 60,
                     it % 60
@@ -128,6 +134,8 @@ class FloatingWindowView(context: Context) : BaseCallView(context) {
                     TUICallState.instance.timeCount.get() % 60
                 )
             } else {
+                VideoViewFactory.instance.clear()
+                clear()
                 viewModel.stopFloatService()
             }
         } else if (viewModel.mediaType.get() == TUICallDefine.MediaType.Video) {
@@ -171,6 +179,8 @@ class FloatingWindowView(context: Context) : BaseCallView(context) {
                     )
                 }
             } else {
+                VideoViewFactory.instance.clear()
+                clear()
                 viewModel.stopFloatService()
             }
         }

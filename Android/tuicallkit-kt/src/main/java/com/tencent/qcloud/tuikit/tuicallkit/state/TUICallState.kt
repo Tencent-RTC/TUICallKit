@@ -123,8 +123,6 @@ class TUICallState {
             selfUser.get().avatar.set(TUILogin.getFaceUrl())
             selfUser.get().nickname.set(TUILogin.getNickName())
             selfUser.get().callRole.set(TUICallDefine.Role.Called)
-            selfUser.get().videoAvailable.set(true)
-            selfUser.get().audioAvailable.set(true)
             selfUser.get().callStatus.set(TUICallDefine.Status.Waiting)
             TUICore.notifyEvent(Constants.EVENT_TUICALLKIT_CHANGED, Constants.EVENT_START_ACTIVITY, HashMap())
         }
@@ -164,6 +162,11 @@ class TUICallState {
         ) {
             if (oldCallMediaType != newCallMediaType) {
                 mediaType.set(newCallMediaType)
+                if (newCallMediaType == TUICallDefine.MediaType.Audio) {
+                    CallEngineManager.instance.selectAudioPlaybackDevice(AudioPlaybackDevice.Earpiece)
+                } else {
+                    CallEngineManager.instance.selectAudioPlaybackDevice(AudioPlaybackDevice.Speakerphone)
+                }
             }
         }
 
@@ -247,6 +250,7 @@ class TUICallState {
     }
 
     fun clear() {
+        selfUser.get().callStatus.set(TUICallDefine.Status.None)
         selfUser.get().clear()
         selfUser.set(User())
         remoteUserList.set(LinkedHashSet())
@@ -281,7 +285,7 @@ class TUICallState {
     private fun startTimeCount() {
         timeHandlerThread = HandlerThread("time-count-thread")
         timeHandlerThread?.start()
-        timeHandler = Handler(timeHandlerThread?.looper)
+        timeHandler = Handler(timeHandlerThread!!.looper)
 
         if (timeRunnable != null) {
             return
@@ -290,14 +294,14 @@ class TUICallState {
         timeRunnable = Runnable {
             var count = timeCount.get() + 1
             timeCount.set(count)
-            timeHandler?.postDelayed(timeRunnable, 1000)
+            timeHandler?.postDelayed(timeRunnable!!, 1000)
         }
-        timeHandler?.post(timeRunnable)
+        timeHandler?.post(timeRunnable!!)
     }
 
     private fun stopTimeCount() {
         if (timeHandler != null) {
-            timeHandler?.removeCallbacks(timeRunnable)
+            timeHandler?.removeCallbacks(timeRunnable!!)
             timeHandler = null
         }
         timeRunnable = null
@@ -372,7 +376,7 @@ class TUICallState {
             }
 
             override fun onSuccess(list: List<V2TIMUserFullInfo>?) {
-                if (null == list || list.isEmpty() || null == list[0] || TextUtils.isEmpty(list[0]?.userID)) {
+                if (list.isNullOrEmpty() || null == list[0] || TextUtils.isEmpty(list[0]?.userID)) {
                     TUILog.e(TAG, "getUsersInfo onSuccess list = null")
                     return
                 }

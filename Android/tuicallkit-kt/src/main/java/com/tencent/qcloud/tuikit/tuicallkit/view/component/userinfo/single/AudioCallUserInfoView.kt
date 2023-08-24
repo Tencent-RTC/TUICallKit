@@ -56,9 +56,9 @@ class AudioCallUserInfoView(context: Context) : BaseCallView(context) {
         textUserName?.setTextColor(textColor)
 
         if (viewModel.callStatus.get() == TUICallDefine.Status.Accept) {
-            this.visibility = GONE
+            textWaitHint?.visibility = GONE
         } else {
-            this.visibility = VISIBLE
+            textWaitHint?.visibility = VISIBLE
         }
     }
 

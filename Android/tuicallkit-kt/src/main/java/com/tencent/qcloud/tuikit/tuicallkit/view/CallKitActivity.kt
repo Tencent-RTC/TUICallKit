@@ -22,6 +22,7 @@ import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallEvent.Companion.EVENT_K
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallEvent.Companion.EVENT_KEY_USER_ID
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.utils.DeviceUtils.setScreenLockParams
+import com.tencent.qcloud.tuikit.tuicallkit.view.component.floatview.FloatWindowService
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout.VideoViewFactory
 import com.tencent.qcloud.tuikit.tuicallkit.view.root.GroupCallView
 import com.tencent.qcloud.tuikit.tuicallkit.view.root.SingleCallView
@@ -168,6 +169,9 @@ class CallKitActivity : AppCompatActivity() {
 
         VideoViewFactory.instance.clear()
         removeObserver()
+        if (TUICallDefine.Status.None == TUICallState.instance.selfUser.get().callStatus.get()) {
+            FloatWindowService.stopService()
+        }
         finish()
     }
 

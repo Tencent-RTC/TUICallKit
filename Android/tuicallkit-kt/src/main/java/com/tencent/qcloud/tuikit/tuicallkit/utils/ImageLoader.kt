@@ -75,7 +75,7 @@ object ImageLoader {
                 if (result == null) {
                     result = Bitmap.createBitmap(source.width, source.height, Bitmap.Config.ARGB_8888)
                 }
-                val canvas = Canvas(result)
+                val canvas = Canvas(result!!)
                 val paint = Paint()
                 paint.shader = BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
                 paint.isAntiAlias = true
