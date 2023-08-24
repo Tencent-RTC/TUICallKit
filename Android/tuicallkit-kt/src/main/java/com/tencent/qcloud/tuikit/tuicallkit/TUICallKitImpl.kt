@@ -2,12 +2,14 @@ package com.tencent.qcloud.tuikit.tuicallkit
 
 import android.content.Context
 import android.content.Intent
+import android.text.TextUtils
 import com.tencent.liteav.beauty.TXBeautyManager
 import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.TUILogin
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification
-import com.tencent.qcloud.tuicore.interfaces.TUICallback
+import com.tencent.qcloud.tuicore.permission.PermissionCallback
+import com.tencent.qcloud.tuicore.permission.PermissionRequester
 import com.tencent.qcloud.tuicore.util.SPUtils
 import com.tencent.qcloud.tuicore.util.ToastUtil
 import com.tencent.qcloud.tuikit.TUICommonDefine
@@ -147,6 +149,34 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
         CallEngineManager.instance.enableFloatWindow(enable)
     }
 
+    fun queryOfflineCall() {
+        if (TUICallDefine.Status.Accept != TUICallState.instance.selfUser.get().callStatus.get()) {
+            val role: TUICallDefine.Role = TUICallState.instance.selfUser.get().callRole.get()
+            val mediaType: TUICallDefine.MediaType =  TUICallState.instance.mediaType.get()
+            if (TUICallDefine.Role.None == role || TUICallDefine.MediaType.Unknown == mediaType) {
+                return
+            }
+
+            //The received call has been processed in #onCallReceived
+            if (TUICallDefine.Role.Called == role && PermissionRequester.newInstance(PermissionRequester.BG_START_PERMISSION)
+                    .has()
+            ) {
+                return
+            }
+            PermissionRequest.requestPermissions(context, mediaType, object : PermissionCallback() {
+                override fun onGranted() {
+                    TUICore.notifyEvent(Constants.EVENT_TUICALLKIT_CHANGED, Constants.EVENT_START_ACTIVITY, HashMap())
+                }
+
+                override fun onDenied() {
+                    if (TUICallDefine.Role.Called == role) {
+                        TUICallEngine.createInstance(context).reject(null)
+                    }
+                }
+            })
+        }
+    }
+
     private fun registerCallingEvent() {
         TUICore.registerEvent(
             TUIConstants.TUILogin.EVENT_LOGIN_STATE_CHANGED,
@@ -186,16 +216,21 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
                 callingBellFeature = CallingBellFeature(context)
                 callingKeepAliveFeature = CallingKeepAliveFeature(context)
             } else if (Constants.EVENT_START_ACTIVITY == subKey) {
-                PermissionRequest.checkCallingPermission(TUICallState.instance.mediaType.get(), object : TUICallback() {
-                    override fun onSuccess() {
-                        initAudioPlayDevice()
-                        var intent = Intent(context, CallKitActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        context.startActivity(intent)
+                PermissionRequest.requestPermissions(context, TUICallState.instance.mediaType.get(), object :
+                    PermissionCallback() {
+                    override fun onGranted() {
+                        if (TUICallDefine.Status.None != TUICallState.instance.selfUser.get().callStatus.get()) {
+                            initAudioPlayDevice()
+                            var intent = Intent(context, CallKitActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            context.startActivity(intent)
+                        } else {
+                            TUICallState.instance.clear()
+                        }
                     }
 
-                    override fun onError(errorCode: Int, errorMessage: String) {
-
+                    override fun onDenied() {
+                        TUICallState.instance.clear()
                     }
                 })
             }

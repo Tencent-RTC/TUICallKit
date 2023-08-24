@@ -19,10 +19,12 @@ import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 class InviteUserButtonModel : ITUINotification {
     public var role: LiveData<TUICallDefine.Role>? = null
     public var mediaType = LiveData<TUICallDefine.MediaType>()
+    public var callStatus = LiveData<TUICallDefine.Status>()
 
     init {
         role = TUICallState.instance.selfUser.get().callRole
         mediaType = TUICallState.instance.mediaType
+        callStatus = TUICallState.instance.selfUser.get().callStatus
     }
 
     fun registerEvent() {

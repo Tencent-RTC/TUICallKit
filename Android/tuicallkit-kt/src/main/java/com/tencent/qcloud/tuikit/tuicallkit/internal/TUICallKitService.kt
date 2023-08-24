@@ -165,7 +165,7 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
         override fun onClicked(param: Map<String, Any>?) {
             if (!TextUtils.isEmpty(groupID)) {
                 var groupMemberSelectActivityName =
-                        TUIConstants.TUIContact.StartActivity.GroupMemberSelect.CLASSIC_ACTIVITY_NAME
+                    TUIConstants.TUIContact.StartActivity.GroupMemberSelect.CLASSIC_ACTIVITY_NAME
                 if (!isClassicUI) {
                     groupMemberSelectActivityName =
                         TUIConstants.TUIContact.StartActivity.GroupMemberSelect.MINIMALIST_ACTIVITY_NAME
@@ -179,7 +179,7 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
                 ) { result: ActivityResult ->
                     val data = result.data
                     if (data != null) {
-                        val stringList: List<String?> = data.getStringArrayListExtra(
+                        val stringList: ArrayList<String>? = data.getStringArrayListExtra(
                             TUIConstants.TUIContact.StartActivity.GroupMemberSelect.DATA_LIST
                         )
                         TUICallKit.createInstance(appContext).groupCall(groupID!!, stringList, mediaType!!)

@@ -6,16 +6,13 @@ import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.viewmodel.component.CallTimerViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class CallTimerView(context: Context) : AppCompatTextView(context) {
 
     private var viewmodel = CallTimerViewModel()
 
     private var timeCountObserver = Observer<Int> {
-        GlobalScope.launch(Dispatchers.Main) {
+        this.post {
             if (viewmodel.callStatus.get() == TUICallDefine.Status.Accept) {
                 if (it > 0) {
                     text = context.getString(R.string.tuicalling_called_time_format, it / 60, it % 60)
