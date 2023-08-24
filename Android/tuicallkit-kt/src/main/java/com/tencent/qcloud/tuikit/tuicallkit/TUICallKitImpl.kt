@@ -2,7 +2,6 @@ package com.tencent.qcloud.tuikit.tuicallkit
 
 import android.content.Context
 import android.content.Intent
-import android.text.TextUtils
 import com.tencent.liteav.beauty.TXBeautyManager
 import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUICore
@@ -157,12 +156,6 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
                 return
             }
 
-            //The received call has been processed in #onCallReceived
-            if (TUICallDefine.Role.Called == role && PermissionRequester.newInstance(PermissionRequester.BG_START_PERMISSION)
-                    .has()
-            ) {
-                return
-            }
             PermissionRequest.requestPermissions(context, mediaType, object : PermissionCallback() {
                 override fun onGranted() {
                     TUICore.notifyEvent(Constants.EVENT_TUICALLKIT_CHANGED, Constants.EVENT_START_ACTIVITY, HashMap())
