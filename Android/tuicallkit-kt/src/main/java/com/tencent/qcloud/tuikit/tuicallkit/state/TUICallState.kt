@@ -63,27 +63,27 @@ class TUICallState {
     }
 
     val mTUICallObserver: TUICallObserver = object : TUICallObserver() {
-        override fun onError(code: Int, msg: String) {
-            var param = HashMap<String, Any>()
+        override fun onError(code: Int, msg: String?) {
+            var param = HashMap<String, Any?>()
             param[EVENT_KEY_CODE] = code
             param[EVENT_KEY_MESSAGE] = msg
-            var TUICallEvent = TUICallEvent(TUICallEvent.EventType.ERROR, TUICallEvent.Event.ERROR_COMMON, param)
-            event.set(TUICallEvent)
+            var callEvent = TUICallEvent(TUICallEvent.EventType.ERROR, TUICallEvent.Event.ERROR_COMMON, param)
+            event.set(callEvent)
         }
 
         override fun onCallReceived(
-            callerId: String,
-            calleeIdList: List<String>,
-            group: String,
-            callMediaType: TUICallDefine.MediaType
+            callerId: String?,
+            calleeIdList: List<String?>?,
+            group: String?,
+            callMediaType: TUICallDefine.MediaType?
         ) {
-            if (TUICallDefine.MediaType.Unknown == callMediaType || calleeIdList == null || calleeIdList.isEmpty()) {
+            if (TUICallDefine.MediaType.Unknown == callMediaType || calleeIdList.isNullOrEmpty()) {
                 return
             }
 
             if (calleeIdList.size >= Constants.MAX_USER) {
-                var TUICallEvent = TUICallEvent(TUICallEvent.EventType.TIP, TUICallEvent.Event.USER_EXCEED_LIMIT, null)
-                event.set(TUICallEvent)
+                var callEvent = TUICallEvent(TUICallEvent.EventType.TIP, TUICallEvent.Event.USER_EXCEED_LIMIT, null)
+                event.set(callEvent)
                 return
             }
 
@@ -99,7 +99,7 @@ class TUICallState {
                 scene.set(TUICallDefine.Scene.SINGLE_CALL)
             }
 
-            if (callerId != null && callerId.isNotEmpty()) {
+            if (!callerId.isNullOrEmpty()) {
                 val user = User()
                 user.id = callerId
                 user.callRole.set(TUICallDefine.Role.Caller)
@@ -127,14 +127,14 @@ class TUICallState {
             TUICore.notifyEvent(Constants.EVENT_TUICALLKIT_CHANGED, Constants.EVENT_START_ACTIVITY, HashMap())
         }
 
-        override fun onCallCancelled(callerId: String) {
+        override fun onCallCancelled(callerId: String?) {
             resetCall()
         }
 
         override fun onCallBegin(
-            room: TUICommonDefine.RoomId,
-            callMediaType: TUICallDefine.MediaType,
-            callRole: TUICallDefine.Role
+            room: TUICommonDefine.RoomId?,
+            callMediaType: TUICallDefine.MediaType?,
+            callRole: TUICallDefine.Role?
         ) {
             roomId.set(room)
             selfUser.get().callStatus.set(TUICallDefine.Status.Accept)
@@ -147,9 +147,9 @@ class TUICallState {
         }
 
         override fun onCallEnd(
-            room: TUICommonDefine.RoomId,
-            callMediaType: TUICallDefine.MediaType,
-            callRole: TUICallDefine.Role,
+            room: TUICommonDefine.RoomId?,
+            callMediaType: TUICallDefine.MediaType?,
+            callRole: TUICallDefine.Role?,
             totalTime: Long
         ) {
             roomId.set(room)
@@ -157,8 +157,8 @@ class TUICallState {
         }
 
         override fun onCallMediaTypeChanged(
-            oldCallMediaType: TUICallDefine.MediaType,
-            newCallMediaType: TUICallDefine.MediaType
+            oldCallMediaType: TUICallDefine.MediaType?,
+            newCallMediaType: TUICallDefine.MediaType?
         ) {
             if (oldCallMediaType != newCallMediaType) {
                 mediaType.set(newCallMediaType)
@@ -170,58 +170,99 @@ class TUICallState {
             }
         }
 
-        override fun onUserReject(userId: String) {
-            var param = HashMap<String, Any>()
+        override fun onUserReject(userId: String?) {
+            if (userId.isNullOrEmpty()) {
+                return
+            }
+            var param = HashMap<String, Any?>()
             param[EVENT_KEY_USER_ID] = userId
-            var TUICallEvent = TUICallEvent(TUICallEvent.EventType.TIP, TUICallEvent.Event.USER_REJECT, param)
-            event.set(TUICallEvent)
+            var callEvent = TUICallEvent(TUICallEvent.EventType.TIP, TUICallEvent.Event.USER_REJECT, param)
+            event.set(callEvent)
             removeUserOnLeave(userId)
+            if (TUICallDefine.Scene.SINGLE_CALL == instance.scene.get()) {
+                instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
+            } else if (remoteUserList.get().isEmpty()) {
+                instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
+            }
         }
 
-        override fun onUserNoResponse(userId: String) {
-            var param = HashMap<String, Any>()
+        override fun onUserNoResponse(userId: String?) {
+            if (userId.isNullOrEmpty()) {
+                return
+            }
+            var param = HashMap<String, Any?>()
             param[EVENT_KEY_USER_ID] = userId
-            var TUICallEvent = TUICallEvent(TUICallEvent.EventType.TIP, TUICallEvent.Event.USER_NO_RESPONSE, param)
-            event.set(TUICallEvent)
+            var callEvent = TUICallEvent(TUICallEvent.EventType.TIP, TUICallEvent.Event.USER_NO_RESPONSE, param)
+            event.set(callEvent)
             removeUserOnLeave(userId)
+            if (TUICallDefine.Scene.SINGLE_CALL == instance.scene.get()) {
+                instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
+            } else if (remoteUserList.get().isEmpty()) {
+                instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
+            }
         }
 
-        override fun onUserLineBusy(userId: String) {
-            var param = HashMap<String, Any>()
+        override fun onUserLineBusy(userId: String?) {
+            if (userId.isNullOrEmpty()) {
+                return
+            }
+            var param = HashMap<String, Any?>()
             param[EVENT_KEY_USER_ID] = userId
-            var TUICallEvent = TUICallEvent(TUICallEvent.EventType.TIP, TUICallEvent.Event.USER_LINE_BUSY, param)
-            event.set(TUICallEvent)
+            var callEvent = TUICallEvent(TUICallEvent.EventType.TIP, TUICallEvent.Event.USER_LINE_BUSY, param)
+            event.set(callEvent)
             removeUserOnLeave(userId)
+            if (TUICallDefine.Scene.SINGLE_CALL == instance.scene.get()) {
+                instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
+            } else if (remoteUserList.get().isEmpty()) {
+                instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
+            }
         }
 
-        override fun onUserJoin(userId: String) {
+        override fun onUserJoin(userId: String?) {
+            if (userId.isNullOrEmpty()) {
+                return
+            }
             updateUserOnEnter(userId)
         }
 
-        override fun onUserLeave(userId: String) {
-            var param = HashMap<String, Any>()
+        override fun onUserLeave(userId: String?) {
+            if (userId.isNullOrEmpty()) {
+                return
+            }
+            var param = HashMap<String, Any?>()
             param[EVENT_KEY_USER_ID] = userId
-            var TUICallEvent = TUICallEvent(TUICallEvent.EventType.TIP, TUICallEvent.Event.USER_LEAVE, param)
-            event.set(TUICallEvent)
+            var callEvent = TUICallEvent(TUICallEvent.EventType.TIP, TUICallEvent.Event.USER_LEAVE, param)
+            event.set(callEvent)
             removeUserOnLeave(userId)
+            if (TUICallDefine.Scene.SINGLE_CALL == instance.scene.get()) {
+                instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
+            } else if (remoteUserList.get().isEmpty()) {
+                instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
+            }
         }
 
-        override fun onUserVideoAvailable(userId: String, isVideoAvailable: Boolean) {
+        override fun onUserVideoAvailable(userId: String?, isVideoAvailable: Boolean) {
+            if (userId.isNullOrEmpty()) {
+                return
+            }
             val user = findUser(userId)
             if (user != null && user.videoAvailable.get() != isVideoAvailable) {
                 user.videoAvailable.set(isVideoAvailable)
             }
         }
 
-        override fun onUserAudioAvailable(userId: String, isAudioAvailable: Boolean) {
+        override fun onUserAudioAvailable(userId: String?, isAudioAvailable: Boolean) {
+            if (userId.isNullOrEmpty()) {
+                return
+            }
             val user = findUser(userId)
             if (user != null && user.audioAvailable.get() != isAudioAvailable) {
                 user.audioAvailable.set(isAudioAvailable)
             }
         }
 
-        override fun onUserVoiceVolumeChanged(volumeMap: Map<String, Int>) {
-            if (TUICallDefine.Scene.SINGLE_CALL == scene.get()) {
+        override fun onUserVoiceVolumeChanged(volumeMap: Map<String?, Int?>?) {
+            if (TUICallDefine.Scene.SINGLE_CALL == scene.get() || volumeMap.isNullOrEmpty()) {
                 return
             }
             for (entry in volumeMap.entries) {
@@ -234,7 +275,7 @@ class TUICallState {
             }
         }
 
-        override fun onUserNetworkQualityChanged(networkQualityList: List<TUICommonDefine.NetworkQualityInfo>) {
+        override fun onUserNetworkQualityChanged(networkQualityList: List<TUICommonDefine.NetworkQualityInfo?>?) {
 
         }
 
@@ -360,26 +401,30 @@ class TUICallState {
     }
 
     private fun updateUserAvatarAndNickname(user: User) {
-        if (null == user || TextUtils.isEmpty(user.id)) {
-            TUILog.e(TAG, "loadUserInfo user.userId isEmpty")
+        if (TextUtils.isEmpty(user.id)) {
+            TUILog.e(TAG, "getUsersInfo -> user.userId isEmpty")
             return
         }
-        if (!TextUtils.isEmpty(user.nickname.get())) {
-            TUILog.e(TAG, "loadUserInfo user.userName = " + user.nickname)
+        if (!TextUtils.isEmpty(user.nickname.get()) && !TextUtils.isEmpty(user.avatar.get())) {
+            TUILog.i(TAG, "getUsersInfo -> user.userName = ${user.nickname}, avatar = ${user.avatar}")
             return
         }
-        val userList: MutableList<String> = java.util.ArrayList()
+        val userList: MutableList<String> = ArrayList()
         userList.add(user.id!!)
-        V2TIMManager.getInstance().getUsersInfo(userList, object : V2TIMValueCallback<List<V2TIMUserFullInfo>?> {
-            override fun onError(errorCode: Int, errorMsg: String) {
-                TUILog.e(TAG, "getUsersInfo onError errorCode = $errorCode , errorMsg = $errorMsg")
+        V2TIMManager.getInstance().getUsersInfo(userList, object : V2TIMValueCallback<List<V2TIMUserFullInfo?>?> {
+            override fun onError(errorCode: Int, errorMsg: String?) {
+                TUILog.e(TAG, "getUsersInfo -> userId:${user.id} onError errorCode = $errorCode , errorMsg = $errorMsg")
             }
 
-            override fun onSuccess(list: List<V2TIMUserFullInfo>?) {
+            override fun onSuccess(list: List<V2TIMUserFullInfo?>?) {
                 if (list.isNullOrEmpty() || null == list[0] || TextUtils.isEmpty(list[0]?.userID)) {
-                    TUILog.e(TAG, "getUsersInfo onSuccess list = null")
+                    TUILog.i(TAG, "getUsersInfo -> userId:${user.id} onSuccess list = null")
                     return
                 }
+                TUILog.i(
+                    TAG,
+                    "getUsersInfo -> userId:${user.id} onSuccess nickname:${list[0]?.nickName}, avatar:${list[0]?.faceUrl}"
+                )
                 user.nickname.set(list[0]?.nickName)
                 user.avatar.set(list[0]?.faceUrl)
             }

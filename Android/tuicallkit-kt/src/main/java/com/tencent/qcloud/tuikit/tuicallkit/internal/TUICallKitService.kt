@@ -41,7 +41,10 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
         TUICore.registerExtension(TUIConstants.TUIChat.Extension.ChatNavigationMoreItem.MINIMALIST_EXTENSION_ID, this)
     }
 
-    override fun onNotifyEvent(key: String, subKey: String, param: Map<String, Any>?) {
+    override fun onNotifyEvent(key: String?, subKey: String?, param: Map<String, Any>?) {
+        if (TextUtils.isEmpty(key) || TextUtils.isEmpty(subKey)) {
+            return
+        }
         if (TUIConstants.TUILogin.EVENT_IMSDK_INIT_STATE_CHANGED == key
             && TUIConstants.TUILogin.EVENT_SUB_KEY_START_INIT == subKey
         ) {
@@ -80,8 +83,7 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
         }
     }
 
-    override fun onGetExtension(extensionID: String, param: Map<String?, Any?>?): List<TUIExtensionInfo?>? {
-        Log.i(TAG, "onGetExtension, extensionID: $extensionID ,param: $param")
+    override fun onGetExtension(extensionID: String?, param: Map<String?, Any?>?): List<TUIExtensionInfo?>? {
         if (TextUtils.equals(extensionID, TUIConstants.TUIChat.Extension.InputMore.CLASSIC_EXTENSION_ID)) {
             return getClassicChatInputMoreExtension(param)
         } else if (TextUtils.equals(
@@ -325,8 +327,11 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
         return defaultValue
     }
 
-    override fun onCall(method: String, param: Map<String?, Any?>?): Any? {
+    override fun onCall(method: String?, param: Map<String?, Any?>?): Any? {
         Log.i(TAG, "onCall, method: $method ,param: $param")
+        if (TextUtils.isEmpty(method)) {
+            return null
+        }
         if (null != param && TextUtils.equals(TUIConstants.TUICalling.METHOD_NAME_ENABLE_FLOAT_WINDOW, method)) {
             val enableFloatWindow = param[TUIConstants.TUICalling.PARAM_NAME_ENABLE_FLOAT_WINDOW] as Boolean
             Log.i(TAG, "onCall, enableFloatWindow: $enableFloatWindow")
