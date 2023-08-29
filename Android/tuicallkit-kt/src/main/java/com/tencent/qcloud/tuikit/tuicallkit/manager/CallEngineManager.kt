@@ -64,7 +64,7 @@ class CallEngineManager private constructor(context: Context) {
                             user.id = userId
                             user.callRole.set(TUICallDefine.Role.Called)
                             user.callStatus.set(TUICallDefine.Status.Waiting)
-                            updateUserInfo(user)
+                            updateUserAvatarAndNickname(user)
                             TUICallState.instance.remoteUserList.get()?.add(user)
                             TUICallState.instance.mediaType.set(callMediaType)
                             TUICallState.instance.scene.set(TUICallDefine.Scene.SINGLE_CALL)
@@ -128,7 +128,7 @@ class CallEngineManager private constructor(context: Context) {
                                     model.id = userId
                                     model.callRole.set(TUICallDefine.Role.Called)
                                     model.callStatus.set(TUICallDefine.Status.Waiting)
-                                    updateUserInfo(model)
+                                    updateUserAvatarAndNickname(model)
                                     TUICallState.instance.remoteUserList.get().add(model)
                                 }
                             }
@@ -337,29 +337,33 @@ class CallEngineManager private constructor(context: Context) {
         SPUtils.getInstance(CallingBellFeature.PROFILE_TUICALLKIT).put(CallingBellFeature.PROFILE_MUTE_MODE, enable)
     }
 
-    private fun updateUserInfo(model: User) {
-        if (null == model || TextUtils.isEmpty(model.id)) {
-            TUILog.e(TAG, "loadUserInfo model.userId isEmpty")
+    private fun updateUserAvatarAndNickname(user: User) {
+        if (TextUtils.isEmpty(user.id)) {
+            TUILog.e(TAG, "getUsersInfo -> user.userId isEmpty")
             return
         }
-        if (!TextUtils.isEmpty(model.nickname.get())) {
-            TUILog.e(TAG, "loadUserInfo model.userName = " + model.nickname)
+        if (!TextUtils.isEmpty(user.nickname.get()) && !TextUtils.isEmpty(user.avatar.get())) {
+            TUILog.i(TAG, "getUsersInfo -> user.userName = ${user.nickname}, avatar = ${user.avatar}")
             return
         }
         val userList: MutableList<String> = ArrayList()
-        userList.add(model.id!!)
-        V2TIMManager.getInstance().getUsersInfo(userList, object : V2TIMValueCallback<List<V2TIMUserFullInfo>?> {
-            override fun onError(errorCode: Int, errorMsg: String) {
-                TUILog.e(TAG, "getUsersInfo onError errorCode = $errorCode , errorMsg = $errorMsg")
+        userList.add(user.id!!)
+        V2TIMManager.getInstance().getUsersInfo(userList, object : V2TIMValueCallback<List<V2TIMUserFullInfo?>?> {
+            override fun onError(errorCode: Int, errorMsg: String?) {
+                TUILog.e(TAG, "getUsersInfo -> userId:${user.id} onError errorCode = $errorCode , errorMsg = $errorMsg")
             }
 
-            override fun onSuccess(list: List<V2TIMUserFullInfo>?) {
-                if (null == list || list.isEmpty() || null == list[0] || TextUtils.isEmpty(list[0]!!.userID)) {
-                    TUILog.e(TAG, "getUsersInfo onSuccess list = null")
+            override fun onSuccess(list: List<V2TIMUserFullInfo?>?) {
+                if (list.isNullOrEmpty() || null == list[0] || TextUtils.isEmpty(list[0]?.userID)) {
+                    TUILog.i(TAG, "getUsersInfo -> userId:${user.id} onSuccess list = null")
                     return
                 }
-                model.nickname.set(list[0]?.nickName)
-                model.avatar.set(list[0]?.faceUrl)
+                TUILog.i(
+                    TAG,
+                    "getUsersInfo -> userId:${user.id} onSuccess nickname:${list[0]?.nickName}, avatar:${list[0]?.faceUrl}"
+                )
+                user.nickname.set(list[0]?.nickName)
+                user.avatar.set(list[0]?.faceUrl)
             }
         })
     }

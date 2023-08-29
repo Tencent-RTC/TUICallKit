@@ -21,6 +21,10 @@ class ServiceInitializer : ContentProvider() {
     fun init(context: Context?) {
         val callingService: TUICallKitService = TUICallKitService.sharedInstance(context!!)
         TUICore.registerService(TUIConstants.TUICalling.SERVICE_NAME, callingService)
+
+        val audioRecordService = TUIAudioMessageRecordService(context)
+        TUICore.registerService(TUIConstants.TUICalling.SERVICE_NAME_AUDIO_RECORD, audioRecordService)
+
         if (context is Application) {
             context.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
                 private var foregroundActivities = 0

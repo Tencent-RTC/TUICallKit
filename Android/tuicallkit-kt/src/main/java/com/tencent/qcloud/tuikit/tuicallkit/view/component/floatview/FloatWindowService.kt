@@ -67,16 +67,16 @@ class FloatWindowService : Service() {
         return FloatBinder()
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (null != callView) {
-            windowManager!!.removeView(callView)
-            callView = null
+        if (null != callView && callView!!.isAttachedToWindow) {
+            windowManager?.removeView(callView)
         }
+        callView = null
     }
 
     private fun initWindow() {
@@ -126,6 +126,7 @@ class FloatWindowService : Service() {
                     startX = event.rawX.toInt()
                     startY = event.rawY.toInt()
                 }
+
                 MotionEvent.ACTION_MOVE -> {
                     touchCurrentX = event.rawX.toInt()
                     touchCurrentY = event.rawY.toInt()
@@ -150,6 +151,7 @@ class FloatWindowService : Service() {
                         }
                     }
                 }
+
                 MotionEvent.ACTION_UP -> {
                     stopX = event.rawX.toInt()
                     stopY = event.rawY.toInt()
@@ -165,6 +167,7 @@ class FloatWindowService : Service() {
                         }
                     }
                 }
+
                 else -> {}
             }
             return isMove

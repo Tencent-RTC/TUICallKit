@@ -6,6 +6,11 @@
     android:clickable="false"
     tools:parentTag="android.widget.RelativeLayout">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FF55534F" />
+
     <com.tencent.qcloud.tuikit.TUIVideoView
         android:id="@+id/tx_cloud_view"
         android:layout_width="match_parent"

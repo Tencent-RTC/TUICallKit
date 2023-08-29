@@ -38,30 +38,25 @@ class FloatingWindowView(context: Context) : BaseCallView(context) {
                 (TUICallEvent.Event.USER_REJECT) -> {
                     var userId = it.param?.get(TUICallEvent.EVENT_KEY_USER_ID) as String
                     showUserToast(userId, R.string.tuicalling_toast_user_reject_call)
-                    viewModel.stopFloatService()
                 }
 
                 (TUICallEvent.Event.USER_LEAVE) -> {
                     var userId = it.param?.get(TUICallEvent.EVENT_KEY_USER_ID) as String
                     showUserToast(userId, R.string.tuicalling_toast_user_end)
-                    viewModel.stopFloatService()
                 }
 
                 (TUICallEvent.Event.USER_LINE_BUSY) -> {
                     var userId = it.param?.get(TUICallEvent.EVENT_KEY_USER_ID) as String
                     showUserToast(userId, R.string.tuicalling_toast_user_busy)
-                    viewModel.stopFloatService()
                 }
 
                 (TUICallEvent.Event.USER_NO_RESPONSE) -> {
                     var userId = it.param?.get(TUICallEvent.EVENT_KEY_USER_ID) as String
                     showUserToast(userId, R.string.tuicalling_toast_user_not_response)
-                    viewModel.stopFloatService()
                 }
 
                 (TUICallEvent.Event.USER_EXCEED_LIMIT) -> {
                     ToastUtil.toastLongMessage(context.getString(R.string.tuicalling_user_exceed_limit))
-                    viewModel.stopFloatService()
                 }
 
                 else -> {}

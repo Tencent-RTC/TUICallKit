@@ -5,9 +5,11 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.tencent.qcloud.tuicore.TUILogin
+import com.tencent.qcloud.tuicore.util.ScreenUtil
 import com.tencent.qcloud.tuikit.TUIVideoView
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
@@ -157,6 +159,19 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
         textUserName = findViewById(R.id.tv_name)
         imageAudioInput = findViewById(R.id.iv_audio_input)
         imageLoading = findViewById<View>(R.id.img_loading) as ImageView
+
+        var layoutParams: LayoutParams = imageAvatar?.layoutParams as LayoutParams
+        if (TUICallDefine.Scene.GROUP_CALL == viewModel?.scene?.get()) {
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            textUserName?.visibility = VISIBLE
+        } else {
+            layoutParams.addRule(CENTER_IN_PARENT)
+            layoutParams.width = ScreenUtil.dip2px(80.0f)
+            layoutParams.height = ScreenUtil.dip2px(80.0f)
+            textUserName?.visibility = GONE
+        }
+        imageAvatar?.layoutParams = layoutParams
 
         ImageLoader.loadGifImage(context.applicationContext, imageLoading, R.drawable.tuicallkit_loading)
         ImageLoader.loadImage(
