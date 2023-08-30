@@ -41,6 +41,7 @@ class TUICallState {
 
     public var enableMuteMode = false
     public var enableFloatWindow = false
+    public var reverse1v1CallRenderView = false
 
     private var timeHandler: Handler? = null
     private var timeHandlerThread: HandlerThread? = null
@@ -291,6 +292,7 @@ class TUICallState {
     }
 
     fun clear() {
+        reverse1v1CallRenderView = false
         selfUser.get().callStatus.set(TUICallDefine.Status.None)
         selfUser.get().clear()
         selfUser.set(User())
