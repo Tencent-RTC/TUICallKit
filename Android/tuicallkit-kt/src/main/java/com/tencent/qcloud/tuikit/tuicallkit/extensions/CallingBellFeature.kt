@@ -98,15 +98,18 @@ class CallingBellFeature(context: Context) {
                 mediaPlayer.stop()
             }
             mediaPlayer.reset()
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 val attrs = AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_MEDIA)
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                     .build()
                 mediaPlayer.setAudioAttributes(attrs)
-            } else {
-                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
             }
+            var mAudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
+            mAudioManager?.mode = AudioManager.MODE_NORMAL
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+
             try {
                 if (null != afd) {
                     mediaPlayer.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)

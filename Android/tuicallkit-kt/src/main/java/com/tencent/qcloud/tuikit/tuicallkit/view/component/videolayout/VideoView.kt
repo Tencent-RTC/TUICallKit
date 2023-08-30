@@ -122,6 +122,19 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
     }
 
     private fun refreshView() {
+        var layoutParams: LayoutParams = imageAvatar?.layoutParams as LayoutParams
+        if (TUICallDefine.Scene.GROUP_CALL == viewModel?.scene?.get()) {
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            layoutParams.removeRule(CENTER_IN_PARENT)
+            textUserName?.visibility = VISIBLE
+        } else {
+            layoutParams.addRule(CENTER_IN_PARENT)
+            layoutParams.width = ScreenUtil.dip2px(80.0f)
+            layoutParams.height = ScreenUtil.dip2px(80.0f)
+            textUserName?.visibility = GONE
+        }
+        imageAvatar?.layoutParams = layoutParams
         ImageLoader.loadImage(
             context.applicationContext,
             imageAvatar,
@@ -164,6 +177,7 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
         if (TUICallDefine.Scene.GROUP_CALL == viewModel?.scene?.get()) {
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
             layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            layoutParams.removeRule(CENTER_IN_PARENT)
             textUserName?.visibility = VISIBLE
         } else {
             layoutParams.addRule(CENTER_IN_PARENT)
