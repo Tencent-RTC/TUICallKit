@@ -103,6 +103,14 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
         addObserver()
     }
 
+    fun setImageAvatarVisibility(isShow: Boolean) {
+        if (isShow) {
+            imageAvatar?.visibility = VISIBLE
+        } else {
+            imageAvatar?.visibility = GONE
+        }
+    }
+
     private fun addObserver() {
         viewModel?.user?.videoAvailable?.observe(videoAvailableObserver)
         viewModel?.user?.audioAvailable?.observe(audioAvailableObserver)

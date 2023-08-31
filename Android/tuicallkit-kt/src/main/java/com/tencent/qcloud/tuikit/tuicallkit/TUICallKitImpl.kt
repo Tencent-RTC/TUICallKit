@@ -2,7 +2,6 @@ package com.tencent.qcloud.tuikit.tuicallkit
 
 import android.content.Context
 import android.content.Intent
-import android.text.TextUtils
 import com.tencent.liteav.beauty.TXBeautyManager
 import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUICore
@@ -11,7 +10,6 @@ import com.tencent.qcloud.tuicore.interfaces.ITUINotification
 import com.tencent.qcloud.tuicore.permission.PermissionCallback
 import com.tencent.qcloud.tuicore.permission.PermissionRequester
 import com.tencent.qcloud.tuicore.util.SPUtils
-import com.tencent.qcloud.tuicore.util.ToastUtil
 import com.tencent.qcloud.tuikit.TUICommonDefine
 import com.tencent.qcloud.tuikit.TUICommonDefine.Callback
 import com.tencent.qcloud.tuikit.TUICommonDefine.RoomId
@@ -86,7 +84,6 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
             }
 
             override fun onError(errCode: Int, errMsg: String?) {
-                ToastUtil.toastLongMessage(errMsg)
                 callback?.onError(errCode, errMsg)
             }
 
@@ -121,7 +118,6 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
             }
 
             override fun onError(errCode: Int, errMsg: String?) {
-                ToastUtil.toastLongMessage(errMsg)
                 callback?.onError(errCode, errMsg)
             }
 
