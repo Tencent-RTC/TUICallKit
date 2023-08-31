@@ -15,13 +15,11 @@ import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallObserver
 import com.tencent.qcloud.tuikit.tuicallengine.impl.base.LiveData
 import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
-import com.tencent.qcloud.tuikit.tuicallkit.manager.CallEngineManager
-import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallEvent.Companion.EVENT_KEY_CODE
-import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallEvent.Companion.EVENT_KEY_MESSAGE
-import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallEvent.Companion.EVENT_KEY_USER_ID
 import com.tencent.qcloud.tuikit.tuicallkit.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
 import com.tencent.qcloud.tuikit.tuicallkit.extensions.CallingBellFeature
+import com.tencent.qcloud.tuikit.tuicallkit.manager.CallEngineManager
+import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallEvent.Companion.EVENT_KEY_USER_ID
 
 class TUICallState {
     public var selfUser = LiveData<User>()
@@ -65,11 +63,6 @@ class TUICallState {
 
     val mTUICallObserver: TUICallObserver = object : TUICallObserver() {
         override fun onError(code: Int, msg: String?) {
-            var param = HashMap<String, Any?>()
-            param[EVENT_KEY_CODE] = code
-            param[EVENT_KEY_MESSAGE] = msg
-            var callEvent = TUICallEvent(TUICallEvent.EventType.ERROR, TUICallEvent.Event.ERROR_COMMON, param)
-            event.set(callEvent)
         }
 
         override fun onCallReceived(
@@ -137,8 +130,10 @@ class TUICallState {
             callMediaType: TUICallDefine.MediaType?,
             callRole: TUICallDefine.Role?
         ) {
+            CallEngineManager.instance.selectAudioPlaybackDevice(instance.audioPlayoutDevice.get())
             roomId.set(room)
             selfUser.get().callStatus.set(TUICallDefine.Status.Accept)
+            instance.reverse1v1CallRenderView = true
             if (isMicrophoneMute.get()) {
                 CallEngineManager.instance.closeMicrophone()
             } else {
@@ -164,7 +159,11 @@ class TUICallState {
             if (oldCallMediaType != newCallMediaType) {
                 mediaType.set(newCallMediaType)
                 if (newCallMediaType == TUICallDefine.MediaType.Audio) {
-                    CallEngineManager.instance.selectAudioPlaybackDevice(AudioPlaybackDevice.Earpiece)
+                    if (TUICallDefine.Status.Accept == instance.selfUser.get().callStatus.get()) {
+                        CallEngineManager.instance.selectAudioPlaybackDevice(AudioPlaybackDevice.Earpiece)
+                    } else {
+                        instance.audioPlayoutDevice.set(AudioPlaybackDevice.Earpiece)
+                    }
                 } else {
                     CallEngineManager.instance.selectAudioPlaybackDevice(AudioPlaybackDevice.Speakerphone)
                 }

@@ -15,6 +15,7 @@ import com.tencent.qcloud.tuikit.TUICommonDefine
 import com.tencent.qcloud.tuikit.TUIVideoView
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine.CallParams
+import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine.ERROR_PERMISSION_DENIED
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine
 import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
 import com.tencent.qcloud.tuikit.tuicallkit.R
@@ -84,7 +85,7 @@ class CallEngineManager private constructor(context: Context) {
             }
 
             override fun onDenied() {
-                callback?.onError(1, "request Permissions failed")
+                callback?.onError(ERROR_PERMISSION_DENIED, "request Permissions failed")
             }
         })
     }
@@ -141,19 +142,20 @@ class CallEngineManager private constructor(context: Context) {
                             callback?.onSuccess()
                         }
 
-                        override fun onError(errCode: Int, errMsg: String) {
+                        override fun onError(errCode: Int, errMsg: String?) {
                             var errMsg: String? = errMsg
                             if (errCode == TUICallDefine.ERROR_PACKAGE_NOT_SUPPORTED) {
                                 errMsg = context.getString(R.string.tuicalling_package_not_support)
+                                ToastUtil.toastLongMessage(errMsg)
                             }
-                            ToastUtil.toastLongMessage(errMsg)
+                            TUILog.e(TAG, "groupCall errCode:$errCode, errMsg:$errMsg")
                             callback?.onError(errCode, errMsg)
                         }
                     })
             }
 
             override fun onDenied() {
-                callback?.onError(1, "request Permissions failed")
+                callback?.onError(ERROR_PERMISSION_DENIED, "request Permissions failed")
             }
         })
     }
@@ -256,7 +258,11 @@ class CallEngineManager private constructor(context: Context) {
     fun switchCallMediaType(callMediaType: TUICallDefine.MediaType?) {
         TUICallEngine.createInstance(context).switchCallMediaType(callMediaType)
         if (callMediaType == TUICallDefine.MediaType.Audio) {
-            selectAudioPlaybackDevice(TUICommonDefine.AudioPlaybackDevice.Earpiece)
+            if (TUICallDefine.Status.Accept == TUICallState.instance.selfUser.get().callStatus.get()) {
+                instance.selectAudioPlaybackDevice(TUICommonDefine.AudioPlaybackDevice.Earpiece)
+            } else {
+                TUICallState.instance.audioPlayoutDevice.set(TUICommonDefine.AudioPlaybackDevice.Earpiece)
+            }
         } else {
             selectAudioPlaybackDevice(TUICommonDefine.AudioPlaybackDevice.Speakerphone)
         }

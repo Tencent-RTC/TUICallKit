@@ -24,6 +24,7 @@ class SingleCallVideoLayout(context: Context) : BaseCallView(context) {
     private var callStatusObserver = Observer<TUICallDefine.Status> {
         if (it == TUICallDefine.Status.Accept) {
             initSmallRenderView()
+            videoViewSmall?.setImageAvatarVisibility(false)
             switchRenderLayout()
         }
     }
