@@ -153,6 +153,12 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
                 return
             }
 
+            //The received call has been processed in #onCallReceived
+            if (TUICallDefine.Role.Called == role && PermissionRequester.newInstance(PermissionRequester.BG_START_PERMISSION)
+                    .has()
+            ) {
+                return
+            }
             PermissionRequest.requestPermissions(context, mediaType, object : PermissionCallback() {
                 override fun onGranted() {
                     TUICore.notifyEvent(Constants.EVENT_TUICALLKIT_CHANGED, Constants.EVENT_START_ACTIVITY, HashMap())
@@ -271,6 +277,6 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
         } else {
             TUICommonDefine.AudioPlaybackDevice.Speakerphone
         }
-        CallEngineManager.instance.selectAudioPlaybackDevice(device)
+        TUICallState.instance.audioPlayoutDevice.set(device)
     }
 }
