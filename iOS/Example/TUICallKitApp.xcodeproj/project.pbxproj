@@ -26,7 +26,6 @@
 		4F3F7CB026D65D38002912DE /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA526D65D38002912DE /* RegisterViewController.swift */; };
 		4F3F7CB226D65D38002912DE /* LayoutDefine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA726D65D38002912DE /* LayoutDefine.swift */; };
 		4F3F7CB526D65DE3002912DE /* GenerateTestUserSig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CB426D65DE3002912DE /* GenerateTestUserSig.swift */; };
-		4FD80F6A2A42FBA700A60BDD /* SettingDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD80F692A42FBA700A60BDD /* SettingDetailViewController.swift */; };
 		4FE7A785275E3A89009CCB09 /* phone_ringing.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4FE7A784275E3A89009CCB09 /* phone_ringing.mp3 */; };
 		B811E29B2A09E45100E74024 /* SingleCallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B811E29A2A09E45100E74024 /* SingleCallViewController.swift */; };
 		B811E29D2A09F6E600E74024 /* RadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B811E29C2A09F6E600E74024 /* RadioButton.swift */; };
@@ -36,6 +35,7 @@
 		B81C962F2A2DC68200E3CBC6 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81C962E2A2DC68200E3CBC6 /* MainViewController.swift */; };
 		B89ECFC72A0B830500D7F0EB /* SettingsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89ECFC62A0B830500D7F0EB /* SettingsConfig.swift */; };
 		B8D16ED72A1321F100937E40 /* DropMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8D16ED62A1321F100937E40 /* DropMenuView.swift */; };
+		B8D77D452A42E45200377391 /* SettingDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8D77D442A42E45200377391 /* SettingDetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,7 +61,6 @@
 		4F3F7CA526D65D38002912DE /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		4F3F7CA726D65D38002912DE /* LayoutDefine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutDefine.swift; sourceTree = "<group>"; };
 		4F3F7CB426D65DE3002912DE /* GenerateTestUserSig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateTestUserSig.swift; sourceTree = "<group>"; };
-		4FD80F692A42FBA700A60BDD /* SettingDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingDetailViewController.swift; sourceTree = "<group>"; };
 		4FE7A784275E3A89009CCB09 /* phone_ringing.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = phone_ringing.mp3; sourceTree = "<group>"; };
 		4FF707AB28A9EFBE0044B20E /* TUICallKitApp.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = TUICallKitApp.entitlements; sourceTree = "<group>"; };
 		704D44628D9621C9B6C42E48 /* Pods_TUICallKitApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TUICallKitApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +74,7 @@
 		B81C962E2A2DC68200E3CBC6 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		B89ECFC62A0B830500D7F0EB /* SettingsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsConfig.swift; sourceTree = "<group>"; };
 		B8D16ED62A1321F100937E40 /* DropMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropMenuView.swift; sourceTree = "<group>"; };
+		B8D77D442A42E45200377391 /* SettingDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingDetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -209,7 +209,7 @@
 				B811E29E2A0A318500E74024 /* SettingsViewController.swift */,
 				B89ECFC62A0B830500D7F0EB /* SettingsConfig.swift */,
 				B8D16ED62A1321F100937E40 /* DropMenuView.swift */,
-				4FD80F692A42FBA700A60BDD /* SettingDetailViewController.swift */,
+				B8D77D442A42E45200377391 /* SettingDetailViewController.swift */,
 			);
 			path = Setting;
 			sourceTree = "<group>";
@@ -381,7 +381,7 @@
 				4F3F7CA826D65D38002912DE /* RegisterRootView.swift in Sources */,
 				4F3F7CA926D65D38002912DE /* LoginRootView.swift in Sources */,
 				B811E2AB2A0A5C3200E74024 /* JoinGroupCallViewController.swift in Sources */,
-				4FD80F6A2A42FBA700A60BDD /* SettingDetailViewController.swift in Sources */,
+				B8D77D452A42E45200377391 /* SettingDetailViewController.swift in Sources */,
 				47D9D37226521A7A0007EE1F /* SceneDelegate.swift in Sources */,
 				B81C962F2A2DC68200E3CBC6 /* MainViewController.swift in Sources */,
 				B811E29B2A09E45100E74024 /* SingleCallViewController.swift in Sources */,
@@ -582,7 +582,7 @@
 				CODE_SIGN_ENTITLEMENTS = TUICallKitApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 620;
+				CURRENT_PROJECT_VERSION = 625;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = F8A3GH6Q4W;
 				ENABLE_BITCODE = NO;
@@ -655,7 +655,7 @@
 				CODE_SIGN_ENTITLEMENTS = TUICallKitApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 620;
+				CURRENT_PROJECT_VERSION = 625;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = F8A3GH6Q4W;
 				ENABLE_BITCODE = NO;
