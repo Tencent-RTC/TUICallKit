@@ -6,8 +6,10 @@ import android.text.TextUtils
 import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMUserFullInfo
 import com.tencent.imsdk.v2.V2TIMValueCallback
+import com.tencent.qcloud.tuicore.TUIConfig
 import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.TUILogin
+import com.tencent.qcloud.tuicore.permission.PermissionRequester
 import com.tencent.qcloud.tuicore.util.SPUtils
 import com.tencent.qcloud.tuikit.TUICommonDefine
 import com.tencent.qcloud.tuikit.TUICommonDefine.AudioPlaybackDevice
@@ -20,6 +22,7 @@ import com.tencent.qcloud.tuikit.tuicallkit.data.User
 import com.tencent.qcloud.tuikit.tuicallkit.extensions.CallingBellFeature
 import com.tencent.qcloud.tuikit.tuicallkit.manager.CallEngineManager
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallEvent.Companion.EVENT_KEY_USER_ID
+import com.tencent.qcloud.tuikit.tuicallkit.utils.DeviceUtils
 
 class TUICallState {
     public var selfUser = LiveData<User>()
@@ -118,6 +121,14 @@ class TUICallState {
             selfUser.get().nickname.set(TUILogin.getNickName())
             selfUser.get().callRole.set(TUICallDefine.Role.Called)
             selfUser.get().callStatus.set(TUICallDefine.Status.Waiting)
+
+            val hasBgPermission = PermissionRequester.newInstance(PermissionRequester.BG_START_PERMISSION).has()
+            val isAppInBackground: Boolean = !DeviceUtils.isAppRunningForeground(TUIConfig.getAppContext())
+
+            if (isAppInBackground && !hasBgPermission) {
+                TUILog.w(TAG, "App is in background")
+                return
+            }
             TUICore.notifyEvent(Constants.EVENT_TUICALLKIT_CHANGED, Constants.EVENT_START_ACTIVITY, HashMap())
         }
 
