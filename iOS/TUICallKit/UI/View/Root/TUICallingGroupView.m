@@ -91,12 +91,11 @@
         [self.userList insertObject:userModel atIndex:index];
         [self.groupCollectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0]]];
         [self.delegateManager reloadCallingGroupWithModel:self.userList];
+        [self handleLocalRenderView];
         if (succ) {
             succ();
         }
-    } completion:^(BOOL finished) {
-        [self handleLocalRenderView];
-    }];
+    } completion:nil];
 }
 
 - (void)userEnter:(CallingUserModel *)userModel {
@@ -142,9 +141,8 @@
         [self.groupCollectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0]]];
         [self.userList removeObjectAtIndex:index];
         [self.delegateManager reloadCallingGroupWithModel:self.userList];
-    } completion:^(BOOL finished) {
         [self handleLocalRenderView];
-    }];
+    } completion:nil];
 }
 
 - (void)updateUserInfo:(CallingUserModel *)userModel {
@@ -170,6 +168,9 @@
 #pragma mark - Action Event
 
 - (void)startRemoteView:(NSString *)userId view:(UIView *)view {
+    if (self.callType != TUICallMediaTypeVideo) {
+        return;
+    }
     [TUICallingAction startRemoteView:userId videoView:view onPlaying:nil onLoading:nil onError:nil];
 }
 
