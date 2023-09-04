@@ -1,6 +1,6 @@
 {
-    "name" : "TUICallKit-Vue2",
-    "appid" : "__UNI__C42E036",
+    "name" : "hBuilderX-demo",
+    "appid" : "__UNI__C7556F7",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -50,11 +50,9 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wxc297db62adbdb10c",
         "setting" : {
-            "urlCheck" : false,
-            "es6" : true,
-            "minified" : true
+            "urlCheck" : false
         },
         "usingComponents" : true
     },
