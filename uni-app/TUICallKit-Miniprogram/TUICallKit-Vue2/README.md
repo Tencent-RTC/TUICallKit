@@ -19,7 +19,7 @@
    ```
 2. 进入 demo 目录
    ```
-   cd ./TUICallKit/uni-app/TUICallKit-Miniprogram/TUICallKit-Vue3
+   cd ./TUICallKit/uni-app/TUICallKit-Miniprogram/TUICallKit-Vue2
    ```
 3. 安装依赖
    ```
@@ -40,7 +40,7 @@
    
    <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/hbuilder-vue.png" width="400" align="middle" />
 
-5. 修改 `./TUICallKit/uni-app/TUICallKit-Miniprogram/TUICallKit-Vue3/TUICallKit/debug/GenerateTestUserSig-es.js` 文件 的 SDKAPPID 以及 SECRETKEY（阅读文末 [开通服务](#开通服务)）
+5. 修改 `./TUICallKit/uni-app/TUICallKit-Miniprogram/TUICallKit-Vue2/TUICallKit/debug/GenerateTestUserSig-es.js` 文件 的 SDKAPPID 以及 SECRETKEY（阅读文末 [开通服务](#开通服务)）
    
    <img src="https://qcloudimg.tencent-cloud.cn/raw/49931d68084b2d79f0f69f278894999b.png" width="400" />
 
