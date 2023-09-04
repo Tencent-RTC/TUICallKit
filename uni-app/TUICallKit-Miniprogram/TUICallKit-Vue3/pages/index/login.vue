@@ -9,7 +9,7 @@
 			<view class="box">
 				<view class="list-item">
 					<label class="list-item-label">用户ID</label>
-					<input class="input-box" type="text" v-model="userId" placeholder="请输入用户ID"
+					<input class="input-box" type="text" v-model="userID" placeholder="请输入用户ID"
 						placeholder-style="color:#BBBBBB;" />
 				</view>
 				<view class="login"><button class="loginBtn" @click="loginHandler">登录</button></view>
@@ -19,19 +19,16 @@
 </template>
 
 <script setup>
-import { genTestUserSig } from '../../debug/GenerateTestUserSig.js';
-let userId = '';
+import { ref } from "vue";
+import * as GenerateTestUserSig from "../../TUICallKit/debug/GenerateTestUserSig-es.js";
+let userID = ref("");
 const loginHandler = () => {
-	const userID = userId;
-	const userSig = genTestUserSig(userID).userSig;
-
-	uni.$TUIKit.login({
-		userID: userID,
-		userSig: userSig
+	const { userSig, SDKAppID } = GenerateTestUserSig.genTestUserSig({
+	    userID: userID.value,
 	});
-	getApp().globalData.userID = userID;
+	getApp().globalData.userID = userID.value;
 	getApp().globalData.userSig = userSig;
-	getApp().globalData.SDKAppID = genTestUserSig('').sdkAppID
+	getApp().globalData.SDKAppID = SDKAppID
 	uni.navigateTo({
 		url: './index'
 	});

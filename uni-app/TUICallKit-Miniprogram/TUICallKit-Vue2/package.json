@@ -1,18 +1,22 @@
 {
-	"name": "mp-weixin",
-	"version": "1.0.0",
-	"description": "",
-	"main": "app.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"dependencies": {
-		"@tencentcloud/call-uikit-wechat": "^1.3.3"
-	},
-	"devDependencies": {
-		"copy-webpack-plugin": "5.0.0"
-	}
+  "name": "TUICallKit-Vue2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tencentcloud/call-uikit-wechat": "^3.0.4",
+    "@tencentcloud/tui-core": "^0.0.3",
+    "@vue/composition-api": "^1.7.2",
+    "tuicall-engine-wx": "^2.0.1",
+    "unplugin-vue2-script-setup": "^0.11.4"
+  },
+  "devDependencies": {
+    "unplugin-vue-components": "^0.25.1"
+  }
 }

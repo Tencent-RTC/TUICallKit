@@ -15,19 +15,13 @@
 		{
 			"path": "pages/calling/call",
 			"style": {
-				"navigationBarTitleText": "uni-app",
-				"usingComponents": {
-					"tuicallkit": "/wxcomponents/TUICallKit/TUICallKit/TUICallKit"
-				}
+				"navigationBarTitleText": "uni-app"
 			}
 		},
 		{
 			"path": "pages/calling/groupCall",
 			"style": {
-				"navigationBarTitleText": "uni-app",
-				"usingComponents": {
-					"tuicallkit": "/wxcomponents/TUICallKit/TUICallKit/TUICallKit"
-				}
+				"navigationBarTitleText": "uni-app"
 			}
 		}
 	],

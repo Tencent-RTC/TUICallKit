@@ -4,8 +4,8 @@
 
 ## 环境准备
 
-- 微信 App iOS 最低版本要求：7.0.9
-- 微信 App Android 最低版本要求：7.0.8
+- 微信 App iOS 最低版本要求：8.0.40
+- 微信 App Android 最低版本要求：8.0.40
 - 小程序基础库最低版本要求：2.10.0
 - 由于小程序测试号不具备 <live-pusher> 和 <live-player> 的使用权限，请使用企业小程序账号申请相关权限进行开发
 - 由于微信开发者工具不支持原生组件（即 <live-pusher> 和 <live-player> 标签），需要在真机上进行运行体验
@@ -19,7 +19,7 @@
    ```
 2. 进入 demo 目录
    ```
-   cd ./TUICallKit/uni-app/TUICallKit-Miniprogram/TUICallKit-Vue2
+   cd ./TUICallKit/uni-app/TUICallKit-Miniprogram/TUICallKit-Vue3
    ```
 3. 安装依赖
    ```
@@ -28,20 +28,21 @@
    
    mac端
    ```
-   mkdir -p ./wxcomponents/TUICallKit && cp -r node_modules/@tencentcloud/call-uikit-wechat/ ./wxcomponents/TUICallKit
+   mkdir -p ./TUICallKit && cp -r node_modules/@tencentcloud/call-uikit-wechat/ ./TUICallKit
    ```
 
    windows端
    ```
-   xcopy node_modules\@tencentcloud\call-uikit-wechat .\wxcomponents\TUICallKit /i /e
+    xcopy node_modules\@tencentcloud\call-uikit-wechat\ .\TUICallKit /i /e
    ```
+
 4. HBuilder 中导入项目
    
    <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/hbuilder-vue.png" width="400" align="middle" />
 
-5. 修改 `./TUICallKit/uni-app/TUICallKit-Miniprogram/TUICallKit-Vue2/debug/GenerateTestUserSig.js` 文件 的 SDKAPPID 以及 SECRETKEY（阅读文末 [开通服务](#开通服务)）
+5. 修改 `./TUICallKit/uni-app/TUICallKit-Miniprogram/TUICallKit-Vue3/TUICallKit/debug/GenerateTestUserSig-es.js` 文件 的 SDKAPPID 以及 SECRETKEY（阅读文末 [开通服务](#开通服务)）
    
-   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/userSig.png" width="400" />
+   <img src="https://qcloudimg.tencent-cloud.cn/raw/49931d68084b2d79f0f69f278894999b.png" width="400" />
 
 6. 运行到【微信开发者工具】，勾选 **【运行时是否压缩代码】**
    
@@ -49,19 +50,7 @@
 
 7. 项目导入到微信开发者工具，目录如下图：
    
-   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/uni-app-wechat.png" width="150" align="middle" />
-
-8. 构建 npm，微信开发者工具【工具】->【构建 npm】。具体如下图：
-   
-   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/build-npm.png" width="200"  align="middle" />
-
-   下图提示可忽略：是因为 [@tencentcloud/call-uikit-wechat](https://www.npmjs.com/package/@tencentcloud/call-uikit-wechat) 是一个小程序组件，需要拷贝使用，该提示可忽略。
-
-   <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/tips.png" width="240"  align="middle" />
-
-9. 在微信开发者工具编译运行。 
-    
-    <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/build.png" width="400"  align="middle" />
+   <img src="https://qcloudimg.tencent-cloud.cn/raw/a79cd64ac5be8ee099f2d802f1c847c6.png" width="150" align="middle" />
 
 
 ## 示例体验

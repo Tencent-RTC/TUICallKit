@@ -1,6 +1,6 @@
 {
     "name" : "TUICallKit-Vue3",
-    "appid" : "__UNI__C42E036",
+    "appid" : "",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -52,9 +52,7 @@
     "mp-weixin" : {
         "appid" : "",
         "setting" : {
-            "urlCheck" : false,
-            "es6" : true,
-            "minified" : true
+            "urlCheck" : false
         },
         "usingComponents" : true
     },

@@ -1,14 +1,15 @@
 {
-  "name": "mp-weixin",
+  "name": "tuicallkit-vue3",
   "version": "1.0.0",
-  "description": "本文将介绍如何用最短的时间完成 TUICallKit 组件的接入，跟随本文档，您将在一个小时的时间内完成如下几个关键步骤，并最终得到一个包含完备 UI 界面的视频通话功能。",
-  "main": "app.js",
-  "dependencies": {
-    "@tencentcloud/call-uikit-wechat": "^1.3.2"
-  },
+  "description": "",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@tencentcloud/call-uikit-wechat": "^3.0.4"
+  }
 }
