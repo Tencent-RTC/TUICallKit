@@ -8,7 +8,11 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCaller
 import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUICore
-import com.tencent.qcloud.tuicore.interfaces.*
+import com.tencent.qcloud.tuicore.interfaces.ITUIExtension
+import com.tencent.qcloud.tuicore.interfaces.ITUINotification
+import com.tencent.qcloud.tuicore.interfaces.ITUIService
+import com.tencent.qcloud.tuicore.interfaces.TUIExtensionEventListener
+import com.tencent.qcloud.tuicore.interfaces.TUIExtensionInfo
 import com.tencent.qcloud.tuikit.TUICommonDefine
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine
@@ -17,7 +21,6 @@ import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit.Companion.createInstance
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
 
 class TUICallKitService private constructor(context: Context) : ITUINotification, ITUIService, ITUIExtension {
     private var appContext: Context
@@ -50,6 +53,7 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
         ) {
             TUICallKit.createInstance(appContext)
             adaptiveComponentReport()
+            setExcludeFromHistoryMessage()
         }
     }
 
@@ -70,6 +74,22 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
             jsonObject.put("params", params)
             TUICallEngine.createInstance(appContext).callExperimentalAPI(jsonObject.toString())
         } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun setExcludeFromHistoryMessage() {
+        if (TUICore.getService(TUIConstants.TUIChat.SERVICE_NAME) == null) {
+            return
+        }
+        try {
+            val params = JSONObject()
+            params.put("excludeFromHistoryMessage", false)
+            val jsonObject = JSONObject()
+            jsonObject.put("api", "setExcludeFromHistoryMessage")
+            jsonObject.put("params", params)
+            TUICallEngine.createInstance(appContext).callExperimentalAPI(jsonObject.toString())
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

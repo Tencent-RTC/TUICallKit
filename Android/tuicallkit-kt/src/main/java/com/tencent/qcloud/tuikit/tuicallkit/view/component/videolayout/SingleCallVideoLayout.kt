@@ -40,11 +40,11 @@ class SingleCallVideoLayout(context: Context) : BaseCallView(context) {
     }
 
     private fun addObserver() {
-        viewModel.remoteUser?.callStatus?.observe(callStatusObserver)
+        viewModel.selfUser?.callStatus?.observe(callStatusObserver)
     }
 
     private fun removeObserver() {
-        viewModel.remoteUser?.callStatus?.removeObserver(callStatusObserver)
+        viewModel.selfUser?.callStatus?.removeObserver(callStatusObserver)
     }
 
     private fun initView() {
