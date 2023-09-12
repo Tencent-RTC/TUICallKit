@@ -124,19 +124,23 @@ public class TUICallingViewManager implements ITUINotification {
         mInviter = inviter;
         mInviteeList = inviteeList;
 
-        CallingUserModel userModel;
-        if (TUICallDefine.Role.Caller.equals(TUICallingStatusManager.sharedInstance(mContext).getCallRole())) {
-            userModel = inviteeList.get(0);
-            for (CallingUserModel model : inviteeList) {
-                reloadUserModel(model);
-            }
-        } else {
-            userModel = inviter;
-            reloadUserModel(inviter);
+        List<CallingUserModel> userList = new ArrayList<>();
+        userList.add(mInviter);
+        userList.addAll(mInviteeList);
+        for (CallingUserModel model : userList) {
+            reloadUserModel(model);
         }
 
-        if (null != mUserView) {
-            mUserView.updateUserInfo(userModel);
+        Role role = TUICallingStatusManager.sharedInstance(mContext).getCallRole();
+        CallingUserModel model = null;
+        if (Role.Caller.equals(role) && inviteeList != null && !inviteeList.isEmpty()) {
+            model = inviteeList.get(0);
+        } else if (Role.Called.equals(role)) {
+            model = mInviter;
+        }
+
+        if (null != mUserView && model != null && !TextUtils.isEmpty(model.userId)) {
+            mUserView.updateUserInfo(model);
         }
         initOtherInviteeView();
     }
@@ -156,13 +160,6 @@ public class TUICallingViewManager implements ITUINotification {
         mBaseCallView = null;
         BaseCallActivity.finishActivity();
         SelectGroupMemberActivity.finishActivity();
-
-        mSelfUserModel = null;
-        mInviteeList.clear();
-        mInviter = new CallingUserModel();
-
-        TUICallingStatusManager.sharedInstance(mContext).clear();
-
         mFunctionView = null;
         mFloatCallView = null;
         mUserView = null;
@@ -174,6 +171,11 @@ public class TUICallingViewManager implements ITUINotification {
             mHomeWatcher = null;
         }
         FloatWindowService.stopService(mContext);
+        TUICallingStatusManager.sharedInstance(mContext).clear();
+
+        mSelfUserModel = null;
+        mInviteeList.clear();
+        mInviter = new CallingUserModel();
     }
 
     private void updateCallStatus(TUICallDefine.Status status) {
@@ -641,11 +643,14 @@ public class TUICallingViewManager implements ITUINotification {
 
                 MediaType mediaType = TUICallingStatusManager.sharedInstance(mContext).getMediaType();
                 Scene callScene = TUICallingStatusManager.sharedInstance(mContext).getCallScene();
+                Status status = TUICallingStatusManager.sharedInstance(mContext).getCallStatus();
+
                 if (MediaType.Video.equals(mediaType) && Scene.SINGLE_CALL.equals(callScene)) {
 
                     Role callRole = TUICallingStatusManager.sharedInstance(mContext).getCallRole();
-                    CallingUserModel model = (Role.Called.equals(callRole)) ? mInviter : mInviteeList.get(0);
-                    Status status = TUICallingStatusManager.sharedInstance(mContext).getCallStatus();
+                    CallingUserModel model =
+                            (Role.Caller.equals(callRole) && mInviteeList != null && !mInviteeList.isEmpty())
+                                    ? mInviteeList.get(0) : mInviter;
 
                     if (Status.Accept.equals(status)) {
                         resetVideoCloudView(mSelfUserModel);
@@ -654,18 +659,21 @@ public class TUICallingViewManager implements ITUINotification {
                         resetVideoCloudView(mSelfUserModel);
                     }
                 }
-                showCallingView();
+                if (!Status.None.equals(status)) {
+                    showCallingView();
+                } else {
+                    TUILog.w(TAG, "The current call has ended");
+                }
             }
         });
         return floatView;
     }
 
     private void resetVideoCloudView(CallingUserModel model) {
-        UserLayout userLayout = mUserLayoutFactory.findUserLayout(model.userId);
-        if (null == userLayout) {
-            userLayout = mUserLayoutFactory.allocUserLayout(model);
+        UserLayout userLayout = mUserLayoutFactory.allocUserLayout(model);
+        if (userLayout == null) {
+            return;
         }
-
         TUIVideoView videoView = userLayout.getVideoView();
         if (videoView != null) {
             if (null != videoView.getParent()) {
