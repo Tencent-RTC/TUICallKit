@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tencent.qcloud.tuicore.ServiceInitializer
+import com.tencent.qcloud.tuicore.util.DateTimeUtil
 import com.tencent.qcloud.tuicore.util.ToastUtil
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
@@ -64,7 +65,6 @@ class FloatingWindowView(context: Context) : BaseCallView(context) {
         } else if (TUICallEvent.EventType.ERROR == it.eventType && TUICallEvent.Event.ERROR_COMMON == it.event) {
             var code = it.param?.get(TUICallEvent.EVENT_KEY_CODE) as Int
             var msg = it.param?.get(TUICallEvent.EVENT_KEY_MESSAGE) as String
-            ToastUtil.toastLongMessage(context.getString(R.string.tuicalling_toast_call_error_msg, code, msg))
         }
     }
 
@@ -108,15 +108,13 @@ class FloatingWindowView(context: Context) : BaseCallView(context) {
     private fun updateView(it: Any?) {
         if (it != null && it is Int) {
             textCallStatus?.post {
-                textCallStatus?.text = context.getString(
-                    R.string.tuicalling_called_time_format, it / 60,
-                    it % 60
-                )
+                textCallStatus?.text = DateTimeUtil.formatSecondsTo00(it)
             }
             return
         }
         if (viewModel.mediaType.get() == TUICallDefine.MediaType.Audio
-            || viewModel.scene.get() == TUICallDefine.Scene.GROUP_CALL) {
+            || viewModel.scene.get() == TUICallDefine.Scene.GROUP_CALL
+        ) {
             imageAudioIcon?.visibility = VISIBLE
             textCallStatus?.visibility = VISIBLE
             layoutVideoView?.visibility = GONE
@@ -124,10 +122,7 @@ class FloatingWindowView(context: Context) : BaseCallView(context) {
             if (viewModel.selfUser?.callStatus?.get() == TUICallDefine.Status.Waiting) {
                 textCallStatus?.text = context.getString(R.string.tuicalling_wait_resonse)
             } else if (viewModel.selfUser?.callStatus?.get() == TUICallDefine.Status.Accept) {
-                textCallStatus?.text = context.getString(
-                    R.string.tuicalling_called_time_format, TUICallState.instance.timeCount.get() / 60,
-                    TUICallState.instance.timeCount.get() % 60
-                )
+                textCallStatus?.text = DateTimeUtil.formatSecondsTo00(viewModel.timeCount.get())
             } else {
                 VideoViewFactory.instance.clear()
                 clear()

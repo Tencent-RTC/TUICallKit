@@ -1,11 +1,14 @@
 package com.tencent.qcloud.tuikit.tuicallkit.demo;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +20,15 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initStatusBar();
         hideSoftKeyboard();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        try {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch (Exception e) {}
+        return super.onTouchEvent(event);
     }
 
     private void initStatusBar() {

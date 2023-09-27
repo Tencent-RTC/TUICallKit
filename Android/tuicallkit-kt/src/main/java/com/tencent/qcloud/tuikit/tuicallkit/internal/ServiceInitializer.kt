@@ -12,6 +12,9 @@ import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.TUILogin
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKitImpl
+import com.tencent.qcloud.tuikit.tuicallkit.utils.DeviceUtils
+import com.tencent.qcloud.tuikit.tuicallkit.view.CallKitActivity
+import com.tencent.qcloud.tuikit.tuicallkit.view.component.floatview.FloatWindowService
 
 /**
  * `TUICallKit` uses `ContentProvider` to be registered with `TUICore`.
@@ -33,7 +36,11 @@ class ServiceInitializer : ContentProvider() {
                 override fun onActivityStarted(activity: Activity) {
                     foregroundActivities++
                     if (foregroundActivities == 1 && !isChangingConfiguration) {
-                        if (TUILogin.isUserLogined()) {
+                        //  The Call page exits the background and re-enters without repeatedly pulling up the page.
+                        if (TUILogin.isUserLogined()
+                            && activity !is CallKitActivity
+                            && !DeviceUtils.isServiceRunning(context, FloatWindowService::class.java.name)
+                        ) {
                             TUICallKitImpl.createInstance(context).queryOfflineCall()
                         }
                     }

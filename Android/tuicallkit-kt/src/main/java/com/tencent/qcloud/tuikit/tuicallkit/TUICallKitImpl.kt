@@ -146,6 +146,7 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
     }
 
     fun queryOfflineCall() {
+        TUILog.i(TAG, "queryOfflineCall start")
         if (TUICallDefine.Status.Accept != TUICallState.instance.selfUser.get().callStatus.get()) {
             val role: TUICallDefine.Role = TUICallState.instance.selfUser.get().callRole.get()
             val mediaType: TUICallDefine.MediaType =  TUICallState.instance.mediaType.get()
@@ -161,7 +162,15 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
             }
             PermissionRequest.requestPermissions(context, mediaType, object : PermissionCallback() {
                 override fun onGranted() {
-                    TUICore.notifyEvent(Constants.EVENT_TUICALLKIT_CHANGED, Constants.EVENT_START_ACTIVITY, HashMap())
+                    TUILog.i(TAG, "queryOfflineCall requestPermissions onGranted")
+                    if (TUICallDefine.Status.None != TUICallState.instance.selfUser.get().callStatus.get()) {
+                        initAudioPlayDevice()
+                        var intent = Intent(context, CallKitActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        context.startActivity(intent)
+                    } else {
+                        TUICallState.instance.clear()
+                    }
                 }
 
                 override fun onDenied() {
@@ -212,11 +221,13 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
                 callingBellFeature = CallingBellFeature(context)
                 callingKeepAliveFeature = CallingKeepAliveFeature(context)
             } else if (Constants.EVENT_START_ACTIVITY == subKey) {
+                TUILog.i(TAG, "onNotifyEvent EVENT_START_ACTIVITY")
                 PermissionRequest.requestPermissions(context, TUICallState.instance.mediaType.get(), object :
                     PermissionCallback() {
                     override fun onGranted() {
                         if (TUICallDefine.Status.None != TUICallState.instance.selfUser.get().callStatus.get()) {
                             initAudioPlayDevice()
+                            TUILog.i(TAG, "onNotifyEvent requestPermissions onGranted")
                             var intent = Intent(context, CallKitActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                             context.startActivity(intent)
@@ -226,6 +237,9 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
                     }
 
                     override fun onDenied() {
+                        if (TUICallState.instance.selfUser.get().callRole.get() == TUICallDefine.Role.Called) {
+                            TUICallEngine.createInstance(context).reject(null)
+                        }
                         TUICallState.instance.clear()
                     }
                 })

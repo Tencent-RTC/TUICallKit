@@ -152,7 +152,7 @@ public class MainActivity extends BaseActivity {
         public void onKickedOffline() {
             super.onKickedOffline();
             Log.i(TAG, "You have been kicked off the line. Please login again!");
-            ToastUtil.toastLongMessage(getString(R.string.tuicalling_user_kicked_offline));
+            ToastUtil.toastLongMessage(getString(R.string.app_user_kicked_offline));
             logout();
         }
 
