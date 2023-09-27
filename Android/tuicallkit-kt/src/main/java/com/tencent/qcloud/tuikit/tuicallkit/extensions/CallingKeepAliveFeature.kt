@@ -29,7 +29,7 @@ class CallingKeepAliveFeature(private val mContext: Context) {
 
     private fun stopKeepAlive() {
         TUICallState.instance.selfUser.get().callStatus.removeObserver(callStatusObserver)
-        if (DeviceUtils.isServiceRunning(mContext, TUICallService::class.java.getName())) {
+        if (DeviceUtils.isServiceRunning(mContext, TUICallService::class.java.name)) {
             TUICallService.stop(mContext)
         }
     }

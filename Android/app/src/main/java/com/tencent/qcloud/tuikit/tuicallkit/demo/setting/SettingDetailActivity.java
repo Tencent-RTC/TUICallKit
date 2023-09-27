@@ -78,7 +78,8 @@ public class SettingDetailActivity extends BaseActivity {
                 SettingsConfig.offlineParams = mEditContent.getText().toString().trim();
                 break;
             case ITEM_AVATAR:
-
+                String avatar = mEditContent.getText().toString().trim();
+                setUserAvatar(avatar);
                 break;
             case ITEM_RING_PATH:
                 String ringPath = mEditContent.getText().toString();

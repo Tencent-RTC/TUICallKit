@@ -74,6 +74,10 @@ class TUICallState {
             group: String?,
             callMediaType: TUICallDefine.MediaType?
         ) {
+            TUILog.i(
+                TAG, "onCallReceived -> {callerId: $callerId, calleeIdList: $calleeIdList, group: $group,"
+                        + "callMediaType: $callMediaType}"
+            )
             if (TUICallDefine.MediaType.Unknown == callMediaType || calleeIdList.isNullOrEmpty()) {
                 return
             }
@@ -133,6 +137,7 @@ class TUICallState {
         }
 
         override fun onCallCancelled(callerId: String?) {
+            TUILog.i(TAG, "onCallCancelled -> {callerId: $callerId}")
             resetCall()
         }
 
@@ -141,6 +146,7 @@ class TUICallState {
             callMediaType: TUICallDefine.MediaType?,
             callRole: TUICallDefine.Role?
         ) {
+            TUILog.i(TAG, "onCallBegin -> {room: $room, callMediaType: $callMediaType, callRole: $callRole}")
             CallEngineManager.instance.selectAudioPlaybackDevice(instance.audioPlayoutDevice.get())
             roomId.set(room)
             selfUser.get().callStatus.set(TUICallDefine.Status.Accept)
@@ -159,6 +165,7 @@ class TUICallState {
             callRole: TUICallDefine.Role?,
             totalTime: Long
         ) {
+            TUILog.i(TAG, "onCallEnd -> {room: $room, callMediaType: $callMediaType, callRole: $callRole")
             roomId.set(room)
             resetCall()
         }
@@ -167,6 +174,10 @@ class TUICallState {
             oldCallMediaType: TUICallDefine.MediaType?,
             newCallMediaType: TUICallDefine.MediaType?
         ) {
+            TUILog.i(
+                TAG, "onCallMediaTypeChanged -> {oldCallMediaType: $oldCallMediaType"
+                        + ", newCallMediaType: $newCallMediaType}"
+            )
             if (oldCallMediaType != newCallMediaType) {
                 mediaType.set(newCallMediaType)
                 if (newCallMediaType == TUICallDefine.MediaType.Audio) {
@@ -182,6 +193,7 @@ class TUICallState {
         }
 
         override fun onUserReject(userId: String?) {
+            TUILog.i(TAG, "onUserReject -> {userId: $userId}")
             if (userId.isNullOrEmpty()) {
                 return
             }
@@ -198,6 +210,7 @@ class TUICallState {
         }
 
         override fun onUserNoResponse(userId: String?) {
+            TUILog.i(TAG, "onUserNoResponse -> {userId: $userId}")
             if (userId.isNullOrEmpty()) {
                 return
             }
@@ -214,6 +227,7 @@ class TUICallState {
         }
 
         override fun onUserLineBusy(userId: String?) {
+            TUILog.i(TAG, "onUserLineBusy -> {userId: $userId}")
             if (userId.isNullOrEmpty()) {
                 return
             }
@@ -230,6 +244,7 @@ class TUICallState {
         }
 
         override fun onUserJoin(userId: String?) {
+            TUILog.i(TAG, "onUserJoin -> {userId: $userId}")
             if (userId.isNullOrEmpty()) {
                 return
             }
@@ -237,6 +252,7 @@ class TUICallState {
         }
 
         override fun onUserLeave(userId: String?) {
+            TUILog.i(TAG, "onUserLeave -> {userId: $userId}")
             if (userId.isNullOrEmpty()) {
                 return
             }
@@ -253,6 +269,7 @@ class TUICallState {
         }
 
         override fun onUserVideoAvailable(userId: String?, isVideoAvailable: Boolean) {
+            TUILog.i(TAG, "onUserVideoAvailable -> {userId: $userId, isVideoAvailable: $isVideoAvailable}")
             if (userId.isNullOrEmpty()) {
                 return
             }
@@ -263,6 +280,7 @@ class TUICallState {
         }
 
         override fun onUserAudioAvailable(userId: String?, isAudioAvailable: Boolean) {
+            TUILog.i(TAG, "onUserAudioAvailable -> {userId: $userId, isAudioAvailable: $isAudioAvailable}")
             if (userId.isNullOrEmpty()) {
                 return
             }
@@ -302,6 +320,7 @@ class TUICallState {
     }
 
     fun clear() {
+        TUILog.i(TAG, "clear")
         reverse1v1CallRenderView = false
         selfUser.get().callStatus.set(TUICallDefine.Status.None)
         selfUser.get().clear()

@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">音视频通话</string>
     <string name="app_main_title">腾讯云音视频</string>
-    <string name="app_toast_login_fail">登录IM失败，所有功能不可用[%d]%s</string>
+    <string name="app_toast_login_fail">登录失败，所有功能不可用[%d]%s</string>
     <string name="app_toast_not_call_myself">不能呼叫自己</string>
     <string name="app_audio_call">语音通话</string>
     <string name="app_video_call">视频通话</string>
@@ -14,8 +14,9 @@
     <string name="app_btn_login">登录</string>
     <string name="app_welcome_tips">欢迎使用\n腾讯云·音视频通话</string>
     <string name="app_dialog_log_out">确定要退出登录吗？</string>
+    <string name="app_user_kicked_offline">您已被踢下线，请重新登录</string>
     <string name="app_user_sig_expired">您的用户签名信息已过期,请重新登录</string>
-    <string name="app_user_id_is_empty">userId 不能为空</string>
+    <string name="app_user_id_is_empty">用户ID不能为空</string>
     <string name="app_title_register">注册</string>
     <string name="app_hint_user_name">请输入用户名</string>
     <string name="app_tips_user_name">仅限中文、字母、数字和下划线，2–20个字</string>

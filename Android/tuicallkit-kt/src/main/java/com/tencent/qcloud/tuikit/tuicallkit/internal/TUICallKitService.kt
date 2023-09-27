@@ -7,22 +7,26 @@ import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCaller
 import com.tencent.qcloud.tuicore.TUIConstants
+import com.tencent.qcloud.tuicore.TUIConstants.TUICalling.ObjectFactory.RecentCalls
 import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.interfaces.ITUIExtension
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification
 import com.tencent.qcloud.tuicore.interfaces.ITUIService
 import com.tencent.qcloud.tuicore.interfaces.TUIExtensionEventListener
 import com.tencent.qcloud.tuicore.interfaces.TUIExtensionInfo
+import com.tencent.qcloud.tuicore.interfaces.ITUIObjectFactory
 import com.tencent.qcloud.tuikit.TUICommonDefine
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit.Companion.createInstance
+import com.tencent.qcloud.tuikit.tuicallkit.extensions.recents.RecentCallsFragment
 import org.json.JSONException
 import org.json.JSONObject
 
-class TUICallKitService private constructor(context: Context) : ITUINotification, ITUIService, ITUIExtension {
+class TUICallKitService private constructor(context: Context) : ITUINotification, ITUIService, ITUIExtension,
+    ITUIObjectFactory {
     private var appContext: Context
 
     init {
@@ -42,6 +46,9 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
         TUICore.registerExtension(TUIConstants.TUIContact.Extension.FriendProfileItem.MINIMALIST_EXTENSION_ID, this)
         TUICore.registerExtension(TUIConstants.TUIChat.Extension.ChatNavigationMoreItem.CLASSIC_EXTENSION_ID, this)
         TUICore.registerExtension(TUIConstants.TUIChat.Extension.ChatNavigationMoreItem.MINIMALIST_EXTENSION_ID, this)
+
+
+        TUICore.registerObjectFactory(TUIConstants.TUICalling.ObjectFactory.FACTORY_NAME, this)
     }
 
     override fun onNotifyEvent(key: String?, subKey: String?, param: Map<String, Any>?) {
@@ -386,6 +393,17 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
             } else {
                 Log.e(TAG, "onCall ignored, groupId is empty and userList is not 1, cannot start call or groupCall")
             }
+        }
+        return null
+    }
+
+    override fun onCreateObject(objectName: String?, param: MutableMap<String?, Any?>?): Any? {
+        if (TextUtils.equals(objectName, RecentCalls.OBJECT_NAME)) {
+            var style = RecentCalls.UI_STYLE_MINIMALIST
+            if (param != null && param[RecentCalls.UI_STYLE] != null && RecentCalls.UI_STYLE_CLASSIC == param[RecentCalls.UI_STYLE]!!) {
+                style = RecentCalls.UI_STYLE_CLASSIC
+            }
+            return RecentCallsFragment(style)
         }
         return null
     }

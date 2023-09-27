@@ -2,6 +2,7 @@ package com.tencent.qcloud.tuikit.tuicallkit.manager
 
 import android.content.Context
 import android.text.TextUtils
+import com.tencent.imsdk.BaseConstants
 import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMUserFullInfo
 import com.tencent.imsdk.v2.V2TIMValueCallback
@@ -43,6 +44,7 @@ class CallEngineManager private constructor(context: Context) {
         userId: String?, callMediaType: TUICallDefine.MediaType?, params: TUICallDefine.CallParams?,
         callback: TUICommonDefine.Callback?
     ) {
+        TUILog.i(TAG, "call -> {userId: $userId, callMediaType: $callMediaType, params: $params}")
         if (TextUtils.isEmpty(userId)) {
             TUILog.e(TAG, "call failed, userId is empty")
             callback?.onError(TUICallDefine.ERROR_PARAM_INVALID, "call failed, userId is empty")
@@ -79,6 +81,10 @@ class CallEngineManager private constructor(context: Context) {
                             if (errCode == TUICallDefine.ERROR_PACKAGE_NOT_PURCHASED) {
                                 errMsg = context.getString(R.string.tuicalling_package_not_purchased)
                             }
+                            if (errCode == BaseConstants.ERR_SVR_MSG_IN_PEER_BLACKLIST) {
+                                errMsg = context.getString(R.string.tuicallkit_error_in_peer_blacklist)
+                            }
+                            ToastUtil.toastLongMessage(errMsg)
                             callback?.onError(errCode, errMsg)
                         }
                     })
@@ -94,6 +100,10 @@ class CallEngineManager private constructor(context: Context) {
         groupId: String?, userIdList: List<String?>?, callMediaType: TUICallDefine.MediaType,
         params: TUICallDefine.CallParams?, callback: TUICommonDefine.Callback?
     ) {
+        TUILog.i(
+            TAG,
+            "call -> {groupId: $groupId, userIdList: $userIdList, callMediaType: $callMediaType, params: $params}"
+        )
         if (TextUtils.isEmpty(groupId)) {
             TUILog.e(TAG, "groupCall failed, groupId is empty")
             callback?.onError(TUICallDefine.ERROR_PARAM_INVALID, "groupCall failed, groupId is empty")
@@ -146,8 +156,8 @@ class CallEngineManager private constructor(context: Context) {
                             var errMsg: String? = errMsg
                             if (errCode == TUICallDefine.ERROR_PACKAGE_NOT_SUPPORTED) {
                                 errMsg = context.getString(R.string.tuicalling_package_not_support)
-                                ToastUtil.toastLongMessage(errMsg)
                             }
+                            ToastUtil.toastLongMessage(errMsg)
                             TUILog.e(TAG, "groupCall errCode:$errCode, errMsg:$errMsg")
                             callback?.onError(errCode, errMsg)
                         }
