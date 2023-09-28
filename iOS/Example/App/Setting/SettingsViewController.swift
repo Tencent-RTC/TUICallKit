@@ -32,7 +32,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     }()
     
     lazy var scroContentView: UIView = {
-        return UIView(frame: CGRectZero)
+        return UIView(frame: CGRect.zero)
     }()
 
     lazy var basicSettingContentView: UIView = {
@@ -205,7 +205,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     }()
     let resolutionData = ["640*480","960*720","640*360","960*540","1280*720","1920*1080"]
     lazy var resolutionDropMenu: SwiftDropMenuListView = {
-        let menu = SwiftDropMenuListView(frame: CGRectZero)
+        let menu = SwiftDropMenuListView(frame: CGRect.zero)
         let titleStr: String = resolutionData[convertResolutionToIndex(resolution: SettingsConfig.share.resolution)] + " >"
         menu.setTitle(titleStr, for: .normal)
         menu.setTitleColor(.black, for: .normal)
@@ -813,7 +813,7 @@ extension SettingsViewController {
     }
     
     func createSwich(isOn: Bool) -> UISwitch {
-        let switchBtn = UISwitch(frame: CGRectZero)
+        let switchBtn = UISwitch(frame: CGRect.zero)
         switchBtn.isOn = isOn
         return switchBtn
     }

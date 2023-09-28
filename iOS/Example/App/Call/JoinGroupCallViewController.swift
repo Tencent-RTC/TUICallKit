@@ -56,7 +56,7 @@ public class JoinGroupCallViewController: UIViewController, UITextFieldDelegate 
     let roomTypeData = [TUICallKitAppLocalize("TUICallKitApp.Call.RoomIdInt"), TUICallKitAppLocalize("TUICallKitApp.Call.RoomIdString")]
     var roomTypeIndex = 0
     lazy var roomIdBtn: SwiftDropMenuListView = {
-        let menu = SwiftDropMenuListView(frame: CGRectZero)
+        let menu = SwiftDropMenuListView(frame: CGRect.zero)
         let titleStr: String = roomTypeData[roomTypeIndex] + " >"
         menu.setTitle(titleStr, for: .normal)
         menu.setTitleColor(.black, for: .normal)
@@ -99,13 +99,13 @@ public class JoinGroupCallViewController: UIViewController, UITextFieldDelegate 
         return label
     }()
     lazy var videoButton: RadioButton = {
-        let button = RadioButton(frame: CGRectZero)
+        let button = RadioButton(frame: CGRect.zero)
         button.titleText = TUICallKitAppLocalize("TUICallKitApp.Video.call")
         button.titleSize = 16
         return button
     }()
     lazy var vioceButton: RadioButton = {
-        let button = RadioButton(frame: CGRectZero)
+        let button = RadioButton(frame: CGRect.zero)
         button.titleText = TUICallKitAppLocalize("TUICallKitApp.Audio.call")
         button.isSelected = true
         button.titleSize = 16

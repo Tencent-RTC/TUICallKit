@@ -92,13 +92,13 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
         return label
     }()
     lazy var videoButton: RadioButton = {
-        let button = RadioButton(frame: CGRectZero)
+        let button = RadioButton(frame: CGRect.zero)
         button.titleText = TUICallKitAppLocalize("TUICallKitApp.Video.call")
         button.titleSize = 16
         return button
     }()
     lazy var vioceButton: RadioButton = {
-        let button = RadioButton(frame: CGRectZero)
+        let button = RadioButton(frame: CGRect.zero)
         button.titleText = TUICallKitAppLocalize("TUICallKitApp.Audio.call")
         button.isSelected = true
         button.titleSize = 16
