@@ -7,6 +7,7 @@
 //
 
 #import "TUICallingGroupCell.h"
+#import <TUICore/TUIGlobalization.h>
 #import "UIImageView+WebCache.h"
 #import "UIColor+TUICallingHex.h"
 #import "TUICallingCommon.h"
@@ -94,7 +95,7 @@
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
         label.textColor = [UIColor t_colorWithHexString:@"#FFFFFF"];
         label.font = [UIFont systemFontOfSize:12];
-        label.textAlignment = NSTextAlignmentLeft;
+        label.textAlignment = isRTL() ? NSTextAlignmentRight : NSTextAlignmentLeft;
         [self.contentView addSubview:label];
         self.titleLabel = label;
         // volumeImageView
@@ -114,12 +115,13 @@
             make.edges.equalTo(self.contentView);
         }];
         [label mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.contentView).offset(10);
+            make.leading.equalTo(self.contentView.mas_leading).offset(10);
             make.bottom.equalTo(self.contentView).offset(-5);
-            make.right.equalTo(self.volumeImageView.mas_left).offset(-5);
+            make.trailing.equalTo(self.volumeImageView.mas_leading).offset(-5);
         }];
         [volumeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.right.bottom.equalTo(self.contentView).offset(-5);
+            make.trailing.equalTo(self.contentView.mas_trailing).offset(-5);
+            make.bottom.equalTo(self.contentView).offset(-5);
             make.centerY.equalTo(label);
             make.width.height.equalTo(@(20));
         }];
