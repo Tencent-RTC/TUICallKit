@@ -1,4 +1,4 @@
 include ':app'
 include ':debug'
-include ':tuicallkit'
+include ':tuicallkit-kt'
 include ':tuiofflinepush'
