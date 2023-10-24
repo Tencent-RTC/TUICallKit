@@ -10,7 +10,7 @@ target 'TUICallKitApp' do
   pod 'Alamofire', '~> 5.6.4'
   pod 'Kingfisher', '<= 6.3.1'
   pod 'SnapKit'
-  pod 'TUICallKit', :path => "../", :subspecs => ["TRTC"]
+  pod 'TUICallKit-Swift', :path => "../", :subspecs => ["TRTC"]
 end
 
 #Pods config

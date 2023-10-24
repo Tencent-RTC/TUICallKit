@@ -635,6 +635,7 @@
 					"-weak_framework",
 					"\"SwiftUI\"",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D USE_TUICALLKIT_SWIFT";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tencent.TRTCScene;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = abyWildcardDev;
@@ -724,6 +725,7 @@
 					"-weak_framework",
 					"\"SwiftUI\"",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D USE_TUICALLKIT_SWIFT";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tencent.TRTCScene;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = abyWildcardDev;
