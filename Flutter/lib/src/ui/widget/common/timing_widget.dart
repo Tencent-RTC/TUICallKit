@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sprintf/sprintf.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_calls_uikit/src/call_state.dart';
 import 'package:tencent_calls_uikit/src/utils/event_bus.dart';
@@ -25,13 +24,8 @@ class _TimingWidgetState extends State<TimingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    int hour = CallState.instance.timeCount ~/ 3600;
-    int minute = (CallState.instance.timeCount % 3600) ~/ 60;
-    int second = CallState.instance.timeCount % 60;
     return Text(
-      hour > 0
-          ? sprintf('%02d:%02d:%02d', [hour, minute, second])
-          : sprintf('%02d:%02d', [minute, second]),
+      _formatCallTime(),
       style: (TUICallMediaType.audio == CallState.instance.mediaType)
           ? const TextStyle(color: Colors.black, fontSize: 14)
           : const TextStyle(color: Colors.white, fontSize: 14),
@@ -42,5 +36,15 @@ class _TimingWidgetState extends State<TimingWidget> {
   void dispose() {
     super.dispose();
     eventBus.unregister(setStateEventRefreshTiming, refreshTimingCallBack);
+  }
+
+  String _formatCallTime() {
+    int hour = CallState.instance.timeCount ~/ 3600;
+    String hourShow = hour <= 9 ? "0$hour" : "$hour";
+    int minute = (CallState.instance.timeCount % 3600) ~/ 60;
+    String minuteShow = minute <= 9 ? "0$minute" : "$minute";
+    int second = CallState.instance.timeCount % 60;
+    String secondShow = second <= 9 ? "0$second" : "$second";
+    return hour > 0 ? "$hourShow:$minuteShow:$secondShow" : "$minuteShow:$secondShow";
   }
 }

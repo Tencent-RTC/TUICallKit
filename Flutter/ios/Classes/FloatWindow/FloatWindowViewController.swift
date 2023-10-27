@@ -13,8 +13,8 @@ class FloatWindowViewController: UIViewController, FloatingWindowViewDelegate {
     
     weak var delegate: FloatingWindowViewDelegate?
 
-    lazy var floatView = {
-        let view =  FloatWindowView(frame: CGRectZero)
+    lazy var floatView: FloatWindowView = {
+        let view =  FloatWindowView(frame: CGRect.zero)
         view.delegate = self
         return view
     }()

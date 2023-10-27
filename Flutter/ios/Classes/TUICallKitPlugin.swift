@@ -14,6 +14,8 @@ public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, TUICallKit
         return registrar.messenger()
     }
     
+    var isAppInForeground: Bool = false
+    
     init(registrar: FlutterPluginRegistrar) {
         self.channel = FlutterMethodChannel(name: TUICallKitPlugin.channelName, binaryMessenger: registrar.messenger())
         self.registrar = registrar
@@ -22,6 +24,11 @@ public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, TUICallKit
         
         FloatWindowManger.instance.backToFlutterWidgetDelegate = self
         TUICallKitService.instance.callKitServiceDelegate = self
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationWillResignActive),
+                                               name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidBecomeActive),
+                                               name: UIApplication.didBecomeActiveNotification, object: nil) 
     }
     
     enum Mehtod: String {
@@ -31,6 +38,19 @@ public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, TUICallKit
         case stopFloatWindow
         case startFloatWindow
         case initResources
+        case openMicrophone
+        case closeMicrophone
+        case isAppInForeground
+    }
+    
+    @objc func applicationWillResignActive() {
+        isAppInForeground = false
+        channel.invokeMethod("appEnterBackground", arguments: nil)
+    }
+
+    @objc func applicationDidBecomeActive() {
+        isAppInForeground = true
+        channel.invokeMethod("appEnterForeground", arguments: nil)
     }
 }
 
@@ -65,6 +85,14 @@ extension TUICallKitPlugin {
     func callMethodEnabelFloatWindow(enable: Bool) {
         channel.invokeMethod("enabelFloatWindow", arguments: ["enable": enable])
     }
+    
+    func callMethodVoipChangeMute(mute: Bool) {
+        channel.invokeMethod("voipChangeMute", arguments: ["mute": mute])
+    }
+    
+    func callMethodVoipChangeAudioPlaybackDevice(audioPlaybackDevice: TUIAudioPlaybackDevice) {
+        channel.invokeMethod("voipChangeAudioPlaybackDevice", arguments: ["audioPlaybackDevice": audioPlaybackDevice.rawValue])
+    }
 }
 
 extension TUICallKitPlugin: FlutterPlugin {
@@ -93,6 +121,15 @@ extension TUICallKitPlugin: FlutterPlugin {
             break
         case .initResources:
             TUICallKitManager.shared.initResources(call: call, result: result)
+            break
+        case .isAppInForeground:
+            result(isAppInForeground)
+            break
+        case .openMicrophone:
+            TUICallKitManager.shared.openMicrophone(call: call, result: result)
+            break
+        case .closeMicrophone:
+            TUICallKitManager.shared.closeMicrophone(call: call, result: result)
         default:
             break
         }

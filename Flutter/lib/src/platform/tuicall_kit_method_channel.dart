@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
@@ -7,6 +9,7 @@ import 'package:tencent_calls_uikit/src/data/user.dart';
 import 'package:tencent_calls_uikit/src/ui/tuicall_navigator_observer.dart';
 import 'package:tencent_calls_uikit/src/call_state.dart';
 import 'package:tencent_calls_uikit/tuicall_kit.dart';
+import 'package:tencent_calls_uikit/src/utils/event_bus.dart';
 
 class MethodChannelTUICallKit extends TUICallKitPlatform {
   MethodChannelTUICallKit() {
@@ -74,7 +77,14 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
 
   @override
   Future<bool> moveAppToFront(String event) async {
-    return await methodChannel.invokeMethod('moveAppToFront', {"event": event});
+    try {
+      await methodChannel.invokeMethod('moveAppToFront', {"event": event});
+    } on PlatformException catch (_) {
+      return false;
+    } on Exception catch (_) {
+      return false;
+    }
+    return true;
   }
 
   @override
@@ -87,6 +97,16 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
       return false;
     }
     return true;
+  }
+
+  @override
+  Future<void> openMicrophone() async {
+    await methodChannel.invokeMethod('openMicrophone', {});
+  }
+
+  @override
+  Future<void> closeMicrophone() async {
+    await methodChannel.invokeMethod('closeMicrophone', {});
   }
 
   void _handleNativeCall(MethodCall call) {
@@ -113,6 +133,15 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
         break;
       case "handleLogoutSuccess":
         _handleLogoutSuccess();
+        break;
+      case "appEnterForeground":
+        _appEnterForeground();
+        break;
+      case "voipChangeMute":
+        _handleVoipChangeMute(call);
+        break;
+      case "voipChangeAudioPlaybackDevice":
+        _handleVoipChangeAudioPlaybackDevice(call);
         break;
       default:
         debugPrint("flutter: MethodNotImplemented ${call.method}");
@@ -161,5 +190,23 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
 
   void _handleLogoutSuccess() {
     CallManager.instance.handleLogoutSuccess();
+  }
+
+  void _appEnterForeground() {
+    CallManager.instance.handleAppEnterForeground();
+  }
+
+  void _handleVoipChangeMute(MethodCall call) {
+    if (CallState.instance.selfUser.callStatus != TUICallStatus.none) {
+      CallState.instance.isMicrophoneMute = call.arguments['mute'];
+      eventBus.notify(setStateEvent);
+    }
+  }
+
+  void _handleVoipChangeAudioPlaybackDevice(MethodCall call) {
+    if (CallState.instance.selfUser.callStatus != TUICallStatus.none) {
+      CallState.instance.audioDevice = call.arguments['audioPlaybackDevice'];
+      eventBus.notify(setStateEvent);
+    }
   }
 }

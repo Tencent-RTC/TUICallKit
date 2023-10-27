@@ -14,10 +14,10 @@ let kMicroVideoViewHeight = (100.0 * 16) / 9.0
 
 
 let kCallKitSingleSmallVideoViewWidth = 100.0
-let kCallKitSingleSmallVideoViewFrame = CGRectMake(5, 5, kCallKitSingleSmallVideoViewWidth - 10,
-                                                           (kCallKitSingleSmallVideoViewWidth / 9.0 * 16.0) - 10 )
+let kCallKitSingleSmallVideoViewFrame = CGRect(x: 5, y: 5, width: kCallKitSingleSmallVideoViewWidth - 10,
+                                               height: (kCallKitSingleSmallVideoViewWidth / 9.0 * 16.0) - 10 )
 
 
 let Screen_Width = UIScreen.main.bounds.size.width
 let Screen_Height = UIScreen.main.bounds.size.height
-let kMicroVideoViewRect = CGRectMake(Screen_Width - kMicroVideoViewWidth, 150, kMicroVideoViewWidth, kMicroVideoViewHeight)
+let kMicroVideoViewRect = CGRect(x: Screen_Width - kMicroVideoViewWidth, y: 150, width: kMicroVideoViewWidth, height: kMicroVideoViewHeight)

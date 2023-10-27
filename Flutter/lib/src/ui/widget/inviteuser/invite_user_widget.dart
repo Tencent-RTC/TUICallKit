@@ -74,15 +74,19 @@ class _InviteUserWidgetState extends State<InviteUserWidget> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
                       ),
-                      child: Image.network(
-                        _groupMemberList[index].avatar,
+                      child: Image(
+                        image: NetworkImage(_groupMemberList[index].avatar),
                         fit: BoxFit.cover,
+                        errorBuilder: (ctx, err, stackTrace) => Image.asset(
+                          'assets/images/user_icon.png',
+                          package: 'tencent_calls_uikit',
+                        ),
                       ),
                     ),
                     const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10)),
                     Text(
-                      _groupMemberList[index].userName,
+                      _getMemberDisPlayName(_groupMemberList[index]),
                       style: const TextStyle(color: Colors.black, fontSize: 20),
                     )
                   ],
@@ -110,12 +114,10 @@ class _InviteUserWidgetState extends State<InviteUserWidget> {
 
     var memberInfo = GroupMemberInfo();
     memberInfo.userId = CallState.instance.selfUser.id;
-    memberInfo.userName = StringStream.makeNull(
-            CallState.instance.selfUser.nickname,
-            CallState.instance.selfUser.id) +
-        CallKit_t("你");
-    memberInfo.avatar = StringStream.makeNull(
-        CallState.instance.selfUser.avatar, Constants.defaultAvatar);
+    memberInfo.userName =
+        '${StringStream.makeNull(CallState.instance.selfUser.nickname, CallState.instance.selfUser.id)} (${CallKit_t("你")})';
+    memberInfo.avatar =
+        StringStream.makeNull(CallState.instance.selfUser.avatar, Constants.defaultAvatar);
     memberInfo.isSelected = true;
     _groupMemberList.add(memberInfo);
 
@@ -125,10 +127,9 @@ class _InviteUserWidgetState extends State<InviteUserWidget> {
       }
       var memberInfo = GroupMemberInfo();
       memberInfo.userId = imUser.userID;
-      memberInfo.userName =
-          StringStream.makeNull(imUser.nickName, imUser.userID);
-      memberInfo.avatar =
-          StringStream.makeNull(imUser.faceUrl, Constants.defaultAvatar);
+      memberInfo.userName = StringStream.makeNull(imUser.nickName, '');
+      memberInfo.remark = StringStream.makeNull(imUser.friendRemark, '');
+      memberInfo.avatar = StringStream.makeNull(imUser.faceUrl, Constants.defaultAvatar);
       memberInfo.isSelected = _defaultSelectList.contains(imUser.userID);
       _groupMemberList.add(memberInfo);
     }
@@ -159,11 +160,22 @@ class _InviteUserWidgetState extends State<InviteUserWidget> {
   _goBack() {
     TUICallKitNavigatorObserver.getInstance().exitInviteUserPage();
   }
+
+  _getMemberDisPlayName(GroupMemberInfo member) {
+    if (member.remark.isNotEmpty) {
+      return member.remark;
+    }
+    if (member.userName.isNotEmpty) {
+      return member.userName;
+    }
+    return member.userId;
+  }
 }
 
 class GroupMemberInfo {
   String userId = "";
   String userName = "";
   String avatar = "";
+  String remark = "";
   bool isSelected = false;
 }

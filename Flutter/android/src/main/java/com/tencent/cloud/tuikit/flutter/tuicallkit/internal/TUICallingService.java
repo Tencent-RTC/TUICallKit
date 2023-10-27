@@ -13,6 +13,8 @@ import com.tencent.qcloud.tuikit.TUICommonDefine;
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -102,7 +104,22 @@ final class TUICallingService implements ITUINotification, ITUIService {
                 && TUIConstants.TUILogin.EVENT_SUB_KEY_USER_LOGOUT_SUCCESS.equals(subKey)) {
             TUICallKitPlugin.handleLogoutSuccess();
         } else if (TUIConstants.TUILogin.EVENT_SUB_KEY_USER_LOGIN_SUCCESS == subKey) {
+            setExcludeFromHistoryMessage();
             TUICallKitPlugin.handleLoginSuccess();
+        }
+    }
+
+    private void setExcludeFromHistoryMessage() {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("excludeFromHistoryMessage", false);
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("api", "setExcludeFromHistoryMessage");
+            jsonObject.put("params", params);
+            TUICallEngine.createInstance(appContext).callExperimentalAPI(jsonObject.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

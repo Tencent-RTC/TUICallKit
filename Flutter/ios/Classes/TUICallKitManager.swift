@@ -10,6 +10,7 @@
 import Foundation
 import Flutter
 import TUICallEngine
+import TUICore
 
 class TUICallKitManager {
     static let shared = TUICallKitManager.init()
@@ -21,14 +22,12 @@ class TUICallKitManager {
             result(NSNumber(value: -1))
             return
         }
-        
-        let url = URL(fileURLWithPath: filePath)
-        let _ = CallingBellPlayer.instance.playAudio(url: url)
+        CallingBellPlayer.instance.startRing(filePath: filePath)
         result(NSNumber(value: 0))
     }
     
     func stopRing(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        CallingBellPlayer.instance.stopPlay()
+        CallingBellPlayer.instance.stopRing()
         result(NSNumber(value: 0))
     }
     
@@ -145,6 +144,23 @@ class TUICallKitManager {
             return
         }
         TUICallState.instance.mResourceDic = dic
+        result(NSNumber(value: 0))
+    }
+    
+    func openMicrophone(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        TUICore.notifyEvent(TUICore_TUICallKitVoIPExtensionNotify,
+                                        subKey: TUICore_TUICore_TUICallKitVoIPExtensionNotify_OpenMicrophoneSubKey,
+                                        object: nil,
+                                        param: nil)
+        result(NSNumber(value: 0))
+    }
+    
+    func closeMicrophone(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        TUICore.notifyEvent(TUICore_TUICallKitVoIPExtensionNotify,
+                                    subKey: TUICore_TUICore_TUICallKitVoIPExtensionNotify_CloseMicrophoneSubKey,
+                                    object: nil,
+                                    param: nil)
+
         result(NSNumber(value: 0))
     }
 }

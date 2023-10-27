@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.tencent.cloud.tuikit.flutter.tuicallkit.TUICallKitPlugin;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.FloatActivity;
+import com.tencent.qcloud.tuicore.permission.PermissionRequester;
 
 import java.util.List;
 
@@ -31,8 +32,7 @@ public class KitAppUtils {
     }
 
     public static void moveAppToForeground(Context context, String event) {
-        // TODO 目前只兼容部分手机，待Native权限 需求完成后这里需要继续完善，目前自测小米手机需要悬浮窗权限和 后台拉起界面权限才可以
-        if (KitPermissionUtils.hasPermission(context)) {
+        if (KitPermissionUtils.hasPermission(PermissionRequester.BG_START_PERMISSION)) {
             Intent intent = new Intent(context, FloatActivity.class);
             intent.putExtra(KitAppUtils.EVENT_KEY, event);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

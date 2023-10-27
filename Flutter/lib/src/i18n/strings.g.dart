@@ -2,10 +2,10 @@
 /*
  * Generated file. Do not edit.
  *
- * Locales: 2
- * Strings: 180 (90.0 per locale)
+ * Locales: 3
+ * Strings: 270 (90.0 per locale)
  *
- * Built on 2023-08-09 at 09:15 UTC
+ * Built on 2023-10-12 at 11:17 UTC
  */
 
 import 'package:flutter/widgets.dart';
@@ -21,6 +21,7 @@ AppLocale _currLocale = _baseLocale;
 /// - if (LocaleSettings.currentLocale == AppLocale.en) // locale check
 enum AppLocale {
 	en, // 'en' (base locale, fallback)
+	ja, // 'ja'
 	zhHans, // 'zh-Hans'
 }
 
@@ -124,12 +125,13 @@ class AppLocaleUtils {
 	/// Returns the locale of the device as the enum type.
 	/// Fallbacks to base locale.
 	static AppLocale findDeviceLocale() {
-		final String deviceLocale = WidgetsBinding.instance.window.locale.toLanguageTag();
-		final typedLocale = _selectLocale(deviceLocale);
-		if (typedLocale != null) {
-			return typedLocale;
+		final String? deviceLocale = WidgetsBinding.instance.window.locale.toLanguageTag();
+		if (deviceLocale != null) {
+			final typedLocale = _selectLocale(deviceLocale);
+			if (typedLocale != null) {
+				return typedLocale;
+			}
 		}
-
 		return _baseLocale;
 	}
 
@@ -146,8 +148,9 @@ class AppLocaleUtils {
 
 // translation instances
 
-_StringsEn _translationsEn = _StringsEn.build();
-_StringsZhHans _translationsZhHans = _StringsZhHans.build();
+late _StringsEn _translationsEn = _StringsEn.build();
+late _StringsJa _translationsJa = _StringsJa.build();
+late _StringsZhHans _translationsZhHans = _StringsZhHans.build();
 
 // extensions for AppLocale
 
@@ -159,6 +162,7 @@ extension AppLocaleExtensions on AppLocale {
 	_StringsEn get translations {
 		switch (this) {
 			case AppLocale.en: return _translationsEn;
+			case AppLocale.ja: return _translationsJa;
 			case AppLocale.zhHans: return _translationsZhHans;
 		}
 	}
@@ -173,6 +177,7 @@ extension AppLocaleExtensions on AppLocale {
 	_StringsEn build() {
 		switch (this) {
 			case AppLocale.en: return _StringsEn.build();
+			case AppLocale.ja: return _StringsJa.build();
 			case AppLocale.zhHans: return _StringsZhHans.build();
 		}
 	}
@@ -180,6 +185,7 @@ extension AppLocaleExtensions on AppLocale {
 	String get languageTag {
 		switch (this) {
 			case AppLocale.en: return 'en';
+			case AppLocale.ja: return 'ja';
 			case AppLocale.zhHans: return 'zh-Hans';
 		}
 	}
@@ -187,6 +193,7 @@ extension AppLocaleExtensions on AppLocale {
 	Locale get flutterLocale {
 		switch (this) {
 			case AppLocale.en: return const Locale.fromSubtags(languageCode: 'en');
+			case AppLocale.ja: return const Locale.fromSubtags(languageCode: 'ja');
 			case AppLocale.zhHans: return const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', );
 		}
 	}
@@ -196,6 +203,7 @@ extension StringAppLocaleExtensions on String {
 	AppLocale? toAppLocale() {
 		switch (this) {
 			case 'en': return AppLocale.en;
+			case 'ja': return AppLocale.ja;
 			case 'zh-Hans': return AppLocale.zhHans;
 			default: return null;
 		}
@@ -397,6 +405,114 @@ class _StringsEn {
 	String get k_0000088 => 'Waiting';
 	String get k_0000089 => 'Display pop-up window while running in the background and Display pop-up Window permissions';
 	String get k_0000090 => 'You have a new call';
+}
+
+// Path: <root>
+class _StringsJa implements _StringsEn {
+
+	/// You can call this constructor and build your own translation instance of this locale.
+	/// Constructing via the enum [AppLocale.build] is preferred.
+	_StringsJa.build();
+
+	/// Access flat map
+	@override dynamic operator[](String key) => _flatMap[key];
+
+	// Internal flat map initialized lazily
+	@override late final Map<String, dynamic> _flatMap = _buildFlatMap();
+
+	@override late final _StringsJa _root = this; // ignore: unused_field
+
+	// Translations
+	@override String get k_0000001 => '相手が招待を承諾するのを待っています。';
+	@override String get k_0000002 => '通話に招待されました。';
+	@override String get k_0000003 => 'グループ通話に招待されました。';
+	@override String get k_0000004 => '新通話の呼入がありますが、権限不足により、接听できません。カメラ/マイクの権限が有効かどうか確認してください。';
+	@override String get k_0000005 => '邀请メンバーを翻訳します。';
+	@override String get k_0000006 => '自分';
+	@override String get k_0000007 => 'マイク';
+	@override String get k_0000008 => '通話終了';
+	@override String get k_0000009 => 'スピーカー';
+	@override String get k_0000010 => 'イヤホン';
+	@override String get k_0000011 => 'カメラ';
+	@override String get k_0000012 => '音声通話に切り替えます';
+	@override String get k_0000013 => '応答';
+	@override String get k_0000014 => '最大人数を超えました';
+	@override String get k_0000015 => '通話拒否';
+	@override String get k_0000016 => '呼び出しタイムアウト';
+	@override String get k_0000017 => '相手が通話中です';
+	@override String get k_0000018 => '通話を終了します';
+	@override String get k_0000019 => 'TRTC';
+	@override String get k_0000020 => 'ユーザーID';
+	@override String get k_0000021 => 'ログイン';
+	@override String get k_0000022 => 'クイックアクセス';
+	@override String get k_0000023 => 'パッケージの購入';
+	@override String get k_0000024 => 'クイックアクセス';
+	@override String get k_0000025 => 'API ドキュメント';
+	@override String get k_0000026 => 'よくある問題';
+	@override String get k_0000027 => '1v1通話';
+	@override String get k_0000028 => 'グループ通話';
+	@override String get k_0000029 => 'メディアタイプ';
+	@override String get k_0000030 => 'ビデオ通話';
+	@override String get k_0000031 => '音声通話';
+	@override String get k_0000032 => '通話設定';
+	@override String get k_0000033 => '通話を開始';
+	@override String get k_0000034 => 'グループID';
+	@override String get k_0000035 => 'グループ通話に参加する';
+	@override String get k_0000036 => 'ルームID（番号）';
+	@override String get k_0000037 => 'ルームID（文字列）';
+	@override String get k_0000038 => '1V1通话';
+	@override String get k_0000039 => 'プロフィール画像';
+	@override String get k_0000040 => 'ニックネーム';
+	@override String get k_0000041 => 'ミュートモード';
+	@override String get k_0000042 => 'フローティングウィンドウの表示';
+	@override String get k_0000043 => '通話パラメータの設定';
+	@override String get k_0000044 => 'コールウェイティングのタイムアウト時間を設定してください';
+	@override String get k_0000045 => '拡張情報';
+	@override String get k_0000046 => 'オフラインメッセージ';
+	@override String get k_0000047 => 'ビデオ設定';
+	@override String get k_0000048 => '解像度';
+	@override String get k_0000049 => '縦横画面';
+	@override String get k_0000050 => '横画面';
+	@override String get k_0000051 => '縦画面';
+	@override String get k_0000052 => '塗りつぶしパターン';
+	@override String get k_0000053 => '塗りつぶし';
+	@override String get k_0000054 => 'フィット';
+	@override String get k_0000055 => '回転角度';
+	@override String get k_0000056 => '美顔のレベル';
+	@override String get k_0000057 => '未設定';
+	@override String get k_0000058 => '設定に移動';
+	@override String get k_0000059 => '入ってください';
+	@override String get k_0000060 => 'プロフィール画像とユーザー名を入力してください';
+	@override String get k_0000061 => '拡張情報';
+	@override String get k_0000062 => 'オフライン メッセージ情報の json 文字列を入力してください';
+	@override String get k_0000063 => '携帯電話番号/ユーザーIDを入力してください';
+	@override String get k_0000064 => 'グループIDを入力してください';
+	@override String get k_0000065 => '用户ID使用逗号隔开';
+	@override String get k_0000066 => 'ルームIDを入力してください';
+	@override String get k_0000067 => '注: TUICallKit はオフライン通話をサポートし、Android、iOS、Web、Flutter などの複数のプラットフォームをサポートします。';
+	@override String get k_0000068 => 'ニックネーム';
+	@override String get k_0000069 => 'ログインに失敗しました。すべての機能が使用できません';
+	@override String get k_0000070 => 'OK';
+	@override String get k_0000071 => 'OK';
+	@override String get k_0000072 => 'キャンセル';
+	@override String get k_0000073 => 'TRTC';
+	@override String get k_0000074 => 'ログアウト';
+	@override String get k_0000075 => 'ユーザーIDを入力してください';
+	@override String get k_0000076 => 'ユーザーIDのリストを入力してください';
+	@override String get k_0000077 => '通話終了';
+	@override String get k_0000078 => '通話が拒否されました';
+	@override String get k_0000079 => '相手が通話中です';
+	@override String get k_0000080 => '呼び出しタイムアウト';
+	@override String get k_0000081 => '通話が拒否されました';
+	@override String get k_0000082 => '通話終了';
+	@override String get k_0000083 => '匿名';
+	@override String get k_0000084 => 'マイクへのアクセス許可を申請します。';
+	@override String get k_0000085 => 'マイクとカメラの許可を申請する';
+	@override String get k_0000086 => 'マイクへのアクセス許可が必要で、音声/ビデオ通話、グループ音声/ビデオ通話などの機能に使用できます。マイクをオンにした場合のみ、録画した動画に音声が保存されます。';
+	@override String get k_0000087 => 'カメラへのアクセス許可が必要で、ビデオ通話、グループビデオ通話などの機能に使用できます。美顔機能を使用する場合は、カメラで撮影された映像から顔の特徴点情報をリアルタイムで収集し、より自然な美しさを提供します。';
+	@override String get k_0000088 => '応答を待っています';
+	@override String get k_0000089 => 'バックグラウンドポップアップインターフェースを有効にし、同時にフローティングウィンドウ権限を表示してください。';
+	@override String get k_0000090 => '新しい電話があります';
 }
 
 // Path: <root>
@@ -603,6 +719,103 @@ extension on _StringsEn {
 			'k_0000088': 'Waiting',
 			'k_0000089': 'Display pop-up window while running in the background and Display pop-up Window permissions',
 			'k_0000090': 'You have a new call',
+		};
+	}
+}
+
+extension on _StringsJa {
+	Map<String, dynamic> _buildFlatMap() {
+		return <String, dynamic>{
+			'k_0000001': '相手が招待を承諾するのを待っています。',
+			'k_0000002': '通話に招待されました。',
+			'k_0000003': 'グループ通話に招待されました。',
+			'k_0000004': '新通話の呼入がありますが、権限不足により、接听できません。カメラ/マイクの権限が有効かどうか確認してください。',
+			'k_0000005': '邀请メンバーを翻訳します。',
+			'k_0000006': '自分',
+			'k_0000007': 'マイク',
+			'k_0000008': '通話終了',
+			'k_0000009': 'スピーカー',
+			'k_0000010': 'イヤホン',
+			'k_0000011': 'カメラ',
+			'k_0000012': '音声通話に切り替えます',
+			'k_0000013': '応答',
+			'k_0000014': '最大人数を超えました',
+			'k_0000015': '通話拒否',
+			'k_0000016': '呼び出しタイムアウト',
+			'k_0000017': '相手が通話中です',
+			'k_0000018': '通話を終了します',
+			'k_0000019': 'TRTC',
+			'k_0000020': 'ユーザーID',
+			'k_0000021': 'ログイン',
+			'k_0000022': 'クイックアクセス',
+			'k_0000023': 'パッケージの購入',
+			'k_0000024': 'クイックアクセス',
+			'k_0000025': 'API ドキュメント',
+			'k_0000026': 'よくある問題',
+			'k_0000027': '1v1通話',
+			'k_0000028': 'グループ通話',
+			'k_0000029': 'メディアタイプ',
+			'k_0000030': 'ビデオ通話',
+			'k_0000031': '音声通話',
+			'k_0000032': '通話設定',
+			'k_0000033': '通話を開始',
+			'k_0000034': 'グループID',
+			'k_0000035': 'グループ通話に参加する',
+			'k_0000036': 'ルームID（番号）',
+			'k_0000037': 'ルームID（文字列）',
+			'k_0000038': '1V1通话',
+			'k_0000039': 'プロフィール画像',
+			'k_0000040': 'ニックネーム',
+			'k_0000041': 'ミュートモード',
+			'k_0000042': 'フローティングウィンドウの表示',
+			'k_0000043': '通話パラメータの設定',
+			'k_0000044': 'コールウェイティングのタイムアウト時間を設定してください',
+			'k_0000045': '拡張情報',
+			'k_0000046': 'オフラインメッセージ',
+			'k_0000047': 'ビデオ設定',
+			'k_0000048': '解像度',
+			'k_0000049': '縦横画面',
+			'k_0000050': '横画面',
+			'k_0000051': '縦画面',
+			'k_0000052': '塗りつぶしパターン',
+			'k_0000053': '塗りつぶし',
+			'k_0000054': 'フィット',
+			'k_0000055': '回転角度',
+			'k_0000056': '美顔のレベル',
+			'k_0000057': '未設定',
+			'k_0000058': '設定に移動',
+			'k_0000059': '入ってください',
+			'k_0000060': 'プロフィール画像とユーザー名を入力してください',
+			'k_0000061': '拡張情報',
+			'k_0000062': 'オフライン メッセージ情報の json 文字列を入力してください',
+			'k_0000063': '携帯電話番号/ユーザーIDを入力してください',
+			'k_0000064': 'グループIDを入力してください',
+			'k_0000065': '用户ID使用逗号隔开',
+			'k_0000066': 'ルームIDを入力してください',
+			'k_0000067': '注: TUICallKit はオフライン通話をサポートし、Android、iOS、Web、Flutter などの複数のプラットフォームをサポートします。',
+			'k_0000068': 'ニックネーム',
+			'k_0000069': 'ログインに失敗しました。すべての機能が使用できません',
+			'k_0000070': 'OK',
+			'k_0000071': 'OK',
+			'k_0000072': 'キャンセル',
+			'k_0000073': 'TRTC',
+			'k_0000074': 'ログアウト',
+			'k_0000075': 'ユーザーIDを入力してください',
+			'k_0000076': 'ユーザーIDのリストを入力してください',
+			'k_0000077': '通話終了',
+			'k_0000078': '通話が拒否されました',
+			'k_0000079': '相手が通話中です',
+			'k_0000080': '呼び出しタイムアウト',
+			'k_0000081': '通話が拒否されました',
+			'k_0000082': '通話終了',
+			'k_0000083': '匿名',
+			'k_0000084': 'マイクへのアクセス許可を申請します。',
+			'k_0000085': 'マイクとカメラの許可を申請する',
+			'k_0000086': 'マイクへのアクセス許可が必要で、音声/ビデオ通話、グループ音声/ビデオ通話などの機能に使用できます。マイクをオンにした場合のみ、録画した動画に音声が保存されます。',
+			'k_0000087': 'カメラへのアクセス許可が必要で、ビデオ通話、グループビデオ通話などの機能に使用できます。美顔機能を使用する場合は、カメラで撮影された映像から顔の特徴点情報をリアルタイムで収集し、より自然な美しさを提供します。',
+			'k_0000088': '応答を待っています',
+			'k_0000089': 'バックグラウンドポップアップインターフェースを有効にし、同時にフローティングウィンドウ権限を表示してください。',
+			'k_0000090': '新しい電話があります',
 		};
 	}
 }

@@ -170,20 +170,26 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-            margin: const EdgeInsets.only(top: 150),
-            height: 120,
-            width: 120,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              image: DecorationImage(
-                image: NetworkImage(StringStream.makeNull(CallState.instance.caller.avatar, Constants.defaultAvatar)),
-                fit: BoxFit.cover,
-              ),
-            )),
+          margin: const EdgeInsets.only(top: 150),
+          height: 120,
+          width: 120,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(15)),
+          ),
+          child: Image(
+            image: NetworkImage(
+                StringStream.makeNull(CallState.instance.caller.avatar, Constants.defaultAvatar)),
+            fit: BoxFit.cover,
+            errorBuilder: (ctx, err, stackTrace) => Image.asset(
+              'assets/images/user_icon.png',
+              package: 'tencent_calls_uikit',
+            ),
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: Text(
-            StringStream.makeNull(CallState.instance.caller.nickname, CallState.instance.caller.id),
+            User.getUserDisplayName(CallState.instance.caller),
             style: TextStyle(fontSize: 24, color: _getTextColor()),
           ),
         ),
@@ -203,12 +209,16 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
               return Container(
                 height: 30,
                 width: 30,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  image: DecorationImage(
-                    image: NetworkImage(
-                        StringStream.makeNull(CallState.instance.calleeList[index].avatar, Constants.defaultAvatar)),
-                    fit: BoxFit.cover,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                ),
+                child: Image(
+                  image: NetworkImage(StringStream.makeNull(
+                      CallState.instance.calleeList[index].avatar, Constants.defaultAvatar)),
+                  fit: BoxFit.cover,
+                  errorBuilder: (ctx, err, stackTrace) => Image.asset(
+                    'assets/images/user_icon.png',
+                    package: 'tencent_calls_uikit',
                   ),
                 ),
               );
@@ -228,7 +238,9 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
         spacing: 0,
         runSpacing: 0,
         direction: Axis.horizontal,
-        alignment: CallState.instance.remoteUserList.length == 2 ? WrapAlignment.center : WrapAlignment.start,
+        alignment: CallState.instance.remoteUserList.length == 2
+            ? WrapAlignment.center
+            : WrapAlignment.start,
         children: List.generate(CallState.instance.remoteUserList.length + 1, (index) {
           User user = _getUserByViewIndex(index);
           return SizedBox(
@@ -240,15 +252,21 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
                 Visibility(
                   visible: !user.videoAvailable,
                   child: Container(
-                      width: _getVideoViewWidthHeight(),
-                      height: _getVideoViewWidthHeight(),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(0),
-                        image: DecorationImage(
-                          image: NetworkImage(StringStream.makeNull(user.avatar, Constants.defaultAvatar)),
-                          fit: BoxFit.cover,
-                        ),
-                      )),
+                    width: _getVideoViewWidthHeight(),
+                    height: _getVideoViewWidthHeight(),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(0)),
+                    ),
+                    child: Image(
+                      image:
+                          NetworkImage(StringStream.makeNull(user.avatar, Constants.defaultAvatar)),
+                      fit: BoxFit.cover,
+                      errorBuilder: (ctx, err, stackTrace) => Image.asset(
+                        'assets/images/user_icon.png',
+                        package: 'tencent_calls_uikit',
+                      ),
+                    ),
+                  ),
                 ),
                 Visibility(
                   visible: TUICallMediaType.video == CallState.instance.mediaType,
@@ -264,7 +282,8 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
                   ),
                 ),
                 Visibility(
-                  visible: user.callStatus == TUICallStatus.waiting && user.id != CallState.instance.selfUser.id,
+                  visible: user.callStatus == TUICallStatus.waiting &&
+                      user.id != CallState.instance.selfUser.id,
                   child: SizedBox(
                     width: 50,
                     height: 50,
@@ -277,7 +296,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
                 Positioned(
                     left: 5,
                     bottom: 5,
-                    child: Text(StringStream.makeNull(user.nickname, user.id),
+                    child: Text(User.getUserDisplayName(user),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 14,

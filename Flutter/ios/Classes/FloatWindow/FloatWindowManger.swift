@@ -39,7 +39,7 @@ class FloatWindowManger: NSObject, FloatingWindowViewDelegate {
     func showFloatWindow() {
         let floatViewController = FloatWindowViewController()
         floatViewController.delegate = self
-        floatWindow.frame = CGRectMake(Screen_Width - kMicroVideoViewWidth, 150, kMicroVideoViewWidth, kMicroVideoViewHeight)
+        floatWindow.frame = CGRect(x: Screen_Width - kMicroVideoViewWidth, y: 150, width: kMicroVideoViewWidth, height: kMicroVideoViewHeight)
         floatWindow.backgroundColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
         floatWindow.layer.cornerRadius = 10.0
         floatWindow.layer.masksToBounds = true
