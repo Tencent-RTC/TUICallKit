@@ -5,6 +5,7 @@ class User {
   String id = '';
   String avatar = '';
   String nickname = '';
+  String remark = '';
   TUICallRole callRole = TUICallRole.none;
   TUICallStatus callStatus = TUICallStatus.none;
   bool audioAvailable = false;
@@ -18,6 +19,7 @@ class User {
     data['id'] = id;
     data['avatar'] = avatar;
     data['nickname'] = nickname;
+    data['remark'] = remark;
     data['callRole'] = callRole.index;
     data['callStatus'] = callStatus.index;
     data['audioAvailable'] = audioAvailable;
@@ -25,5 +27,15 @@ class User {
     data['playOutVolume'] = playOutVolume;
     data['viewID'] = viewID;
     return data;
+  }
+
+  static String getUserDisplayName(User user) {
+    if (user.remark.isNotEmpty) {
+      return user.remark;
+    }
+    if (user.nickname.isNotEmpty) {
+      return user.nickname;
+    }
+    return user.id;
   }
 }

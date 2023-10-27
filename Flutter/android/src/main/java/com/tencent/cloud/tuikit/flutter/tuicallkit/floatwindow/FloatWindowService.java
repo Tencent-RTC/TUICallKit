@@ -15,7 +15,7 @@ import android.view.WindowManager;
 
 import com.tencent.cloud.tuikit.flutter.tuicallkit.R;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitPermissionUtils;
-import com.tencent.qcloud.tuicore.ServiceInitializer;
+import com.tencent.qcloud.tuicore.permission.PermissionRequester;
 
 public class FloatWindowService extends Service {
     private static Intent        mStartIntent;
@@ -39,7 +39,7 @@ public class FloatWindowService extends Service {
     private boolean mIsMove;
 
     public static void startFloatWindow(Context context) {
-        if (KitPermissionUtils.hasPermission(context)) {
+        if (KitPermissionUtils.hasPermission(PermissionRequester.FLOAT_PERMISSION)) {
             mContext = context;
             mCallView = new FloatCallView(context);
             mCallView.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +51,7 @@ public class FloatWindowService extends Service {
             mStartIntent = new Intent(context, FloatWindowService.class);
             context.startService(mStartIntent);
         } else {
-            KitPermissionUtils.requestFloatPermission(ServiceInitializer.getAppContext());
+            KitPermissionUtils.requestFloatPermission();
         }
     }
 

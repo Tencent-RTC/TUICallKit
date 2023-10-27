@@ -65,6 +65,18 @@ class TUICallKit {
         .joinInGroupCall(roomId, groupId, callMediaType);
   }
 
+
+  /// Set the ringtone (preferably shorter than 30s)
+  ///
+  /// First introduce the ringtone resource into the project
+  /// Then set the resource as a ringtone
+  ///
+  /// @param filePath Callee ringtone path
+  Future<void> setCallingBell(String assetName) async {
+    return await CallManager.instance.setCallingBell(assetName);
+  }
+
+
   ///Enable the mute mode (the callee doesn't ring)
   Future<void> enableMuteMode(bool enable) async {
     return await CallManager.instance.enableMuteMode(enable);

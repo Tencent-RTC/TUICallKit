@@ -48,6 +48,9 @@ Here is an example of integration with UI (ie TUICallKit),  which is also our re
 - If you want to learn more about the projects maintained by Tencent Cloud  Media Services Team, you can check our [Product Official Website](https://trtc.tencentcloud.com/), [Github Organizations](https://github.com/LiteAVSDK) etc.
 
 
+## Recommended Resources
+
+If you also need to use In-App Chat module, we recommend the [Chat TUIKit component library](https://pub.dev/packages/tencent_cloud_chat_uikit). With [Chat TUIKit](https://pub.dev/packages/tencent_cloud_chat_uikit), you can quickly develop and integrate a mobile and desktop cross-platform chat application with a set of code and UI interface. You can experience the official TUIKit demo quickly through [this link](https://github.com/TencentCloud/chat-demo-flutter).
 
 ## Have any questions?
 - Welcome to submit [**issue**](https://github.com/tencentyun/TUICallKit/issues),  

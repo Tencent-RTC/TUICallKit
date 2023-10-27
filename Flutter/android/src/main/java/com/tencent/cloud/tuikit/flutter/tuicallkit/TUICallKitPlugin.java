@@ -22,8 +22,8 @@ import com.tencent.cloud.tuikit.tuicall_engine.utils.Logger;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.MethodCallUtils;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.TUILogin;
+import com.tencent.qcloud.tuicore.permission.PermissionRequester;
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -52,7 +52,7 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler {
         mChannel.setMethodCallHandler(this);
 
         mApplicationContext = flutterPluginBinding.getApplicationContext();
-        mCallingBellService = new CallingBellService();
+        mCallingBellService = new CallingBellService(mApplicationContext);
     }
 
     @Override
@@ -146,12 +146,12 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler {
     }
 
     public void hasFloatPermission(MethodCall call, MethodChannel.Result result) {
-        if (KitPermissionUtils.hasPermission(mApplicationContext)) {
+        if (KitPermissionUtils.hasPermission(PermissionRequester.FLOAT_PERMISSION)) {
             result.success(true);
         } else {
             result.success(false);
         }
-        KitPermissionUtils.requestFloatPermission(mApplicationContext);
+        KitPermissionUtils.requestFloatPermission();
     }
 
     public void isAppInForeground(MethodCall call, MethodChannel.Result result) {

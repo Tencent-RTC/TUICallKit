@@ -13,6 +13,8 @@ protocol TUICallKitServiceDelegate: NSObject {
     func callMethodCall(userId: String, callMediaType: TUICallMediaType)
     func callMethodGroupCall(groupId: String, userIdList: [String], callMediaType: TUICallMediaType)
     func callMethodEnabelFloatWindow(enable: Bool)
+    func callMethodVoipChangeMute(mute: Bool)
+    func callMethodVoipChangeAudioPlaybackDevice(audioPlaybackDevice: TUIAudioPlaybackDevice)
 }
 
 
@@ -40,6 +42,7 @@ class TUICallKitService: NSObject, TUIServiceProtocol {
         if self.callKitServiceDelegate != nil && ((self.callKitServiceDelegate?.responds(to: Selector(("callMethodHandleLoginSuccess")))) != nil) {
             self.callKitServiceDelegate?.callMethodHandleLoginSuccess(sdkAppID: sdkAppId, userId: userId, userSig: userSig)
         }
+        setExcludeFromHistoryMessage()
     }
     
     @objc func logoutSuccessNotification(noti: Notification) {
@@ -48,6 +51,20 @@ class TUICallKitService: NSObject, TUIServiceProtocol {
         }
     }
     
+    func setExcludeFromHistoryMessage() {
+        let jsonParams: [String: Any] = ["api": "setExcludeFromHistoryMessage",
+                                         "params": ["excludeFromHistoryMessage": false,],]
+        guard let data = try? JSONSerialization.data(withJSONObject: jsonParams,
+                                                     options: JSONSerialization.WritingOptions(rawValue: 0)) else {
+            return
+        }
+        guard let paramsString = NSString(data: data, encoding: String.Encoding.utf8.rawValue) as? String else {
+            return
+        }
+        
+        TUICallEngine.createInstance().callExperimentalAPI(jsonObject: paramsString)
+    }
+
     func startCall(groupID: String, userIDs: [String], callingType: TUICallMediaType) {
         let selector = NSSelectorFromString("setOnlineUserOnly")
         if TUICallEngine.createInstance().responds(to: selector) {
@@ -116,6 +133,18 @@ extension TUICallKitService {
                 
             } fail: { code, message in
                 
+            }
+        } else if method == TUICore_TUICallingService_SetAudioPlaybackDeviceMethod {
+            guard let audioPlaybackDevice = param[TUICore_TUICallingService_SetAudioPlaybackDevice_AudioPlaybackDevice]
+                    as? TUIAudioPlaybackDevice else { return nil }
+            if self.callKitServiceDelegate != nil && ((self.callKitServiceDelegate?.responds(to: Selector(("callMethodVoipChangeAudioPlaybackDevice")))) != nil) {
+                self.callKitServiceDelegate?.callMethodVoipChangeAudioPlaybackDevice(audioPlaybackDevice: audioPlaybackDevice)
+            }
+        } else if method == TUICore_TUICallingService_SetIsMicMuteMethod {
+            guard let isMicMute = param[TUICore_TUICallingService_SetIsMicMuteMethod_IsMicMute]
+                    as? Bool else { return nil }
+            if self.callKitServiceDelegate != nil && ((self.callKitServiceDelegate?.responds(to: Selector(("callMethodVoipChangeMute")))) != nil) {
+                self.callKitServiceDelegate?.callMethodVoipChangeMute(mute: !isMicMute)
             }
         }
         return nil

@@ -58,4 +58,12 @@ abstract class TUICallKitPlatform extends PlatformInterface {
   Future<bool> initResources(Map resources) async {
     return await instance.initResources(resources);
   }
+
+  Future<void> openMicrophone() async {
+    await instance.openMicrophone();
+  }
+
+  Future<void> closeMicrophone() async {
+    await instance.openMicrophone();
+  }
 }

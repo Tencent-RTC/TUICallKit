@@ -1,153 +1,183 @@
+## 1.9.2
+## New Features
+- iOS: Support Voip.
+### Bug Fixes
+- iOS: Fixed an issue where the call page would be abnormal when receiving a call in the background.
+
+## 1.9.0
+## New Features
+- Android$iOS: Add an interface for setting ringtones.
+### Function Optimization:
+- Android & iOS: Optimize package purchasing prompts.
+- Android & iOS: Optimize default bitrates for different resolutions, [see details](https://trtc.io/document/46660/51002/54904/54909).
+### Bug Fixes
+- iOS: Fixed the issue where the same Observer object can be registered twice.
+### Dependency Description
+- Upgrade the dependent client SDK version: Android&iOS TUICore:7.5.4852, Android&iOS TUICallEngine:1.9.0.680.
+
+## 1.8.3
+### Bug Fixes
+- Android&iOS: Fixed the problem of no call message display when using tencent_cloud_chat_uikit.
+- Android&iOS: Fixed the problem of occasionally pulling up the group call page during a single-person call.
+- Android&iOS: Fixed the problem of occasionally pulling up the call page twice during a call.
+- Android&iOS: Fixed the problem of abnormal display of call duration.
+### Function Optimization:
+- Android: Optimized the problem of failing to pull up the interface in the background when receiving a call.
+### Dependency Description
+- Upgrade tencent_cloud_uikit_core to version 1.1.1.
+
+## 1.8.2
+### Bug Fixes
+- iOS: Fixed the problem of some compilers failing to compile due to the use of deprecated Swift interfaces.
+
 ## 1.8.1
-### 缺陷修复：
-- Android&iOS：修复群组通话语音通话会显示对方视频流。
+### Bug Fixes
+- Android&iOS: Fixed the problem of the video stream of the other party being displayed during a group call voice call.
 
 ## 1.8.0
-### 新特性
-- Android&iOS：基于 Dart 语言构建全新的 TUICallkit，可以更方便的定制自己的 UI 风格。
-- Android&iOS：TUICallEngine 新增诸如 hangup、accept、reject等多个业务接口。
+## New Features
+- Android&iOS: Built a new TUICallkit based on the Dart language, which makes it easier to customize your own UI style.
+- Android&iOS: TUICallEngine adds multiple business interfaces such as hangup, accept, reject, etc.
 
 ## 1.7.6-preview
-### 功能优化：
-- Android&iOS：优化未设置用户名、用户头像时用户信息显示的问题。
-- Android&iOS：优化单人视频通话 UI。
-### 缺陷修复：
-- Android&iOS：修复通话过程中退出登录产生的页面异常问题。
-- Android: 修复通话过程中被踢下线产生的页面异常问题。
+### Function Optimization:
+- Android&iOS: Optimized the display of user information when the username and user avatar are not set.
+- Android&iOS: Optimized the UI of one-to-one video calls.
+### Bug Fixes:
+- Android&iOS: Fixed the problem of abnormal pages generated when logging out during a call.
+- Android: Fixed the problem of abnormal pages generated when kicked offline during a call.
 
 ## 1.7.5-preview
-### 新特性
-- Android&iOS：基于 Dart 语言构建全新的 TUICallkit，可以更方便的定制自己的 UI 风格。
-- Android&iOS：TUICallEngine 新增诸如 hangup、accept、reject等多个业务接口。
+### New Features
+- Android&iOS: Built a new TUICallkit based on the Dart language, which makes it easier to customize your own UI style.
+- Android&iOS: TUICallEngine adds multiple business interfaces such as hangup, accept, reject, etc.
 
 ## 1.7.4
-### 功能优化：
-- Android：默认关闭重力感应，优化在大屏、定制设备的通话体验。
-### 缺陷修复：
-- Android&iOS：A呼叫B(离线)后取消，A再次呼叫B，B登录上线，B的云端通话记录异常问题。
+### Function Optimization:
+- Android: Gravity sensing is turned off by default, optimizing the call experience on large screens and customized devices.
+### Bug Fixes:
+- Android&iOS: When A calls B (offline) and cancels it, A calls B again, and B logs in and comes online, there is an abnormal problem with B's cloud call records.
 
 ## 1.7.3
-### 功能优化
-- Android: 支持使用模拟器进行开发&调试。
-### 依赖说明
-- 升级依赖的客户端 SDK 版本：Android LiteAVSDK_Professional: 11.3.0.13176。
+### Function Optimization
+- Android: Supports development and debugging using emulators.
+### Dependency Description
+- Upgrade the dependent client SDK version: Android LiteAVSDK_Professional: 11.3.0.13176.
 
 ## 1.7.2
-### 缺陷修复
-- iOS: 升级客户端 SDK版本，修复因为 Non-public API usage 问题导致的 AppStore 上架失败的问题。
+### Bug Fixes
+- iOS: Upgrade the client SDK version to fix the problem of AppStore rejection due to Non-public API usage.
 
 ## 1.7.1
-### 新特性
-- Android&iOS：新增云端通话记录，您可以在控制台开通服务进行体验查询。
-### 功能优化
-- Android：降低通话时系统保活的级别，只在状态栏显示保活提示，去掉通知和震动。
+### New Features
+- Android&iOS: Added cloud call records, you can open the service in the console to experience the query.
+### Function Optimization
+- Android: Lower the level of system keep-alive during the call, only display the keep-alive prompt in the status bar, and remove the notification and vibration.
 
 ## 1.6.3
-### 缺陷修复
-- iOS：修复调用 `joinInGroupCall` 后中途加人页面为空的问题。
-- iOS：修复调用 `joinInGroupCall` 后用户画面遮挡的问题。
+### Bug Fixes:
+- iOS: Fixed the problem of an empty page when adding a participant during a call after calling joinInGroupCall.
+- iOS: Fixed the problem of user screen being covered after calling joinInGroupCall.
 
 ## 1.6.2
-### 缺陷修复
-- Android：修复调用 `joinInGroupCall` api引起Crash问题 。
+### Bug Fixes:
+- Android: Fixed the crash problem caused by calling the joinInGroupCall API.
 
 ## 1.6.1
-### 缺陷修复
-- Android：修复在 Vivo 特定机型上申请悬浮窗权限时偶现的崩溃问题。
-### 依赖说明
-- 升级依赖的客户端 SDK 版本：Android LiteAVSDK_Professional: 11.1.0.13111、iOS TXLiteAVSDK_Professional: 11.1.14143。
+### Bug Fixes
+- iOS: Fixed the problem of an empty midway page after calling joinInGroupCall.
+- iOS: Fixed the problem of user screen blocking after calling joinInGroupCall.
 
 ## 1.6.0
-
-### 新特性
-- Android&iOS：增加hangup挂断接口。
-- Android&iOS：增加用户自定义字段、增加用户自定义通话超时时长。
-- Android&iOS：群组通话增加中途加人页面。
-### 功能优化
-- Android：优化单人视频通话头像显示。
-- Android&iOS：群组通话中，默认支持邀请其他群成员加入通话。
-### 缺陷修复
-- Android：修复 Android 12及其以上 设备链接蓝牙后无声的问题。
-- Android：修复被叫端偶现静音设置不生效问题。
-- iOS：修复重新登录后偶现设备接收不到来电邀请的问题。
-- iOS：修复 VoIP 推送页面昵称显示错误的问题。
-
-### 依赖说明
-- 升级依赖的客户端 SDK 版本：Android LiteAVSDK_Professional: 11.1.0.13111、iOS TXLiteAVSDK_Professional: 11.1.14143。
+### New Features
+- Android&iOS: Added the hangup interface.
+- Android&iOS: Added user-defined fields and user-defined call timeout duration.
+- Android&iOS: Added a midway page for group calls.
+### Function Optimization
+- Android: Optimized the display of single-person video call avatars.
+- Android&iOS: In group calls, inviting other group members to join the call is supported by default.
+### Bug Fixes
+- Android: Fixed the problem of no sound after connecting to Bluetooth on Android 12 and above devices.
+- Android: Fixed the problem of occasional failure of muting on the called end.
+- iOS: Fixed the problem of occasional failure to receive incoming call invitations after re-logging in.
+- iOS: Fixed the problem of incorrect display of the nickname on the VoIP push page.
+### Dependency Description
+- Upgrade the dependent client SDK version: Android LiteAVSDK_Professional: 11.1.0.13111, iOS TXLiteAVSDK_Professional: 11.1.14143.
 
 ## 1.5.4
-### 新特性
-- iOS：支持 VoIP 消息推送功能，提供更好的通话接听体验。
-- Android&iOS：增加 小米、华为、VIVO 离线推送高级参数。
-- Android&iOS：支持设置编码分辨率，画面方向等。
-- Android&iOS：支持设置渲染方向、渲染模式（自适应、填充）等。
-### 功能优化
-- Android：优化 `onCallEnd`回调中 totaltime 参数单位为毫秒。
-### 缺陷修复
-- Android&iOS：修复`onCallReceived`回调异常问题。
-- iOS：修复屏幕旋转时通话页面显示不全的问题。
+### New Features
+- iOS: Supports VoIP message push function, providing a better call answering experience.
+- Android&iOS: Added advanced parameters for offline push of Xiaomi, Huawei, and VIVO.
+- Android&iOS: Supports setting encoding resolution, picture direction, etc.
+- Android&iOS: Supports setting rendering direction, rendering mode (adaptive, fill), etc.
+### Function Optimization
+- Android: Optimized the totaltime parameter unit to milliseconds in the onCallEnd callback.
+### Bug Fixes
+- Android&iOS: Fixed the abnormal problem of the onCallReceived callback.
+- iOS: Fixed the problem of incomplete display of the call page when the screen is rotated.
 
 ## 1.5.3
-### 缺陷修复
-- Android：修复打包失败问题。
-- Android&iOS：修复回调方法未实现时抛出异常的问题。
-## 1.5.2
-### 缺陷修复
-- Android：修复 `TUICallDefine.OfflinePushInfo` API变更导致的编译报错。
-## 1.5.1
-### 缺陷修复
-- Android&iOS：修复 `tencent_calls_engine` 版本依赖错误的问题。
-## 1.5.0
-### 功能优化
-- Android：贴耳息屏功能默认关闭。
-- Android：升级 gradle 插件及版本。
-- Android：优化铃声播放类，支持循环播放。
-### 缺陷修复
-- Android&iOS：修复被叫接听通话失败，没有 onCallCancel 回调问题。
-- Android：修复被叫接听通话失败，主叫异常问题。
-- Android：修复首次通话检查权限时，主叫端取消通话，被叫端再次拉起界面问题。
-- Android：修复回调上层的网络质量 userId 为空问题。
-- iOS：修复 Example 中 Observer 注册时机错误的问题。
+### Bug Fixes
+- Android: Fixed the packaging failure problem.
+- Android&iOS: Fixed the problem of throwing an exception when the callback method is not implemented.
 
+## 1.5.2
+### Bug Fixes
+- Android: Fixed the compilation error caused by the API change of TUICallDefine.OfflinePushInfo.
+
+## 1.5.1
+### Bug Fixes
+- Android&iOS: Fixed the problem of incorrect version dependency of tencent_calls_engine.
+
+## 1.5.0
+### Function Optimization
+- Android: The ear-to-ear screen function is turned off by default.
+- Android: Upgrade the gradle plugin and version.
+- Android: Optimized the ringtone playback class to support loop playback.
+## Bug Fixes
+- Android&iOS: Fixed the problem of no onCallCancel callback when the callee failed to answer the call.
+- Android: Fixed the problem of the caller's exception when the callee failed to answer the call.
+- Android: Fixed the problem of the callee's interface being called again when the caller cancels the call during the first call permission check and the callee pulls up the interface again.
+- Android: Fixed the problem of the userId parameter being empty in the network quality callback to the upper layer.
+- iOS: Fixed the problem of incorrect Observer registration timing in the Example.
 
 ## 1.4.2
-### 缺陷修复
-- Android&iOS：修复 Example 中错误的 Observer 注册时机导致的通话异常问题；
-- iOS：修复 `removeObserver` API 偶现设置无效的问题；
+### Bug Fixes
+- Android&iOS: Fixed the problem of call exceptions caused by incorrect Observer registration timing in the Example.
+- iOS: Fixed the problem of occasional invalid settings of the removeObserver API.
 
 ## 1.4.1
-### 缺陷修复
-- Android：修复通话结束后，`OnCallEnd`事件丢失的问题。
+### Bug Fixes
+- Android: Fixed the problem of the OnCallEnd event being lost after the call ends.
 
 ## 1.4.0
-
-### 缺陷修复
-- Android&iOS：修复主动加入房间（joinInGroupCall）时通话异常结束问题。
-- Android：修复在音视频通话接听中退后台，再回到前台时，通话状态异常问题。
-- Android：修复同时集成 `tencent_cloud_chat_uikit` 插件时，登录状态导致的通话发起失败问题。
-- Android：修复发起群组通话中因为参数检查问题导致的通话发起失败问题。
-
+### Bug Fixes
+- Android&iOS: Fixed the problem of call exceptions when actively joining a room (joinInGroupCall).
+- Android: Fixed the problem of call status exceptions when the app is backgrounded during a call and then returned to the foreground.
+- Android: Fixed the problem of call initiation failure caused by login status when integrating the tencent_cloud_chat_uikit plugin at the same time.
+- Android: Fixed the problem of call initiation failure caused by parameter check issues during group call initiation.
 
 ## 1.3.1
-### 新特性
-- Android&iOS: 支持通话时自定义离线推送消息。
-### 缺陷修复
-- Android：修复同时集成 `tencent_cloud_chat_uikit` 插件时，提示`sdkappid is invalid`的问题。
+### New Features
+- Android&iOS: Supports custom offline push messages during calls.
+### Bug Fixes
+- Android: Fixed the problem of the sdkappid is invalid prompt when integrating the tencent_cloud_chat_uikit plugin at the same time.
 
 ## 1.3.0
-### 功能优化
-- iOS: 优化 TUICallKit 的 Framework 体积。
-### 缺陷修复
-- Android&iOS：修复服务端解散房间或踢出用户时，通话界面不消失问题。
-- Android：修复A呼叫离线用户B，然后取消；A 再次呼叫 B，B 上线后通话界面不显示问题。
-## 1.2.2
-### 缺陷修复
-- iOS：修复静态库链接导致的编译问题。
-## 1.2.0
-### 新特性
+### Function Optimization
+- iOS: Optimized the TUICallKit framework size.
+### Bug Fixes
+- Android&iOS: Fixed the problem of the call interface not disappearing when the server dissolves the room or kicks out a user.
+- Android: Fixed the problem of the call interface not displaying when A calls offline user B, cancels the call, and then calls B again after B comes online.
 
-- 支持1v1 音视频通话、群组音视频通话。
-- 支持自定义头像、自定义昵称。
-- 支持设置自定义铃音。
-- 支持通话过程中开启悬浮窗。
-- 支持多平台登录状态下的来电服务。 
+## 1.2.2
+### Bug Fixes
+- iOS: Fixed the compilation error caused by static library linking.
+
+## 1.2.0
+### New Features
+- Android&iOS: Supports 1v1 audio and video calls and group audio and video calls.
+- Android&iOS: Supports custom avatars and nicknames.
+- Android&iOS: Supports setting custom ringtones.
+- Android&iOS: Supports opening a floating window during a call.
+- Android&iOS: Supports incoming call services under multiple platform login status.

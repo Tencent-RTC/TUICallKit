@@ -7,19 +7,42 @@
 
 import Foundation
 import AVFAudio
+import TUICallEngine
+import TXLiteAVSDK_Professional
+
+let CALLKIT_AUDIO_DIAL_ID: Int32 = 48
 
 class CallingBellPlayer: NSObject, AVAudioPlayerDelegate {
     
     static let instance = CallingBellPlayer()
     
-    var player: AVAudioPlayer?
-    var loop: Bool = true
-        
-    func playAudio(url: URL, loop: Bool = true) -> Bool {
+    private var player: AVAudioPlayer?
+    private var loop: Bool = true
+    
+    func startRing(filePath: String) {
+        let url = URL(fileURLWithPath: filePath)
+
+        if TUICallState.instance.selfUser.value.callRole.value == .called {
+            let _ = playAudioBySystem(url: url)
+
+        } else if (TUICallState.instance.selfUser.value.callRole.value == .call) {
+            playAudioByTRTC(path: filePath, id: CALLKIT_AUDIO_DIAL_ID)
+        }
+    }
+    
+    func stopRing() {
+        if TUICallState.instance.selfUser.value.callRole.value == .called {
+            return stopPlayBySystem()
+        }
+        stopAudioByTRTC(id: CALLKIT_AUDIO_DIAL_ID)
+    }
+    
+    // MARK: System Auido Player
+    private func playAudioBySystem(url: URL, loop: Bool = true) -> Bool {
         self.loop = loop
         
         if player != nil {
-            stopPlay()
+            stopPlayBySystem()
         }
         
         do {
@@ -42,7 +65,7 @@ class CallingBellPlayer: NSObject, AVAudioPlayerDelegate {
         return res
     }
         
-    func stopPlay() {
+    private func stopPlayBySystem() {
         if player == nil {
             return
         }
@@ -51,23 +74,41 @@ class CallingBellPlayer: NSObject, AVAudioPlayerDelegate {
     }
     
     //MARK: AVAudioPlayerDelegate
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+    internal func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         if loop {
             player.play()
         } else {
-            stopPlay()
+            stopPlayBySystem()
         }
     }
     
-    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
+    internal func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
         if error != nil {
-            stopPlay()
+            stopPlayBySystem()
         }
     }
     
-    func setAudioSessionPlayback() {
+    private func setAudioSessionPlayback() {
         let audioSession = AVAudioSession()
         try? audioSession.setCategory(.soloAmbient)
         try? audioSession.setActive(true)
+    }
+
+    //MARK: TRTC Audio Player
+    private func playAudioByTRTC(path: String, id: Int32) {
+        let param = TXAudioMusicParam()
+        param.id = id
+        param.isShortFile = true
+        param.path = path
+        
+        TUICallEngine.createInstance().getTRTCCloudInstance().getAudioEffectManager().startPlayMusic(param,
+                                                                                                     onStart: nil,
+                                                                                                     onProgress: nil)
+        TUICallEngine.createInstance().getTRTCCloudInstance().getAudioEffectManager().setMusicPlayoutVolume(id, volume: 100)
+        
+    }
+    
+    private func stopAudioByTRTC(id: Int32) {
+        TUICallEngine.createInstance().getTRTCCloudInstance().getAudioEffectManager().stopPlayMusic(id)
     }
 }

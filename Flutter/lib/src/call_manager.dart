@@ -79,14 +79,16 @@ class CallManager {
       if (TUIPermissionResult.granted == permissionResult) {
         final callResult = await TUICallEngine.instance.call(userId, callMediaType, params);
         if (callResult.code.isEmpty) {
-          CallingBellFeature.startRing();
           User user = User();
           user.id = userId;
           user.callRole = TUICallRole.called;
           user.callStatus = TUICallStatus.waiting;
-          final imUserInfo = await _im.getUsersInfo(userIDList: [userId]);
-          user.nickname = StringStream.makeNull(imUserInfo.data?[0].nickName, Constants.defaultNickname);
-          user.avatar = StringStream.makeNull(imUserInfo.data?[0].faceUrl, Constants.defaultAvatar);
+          final imUserInfo = await _im.getFriendshipManager().getFriendsInfo(userIDList: [userId]);
+          user.nickname =
+              StringStream.makeNull(imUserInfo.data?[0].friendInfo?.userProfile?.nickName, '');
+          user.avatar = StringStream.makeNull(
+              imUserInfo.data?[0].friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
+          user.remark = StringStream.makeNull(imUserInfo.data?[0].friendInfo?.friendRemark, '');
 
           CallState.instance.remoteUserList.add(user);
           CallState.instance.mediaType = callMediaType;
@@ -96,6 +98,7 @@ class CallManager {
 
           TUICallKitPlatform.instance.updateCallStateToNative();
           initAudioPlayDevice();
+          CallingBellFeature.startRing();
           TUICallKitNavigatorObserver.getInstance().enterCallingPage();
           return callResult;
         } else {
@@ -107,14 +110,16 @@ class CallManager {
     } else {
       final callResult = await TUICallEngine.instance.call(userId, callMediaType, params);
       if (callResult.code.isEmpty) {
-        CallingBellFeature.startRing();
         User user = User();
         user.id = userId;
         user.callRole = TUICallRole.called;
         user.callStatus = TUICallStatus.waiting;
-        final imUserInfo = await _im.getUsersInfo(userIDList: [userId]);
-        user.nickname = StringStream.makeNull(imUserInfo.data?[0].nickName, Constants.defaultNickname);
-        user.avatar = StringStream.makeNull(imUserInfo.data?[0].faceUrl, Constants.defaultAvatar);
+        final imUserInfo = await _im.getFriendshipManager().getFriendsInfo(userIDList: [userId]);
+        user.nickname =
+            StringStream.makeNull(imUserInfo.data?[0].friendInfo?.userProfile?.nickName, '');
+        user.avatar = StringStream.makeNull(
+            imUserInfo.data?[0].friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
+        user.remark = StringStream.makeNull(imUserInfo.data?[0].friendInfo?.friendRemark, '');
         CallState.instance.remoteUserList.add(user);
         CallState.instance.mediaType = callMediaType;
         CallState.instance.scene = TUICallScene.singleCall;
@@ -122,7 +127,8 @@ class CallManager {
         CallState.instance.selfUser.callStatus = TUICallStatus.waiting;
 
         TUICallKitPlatform.instance.updateCallStateToNative();
-        _instance.initAudioPlayDevice();
+        initAudioPlayDevice();
+        CallingBellFeature.startRing();
         TUICallKitNavigatorObserver.getInstance().enterCallingPage();
         return callResult;
       } else {
@@ -167,16 +173,19 @@ class CallManager {
       if (TUIPermissionResult.granted == permissionResult) {
         final callResult = await TUICallEngine.instance.groupCall(groupId, userIdList, mediaType, params);
         if (callResult.code.isEmpty) {
-          CallingBellFeature.startRing();
           for (String userId in userIdList) {
             if (userId.isNotEmpty) {
               User user = User();
               user.id = userId;
               user.callRole = TUICallRole.called;
               user.callStatus = TUICallStatus.waiting;
-              final imUserInfo = await _im.getUsersInfo(userIDList: [userId]);
-              user.nickname = StringStream.makeNull(imUserInfo.data?[0].nickName, Constants.defaultNickname);
-              user.avatar = StringStream.makeNull(imUserInfo.data?[0].faceUrl, Constants.defaultAvatar);
+              final imUserInfo =
+                  await _im.getFriendshipManager().getFriendsInfo(userIDList: [userId]);
+              user.nickname =
+                  StringStream.makeNull(imUserInfo.data?[0].friendInfo?.userProfile?.nickName, '');
+              user.avatar = StringStream.makeNull(
+                  imUserInfo.data?[0].friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
+              user.remark = StringStream.makeNull(imUserInfo.data?[0].friendInfo?.friendRemark, '');
               CallState.instance.remoteUserList.add(user);
               CallState.instance.calleeList.add(user);
             }
@@ -191,7 +200,8 @@ class CallManager {
           CallState.instance.caller = CallState.instance.selfUser;
 
           TUICallKitPlatform.instance.updateCallStateToNative();
-          _instance.initAudioPlayDevice();
+          initAudioPlayDevice();
+          CallingBellFeature.startRing();
           TUICallKitNavigatorObserver.getInstance().enterCallingPage();
           return callResult;
         } else {
@@ -203,16 +213,19 @@ class CallManager {
     } else {
       final callResult = await TUICallEngine.instance.groupCall(groupId, userIdList, mediaType, params);
       if (callResult.code.isEmpty) {
-        CallingBellFeature.startRing();
         for (String userId in userIdList) {
           if (userId.isNotEmpty) {
             User user = User();
             user.id = userId;
             user.callRole = TUICallRole.called;
             user.callStatus = TUICallStatus.waiting;
-            final imUserInfo = await _im.getUsersInfo(userIDList: [userId]);
-            user.nickname = StringStream.makeNull(imUserInfo.data?[0].nickName, Constants.defaultNickname);
-            user.avatar = StringStream.makeNull(imUserInfo.data?[0].faceUrl, Constants.defaultAvatar);
+            final imUserInfo =
+                await _im.getFriendshipManager().getFriendsInfo(userIDList: [userId]);
+            user.nickname =
+                StringStream.makeNull(imUserInfo.data?[0].friendInfo?.userProfile?.nickName, '');
+            user.avatar = StringStream.makeNull(
+                imUserInfo.data?[0].friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
+            user.remark = StringStream.makeNull(imUserInfo.data?[0].friendInfo?.friendRemark, '');
             CallState.instance.remoteUserList.add(user);
           }
         }
@@ -225,7 +238,8 @@ class CallManager {
         CallState.instance.selfUser.callStatus = TUICallStatus.waiting;
 
         TUICallKitPlatform.instance.updateCallStateToNative();
-        _instance.initAudioPlayDevice();
+        initAudioPlayDevice();
+        CallingBellFeature.startRing();
         TUICallKitNavigatorObserver.getInstance().enterCallingPage();
         return callResult;
       } else {
@@ -364,6 +378,9 @@ class CallManager {
 
     TUICallKitPlatform.instance.updateCallStateToNative();
 
+    if (Platform.isIOS && result.code.isEmpty) {
+      TUICallKitPlatform.instance.openMicrophone();
+    }
     return result;
   }
 
@@ -372,6 +389,10 @@ class CallManager {
     CallState.instance.isMicrophoneMute = true;
 
     TUICallKitPlatform.instance.updateCallStateToNative();
+
+    if (Platform.isIOS) {
+      TUICallKitPlatform.instance.closeMicrophone();
+    }
   }
 
   Future<void> selectAudioPlaybackDevice(TUIAudioPlaybackDevice device) async {
@@ -413,13 +434,17 @@ class CallManager {
                     list.add(userId);
                   }
                 }
-                final imUserList = await _im.getUsersInfo(userIDList: list);
+                final imUserList =
+                    await _im.getFriendshipManager().getFriendsInfo(userIDList: list);
                 if (imUserList.data != null) {
                   imUserList.data?.forEach((item) {
                     User user = User();
-                    user.id = item.userID!;
-                    user.nickname = StringStream.makeNull(item.nickName, Constants.defaultNickname);
-                    user.avatar = StringStream.makeNull(item.faceUrl, Constants.defaultAvatar);
+                    user.id = StringStream.makeNull(item.friendInfo?.userID, '');
+                    user.nickname =
+                        StringStream.makeNull(item.friendInfo?.userProfile?.nickName, '');
+                    user.avatar = StringStream.makeNull(
+                        item.friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
+                    user.remark = StringStream.makeNull(item.friendInfo?.friendRemark, '');
                     user.callStatus = TUICallStatus.waiting;
                     CallState.instance.remoteUserList.add(user);
                   });
@@ -446,6 +471,11 @@ class CallManager {
 
   Future<void> logout() async {
     await TUILogin.instance.logout(TUICallback(onSuccess: () {}, onError: (code, message) {}));
+  }
+
+  Future<void> setCallingBell(String assetName) async {
+    String filePath = await CallingBellFeature.getAssetsFilePath(assetName);
+    PreferenceUtils.getInstance().saveString(CallingBellFeature.keyRingPath, filePath);
   }
 
   Future<void> enableFloatWindow(bool enable) async {
@@ -475,8 +505,8 @@ class CallManager {
   void handleLogoutSuccess() {
     TUICallEngine.instance.unInit();
     CallState.instance.unRegisterEngineObserver();
-    CallState.instance.cleanState();
     TUICallKitPlatform.instance.stopRing();
+    CallState.instance.cleanState();
     TUICallKitPlatform.instance.updateCallStateToNative();
   }
 
@@ -485,6 +515,15 @@ class CallManager {
     resources["k_0000088"] = CallKit_t("等待接听");
     resources["k_0000089"] = CallKit_t("请同时打开后台弹出界面和显示悬浮窗权限");
     TUICallKitPlatform.instance.initResources(resources);
+  }
+
+  void handleAppEnterForeground() {
+    if (Platform.isIOS &&
+        CallState.instance.selfUser.callStatus != TUICallStatus.none &&
+        TUICallKitNavigatorObserver.currentPage == CallPage.none) {
+      CallState.instance.handleCallReceived(CallState.instance.caller.id,
+          CallState.instance.calleeIdList, CallState.instance.groupId, CallState.instance.mediaType);
+    }
   }
 
   void _adaptiveComponentReport() async {
@@ -501,7 +540,8 @@ class CallManager {
   void _updateLocalSelfUser(String userId) async {
     CallState.instance.selfUser.id = userId;
     final imInfo = await _im.getUsersInfo(userIDList: [userId]);
-    CallState.instance.selfUser.nickname = StringStream.makeNull(imInfo.data?[0].nickName, Constants.defaultNickname);
-    CallState.instance.selfUser.avatar = StringStream.makeNull(imInfo.data?[0].faceUrl, Constants.defaultAvatar);
+    CallState.instance.selfUser.nickname = StringStream.makeNull(imInfo.data?[0].nickName, '');
+    CallState.instance.selfUser.avatar =
+        StringStream.makeNull(imInfo.data?[0].faceUrl, Constants.defaultAvatar);
   }
 }

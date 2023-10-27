@@ -25,12 +25,12 @@ class FloatWindowView: UIView {
     let timeCountObserver = Observer()
 
     let localPreView: TUIVideoView = {
-        let view = TUIVideoView(frame: CGRectZero)
+        let view = TUIVideoView(frame: CGRect.zero)
         return view
     }()
     
     let remotePreView: TUIVideoView = {
-        let view = TUIVideoView(frame: CGRectZero)
+        let view = TUIVideoView(frame: CGRect.zero)
         return view
     }()
 
