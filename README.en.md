@@ -44,7 +44,7 @@ Here is an example of integration with UI (ie TUICallKit),  which is also our re
 
 - If you would like to see some of our latest product features, you can check the [Update Log](https://cloud.tencent.com/document/product/647/80931), here are the latest features of TUICallKit, as well as the historical version features iterate
 - For complete API documentation, see [Audio Video Call SDK API Example](https://cloud.tencent.com/document/product/647/78748): including TUICallKit (with UIKit), TUICallEngine (without UIKit), and call events Callbacks, etc.
-- If you want to learn more about the projects maintained by Tencent Cloud  Media Services Team, you can check our [Product Official Website](https://cloud.tencent.com/product/rtcube), [Github Organizations](https://github .com/LiteAVSDK) etc.
+- If you want to learn more about the projects maintained by Tencent Cloud  Media Services Team, you can check our [Product Official Website](https://cloud.tencent.com/product/rtcube), [Github Organizations](https://github.com/LiteAVSDK) etc.
 - If the project clone or download fails due to network problems, you can visit [Gitee TUICallKit](https://gitee.com/tencent-cloud-uikit/TUICallKit).
 
 
