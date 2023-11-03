@@ -115,8 +115,9 @@ class VideoCallUserInfoView: UIView {
     func setUserImageAndName() {
         let remoteUser = viewModel.remoteUserList.value.first ?? User()
         userNameLabel.text = User.getUserDisplayName(user: remoteUser)
-        if let image = TUICallKitCommon.getUrlImage(url: remoteUser.avatar.value) {
-            self.userHeadImageView.image = image
+        
+        if let url = URL(string: remoteUser.avatar.value) {
+            userHeadImageView.sd_setImage(with: url)
         }
     }
 

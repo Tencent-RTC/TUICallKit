@@ -1,0 +1,91 @@
+/*
+ TUICallKitAppLocalized.strings
+ TUICallKitApp
+ 
+ Created by adams on 2021/5/20.
+ Copyright © 2021 Tencent. All rights reserved.
+ */
+
+"TUICallKitApp.Call" = "発信"; 
+"TUICallKitApp.SingleCall" = "1v1通話";
+"TUICallKitApp.GroupCall" = "グループ通話";
+"TUICallKitApp.UseGroupCall" = "グループ通話を体験する";
+"TUICallKitApp.JoinGroupCall" = "グループ通話に参加する";
+"TUICallKitApp.MediaType" = "メディアタイプタイプ";
+"TUICallKitApp.Audio.call" = "音声通話";
+"TUICallKitApp.Video.call" = "ビデオ通話";
+
+"TUICallKitApp.Home.areyousureloginout" = "ログアウトしてもよろしいですか？"; 
+"TUICallKitApp.Home.cancel" = "キャンセル";
+"TUICallKitApp.Home.determine" = "決定";
+
+"TUICallKitApp.Call.UserId" = "ユーザーID"; 
+"TUICallKitApp.Call.InputUserId" = "発信するUser IDを入力してください";
+"TUICallKitApp.Call.GroupId" = "グループID";
+"TUICallKitApp.Call.InputGroupId" = "Group IDを入力してください";
+"TUICallKitApp.Call.InputUserIds" = "User IDを入力してください。\",\"で区切ります";
+"TUICallKitApp.Call.RoomIdInt" = "ルームId(数字)";
+"TUICallKitApp.Call.RoomIdString" = "ルームId(文字列)";
+"TUICallKitApp.Call.InputRoomId" = "Room IDを入力してください";
+
+"TUICallKitApp.Login.tencentcloud" = "TRTC";
+"TUICallKitApp.Login.enterphonenumber" = "ユーザー名を入力してください";
+"TUICallKitApp.Login.enterverificationcode" = "認証コードを入力してください";
+"TUICallKitApp.Login.getverificationcode" = "認証コードを取得";
+"TUICallKitApp.login" = "ログイン"; 
+"TUICallKitApp.Login.loginsuccess" = "ログイン成功";
+"TUICallKitApp.Login.register" = "登録";
+"TUICallKitApp.Login.enterusername" = "ユーザー名を入力してください";
+"TUICallKitApp.Login.limit20count" = "中国語、アルファベット、数字およびアンダースコアのみを使用でき、2～20文字まで入力可能です。";
+"TUICallKitApp.Login.registersuccess" = "登録が完了しました";
+
+"TUICallKitApp.Login.Introduce" = "TUICallKitは、腾讯云が提供する音声・ビデオ通話UIコンポーネントで、このコンポーネントを統合することで、数行のコードでアプリに音声・ビデオ通話機能を追加できます。"; 
+"TUICallKitApp.Login.Platform" = "TUICallKitはオフラインでの起動機能をサポートし、Android、iOS、Web、小程序、Flutter、uni-appなどの複数のプラットフォームに対応しています。";
+"TUICallKitApp.Login.Purchase" = "プランの購入";
+"TUICallKitApp.Login.Access" = "クイックアクセス";
+"TUICallKitApp.Login.APIDocumentation" = "APIドキュメント";
+"TUICallKitApp.Login.Problem" = "よくある質問";
+
+"TUICallKitApp.Setting" = "設定"; 
+"TUICallKitApp.Setting.CallSettings" = "通話設定";
+"TUICallKitApp.Setting.BasicSetting" = "基本設定"; 
+"TUICallKitApp.Setting.CallParamsSetting" = "通話カスタムパラメータ設定";
+"TUICallKitApp.Setting.VideoSetting" = "ビデオ設定";
+
+"TUICallKitApp.Setting.UserInfo" = "ユーザー情報"; 
+"TUICallKitApp.UserInfo.Avatar" = "プロフィール画像";
+"TUICallKitApp.UserInfo.NickName" = "ニックネーム";
+"TUICallKitApp.Setting.RingSetting" = "着信音を設定します";
+"TUICallKitApp.Setting.MuteMode" = "ミュートモード";
+"TUICallKitApp.Setting.EnableFloating" = "フローティングウィンドウの表示";
+"TUICallKitApp.Setting.IntRoomId" = "ルームID（番号）";
+"TUICallKitApp.Setting.StrRoomId" = "ルームID（文字列）";
+"TUICallKitApp.Setting.Timeout" = "タイムアウト時間";
+"TUICallKitApp.Setting.ExpendedInfo" = "拡張情報";
+"TUICallKitApp.Setting.OfflinePushInfo" = "オフラインメッセージ";
+"TUICallKitApp.Setting.Resolution" = "解像度";
+"TUICallKitApp.Setting.ResolutionMode" = "横縦画面";
+"TUICallKitApp.Setting.ResolutionMode.Horizontal" = "横画面";
+"TUICallKitApp.Setting.ResolutionMode.Vertical" = "縦画面";
+"TUICallKitApp.Setting.FillMode" = "塗りつぶしパターン";
+"TUICallKitApp.Setting.FillMode.Fit" = "フィット";
+"TUICallKitApp.Setting.FillMode.Fill" = "塗りつぶし";
+"TUICallKitApp.Setting.Rotation" = "回転角度";
+"TUICallKitApp.Setting.BeautyLevel" = "美顔のレベル";
+"TUICallKitApp.Setting.NotSet" = "未設定";
+"TUICallKitApp.Setting.GoToSettings" = "設定に行く";
+"TUICallKitApp.Setting.SetAvatar" = "アバターを設定";
+"TUICallKitApp.Setting.SetRing" = "着信音を設定します";
+"TUICallKitApp.Setting.SetExtend" = "拡張情報を設定";
+"TUICallKitApp.Setting.SetOffInleInfo" = "オフラインプッシュメッセージを設定";
+"TUICallKitApp.Setting.SetAvatarTip" = "アバターのURLアドレスを入力してください。";
+"TUICallKitApp.Setting.SetRingTip" = "着信音のパスを設定します";
+"TUICallKitApp.Setting.SetExtendTip" = "招待シグナリングの拡張情報を入力してください";
+"TUICallKitApp.Setting.SetOffInleInfoTip" = "オフラインプッシュメッセージのjson文字列を入力してください。";
+
+"TUICallKitApp.GroupCall.Intrduce" = "グループ通話を使用する前にIMグループを作成する必要があります。グループ作成の詳細は以下を参照してください："; 
+"TUICallKitApp.GroupCall.GroupManage" = "グループ管理";
+
+"TUICallKitApp.QuickAccess" = "クイックアクセス"; 
+"TUICallKitApp.Version" = "バージョン";
+
