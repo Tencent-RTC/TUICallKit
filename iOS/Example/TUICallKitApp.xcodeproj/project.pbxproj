@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -61,6 +61,7 @@
 		4F3F7CA526D65D38002912DE /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		4F3F7CA726D65D38002912DE /* LayoutDefine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutDefine.swift; sourceTree = "<group>"; };
 		4F3F7CB426D65DE3002912DE /* GenerateTestUserSig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateTestUserSig.swift; sourceTree = "<group>"; };
+		4F9E8F6E2AD9413C00DB82C4 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/TUICallKitAppLocalized.strings; sourceTree = "<group>"; };
 		4FE7A784275E3A89009CCB09 /* phone_ringing.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = phone_ringing.mp3; sourceTree = "<group>"; };
 		4FF707AB28A9EFBE0044B20E /* TUICallKitApp.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = TUICallKitApp.entitlements; sourceTree = "<group>"; };
 		704D44628D9621C9B6C42E48 /* Pods_TUICallKitApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TUICallKitApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -272,6 +273,7 @@
 				Base,
 				"zh-Hans",
 				English,
+				ja,
 			);
 			mainGroup = 474E0FDC2644DFAE002AFADB;
 			productRefGroup = 474E0FE62644DFAE002AFADB /* Products */;
@@ -413,6 +415,7 @@
 			children = (
 				4739C7D62657507800CA7C45 /* zh-Hans */,
 				4739C7D72657507800CA7C45 /* en */,
+				4F9E8F6E2AD9413C00DB82C4 /* ja */,
 			);
 			name = TUICallKitAppLocalized.strings;
 			sourceTree = "<group>";
@@ -582,7 +585,7 @@
 				CODE_SIGN_ENTITLEMENTS = TUICallKitApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 680;
+				CURRENT_PROJECT_VERSION = 750;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = F8A3GH6Q4W;
 				ENABLE_BITCODE = NO;
@@ -601,7 +604,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.9.0;
+				MARKETING_VERSION = 2.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -635,7 +638,7 @@
 					"-weak_framework",
 					"\"SwiftUI\"",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D USE_TUICALLKIT_SWIFT";
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tencent.TRTCScene;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = abyWildcardDev;
@@ -656,7 +659,7 @@
 				CODE_SIGN_ENTITLEMENTS = TUICallKitApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 680;
+				CURRENT_PROJECT_VERSION = 750;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = F8A3GH6Q4W;
 				ENABLE_BITCODE = NO;
@@ -691,7 +694,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.9.0;
+				MARKETING_VERSION = 2.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -725,7 +728,7 @@
 					"-weak_framework",
 					"\"SwiftUI\"",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D USE_TUICALLKIT_SWIFT";
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tencent.TRTCScene;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = abyWildcardDev;

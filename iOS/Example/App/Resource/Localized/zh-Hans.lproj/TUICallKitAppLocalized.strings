@@ -6,19 +6,6 @@
  Copyright © 2021 Tencent. All rights reserved.
  */
 
-"TUICallKitApp.yourID" = "您的ID：";
-"TUICallKitApp.searchID" = "搜索ID";
-"TUICallKitApp.searching" = "搜索";
-"TUICallKitApp.searchandcall" = "搜索添加已注册用户\n以发起通话";
-"TUICallKitApp.searchingfailed" = "查询失败";
-"TUICallKitApp.cantinviteself" = "不能邀请自己";
-"TUICallKitApp.streaming.call" = "呼叫";
-"TUICallKitApp.add" = "添加";
-"TUICallKitApp.delete" = "删除";
-"TUICallKitApp.addedUser" = "已添加成员";
-"TUICallKitApp.done" = "完成";
-"TUICallKitApp.tips" = "未添加成员，请搜索添加成员";
-
 "TUICallKitApp.Call" = "拨打";
 "TUICallKitApp.SingleCall" = "单人通话";
 "TUICallKitApp.GroupCall" = "群组通话";
@@ -28,18 +15,9 @@
 "TUICallKitApp.Audio.call" = "语音通话";
 "TUICallKitApp.Video.call" = "视频通话";
 
-"TUICallKitApp.Home.highqualityspeech" = "48kHz高音质语音，60%丢包可正常语音，领先行业的3A处理，杜绝回声和啸叫";
-"TUICallKitApp.Home.supports1080PUHDvideo" = "支持1080P超清视频，50%丢包率可正常视频，自备美颜特效，带来高品质视频通话体验";
-"TUICallKitApp.Home.video" = "视频通话";
-"TUICallKitApp.Home.audio" = "语音通话";
-"TUICallKitApp.Home.groupvideo" = "多人视频通话";
-"TUICallKitApp.Home.groupaudio" = "多人语音通话";
 "TUICallKitApp.Home.areyousureloginout" = "确定要退出登录吗？";
 "TUICallKitApp.Home.cancel" = "取消";
 "TUICallKitApp.Home.determine" = "确定";
-"TUICallKitApp.Home.audiocalldesc" = "丢包率70%仍可正常语音通话";
-"TUICallKitApp.Home.videocalldesc" = "丢包率50%仍可正常视频通话";
-"TUICallKitApp.Home.logout" = "退出登录";
 
 "TUICallKitApp.Call.UserId" = "用户ID";
 "TUICallKitApp.Call.InputUserId" = "请输入要呼叫的User ID";
@@ -51,12 +29,10 @@
 "TUICallKitApp.Call.InputRoomId" = "请输入Room ID";
 
 "TUICallKitApp.Login.tencentcloud" = "腾讯云音视频";
-"TUICallKitApp.Login.welcome" = "欢迎使用腾讯云实时音视频";
 "TUICallKitApp.Login.enterphonenumber" = "请输入用户名";
 "TUICallKitApp.Login.enterverificationcode" = "请输入验证码";
 "TUICallKitApp.Login.getverificationcode" = "获取验证码";
 "TUICallKitApp.login" = "登录";
-"TUICallKitApp.loginimfailed" = "登录IM失败";
 "TUICallKitApp.Login.loginsuccess" = "登录成功";
 "TUICallKitApp.Login.register" = "注册";
 "TUICallKitApp.Login.enterusername" = "请输入用户昵称";

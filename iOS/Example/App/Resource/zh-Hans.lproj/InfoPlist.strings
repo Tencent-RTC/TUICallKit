@@ -9,5 +9,5 @@
 
 "UILaunchStoryboardName" = "LaunchScreen";
 
-NSCameraUsageDescription = "TUICallKitApp需要访问您的相机权限，开启后用于视频通话、多人视频通话功能。";
-NSMicrophoneUsageDescription = "TUICallKitApp需要访问您的麦克风权限，开启后用于语音通话、多人语音通话、视频通话、多人视频通话功能，并且开启后录制的视频才会有声音。";
+NSCameraUsageDescription = "カメラへのアクセス許可が必要で、ビデオ通話、グループビデオ通話などの機能に使用できます。美顔機能を使用する場合は、カメラで撮影された映像から顔の特徴点情報をリアルタイムで収集し、より自然な美しさを提供します。";
+NSMicrophoneUsageDescription = "マイクへのアクセス許可が必要で、音声/ビデオ通話、グループ音声/ビデオ通話などの機能に使用できます。マイクをオンにした場合のみ、録画した動画に音声が保存されます。";
