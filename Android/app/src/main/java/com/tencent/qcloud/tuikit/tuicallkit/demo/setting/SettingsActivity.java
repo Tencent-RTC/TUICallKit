@@ -251,7 +251,7 @@ public class SettingsActivity extends BaseActivity {
 
     private void setBeautyLeval() {
         if (TextUtils.isEmpty(mEditBeauty.getText().toString())) {
-            ToastUtil.toastShortMessage(getString(R.string.app_please_input_beauty_level));
+            ToastUtil.toastShortMessage(getString(R.string.app_please_set_beauty_level));
             return;
         }
         int beauty = Integer.parseInt(mEditBeauty.getText().toString());

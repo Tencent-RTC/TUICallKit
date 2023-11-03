@@ -93,7 +93,6 @@
     <string name="app_please_input_avatar_and_nickname">Please enter your avatar and username</string>
     <string name="app_set_success">successfully set</string>
     <string name="app_set_fail">Setup failed</string>
-    <string name="app_please_input_beauty_level">Please enter the beauty level</string>
     <string name="app_int_room_id">Digital room</string>
     <string name="app_string_room_id">String room</string>
 
