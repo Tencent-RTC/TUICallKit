@@ -42,6 +42,7 @@
         android:layout_marginRight="16dp">
 
         <TextView
+            android:id="@+id/tv_join_group_call_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_group_id"
@@ -54,12 +55,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginStart="10dp"
-            android:layout_toRightOf="@+id/tv_phone_number"
+            android:layout_toEndOf="@+id/tv_join_group_call_label"
             android:background="@null"
             android:gravity="right"
             android:hint="@string/app_please_input_group_id"
-            android:maxLines="1"
-            android:singleLine="true"
             android:textColor="@color/app_color_black"
             android:textColorHint="@color/app_color_input_normal"
             android:textSize="16sp" />
@@ -94,12 +93,10 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
             android:layout_marginRight="19dp"
-            android:layout_toRightOf="@+id/tv_phone_number"
+            android:layout_toEndOf="@+id/spinner_room_id"
             android:background="@null"
             android:gravity="right"
             android:hint="@string/app_please_input_room_id"
-            android:maxLines="1"
-            android:singleLine="true"
             android:textColor="@color/app_color_black"
             android:textColorHint="@color/app_color_input_normal"
             android:textSize="16sp" />

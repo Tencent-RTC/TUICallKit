@@ -89,7 +89,6 @@
     <string name="app_please_input_avatar_and_nickname">请输入头像和用户名</string>
     <string name="app_set_success">设置成功</string>
     <string name="app_set_fail">设置失败</string>
-    <string name="app_please_input_beauty_level">请输入美颜等级</string>
     <string name="app_int_room_id">数字房间号</string>
     <string name="app_string_room_id">字符串房间号</string>
 
