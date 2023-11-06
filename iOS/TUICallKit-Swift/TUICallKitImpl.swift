@@ -22,7 +22,6 @@ class TUICallKitImpl: TUICallKit {
     
     override init() {
         super.init()
-        initEngine()
         registerNotifications()
         registerObserveState()
     }
