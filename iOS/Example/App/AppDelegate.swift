@@ -9,7 +9,6 @@
 import UIKit
 import UserNotifications
 import ImSDK_Plus
-import TXLiteAVSDK_TRTC
 
 /// 若使用 TUICallKit_Swift,  需要设置预编译宏， 设置方法如下：
 ///   1. 选中 target ---> Build Settings ---> 搜索 Swift Compiler - Custom Flags
