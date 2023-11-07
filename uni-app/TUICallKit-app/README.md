@@ -43,8 +43,8 @@ TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/docume
 [](id:step3)
 ## 步骤三：下载源码，配置工程
 1. 克隆或者直接下载此仓库源码，欢迎 Star，感谢~~
-2. 找到并打开 uni-app/debug/GenerateTestUserSig.js 文件。
-3. 配置 GenerateTestUserSig.js 文件中的 SDKAPPID、SECRETKEY 参数。
+2. 找到并打开 `uni-app/debug/GenerateTestUserSig.js` 文件。
+3. 配置 `GenerateTestUserSig.js` 文件中的 `SDKAPPID`、`SECRETKEY` 参数。
   - SDKAPPID：默认为 0，请设置为 第一步 中记录下的 SDKAppID。
   - SECRETKEY：默认为 ""，请设置为 第一步 中记录下的密钥(SecretKey)信息。
 

@@ -29,12 +29,18 @@ export default {
 		loginHandler() {
 			const userID = this.userID;
 			const userSig = genTestUserSig(userID).userSig;
+			const SDKAppID = genTestUserSig('').sdkAppID;
+			if (!SDKAppID) {
+				console.error('请检查 uni-app/debug/GenerateTestUserSig.js 文件的 sdkAppID、usersig 是否填写');
+			} else if (typeof SDKAppID !== 'number') {
+				console.error('请检查 uni-app/debug/GenerateTestUserSig.js 文件下的 sdkAppID 是否为数字number 类型');
+			}
 			uni.$TUIKit.login({
 				userID: userID,
 				userSig: userSig
 			});
 			uni.$TUICallKit.login({
-			  SDKAppID: genTestUserSig('').sdkAppID,
+			  SDKAppID,
 			  userID: userID,
 			  userSig: userSig,
 			}, (res) => {
