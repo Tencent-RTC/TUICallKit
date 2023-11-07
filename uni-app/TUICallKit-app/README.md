@@ -11,32 +11,37 @@
 TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/document/product/269/42440) 和 [实时音视频 TRTC](https://cloud.tencent.com/document/product/647/16788) 两项付费 PaaS 服务构建出的音视频通信组件。您可以按照如下步骤开通相关的服务并体验 7 天的免费试用服务。
 
 1. 登录到 [即时通信 IM 控制台](https://console.cloud.tencent.com/im)，单击**创建新应用**，在弹出的对话框中输入您的应用名称，并单击**确定**。
+
+    <img width="300" src="https://qcloudimg.tencent-cloud.cn/image/document/61a2068cf73ee1fc911ab3bb31d978df.png">
+
 2. 单击刚刚创建出的应用，进入**基本配置**页面，并在页面的右下角找到**开通腾讯实时音视频服务**功能区，单击**免费体验**即可开通 TUICallKit 的 7 天免费试用服务。如果需要正式应用上线，可以单击 [**前往加购**](https://buy.cloud.tencent.com/avc) 即可进入购买页面。
-<img src="https://camo.githubusercontent.com/d9c1b3bb55ac1d7510e4e66126df0163d14dfddf653cbd5dbebef249de85fb57/68747470733a2f2f71636c6f7564696d672e74656e63656e742d636c6f75642e636e2f7261772f36363736333366376164646664306335383962623038366231666331376433302e706e67">
->? IM 音视频通话能力针对不同的业务需求提供了差异化的付费版本供您选择，您可以在 [IM 购买页](https://buy.cloud.tencent.com/avc) 了解包含功能并选购您适合的版本。
-1. 在同一页面找到 **SDKAppID** 和**密钥**并记录下来，它们会在后续的 [步骤四：登录 TUI 组件](#step4) 中被用到。
-<img width="640" src="https://qcloudimg.tencent-cloud.cn/raw/e435332cda8d9ec7fea21bd95f7a0cba.png">
 
-<dx-alert infotype="alarm" title="<b>友情提示：</b>">
+    <img width="300" height="300" src="https://camo.githubusercontent.com/d9c1b3bb55ac1d7510e4e66126df0163d14dfddf653cbd5dbebef249de85fb57/68747470733a2f2f71636c6f7564696d672e74656e63656e742d636c6f75642e636e2f7261772f36363736333366376164646664306335383962623038366231666331376433302e706e67">
 
-单击**免费体验**以后，部分之前使用过 [实时音视频 TRTC](https://cloud.tencent.com/document/product/647/16788) 服务的用户会提示：
-```
-[-100013]:TRTC service is  suspended. Please check if the package balance is 0 or the Tencent Cloud accountis in arrears
-```
-因为新的 IM 音视频通话能力是整合了腾讯云[实时音视频 TRTC](https://cloud.tencent.com/document/product/647/16788) 和 [即时通信 IM](https://cloud.tencent.com/document/product/269/42440) 两个基础的 PaaS 服务，所以当 [实时音视频 TRTC](https://cloud.tencent.com/document/product/647/16788) 的免费额度（10000分钟）已经过期或者耗尽，就会导致开通此项服务失败，这里您可以单击 [TRTC 控制台](https://console.cloud.tencent.com/trtc/app)，找到对应 SDKAppID 的应用管理页，示例如图，开通后付费功能后，再次**启用应用**即可正常体验音视频通话能力。
-<img width=800px src="https://qcloudimg.tencent-cloud.cn/raw/f74a13a7170cf8894195a1cae6c2f153.png" />
-</dx-alert>
+
+3. 在同一页面找到 **SDKAppID** 和**密钥**并记录下来，它们会在后续的 [步骤三：下载源码 配置工程](#step3) 中被用到。
+
+    <img width="300" height="300" src="https://qcloudimg.tencent-cloud.cn/raw/e435332cda8d9ec7fea21bd95f7a0cba.png">
+
+> 单击**免费体验**以后，部分之前使用过 [实时音视频 TRTC](https://cloud.tencent.com/document/product/647/16788) 服务的用户会提示：
+> ```
+> [-100013]:TRTC service is  suspended. Please check if the package balance is 0 or the Tencent Cloud accountis in arrears
+> ```
+> 这是因为当 [实时音视频 TRTC](https://cloud.tencent.com/document/product/647/16788) 的免费额度（10000分钟）已经过期或者耗尽，就会导致开通此项服务失败，这里您可以单击 [TRTC 控制台](https://console.cloud.tencent.com/trtc/app)，找到对应 SDKAppID 的应用管理页，开通后付费功能后，再次**启用应用**即可正常体验音视频通话能力。
 
 [](id:step2)
 ## 步骤二：导入插件 
 1. **购买 uni-app 原生插件**
 登录 uni 原生插件市场，并访问 [TencentCloud-TUICallKit 插件](https://ext.dcloud.net.cn/plugin?id=9035)，在插件详情页中购买（免费插件也可以在插件市场0元购）。购买后才能够云端打包使用插件。**购买插件时请选择正确的 appid，以及绑定正确包名**。
-![](https://qcloudimg.tencent-cloud.cn/raw/d270d9298975ee829ae9c8c405530765.png)
-1. 使用自定义基座打包 uni 原生插件 （**请使用真机运行自定义基座**）
-使用 uni 原生插件必须先提交云端打包才能生效，购买插件后在应用的 `manifest.json` 页面的 **App原生插件配置** 项下单击**选择云端插件**，选择**腾讯云原生音视频插件**。
-![](https://web.sdk.qcloud.com/component/TUIKit/assets/uni-app/TencentCloud-TUICallKit.png)
-直接云端打包后无法打 log，无法排查问题，需要自定义基座调试原生插件。
->! 
+
+    <img width="200" src="https://qcloudimg.tencent-cloud.cn/raw/d270d9298975ee829ae9c8c405530765.png">
+
+2. 使用自定义基座打包 uni 原生插件 （**请使用真机运行自定义基座**）
+使用 uni 原生插件必须先提交云端打包才能生效，购买插件后在应用的 `manifest.json` 页面的 **App原生插件配置**项下单击**选择云端插件**，选择**腾讯云原生音视频插件**。
+
+    <img width="400" src="https://web.sdk.qcloud.com/component/TUIKit/assets/uni-app/TencentCloud-TUICallKit.png">
+
+>**直接云端打包后无法打 log，无法排查问题，需要自定义基座调试原生插件。**
 >- 自定义基座不是正式版，真正发布时，需要再打正式包。使用自定义基座是无法正常升级替换 APK 的。
 >- 请尽量不要使用本地插件，插件包超过自定义基座的限制，可能导致调试收费。
 
@@ -45,17 +50,17 @@ TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/docume
 1. 克隆或者直接下载此仓库源码，欢迎 Star，感谢~~
 2. 找到并打开 `uni-app/debug/GenerateTestUserSig.js` 文件。
 3. 配置 `GenerateTestUserSig.js` 文件中的 `SDKAPPID`、`SECRETKEY` 参数。
-  - SDKAPPID：默认为 0，请设置为 第一步 中记录下的 SDKAppID。
-  - SECRETKEY：默认为 ""，请设置为 第一步 中记录下的密钥(SecretKey)信息。
+  - SDKAPPID：值为 number 类型，请设置为步骤一中记录下的 SDKAppID。
+  - SECRETKEY：值为 string 类型，请设置为步骤一中记录下的密钥(SecretKey)信息。
 
 ## 实现案例
-我们提供了**在线客服场景**的相关源码，建议您 [下载](https://github.com/TencentCloud/chat-uikit-uniapp) 并集成体验。该场景提供了示例客服群 + 示例好友的基础模板，实现功能包括：
+我们提供了**在线客服场景**的相关源码，可以通过下载 [Github Demo](https://github.com/TencentCloud/chat-uikit-uniapp) 集成体验。该场景提供了示例客服群 + 示例好友的基础模板，实现功能包括：
 - 支持发送文本消息、图片消息、语音消息、视频消息等常见消息。
 - 支持双人语音、视频通话功能
 - 支持创建群聊会话、群成员管理等。
 
 ## 技术咨询
-了解更多详情您可 QQ 咨询：**309869925** (技术交流群)
+了解更多详情您可通过官方社群咨询：[腾讯云通信官方社群](https://zhiliao.qq.com/s/cWSPGIIM62CC/cEUPGIIM62CE)
 
 ## 相关文档
 - [一分钟跑通 Demo (uni-app)](https://cloud.tencent.com/document/product/269/64506)
