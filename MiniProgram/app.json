@@ -9,7 +9,7 @@
     "pages/about/index",
     "pages/audioGroupCall/audioGroupCall",
     "pages/videoGroupCall/videoGroupCall",
-    "TUICallKit/TUICallKit/pages/globalCall/globalCall"
+    "TUICallKit/pages/globalCall/globalCall"
   ],
   "window": {
     "backgroundColor": "#888",
