@@ -1,11 +1,9 @@
 <view class="container">
-  <TUICalling id="TUICallKit-component" config="{{config}}"></TUICalling>
   <view class="trtc-calling-index">
     <view class="trtc-calling-index-title">
       <image class="btn-goback" src="../Resources/back.png" bind:tap="onBack" />
       <view class="trtc-calling-index-title title">多人视频通话</view>
     </view>
-  
     <view class="trtc-calling-index-search">
       <view class="search">
         <view class="input-box">
@@ -17,11 +15,11 @@
       <view class="search-selfInfo">
         <label class="search-selfInfo-label">您的ID</label>
         <view class="search-selfInfo-phone">
-          {{config.userID}}
+          {{userID}}
         </view>
 
          <view wx:if="{{searchList.length !==0}}">
-          <view class="allcheck" bindtap="allCheck" wx:if="{{ischeck}}">
+          <view class="allcheck" bindtap="allCheck" wx:if="{{isCheck}}">
           全选
          </view>
           <view class="allcheck" bindtap="allCancel" wx:else>
