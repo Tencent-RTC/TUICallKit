@@ -456,6 +456,7 @@ class CallManager {
   }
 
   Future<TUIResult> login(int sdkAppId, String userId, String userSig) async {
+    CallState.instance.registerEngineObserver();
     TUIResult result = TUIResult(code: '', message: 'success');
     await TUILogin.instance.login(
         sdkAppId,

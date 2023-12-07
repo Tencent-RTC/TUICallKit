@@ -78,6 +78,18 @@ class MockCallsUikitPlatform
     // TODO: implement initResources
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> closeMicrophone() {
+    // TODO: implement closeMicrophone
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> openMicrophone() {
+    // TODO: implement openMicrophone
+    throw UnimplementedError();
+  }
 }
 
 void main() {
