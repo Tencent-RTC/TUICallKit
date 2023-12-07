@@ -7,12 +7,14 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.FloatWindowService;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.service.CallingBellService;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.service.ForegroundService;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.TUICallState;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.User;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitAppUtils;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitEnumUtils;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitObjectUtils;
@@ -22,6 +24,7 @@ import com.tencent.cloud.tuikit.tuicall_engine.utils.Logger;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.MethodCallUtils;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.TUILogin;
+import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.tencent.qcloud.tuicore.permission.PermissionRequester;
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
 
@@ -39,12 +42,12 @@ import io.flutter.plugin.common.MethodChannel.Result;
 /**
  * TUICallKitPlugin
  */
-public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler {
+public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUINotification {
     private static final String TAG = "TUICallKitPlugin";
 
-    private static MethodChannel      mChannel;
-    private        Context            mApplicationContext;
-    private        CallingBellService mCallingBellService;
+    private MethodChannel      mChannel;
+    private Context            mApplicationContext;
+    private CallingBellService mCallingBellService;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -53,6 +56,8 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler {
 
         mApplicationContext = flutterPluginBinding.getApplicationContext();
         mCallingBellService = new CallingBellService(mApplicationContext);
+
+        registerObserver();
     }
 
     @Override
@@ -71,6 +76,26 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler {
             Logger.error(TAG, "onMethodCall |method=" + call.method + "|arguments=" + call.arguments + "|error=" + e);
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+        mChannel.setMethodCallHandler(null);
+        unRegisterObserver();
+    }
+
+    private void registerObserver() {
+        TUICore.registerEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_GOTO_CALLING_PAGE, this);
+        TUICore.registerEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_HANDLE_CALL_RECEIVED, this);
+        TUICore.registerEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_ENABLE_FLOAT_WINDOW, this);
+        TUICore.registerEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_CALL, this);
+        TUICore.registerEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_GROUP_CALL, this);
+        TUICore.registerEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_LOGIN_SUCCESS, this);
+        TUICore.registerEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_LOGOUT_SUCCESS, this);
+    }
+
+    private void unRegisterObserver() {
+        TUICore.unRegisterEvent(this);
     }
 
     public void startForegroundService(MethodCall call, MethodChannel.Result result) {
@@ -175,51 +200,185 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler {
         result.success(0);
     }
 
-    @Override
-    public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        mChannel.setMethodCallHandler(null);
+    public void gotoCallingPage() {
+        mChannel.invokeMethod("gotoCallingPage", new HashMap(), new Result() {
+            @Override
+            public void success(@Nullable Object result) {
+            }
+
+            @Override
+            public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
+                Logger.error(TAG, "gotoCallingPage error code: " + code + " message:" + message + "details:"
+                        + details);
+            }
+
+            @Override
+            public void notImplemented() {
+                Logger.error(TAG, "gotoCallingPage notImplemented");
+            }
+        });
     }
 
-    public static void gotoCallingPage() {
-        mChannel.invokeMethod("gotoCallingPage", new HashMap());
+    public void handleCallReceived() {
+        mChannel.invokeMethod("handleCallReceived", new HashMap(), new Result() {
+            @Override
+            public void success(@Nullable Object result) {
+            }
+
+            @Override
+            public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
+                Logger.error(TAG, "handleCallReceived error code: " + code + " message:" + message + "details:"
+                        + details);
+            }
+
+            @Override
+            public void notImplemented() {
+                Logger.error(TAG, "handleCallReceived notImplemented");
+            }
+        });
     }
 
-    public static void handleCallReceived() {
-        mChannel.invokeMethod("handleCallReceived", new HashMap());
+    public void enableFloatWindow(Map params) {
+        mChannel.invokeMethod("enableFloatWindow", params, new Result() {
+            @Override
+            public void success(@Nullable Object result) {
+            }
+
+            @Override
+            public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
+                Logger.error(TAG, "enableFloatWindow error code: " + code + " message:" + message + "details:"
+                        + details);
+            }
+
+            @Override
+            public void notImplemented() {
+                Logger.error(TAG, "enableFloatWindow notImplemented");
+            }
+        });
     }
 
-    public static void enableFloatWindow(boolean enable) {
-        Map paramMap = new HashMap();
-        paramMap.put("enable", enable);
-        mChannel.invokeMethod("enableFloatWindow", paramMap);
+    public void groupCall(Map params) {
+        mChannel.invokeMethod("groupCall", params, new Result() {
+            @Override
+            public void success(@Nullable Object result) {
+            }
+
+            @Override
+            public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
+                Logger.error(TAG, "groupCall error code: " + code + " message:" + message + "details:"
+                        + details);
+            }
+
+            @Override
+            public void notImplemented() {
+                Logger.error(TAG, "groupCall notImplemented");
+            }
+        });
     }
 
-    public static void groupCall(String groupId, List<String> userIdList, TUICallDefine.MediaType mediaType) {
-        Map paramMap = new HashMap();
-        paramMap.put("groupId", groupId);
-        paramMap.put("userIdList", userIdList);
-        paramMap.put("mediaType", mediaType.ordinal());
-        mChannel.invokeMethod("groupCall", paramMap);
+    public void call( Map params) {
+        mChannel.invokeMethod("call", params, new Result() {
+            @Override
+            public void success(@Nullable Object result) {
+            }
+
+            @Override
+            public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
+                Logger.error(TAG, "call error code: " + code + " message:" + message + "details:"
+                        + details);
+            }
+
+            @Override
+            public void notImplemented() {
+                Logger.error(TAG, "call notImplemented");
+            }
+        });
     }
 
-    public static void call(String userId, TUICallDefine.MediaType mediaType) {
-        Map paramMap = new HashMap();
-        paramMap.put("userId", userId);
-        paramMap.put("mediaType", mediaType.ordinal());
-        mChannel.invokeMethod("call", paramMap);
-    }
-
-    public static void handleLoginSuccess() {
+    public void handleLoginSuccess() {
+        Logger.info(TAG, "handleLoginSuccess init");
         Map paramMap = new HashMap();
         paramMap.put("userId", TUILogin.getUserId());
         paramMap.put("sdkAppId", TUILogin.getSdkAppId());
         paramMap.put("userSig", TUILogin.getUserSig());
-        mChannel.invokeMethod("handleLoginSuccess", paramMap);
+        mChannel.invokeMethod("handleLoginSuccess", paramMap, new Result() {
+            @Override
+            public void success(@Nullable Object result) {
+                Logger.info(TAG, "handleLoginSuccess success");
+            }
+
+            @Override
+            public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
+                Logger.error(TAG, "handleLoginSuccess error code: " + code + " message:" + message + "details:"
+                        + details);
+            }
+
+            @Override
+            public void notImplemented() {
+                Logger.error(TAG, "handleLoginSuccess notImplemented");
+            }
+        });
     }
 
-    public static void handleLogoutSuccess() {
+    public void handleLogoutSuccess() {
         Map paramMap = new HashMap();
-        mChannel.invokeMethod("handleLogoutSuccess", paramMap);
+        mChannel.invokeMethod("handleLogoutSuccess", paramMap, new Result() {
+            @Override
+            public void success(@Nullable Object result) {
+                Logger.info(TAG, "handleLogoutSuccess success");
+            }
+
+            @Override
+            public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
+                Logger.error(TAG, "handleLogoutSuccess error code: " + code + " message:" + message + "details:"
+                        + details);
+            }
+
+            @Override
+            public void notImplemented() {
+                Logger.error(TAG, "handleLogoutSuccess notImplemented");
+            }
+        });
     }
 
+    @Override
+    public void onNotifyEvent(String key, String subKey, Map<String, Object> params) {
+        if (!Constants.KEY_CALLKIT_PLUGIN.equals(key)) {
+            return;
+        }
+
+        if (Constants.SUB_KEY_GOTO_CALLING_PAGE.equals(subKey)) {
+            gotoCallingPage();
+            return;
+        }
+
+        if (Constants.SUB_KEY_HANDLE_CALL_RECEIVED.equals(subKey)) {
+            handleCallReceived();
+            return;
+        }
+
+        if (Constants.SUB_KEY_ENABLE_FLOAT_WINDOW.equals(subKey) && !params.isEmpty()) {
+            enableFloatWindow(params);
+            return;
+        }
+
+        if (Constants.SUB_KEY_GROUP_CALL.equals(subKey) && !params.isEmpty()) {
+            groupCall(params);
+            return;
+        }
+
+        if (Constants.SUB_KEY_CALL.equals(subKey) && !params.isEmpty()) {
+            call(params);
+            return;
+        }
+
+        if (Constants.SUB_KEY_LOGIN_SUCCESS.equals(subKey)) {
+            handleLoginSuccess();
+            return;
+        }
+
+        if (Constants.SUB_KEY_LOGOUT_SUCCESS.equals(subKey)) {
+           handleLogoutSuccess();
+        }
+    }
 }

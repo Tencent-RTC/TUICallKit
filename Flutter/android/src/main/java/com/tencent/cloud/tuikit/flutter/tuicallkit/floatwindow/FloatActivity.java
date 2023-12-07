@@ -8,7 +8,9 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 
 import com.tencent.cloud.tuikit.flutter.tuicallkit.TUICallKitPlugin;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitAppUtils;
+import com.tencent.qcloud.tuicore.TUICore;
 
 public class FloatActivity extends Activity {
 
@@ -17,9 +19,9 @@ public class FloatActivity extends Activity {
         super.onCreate(savedInstanceState);
         String event = getIntent().getStringExtra(EVENT_KEY);
         if (KitAppUtils.EVENT_START_CALL_PAGE.equals(event)) {
-            TUICallKitPlugin.gotoCallingPage();
+            TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_GOTO_CALLING_PAGE, null);
         } else if(KitAppUtils.EVENT_HANDLER_RECEIVE_CALL_REQUEST.equals(event)) {
-            TUICallKitPlugin.handleCallReceived();
+            TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_HANDLE_CALL_RECEIVED, null);
         }
         finish();
     }

@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.tencent.cloud.tuikit.flutter.tuicallkit.TUICallKitPlugin;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.FloatActivity;
+import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.permission.PermissionRequester;
 
 import java.util.List;
@@ -39,9 +40,9 @@ public class KitAppUtils {
             context.startActivity(intent);
         } else {
             if (KitAppUtils.EVENT_START_CALL_PAGE.equals(event)) {
-                TUICallKitPlugin.gotoCallingPage();
-            } else if (KitAppUtils.EVENT_HANDLER_RECEIVE_CALL_REQUEST.equals(event)) {
-                TUICallKitPlugin.handleCallReceived();
+                TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_GOTO_CALLING_PAGE, null);
+            } else if(KitAppUtils.EVENT_HANDLER_RECEIVE_CALL_REQUEST.equals(event)) {
+                TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_HANDLE_CALL_RECEIVED, null);
             }
         }
     }
