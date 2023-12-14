@@ -309,8 +309,8 @@ class CallState {
         .then((value) => {enableMuteMode = value});
   }
 
-  void registerEngineObserver() {
-    TUICallEngine.instance.addObserver(observer);
+  Future<void> registerEngineObserver() async {
+    await TUICallEngine.instance.addObserver(observer);
   }
 
   void unRegisterEngineObserver() {

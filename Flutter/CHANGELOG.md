@@ -1,4 +1,4 @@
-## 2.0.3
+## 2.0.4
 ### Bug Fixes
 - Android&iOS : Fixed the intermittent issue of incoming call page not displaying sometimes after clicking on an incoming call notification.
 

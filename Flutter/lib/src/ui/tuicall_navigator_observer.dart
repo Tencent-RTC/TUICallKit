@@ -63,7 +63,6 @@ class TUICallKitNavigatorObserver extends NavigatorObserver {
 
   static void _bootInit() {
     TUICallKitPlatform.instance;
-    CallState.instance.registerEngineObserver();
   }
 }
 
