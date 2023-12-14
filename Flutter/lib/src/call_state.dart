@@ -15,6 +15,9 @@ import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
 import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
 
+//
+typedef NickNameCallback = Future<String?> Function(String userId);
+
 class CallState {
   static final CallState instance = CallState._internal();
 
@@ -46,6 +49,13 @@ class CallState {
   bool enableFloatWindow = false;
 
   bool isChangedBigSmallVideo = false;
+
+  // 新增获取nickName
+  NickNameCallback? nameCallback;
+
+  void setNameCallback({NickNameCallback? nameCallback}) {
+    this.nameCallback = nameCallback;
+  }
 
   TUICallObserver observer = TUICallObserver(
       onError: (int code, String message) {
@@ -113,7 +123,7 @@ class CallState {
         eventBus.notify(setStateEvent);
         TUICallKitPlatform.instance.updateCallStateToNative();
       },
-      onUserReject: (String userId) {
+      onUserReject: (String userId) async {
         debugPrint("----------onUserReject----------");
         for (var remoteUser in CallState.instance.remoteUserList) {
           if (remoteUser.id == userId) {
@@ -132,10 +142,12 @@ class CallState {
         if (TUICallScene.singleCall == CallState.instance.scene) {
           TUIToast.show(content: CallKit_t('对方拒绝了通话请求'));
         } else {
-          TUIToast.show(content: '$userId ${CallKit_t('拒绝了通话请求')}');
+          String? nickName =
+              await CallState.instance.nameCallback?.call(userId) ?? userId;
+          TUIToast.show(content: '$nickName ${CallKit_t('拒绝了通话请求')}');
         }
       },
-      onUserNoResponse: (String userId) {
+      onUserNoResponse: (String userId) async {
         debugPrint("----------onUserNoResponse----------");
         for (var remoteUser in CallState.instance.remoteUserList) {
           if (remoteUser.id == userId) {
@@ -155,10 +167,12 @@ class CallState {
         if (TUICallScene.singleCall == CallState.instance.scene) {
           TUIToast.show(content: CallKit_t('对方未响应'));
         } else {
-          TUIToast.show(content: '$userId ${CallKit_t('未响应')}');
+          String? nickName =
+              await CallState.instance.nameCallback?.call(userId) ?? userId;
+          TUIToast.show(content: '$nickName ${CallKit_t('未响应')}');
         }
       },
-      onUserLineBusy: (String userId) {
+      onUserLineBusy: (String userId) async {
         debugPrint("----------onUserLineBusy----------");
         for (var remoteUser in CallState.instance.remoteUserList) {
           if (remoteUser.id == userId) {
@@ -183,7 +197,9 @@ class CallState {
         if (TUICallScene.singleCall == CallState.instance.scene) {
           TUIToast.show(content: CallKit_t('对方忙线'));
         } else {
-          TUIToast.show(content: '$userId ${CallKit_t('忙线')}');
+          String? nickName =
+              await CallState.instance.nameCallback?.call(userId) ?? userId;
+          TUIToast.show(content: '$nickName ${CallKit_t('忙线')}');
         }
       },
       onUserJoin: (String userId) async {
@@ -216,7 +232,7 @@ class CallState {
 
         TUICallKitPlatform.instance.updateCallStateToNative();
       },
-      onUserLeave: (String userId) {
+      onUserLeave: (String userId) async {
         debugPrint("----------onUserLeave: userId -> $userId----------");
         for (var remoteUser in CallState.instance.remoteUserList) {
           if (remoteUser.id == userId) {
@@ -236,7 +252,9 @@ class CallState {
         if (TUICallScene.singleCall == CallState.instance.scene) {
           TUIToast.show(content: CallKit_t('对方已挂断，通话结束'));
         } else {
-          TUIToast.show(content: '$userId ${CallKit_t('结束了通话')}');
+          String? nickName =
+              await CallState.instance.nameCallback?.call(userId) ?? userId;
+          TUIToast.show(content: '$nickName ${CallKit_t('结束了通话')}');
         }
       },
       onUserVideoAvailable: (String userId, bool isVideoAvailable) {
