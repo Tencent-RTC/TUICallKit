@@ -456,6 +456,7 @@ class CallManager {
   }
 
   Future<TUIResult> login(int sdkAppId, String userId, String userSig) async {
+    await CallState.instance.registerEngineObserver();
     TUIResult result = TUIResult(code: '', message: 'success');
     await TUILogin.instance.login(
         sdkAppId,
@@ -496,9 +497,9 @@ class CallManager {
     CallManager.instance.selectAudioPlaybackDevice(CallState.instance.audioDevice);
   }
 
-  void handleLoginSuccess(int sdkAppId, String userId, String userSig) {
-    CallState.instance.registerEngineObserver();
-    CallManager.instance.initEngine(sdkAppId, userId, userSig);
+  void handleLoginSuccess(int sdkAppId, String userId, String userSig) async {
+    await CallState.instance.registerEngineObserver();
+    await CallManager.instance.initEngine(sdkAppId, userId, userSig);
     _instance._adaptiveComponentReport();
   }
 

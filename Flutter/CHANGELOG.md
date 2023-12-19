@@ -1,4 +1,21 @@
-## 1.9.2
+## 2.0.4
+### Bug Fixes
+- Android&iOS : Fixed the intermittent issue of incoming call page not displaying sometimes after clicking on an incoming call notification.
+
+## 2.0.2
+### Bug Fixes
+- Android : Fix the issue of call failure under multiple Flutter Engine conditions.
+
+## 2.0.1
+### Bug Fixes
+- Android & iOS : Fixed an incompatibility issue caused by Tencent RTC Observer when using Tencent RTC components with other components that also use Tencent RTC.
+- Android : Fixed an incompatibility issue when using TUIRoom in conjunction with other devices.
+
+## 2.0.0
+### Dependency Description
+- Upgrade the dependent client SDK version: Android&iOS TUICore:7.6.5011, Android&iOS TUICallEngine:2.0.0.750.
+
+## 1.9.1
 ## New Features
 - iOS: Support Voip.
 ### Bug Fixes

@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.R;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.TUICallKitPlugin;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.TUICallState;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitAppUtils;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
@@ -131,7 +132,7 @@ public class FloatCallView extends RelativeLayout implements ITUINotification {
         FloatWindowService.stopFloatWindow(mContext);
         if (TUICallState.getInstance().mSelfUser.callStatus != TUICallDefine.Status.None) {
             if (KitAppUtils.isAppInForeground(mContext)) {
-                TUICallKitPlugin.gotoCallingPage();
+                TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_GOTO_CALLING_PAGE, null);
             } else {
                 KitAppUtils.moveAppToForeground(mContext, KitAppUtils.EVENT_START_CALL_PAGE);
             }

@@ -1,8 +1,4 @@
 <view class="container">
-  <TUICallKit
-    id="TUICallKit-component"
-    config="{{config}}"
-  ></TUICallKit>
   <view class="trtc-calling-index">
     <view class="trtc-calling-index-title">
       <image class="btn-goback" src="../Resources/back.png" bind:tap="onBack" />
@@ -13,12 +9,12 @@
         <view class="input-box">
           <input class="input-search-user" value="{{userIDToSearch}}" maxlength="11" type="text" bindinput="userIDToSearchInput" placeholder="搜索用户ID" />
         </view>
-        <view class="btn-search" bindtap="searchUser" >搜索</view>
+        <view class="btn-search" bindtap="searchUser">搜索</view>
       </view>
       <view class="search-selfInfo">
         <label class="search-selfInfo-label">您的ID</label>
         <view class="search-selfInfo-phone">
-          {{config.userID}}
+          {{userID}}
         </view>
       </view>
       <view class="search-result">
@@ -33,7 +29,7 @@
       </view>
       <view wx:if="{{!invitee.userID}}" class="search-default">
         <view class="search-default-box">
-          <image class="search-default-img" src="../Resources/search.png"  lazy-load="true" />
+          <image class="search-default-img" src="../Resources/search.png" lazy-load="true" />
           <view class="search-default-message">
             搜索添加已注册用户以发起通话
           </view>

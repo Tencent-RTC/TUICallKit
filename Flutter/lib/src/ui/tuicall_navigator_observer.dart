@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tencent_calls_uikit/src/call_state.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/inviteuser/invite_user_widget.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/ui/tuicall_kit_widget.dart';
@@ -10,8 +11,11 @@ class TUICallKitNavigatorObserver extends NavigatorObserver {
   static CallPage currentPage = CallPage.none;
 
   static TUICallKitNavigatorObserver getInstance() {
-    _bootInit();
     return _instance;
+  }
+
+  TUICallKitNavigatorObserver() {
+    _bootInit();
   }
 
   void enterCallingPage() async {

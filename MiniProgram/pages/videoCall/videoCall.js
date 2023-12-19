@@ -1,19 +1,12 @@
-import { genTestUserSig } from '../../debug/GenerateTestUserSig';
 import { MEDIA_TYPE } from 'tuicall-engine-wx';
+import { TUICallKitServer } from "../../TUICallKit/TUICallService/index";
 
 Page({
-  TUICallKit: null,
   data: {
     userIDToSearch: '',
     searchResultShow: false,
     invitee: null,
-    config: {
-      sdkAppID: wx.$globalData.sdkAppID,
-      userID: wx.$globalData.userID,
-      userSig: wx.$globalData.userSig,
-      type: MEDIA_TYPE.VIDEO,
-      tim: null,
-    },
+    userID:''
   },
 
   userIDToSearchInput(e) {
@@ -31,10 +24,9 @@ Page({
     this.data.invitee = {
       userID: this.data.userIDToSearch,
     };
-    this.TUICallKit.getTim()
+    TUICallKitServer.getTim()
       .getUserProfile({ userIDList: [this.data.userIDToSearch] })
       .then((imResponse) => {
-        console.log('获取getUserProfile', imResponse.data);
         if (imResponse.data.length === 0) {
           wx.showToast({
             title: '未查询到此用户',
@@ -50,7 +42,7 @@ Page({
   },
 
   async call() {
-    if (this.data.config.userID === this.data.invitee.userID) {
+    if (this.data.userID === this.data.invitee.userID) {
       wx.showToast({
         icon: 'none',
         title: '不可呼叫本机',
@@ -58,7 +50,7 @@ Page({
       return;
     }
     try {
-      await this.TUICallKit.call({ userID: this.data.invitee.userID, type: MEDIA_TYPE.VIDEO });
+      await TUICallKitServer.call({ userID: this.data.invitee.userID, type: MEDIA_TYPE.VIDEO});
     } catch (error) {
       wx.showModal({
         icon: 'none',
@@ -76,28 +68,8 @@ Page({
   },
 
   onLoad() {
-    const Signature = genTestUserSig(wx.$globalData.userID);
-    const config = {
-      sdkAppID: wx.$globalData.sdkAppID,
-      userID: wx.$globalData.userID,
-      userSig: Signature.userSig,
-    };
-    this.setData(
-      {
-        config: { ...this.data.config, ...config },
-      },
-      () => {
-        this.TUICallKit = this.selectComponent('#TUICallKit-component');
-        this.TUICallKit.init();
-      },
-    );
+    this.setData({
+      userID:wx.$globalData.userID 
+    })
   },
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-    this.TUICallKit.destroyed();
-  },
-
-  onShow() {},
 });

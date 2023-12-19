@@ -1,6 +1,6 @@
-import { genTestUserSig } from '../../debug/GenerateTestUserSig';
 import { MEDIA_TYPE } from 'tuicall-engine-wx';
-import TIM from 'tim-wx-sdk';
+import TIM from '@tencentcloud/chat';
+import { TUICallKitServer } from "../../TUICallKit/TUICallService/index";
 
 Page({
   TUICallKit: null,
@@ -8,15 +8,9 @@ Page({
     userIDToSearch: '',  // 搜索的结果
     searchList: [],  // 搜索后展示的列表
     callBtn: false,  // 控制呼叫按钮的显示隐藏
-    ischeck: true,   // 显示是否全选
-    config: {
-      sdkAppID: wx.$globalData.sdkAppID,
-      userID: wx.$globalData.userID,
-      userSig: wx.$globalData.userSig,
-      type: MEDIA_TYPE.VIDEO,
-      tim: null,
-    },
+    isCheck: true,   // 显示是否全选
     groupID: '',
+    userID:''
   },
 
   // 监听输入框
@@ -59,7 +53,7 @@ Page({
         return;
       }
     }
-    this.TUICallKit.getTim()
+    TUICallKitServer.getTim()
       .getUserProfile({ userIDList: [this.data.userIDToSearch] })
       .then((imResponse) => {
         if (imResponse.data.length === 0) {
@@ -112,7 +106,7 @@ Page({
     // 判断groupID是否创建成功
     if (this.data.groupID) {
       // 发起群通话
-      this.TUICallKit.groupCall({
+      TUICallKitServer.groupCall({
         userIDList,
         type: MEDIA_TYPE.VIDEO,
         groupID: this.data.groupID,
@@ -120,7 +114,7 @@ Page({
       // 重置数据
       this.setData({
         // searchList: [],
-        ischeck: true,
+        isCheck: true,
       });
     } else {
       wx.showToast({
@@ -166,7 +160,7 @@ Page({
     }
     this.setData({
       searchList: newlist,
-      ischeck: false,
+      isCheck: false,
     });
   },
 
@@ -179,14 +173,14 @@ Page({
     }
     this.setData({
       searchList: newlist,
-      ischeck: true,
+      isCheck: true,
     });
   },
 
 
   // 创建IM群聊
   createGroup(userIDList) {
-    return this.TUICallKit.getTim().createGroup({
+    return TUICallKitServer.getTim().createGroup({
       type: TIM.TYPES.GRP_MEETING,
       name: 'WebSDK',
       memberList: userIDList, // 如果填写了 memberList，则必须填写 userID
@@ -201,49 +195,15 @@ Page({
       });
   },
 
-  // 解散IM群聊
-  dismissGroup(groupID) {
-    this.TUICallKit.getTim().dismissGroup(groupID)
-      .then((imResponse) => { // 解散成功
-        console.log(imResponse.data.groupID); // 被解散的群组 ID
-      })
-      .catch((imError) => {
-        console.warn('dismissGroup error:', imError); // 解散群组失败的相关信息
-      });
-  },
-
   onBack() {
     wx.navigateBack({
       delta: 1,
     });
-    this.TUICallKit.destroyed();
   },
-
 
   onLoad() {
-    const Signature = genTestUserSig(wx.$globalData.userID);
-    const config = {
-      sdkAppID: wx.$globalData.sdkAppID,
-      userID: wx.$globalData.userID,
-      userSig: Signature.userSig,
-    };
     this.setData({
-      config: { ...this.data.config, ...config },
-    }, () => {
-      this.TUICallKit = this.selectComponent('#TUICallKit-component');
-      this.TUICallKit.init();
-    });
-  },
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-    // 解散群聊
-    // this.dismissGroup(this.data.groupID || '');
-    this.TUICallKit.destroyed();
-  },
-
-  onShow() {
-
+      userID:wx.$globalData.userID 
+    })
   },
 });

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.tencent.cloud.tuikit.flutter.tuicallkit.TUICallKitPlugin;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants;
 import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
@@ -17,6 +18,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,9 +56,7 @@ final class TUICallingService implements ITUINotification, ITUIService {
         Log.i(TAG, "onCall, method: " + method + " ,param: " + param);
 
         if (null != param && TextUtils.equals(TUIConstants.TUICalling.METHOD_NAME_ENABLE_FLOAT_WINDOW, method)) {
-            boolean enableFloatWindow = (boolean) param.get(TUIConstants.TUICalling.PARAM_NAME_ENABLE_FLOAT_WINDOW);
-            Log.i(TAG, "onCall, enableFloatWindow: " + enableFloatWindow);
-            TUICallKitPlugin.enableFloatWindow(enableFloatWindow);
+            TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_ENABLE_FLOAT_WINDOW, param);
             return null;
         }
 
@@ -88,9 +88,16 @@ final class TUICallingService implements ITUINotification, ITUIService {
                 mediaType = TUICallDefine.MediaType.Video;
             }
             if (!TextUtils.isEmpty(groupID)) {
-                TUICallKitPlugin.groupCall(groupID, userIdList, mediaType);
+                Map map = new HashMap();
+                map.put("groupId", groupID);
+                map.put("userIdList", userIdList);
+                map.put("mediaType", mediaType.ordinal());
+                TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_GROUP_CALL, map);
             } else if (userIdList.size() == 1) {
-                TUICallKitPlugin.call(userIdList.get(0), mediaType);
+                Map map = new HashMap();
+                map.put("userId", userIdList.get(0));
+                map.put("mediaType", mediaType.ordinal());
+                TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_CALL, map);
             } else {
                 Log.e(TAG, "onCall ignored, groupId is empty and userList is not 1, cannot start call or groupCall");
             }
@@ -102,10 +109,10 @@ final class TUICallingService implements ITUINotification, ITUIService {
     public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
         if (TUIConstants.TUILogin.EVENT_LOGIN_STATE_CHANGED.equals(key)
                 && TUIConstants.TUILogin.EVENT_SUB_KEY_USER_LOGOUT_SUCCESS.equals(subKey)) {
-            TUICallKitPlugin.handleLogoutSuccess();
+            TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_LOGOUT_SUCCESS, null);
         } else if (TUIConstants.TUILogin.EVENT_SUB_KEY_USER_LOGIN_SUCCESS == subKey) {
             setExcludeFromHistoryMessage();
-            TUICallKitPlugin.handleLoginSuccess();
+            TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_LOGIN_SUCCESS, null);
         }
     }
 
