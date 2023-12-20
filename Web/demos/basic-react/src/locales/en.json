@@ -1,0 +1,19 @@
+{   
+    "Debug Panel": "Debug Panel",
+	"login": "login",
+    "call": "call",
+    "video-call": "video call",
+    "audio-call": "audio call",
+    "Wechat scan right QR code": "Phone scan right QR code",
+    "Use-phone-and-computer": "Use your mobile phone and computer to experience video calls",
+    "Please enter SDKAppID": "Please enter SDKAppID",
+    "Please enter SecretKey": "Please enter SecretKey",
+    "Please enter userId": "Please enter userId",
+    "delete": "delete",
+    "userId": "userId",
+    "Add to call list": "Add to call list",
+    "not-login": "please sign in",
+    "Enter UserId": "Enter UserId",
+    "warn": "warn",
+    "disclose it at will": "Web links and QR codes contain sensitive information, which is only for local development and debugging. Please do not leak it at will."
+}

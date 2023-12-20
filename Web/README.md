@@ -56,10 +56,16 @@ GitHub Release Date: -->
 ```text
 .
 ├── README.md
+├── demos/basic-react/
 ├── demos/basic-vue3/
 ├── demos/basic-vue2/
 └── TUICallKit/
 ```
+
+**demos/basic-react/**
+
+- 此文件夹下是 React 基础版 demo，集成了完整的 TUICallKit 组件功能，可以直接搜索用户拨打音视频通话。
+- demo 页面下方集成了调试面板，可直接输入您的应用信息，具体流程请参考：[React Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-react/README.md)。
 
 **demos/basic-vue3/**
 

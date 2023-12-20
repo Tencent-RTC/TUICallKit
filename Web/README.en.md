@@ -48,10 +48,16 @@ Here are a few guidelines for using this component.
 ```text
 .
 ├── README.md
+├── demos/basic-react/
 ├── demos/basic-vue3/
 ├── demos/basic-vue2/
 └── TUICallKit/
 ```
+
+**demos/basic-react/**
+
+- The `demos/basic-react/` directory contains the Vue3 basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
+- A debug panel is integrated at the bottom of the demo page. You can enter your application information directly, please refer to [Run the React Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-react/README.en.md).
 
 **demos/basic-vue3/**
 
