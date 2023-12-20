@@ -6,6 +6,7 @@ apply plugin: 'com.huawei.agconnect'
 
 android {
     compileSdkVersion 28
+    namespace "com.tencent.qcloud.tuikit.tuicallkit.demo"
 
     defaultConfig {
         applicationId "com.tencent.trtc"
@@ -60,6 +61,7 @@ dependencies {
     api project(':tuiofflinepush')
     api project(':debug')
     implementation "androidx.recyclerview:recyclerview:1.2.1"
+    implementation 'androidx.multidex:multidex:2.0.1'
 
     // Optional, if you use support library fragments:
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'

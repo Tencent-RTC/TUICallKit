@@ -1,9 +1,10 @@
 package com.tencent.qcloud.tuikit.tuicallkit.demo;
 
+import android.app.Application;
 import android.os.Build;
 import android.os.StrictMode;
 
-import androidx.multidex.MultiDexApplication;
+import androidx.multidex.MultiDex;
 
 import com.tencent.qcloud.tim.tuiofflinepush.TUIOfflinePushConfig;
 
@@ -11,11 +12,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public class BaseApplication extends MultiDexApplication {
+public class BaseApplication extends Application {
 
     @Override
     public void onCreate() {
         super.onCreate();
+        MultiDex.install(this);
+
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
