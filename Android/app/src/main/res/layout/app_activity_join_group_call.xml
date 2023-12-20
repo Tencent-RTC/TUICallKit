@@ -112,7 +112,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="@color/tuicalling_color_black"
+            android:textColor="@color/app_color_black"
             android:text="@string/app_media_type"/>
 
         <RadioGroup
@@ -128,7 +128,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/tuicalling_color_black"
+                android:textColor="@color/app_color_black"
                 android:text="@string/app_video_call"
                 android:background="@null"
                 android:button="@drawable/app_bg_rb_selector"
@@ -142,7 +142,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/tuicalling_color_black"
+                android:textColor="@color/app_color_black"
                 android:background="@null"
                 android:button="@drawable/app_bg_rb_selector"
                 android:drawableLeft="@drawable/app_bg_rb_selector"
