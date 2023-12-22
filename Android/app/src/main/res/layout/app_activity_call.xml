@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/app_color_white">
+    android:background="@color/app_color_white"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -36,8 +36,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="38dp">
+        android:layout_marginTop="38dp"
+        android:layout_marginRight="16dp">
 
         <TextView
             android:id="@+id/tv_call_user_label"
@@ -76,15 +76,15 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="22dp"
             android:text="@string/app_media_type"
-            android:textColor="@color/tuicalling_color_black"
+            android:textColor="@color/app_color_black"
             android:textSize="16sp" />
 
         <RadioGroup
             android:id="@+id/rg_media_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
             android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
             android:orientation="horizontal">
 
             <RadioButton
@@ -98,7 +98,7 @@
                 android:drawablePadding="5dp"
                 android:gravity="center"
                 android:text="@string/app_video_call"
-                android:textColor="@color/tuicalling_color_black"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <RadioButton
@@ -108,13 +108,13 @@
                 android:layout_marginLeft="15dp"
                 android:background="@null"
                 android:button="@drawable/app_bg_rb_selector"
+                android:checked="true"
                 android:drawableLeft="@drawable/app_bg_rb_selector"
                 android:drawablePadding="5dp"
                 android:gravity="center"
                 android:text="@string/app_audio_call"
-                android:textColor="@color/tuicalling_color_black"
-                android:textSize="16sp"
-                android:checked="true" />
+                android:textColor="@color/app_color_black"
+                android:textSize="16sp" />
         </RadioGroup>
     </RelativeLayout>
 
@@ -130,16 +130,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/app_call_setting"
             android:layout_gravity="center_horizontal"
+            android:text="@string/app_call_setting"
             android:textColor="#0062E3"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <ImageView
-            android:layout_marginLeft="9.5dp"
             android:layout_width="5.3dp"
             android:layout_height="9dp"
-            android:background="@drawable/app_right"/>
+            android:layout_marginLeft="9.5dp"
+            android:background="@drawable/app_right" />
 
     </LinearLayout>
 
