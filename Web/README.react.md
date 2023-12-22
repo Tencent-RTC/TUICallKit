@@ -8,7 +8,7 @@
 <img src="https://img.shields.io/badge/support-docs%20%26%20demos-yellow">
 <img src="https://img.shields.io/npm/l/@tencentcloud/call-uikit-react">
 
-[Demo]() · [Report Bug](https://github.com/tencentyun/TUICallKit/issues) · English · [中文](https://github.com/tencentyun/TUICallKit/blob/main/Web/README.react.zh.md)
+[Demo](https://web.sdk.qcloud.com/component/TUICallKit/demos/basic-react/index.html) · [Report Bug](https://github.com/tencentyun/TUICallKit/issues) · English · [中文](https://github.com/tencentyun/TUICallKit/blob/main/Web/README.react.zh.md)
 </div>
 
 ![](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
