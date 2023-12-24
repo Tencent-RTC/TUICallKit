@@ -1,0 +1,56 @@
+{
+  "extends": [
+    "eslint-config-ali/react"
+  ],
+  "globals": {
+    "App": true,
+    "getCurrentPages": true,
+    "getApp": true,
+    "APP_KEY": true,
+    "WS_URL": true,
+    "wx": true,
+    "DEFAULT_UIN": true,
+    "CLOUD_FN_ENV": true,
+    "requirePlugin": true
+  },
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true,
+    "jest": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 10,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "semi": ["error", "always"],
+    "quotes": ["error", "single"],
+    "indent": ["warn", 2, { "SwitchCase": 1 }],
+    "prefer-const": [
+      "error",
+      {
+        "destructuring": "all"
+      }
+    ],
+    "no-param-reassign": 0,
+    "no-plusplus": 0,
+    "@typescript-eslint/semi": "error",
+    "@typescript-eslint/quotes": "error",
+    "@typescript-eslint/indent": "warn",
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      {
+        "checksConditionals": true,
+        "checksVoidReturn": false
+      }
+    ],
+    "@typescript-eslint/consistent-type-assertions": 0,
+    "@typescript-eslint/naming-convention": 0,
+    "@typescript-eslint/prefer-optional-chain": 0
+  },
+  "parser": "@typescript-eslint/parser"
+}
