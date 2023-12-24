@@ -1,0 +1,19 @@
+{   
+    "Debug Panel": "デバッグパネル",
+    "login": "ログイン",
+    "call": "通話",
+    "video-call": "ビデオ通話",
+    "audio-call": "音声通話",
+    "Wechat scan right QR code": "右のQRコードを携帯電話で読み取ってください",
+    "Use-phone-and-computer": "携帯電話とコンピュータを使用してビデオ通話を体験してください",
+    "Please enter SDKAppID": "SDKAppID を入力してください",
+    "Please enter SecretKey": "SecretKey を入力してください",
+    "Please enter userId": "userId を入力してください",
+    "delete": "消去",
+    "userId": "ユーザーID",
+    "Add to call list": "通話リストに追加",
+    "not-login": "まずログインしてください",
+    "Enter UserId": "ユーザーIDを入力してください",
+    "warn": "警告する",
+    "disclose it at will": "Web リンクや QR コードには機密情報が含まれており、ローカルでの開発およびデバッグのみに使用されますので、任意に漏洩しないでください"
+}
