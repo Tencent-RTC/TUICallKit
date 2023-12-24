@@ -1,6 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { List, Space, Link, Button, MessagePlugin } from "tdesign-react";
 import StoreContext from "../../store/context";
+import TIM from "@tencentcloud/chat";
 import { TUICallKitServer } from "@tencentcloud/call-uikit-react";
 import { useTranslation } from "react-i18next";
 import "./ResultList.less";
@@ -8,7 +9,7 @@ const { ListItem, ListItemMeta } = List;
 
 export default function BasicList() {
   const { t } = useTranslation();
-  const { searchResult, upDataSearchResult, callType, useId } =
+  const { searchResult, upDataSearchResult, callType, useId, loginInfo: { tim } } =
     useContext(StoreContext);
   const handleClick = (item:any) => {
     const filteredArr = searchResult.filter((res:any) => res !== item);
@@ -22,12 +23,15 @@ export default function BasicList() {
     if (searchResult.length === 1) {
       await TUICallKitServer.call({ userID: searchResult[0], type: callType });
     } else {
+      let res = await tim.createGroup({
+        type: TIM.TYPES.GRP_PUBLIC,
+        name: "group-call",
+        memberList: searchResult?.map((userId) => ({ userID: userId })),
+      });
       await TUICallKitServer.groupCall({
         userIDList: searchResult,
         type: callType,
-        // groupID: "@TGS#24SG4XNNV",
-        // groupID: '@TGS#2NOQD7SNK', // pop1-pop7
-        groupID: '@TGS#2TOJAOTNA', // jony1-jony9
+        groupID: res.data.group.groupID,
       });
     }
   };

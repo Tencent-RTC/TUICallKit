@@ -4,7 +4,7 @@ import QRCodeBox from "../../assets/QRCodeBox.png";
 import { useTranslation } from "react-i18next";
 import StoreContext from "../../store/context";
 import "./QRCodeContainer.less";
-const commonUrl = 'https://sdk-web-1252463788.cos.ap-hongkong.myqcloud.com/trtc/call/pope-test/react-demo/index.html'
+const commonUrl = 'https://web.sdk.qcloud.com/component/TUICallKit/demos/basic-react/index.html'
 
 export default function QRCodeContainer() {
   const { t } = useTranslation();

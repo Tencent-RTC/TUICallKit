@@ -17,12 +17,15 @@
 ## Demo 演示
 
 - 桌面端
+
 <img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/Background-pc.png" style="width: 800px; margin: 10px;" align="center">
 
 - 移动端
+
 <img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/en/Background-mobile.png" style="width: 1000px; margin: 10px;" align="center">
 
 - 群通话
+
 <img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/Background-group-mobile.png" style="width: 1000px; margin: 10px;" align="center">
 
 ## 特性
@@ -56,6 +59,24 @@ npm install @tencentcloud/call-uikit-react
 - 如果你遇到了困难，可以先参阅 [常见问题](https://cloud.tencent.com/document/product/647/78769)；
 - 有任何问题可以在[腾讯云通讯官方社群](https://zhiliao.qq.com/)中的 TUICallKit 板块中提出；
 - 如果发现了示例代码的 bug，欢迎提交 issue；
+
+## 更新日志
+
+### Version 1.0.3 @2023.12.22
+
+**优化**
+
+- 优化昵称显示。
+
+**修复**
+
+- 修复桌面浮动窗口挂断问题。
+
+### Version 1.0.2 @2023.12.17
+
+**新增**
+
+- 新增 @tencentcloud/call-uikit-react 以适应 React，并带来全新的交互体验。
 
 ## License
 

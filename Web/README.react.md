@@ -17,12 +17,15 @@
 ## Online Demo
 
 - Desktop Web
+
 <img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/en/Background-pc-en.png" style="width: 1000px; margin: 10px;" align="center">
 
 - H5
+
 <img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/en/Background-en.png" style="width: 1000px; margin: 10px;" align="center">
 
 - Group Call
+
 <img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/en/Background-group-mobile-en.png" style="width: 1000px; margin: 10px;" align="center">
 
 ## Features
@@ -56,6 +59,25 @@ Here are a few guidelines for using this component
 
 ## Contact Us
 - If you have questions, see [FAQs](https://cloud.tencent.com/document/product/647/78769)
+
+## Changelog
+
+### Version 1.0.3 @2023.12.22
+
+**Optimize**
+
+- Optimize nickname display.
+
+**Bug Fixes**
+
+- Fix desktop floating window hang-up problem.
+
+
+### Version 1.0.2 @2023.12.17
+
+**Features**
+
+- Add @tencentcloud/call-uikit-react for adapting to react, and bring a brand new interaction.
 
 ## License
 

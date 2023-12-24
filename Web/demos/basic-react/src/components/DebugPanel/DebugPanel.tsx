@@ -3,6 +3,7 @@ import { Input, Button, MessagePlugin } from "tdesign-react";
 import { DesktopIcon, LockOnIcon } from "tdesign-icons-react";
 import { TUICallKitServer } from "@tencentcloud/call-uikit-react";
 import { useTranslation } from "react-i18next";
+import TIM from "@tencentcloud/chat";
 import * as GenerateTestUserSig from "../../../public/debug/GenerateTestUserSig-es.js";
 import StoreContext from "../../store/context";
 
@@ -46,12 +47,16 @@ export default function BaseForm() {
       SDKAppID: Number(SDKAppID),
       SecretKey: SecretKey,
     });
+    const tim = TIM.create({
+      SDKAppID: Number(SDKAppID),
+    });
     await TUICallKitServer.init({
       userID: userId,
       userSig,
       SDKAppID: Number(SDKAppID),
+      tim,
     });
-    upDataLoginInfo({ SDKAppID: Number(SDKAppID), SecretKey: SecretKey });
+    upDataLoginInfo({ SDKAppID: Number(SDKAppID), SecretKey: SecretKey, tim });
   };
 
   return (
