@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-import { TUICallKit, TUICallKitServer, STATUS, TUIGlobal } from "@tencentcloud/call-uikit-vue";
+import { TUICallKit, TUICallKitServer, STATUS, TUIGlobal } from "@tencentcloud/call-uikit-vue2";
 import DeviceDetector from "./components/DeviceDetector/index.vue";
 import * as GenerateTestUserSig from "../public/debug/GenerateTestUserSig-es.js";
 import TIM from "@tencentcloud/chat";
@@ -12,9 +12,9 @@ import audioBlackSVG from "./assets/audioBlack.svg";
 import searchSVG from "./assets/search.svg";
 import cancelSVG from "./assets/cancel.svg";
 import languageSVG from "./assets/language.svg";
-import { ElMessage } from "element-plus";
+import { Message as ElMessage } from "element-ui";
 import { getUrlParam } from "./utils";
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n-bridge';
 import "./App.css";
 
 const { t, locale } = useI18n();
@@ -50,7 +50,6 @@ onMounted(() => {
   finishedRTCDetectStatus.value = localStorage.getItem("callkit-basic-demo-finish-rtc-detect") || "";
 });
 
-
 async function login() {
   if (!SDKAppID.value || SDKAppID.value === 0) {
     ElMessage.error(t("input-SDKAppID"));
@@ -66,7 +65,7 @@ async function login() {
   }
   const { userSig } = GenerateTestUserSig.genTestUserSig({
     userID: loginUserID.value,
-    SDKAppID: SDKAppID.value,
+    SDKAppID: Number(SDKAppID.value),
     SecretKey: SecretKey.value
   });
   tim = TIM.create({
@@ -76,7 +75,7 @@ async function login() {
     await TUICallKitServer.init({
       userID: loginUserID.value,
       userSig,
-      SDKAppID: SDKAppID.value,
+      SDKAppID: Number(SDKAppID.value),
       tim
     });
     currentUserID.value = loginUserID.value;
@@ -320,7 +319,6 @@ async function hangup() {
     alert(`自动挂断失败，原因：${error}`);
   }
 }
-
 </script>
 
 <template>
