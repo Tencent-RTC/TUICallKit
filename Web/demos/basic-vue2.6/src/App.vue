@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
-import { TUICallKit, TUICallKitServer, STATUS, TUIGlobal } from "@tencentcloud/call-uikit-vue";
+import { ref, onMounted } from "@vue/composition-api";
+import { TUICallKit, TUICallKitServer, STATUS, TUIGlobal } from "@tencentcloud/call-uikit-vue2.6";
 import DeviceDetector from "./components/DeviceDetector/index.vue";
 import * as GenerateTestUserSig from "../public/debug/GenerateTestUserSig-es.js";
 import TIM from "@tencentcloud/chat";
@@ -12,9 +12,9 @@ import audioBlackSVG from "./assets/audioBlack.svg";
 import searchSVG from "./assets/search.svg";
 import cancelSVG from "./assets/cancel.svg";
 import languageSVG from "./assets/language.svg";
-import { ElMessage } from "element-plus";
+import { Message as ElMessage } from "element-ui";
 import { getUrlParam } from "./utils";
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n-bridge';
 import "./App.css";
 
 const { t, locale } = useI18n();
@@ -50,7 +50,6 @@ onMounted(() => {
   finishedRTCDetectStatus.value = localStorage.getItem("callkit-basic-demo-finish-rtc-detect") || "";
 });
 
-
 async function login() {
   if (!SDKAppID.value || SDKAppID.value === 0) {
     ElMessage.error(t("input-SDKAppID"));
@@ -66,7 +65,7 @@ async function login() {
   }
   const { userSig } = GenerateTestUserSig.genTestUserSig({
     userID: loginUserID.value,
-    SDKAppID: SDKAppID.value,
+    SDKAppID: Number(SDKAppID.value),
     SecretKey: SecretKey.value
   });
   tim = TIM.create({
@@ -76,7 +75,7 @@ async function login() {
     await TUICallKitServer.init({
       userID: loginUserID.value,
       userSig,
-      SDKAppID: SDKAppID.value,
+      SDKAppID: Number(SDKAppID.value),
       tim
     });
     currentUserID.value = loginUserID.value;
@@ -96,6 +95,7 @@ function switchCallType(type: string) {
   if (isCalling.value) return;
   typeString.value = type;
 }
+
 
 async function startCall(typeString: string) {
   if (!isLogin.value) {
@@ -119,7 +119,7 @@ async function startCall(typeString: string) {
       await TUICallKitServer.groupCall({
         userIDList: userList.value,
         type,
-        groupID: groupID.value,
+        groupID: groupID.value
       });
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
