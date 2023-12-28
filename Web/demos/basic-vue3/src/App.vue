@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-import { TUICallKit, TUICallKitServer, STATUS } from "@tencentcloud/call-uikit-vue";
+import { TUICallKit, TUICallKitServer, STATUS, TUIGlobal } from "@tencentcloud/call-uikit-vue";
 import DeviceDetector from "./components/DeviceDetector/index.vue";
 import * as GenerateTestUserSig from "../public/debug/GenerateTestUserSig-es.js";
 import TIM from "@tencentcloud/chat";
@@ -13,13 +13,12 @@ import searchSVG from "./assets/search.svg";
 import cancelSVG from "./assets/cancel.svg";
 import languageSVG from "./assets/language.svg";
 import { ElMessage } from "element-plus";
-import logReporter from "./utils/aegis";
 import { getUrlParam } from "./utils";
 import { useI18n } from "vue-i18n";
 import "./App.css";
 
 const { t, locale } = useI18n();
-
+const isMobile = !TUIGlobal.isPC;
 const SDKAppID = ref<number>(0);
 const SecretKey = ref<string>("");
 const userID = ref<string>("");
@@ -50,6 +49,7 @@ onMounted(() => {
   TUICallKitServer.setLanguage(locale.value);
   finishedRTCDetectStatus.value = localStorage.getItem("callkit-basic-demo-finish-rtc-detect") || "";
 });
+
 
 async function login() {
   if (!SDKAppID.value || SDKAppID.value === 0) {
@@ -82,12 +82,14 @@ async function login() {
     currentUserID.value = loginUserID.value;
     isLogin.value = true;
     if (finishedRTCDetectStatus.value !== "finished" && finishedRTCDetectStatus.value !== "skiped") initNetWorkInfo();
-    logReporter.loginSuccess(SDKAppID.value);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (error.message) ElMessage.error(`${t("login-failed-message")} ${error.message}`);
-    logReporter.loginFailed(SDKAppID.value, error?.message);
   }
+}
+function handleDestroy() {
+  TUICallKitServer.destroyed();
+  isLogin.value = false;
 }
 
 function switchCallType(type: string) {
@@ -120,18 +122,11 @@ async function startCall(typeString: string) {
         groupID: groupID.value,
       });
     }
-    logReporter.callSuccess(SDKAppID.value, callType, typeString);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     isCalling.value = false;
     console.error("startCall", error);
     if (error.message) ElMessage.error(error.message);
-    logReporter.callFailed(
-      SDKAppID.value,
-      callType,
-      typeString,
-      error?.message
-    );
   }
   isLoadCalling.value = false;
 }
@@ -337,7 +332,7 @@ async function hangup() {
       :networkDetectInfo="networkDetectInfo"
     >
     </DeviceDetector>
-    <div style="display: flex; align-items: center">
+    <div v-if="!isCalling" style="display: flex; align-items: center">
       <!-- <button @click="accept"> accept </button>
       <button @click="reject"> reject </button>
       <button @click="hangup"> hangup </button> -->
@@ -368,13 +363,13 @@ async function hangup() {
         </div>
       </div>
     </div>
-    <div class="switch-language" @click="switchLanguage()">
+    <div :class="isMobile?'switch-language-H5':'switch-language'" @click="switchLanguage()">
       <img :src="languageSVG" class="icon" />
       <div class="language-name">
         {{ locale == "en" ? "简体中文" : "English" }}
       </div>
     </div>
-    <div class="call-kit-container">
+    <div :class="isMobile?'call-kit-container-H5':'call-kit-container'">
       <div class="search" v-show="!isCalling || isMinimized">
         <div class="search-window search-left">
           <div class="search-title">
@@ -447,7 +442,7 @@ async function hangup() {
       <input v-model="SDKAppID" placeholder="SDKAppID" type="number" style="width: 100px" />
       <br />
       <span>SecretKey: </span>
-      <input v-model="SecretKey" placeholder="SecretKey" style="width: 500px" />
+      <input v-model="SecretKey" placeholder="SecretKey"/>
       <div style="font-size: 12px">
         {{ t("alert") }}
         <a :href="t('url')" target="_blank">{{ t("view-documents") }}</a>
