@@ -1,5 +1,5 @@
 import Aegis from "aegis-web-sdk";
-
+// @ts-ignore
 import { Version } from "@tencentcloud/call-uikit-vue";
 
 const aegis = new Aegis({
