@@ -40,12 +40,13 @@ const groupID = ref<string>("");
 let tim: any = null;
 
 onMounted(() => {
-  if (!getUrlParam("SDKAppID")) SDKAppID.value = 0;
+  const sdkAppID = GenerateTestUserSig.SDKAPPID || getUrlParam("SDKAppID");
+  if (!sdkAppID) SDKAppID.value = 0;
   else {
-    SDKAppID.value = parseInt(getUrlParam("SDKAppID") as string);
+    SDKAppID.value = parseInt(sdkAppID as string);
     isNewTab.value = true;
   }
-  SecretKey.value = getUrlParam("SecretKey") || "";
+  SecretKey.value = GenerateTestUserSig.SECRETKEY || getUrlParam("SecretKey") || "";
   TUICallKitServer.setLanguage(locale.value);
   finishedRTCDetectStatus.value = localStorage.getItem("callkit-basic-demo-finish-rtc-detect") || "";
 });
@@ -437,15 +438,6 @@ async function hangup() {
     <div id="debug" v-show="!isLogin">
       <div>
         <b>Debug Panel</b>
-      </div>
-      <span>SDKAppID: </span>
-      <input v-model="SDKAppID" placeholder="SDKAppID" type="number" style="width: 100px" />
-      <br />
-      <span>SecretKey: </span>
-      <input v-model="SecretKey" placeholder="SecretKey"/>
-      <div style="font-size: 12px">
-        {{ t("alert") }}
-        <a :href="t('url')" target="_blank">{{ t("view-documents") }}</a>
       </div>
       <span>UserID: </span>
       <input v-model="loginUserID" placeholder="UserID" />

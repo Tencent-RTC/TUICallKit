@@ -19,6 +19,8 @@
  *  SecretKey: "YOUR_SECRETKEY" 
  * });
  */
+declare var SDKAPPID: number;
+declare var SECRETKEY: string;
 declare function genTestUserSig({ userID, SDKAppID, SecretKey, ExpireTime }: {
   userID: string;
   SDKAppID: number;
@@ -29,4 +31,4 @@ declare function genTestUserSig({ userID, SDKAppID, SecretKey, ExpireTime }: {
   SDKAppID: number;
 };
 
-export { genTestUserSig };
+export { genTestUserSig, SDKAPPID, SECRETKEY }
