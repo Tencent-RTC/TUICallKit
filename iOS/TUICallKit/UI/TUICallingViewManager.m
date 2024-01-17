@@ -297,6 +297,11 @@
 }
 
 - (void)initHandsFree:(TUIAudioPlaybackDevice)audioPlaybackDevice {
+    if (([TUICallingStatusManager shareInstance].callRole == TUICallRoleCalled) &&
+        ([TUICallingStatusManager shareInstance].callStatus != TUICallStatusAccept)) {
+        return;
+    }
+    
     [[TUICallEngine createInstance] selectAudioPlaybackDevice:audioPlaybackDevice];
     [TUICallingStatusManager shareInstance].audioPlaybackDevice = audioPlaybackDevice;
     [self updateAudioPlaybackDevice];
@@ -392,7 +397,12 @@
 
 - (void)makeCallingCalleeViewConstraints {
     [self.callingCalleeView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(self.containerView);
+        make.centerX.equalTo(self.containerView);
+        if (Screen_Width <= 375) {
+            make.top.equalTo(self.callingUserView.mas_bottom).offset(30);
+        } else {
+            make.centerY.equalTo(self.containerView);
+        }
         make.height.equalTo(@(68));
         make.width.equalTo(self.containerView.mas_width);
     }];
