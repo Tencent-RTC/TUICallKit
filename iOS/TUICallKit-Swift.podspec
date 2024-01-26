@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICallKit-Swift'
-  spec.version      = '2.0.0.750'
+  spec.version      = '2.1.0.815'
   spec.platform     = :ios
   spec.ios.deployment_target = '10.0'
   spec.license      = { :type => 'Proprietary',
@@ -14,7 +14,7 @@ Pod::Spec.new do |spec|
   spec.summary      = 'TUICallKit'
   spec.xcconfig     = { 'VALID_ARCHS' => 'armv7 arm64 x86_64' }
   
-  spec.dependency 'TUICore', '~> 7.6.5011'
+  spec.dependency 'TUICore', '~> 7.7.5282'
   spec.dependency 'SnapKit'
 
   spec.requires_arc = true
@@ -29,7 +29,7 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'TRTC' do |trtc|
     trtc.dependency 'TXLiteAVSDK_TRTC'
-    trtc.dependency 'TUICallEngine/TRTC', '2.0.0.760'
+    trtc.dependency 'TUICallEngine/TRTC', '2.1.0.815'
     trtc.source_files = 'TUICallKit-Swift/**/*.{h,m,mm,swift}'
     trtc.resource_bundles = {
       'TUICallingKitBundle' => ['Resources/*.gif', 'Resources/Localized/**/*.strings', 'Resources/AudioFile', 'Resources/*.xcassets']
@@ -40,7 +40,7 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'Professional' do |professional|
     professional.dependency 'TXLiteAVSDK_Professional'
-    professional.dependency 'TUICallEngine/Professional', '2.0.0.760'
+    professional.dependency 'TUICallEngine/Professional', '2.1.0.815'
     professional.source_files = 'TUICallKit-Swift/**/*.{h,m,mm,swift}'
     professional.resource_bundles = {
       'TUICallingKitBundle' => ['Resources/*.gif', 'Resources/Localized/**/*.strings', 'Resources/AudioFile', 'Resources/*.xcassets']
