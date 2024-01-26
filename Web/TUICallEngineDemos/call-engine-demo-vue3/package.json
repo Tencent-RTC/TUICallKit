@@ -23,7 +23,6 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",
-    "@tencent/eslint-config-tencent": "^1.0.4",
     "@tsconfig/node18": "^2.0.1",
     "@types/lodash": "^4.14.195",
     "@types/node": "^18.16.8",
