@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="20dp"
-    android:layout_marginBottom="36dp">
+    android:layout_marginBottom="74dp">
 
     <LinearLayout
         android:id="@+id/ll_decline"
@@ -19,19 +19,19 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:src="@drawable/tuicallkit_bg_hangup" />
 
         <TextView
             android:id="@+id/tv_reject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:gravity="center"
-            android:text="@string/tuicalling_text_reject"
-            android:textColor="@color/tuicalling_color_second"
-            android:textSize="@dimen/tuicalling_text_size_hint" />
+            android:text="@string/tuicallkit_text_hangup"
+            android:textColor="@color/tuicallkit_color_white"
+            android:textSize="@dimen/tuicallkit_text_size_hint" />
     </LinearLayout>
 
     <LinearLayout
@@ -47,18 +47,18 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:src="@drawable/tuicallkit_bg_dialing" />
 
         <TextView
             android:id="@+id/tv_dialing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:gravity="center"
-            android:text="@string/tuicalling_text_dialing"
-            android:textColor="@color/tuicalling_color_second"
-            android:textSize="@dimen/tuicalling_text_size_hint" />
+            android:text="@string/tuicallkit_text_dialing"
+            android:textColor="@color/tuicallkit_color_white"
+            android:textSize="@dimen/tuicallkit_text_size_hint" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
