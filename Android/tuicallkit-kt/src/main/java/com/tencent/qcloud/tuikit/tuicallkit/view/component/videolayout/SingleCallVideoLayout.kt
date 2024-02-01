@@ -1,17 +1,14 @@
 package com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout
 
 import android.content.Context
-import android.view.GestureDetector
-import android.view.LayoutInflater
-import android.view.MotionEvent
+import android.view.*
 import android.widget.RelativeLayout
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
-import com.tencent.qcloud.tuikit.tuicallkit.manager.EngineManager
 import com.tencent.qcloud.tuikit.tuicallkit.R
+import com.tencent.qcloud.tuikit.tuicallkit.manager.EngineManager
 import com.tencent.qcloud.tuikit.tuicallkit.view.root.BaseCallView
 import com.tencent.qcloud.tuikit.tuicallkit.viewmodel.component.videolayout.SingleCallVideoLayoutViewModel
-
 
 class SingleCallVideoLayout(context: Context) : BaseCallView(context) {
 
@@ -40,16 +37,21 @@ class SingleCallVideoLayout(context: Context) : BaseCallView(context) {
     }
 
     private fun addObserver() {
-        viewModel.selfUser?.callStatus?.observe(callStatusObserver)
+        viewModel.selfUser.callStatus.observe(callStatusObserver)
+        viewModel.remoteUser.callStatus.observe(callStatusObserver)
     }
 
     private fun removeObserver() {
-        viewModel.selfUser?.callStatus?.removeObserver(callStatusObserver)
+        viewModel.selfUser.callStatus.removeObserver(callStatusObserver)
+        viewModel.remoteUser.callStatus.removeObserver(callStatusObserver)
     }
 
     private fun initView() {
         LayoutInflater.from(context).inflate(R.layout.tuicallkit_render_view_single, this)
         layoutRenderBig = findViewById(R.id.rl_render_inviter)
+        layoutRenderBig?.setOnClickListener() {
+            viewModel.showFullScreen()
+        }
         layoutRenderSmall = findViewById(R.id.rl_render_invitee)
         layoutRenderSmall?.setOnClickListener {
             switchRenderLayout()
@@ -65,12 +67,12 @@ class SingleCallVideoLayout(context: Context) : BaseCallView(context) {
     private fun switchRenderLayout() {
         if (viewModel.remoteUser.callStatus.get() == TUICallDefine.Status.Accept) {
             if (videoViewSmall != null && videoViewSmall?.parent != null) {
-                var parent : RelativeLayout = videoViewSmall?.parent as RelativeLayout
+                var parent: RelativeLayout = videoViewSmall?.parent as RelativeLayout
                 parent.removeAllViews()
                 layoutRenderSmall?.removeAllViews()
             }
             if (videoViewBig != null && videoViewBig?.parent != null) {
-                var parent : RelativeLayout = videoViewBig?.parent as RelativeLayout
+                var parent: RelativeLayout = videoViewBig?.parent as RelativeLayout
                 parent.removeAllViews()
                 layoutRenderBig?.removeAllViews()
             }
@@ -90,8 +92,7 @@ class SingleCallVideoLayout(context: Context) : BaseCallView(context) {
         if (viewModel.remoteUser.callStatus.get() == TUICallDefine.Status.Accept) {
             videoViewSmall = VideoViewFactory.instance.createVideoView(viewModel.remoteUser, context)
             if (videoViewSmall != null && videoViewSmall?.parent != null) {
-                var parent : RelativeLayout = videoViewSmall?.parent as RelativeLayout
-                parent.removeView(videoViewSmall)
+                (videoViewSmall?.parent as ViewGroup).removeView(videoViewSmall)
                 layoutRenderSmall?.removeAllViews()
             }
             layoutRenderSmall?.addView(videoViewSmall)
@@ -106,8 +107,7 @@ class SingleCallVideoLayout(context: Context) : BaseCallView(context) {
     private fun initBigRenderView() {
         videoViewBig = VideoViewFactory.instance.createVideoView(viewModel.selfUser, context)
         if (videoViewBig != null && videoViewBig?.parent != null) {
-            var parent : RelativeLayout = videoViewBig?.parent as RelativeLayout
-            parent.removeView(videoViewBig)
+            (videoViewBig?.parent as ViewGroup).removeView(videoViewBig)
             layoutRenderBig?.removeAllViews()
         }
         layoutRenderBig?.addView(videoViewBig)
@@ -132,14 +132,16 @@ class SingleCallVideoLayout(context: Context) : BaseCallView(context) {
                 return true
             }
 
-            override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+            override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
                 val params = view?.layoutParams
                 if (params is LayoutParams) {
+                    val offsetX = if (isRTL) (e2.x - (e1?.x ?: 0f)) else ((e1?.x ?: 0f) - e2.x)
+
                     val layoutParams = view.layoutParams as LayoutParams
-                    val newX = (layoutParams.rightMargin + (e1.x - e2.x)).toInt()
-                    val newY = (layoutParams.topMargin + (e2.y - e1.y)).toInt()
+                    val newX = (layoutParams.marginEnd + offsetX).toInt()
+                    val newY = (layoutParams.topMargin + (e2.y - (e1?.y ?: 0f))).toInt()
                     if (newX >= 0 && newX <= width - view.width && newY >= 0 && newY <= height - view.height) {
-                        layoutParams.rightMargin = newX
+                        layoutParams.marginEnd = newX
                         layoutParams.topMargin = newY
                         view.layoutParams = layoutParams
                     }
@@ -149,4 +151,11 @@ class SingleCallVideoLayout(context: Context) : BaseCallView(context) {
         })
         view!!.setOnTouchListener { v, event -> detector.onTouchEvent(event) }
     }
+
+    private val isRTL: Boolean
+        private get() {
+            val configuration = context.resources.configuration
+            val layoutDirection = configuration.layoutDirection
+            return layoutDirection == View.LAYOUT_DIRECTION_RTL
+        }
 }
