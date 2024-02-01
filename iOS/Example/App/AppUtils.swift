@@ -57,7 +57,7 @@ extension AppUtils {
     }
     
     static func getBundleImage(withName: String) -> UIImage {
-        guard let callingKitBundleURL = Bundle.main.url(forResource: "TUICallingKitBundle", withExtension: "bundle") else { return UIImage() }
+        guard let callingKitBundleURL = Bundle.main.url(forResource: "TUICallKitBundle", withExtension: "bundle") else { return UIImage() }
         let bundle = Bundle(url: callingKitBundleURL)
         guard let image = UIImage(named: withName, in: bundle, compatibleWith: nil) else { return UIImage() }
         return image
