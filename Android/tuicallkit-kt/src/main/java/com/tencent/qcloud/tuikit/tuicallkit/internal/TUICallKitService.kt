@@ -11,10 +11,10 @@ import com.tencent.qcloud.tuicore.TUIConstants.TUICalling.ObjectFactory.RecentCa
 import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.interfaces.ITUIExtension
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification
+import com.tencent.qcloud.tuicore.interfaces.ITUIObjectFactory
 import com.tencent.qcloud.tuicore.interfaces.ITUIService
 import com.tencent.qcloud.tuicore.interfaces.TUIExtensionEventListener
 import com.tencent.qcloud.tuicore.interfaces.TUIExtensionInfo
-import com.tencent.qcloud.tuicore.interfaces.ITUIObjectFactory
 import com.tencent.qcloud.tuikit.TUICommonDefine
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine
@@ -35,6 +35,10 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
             TUIConstants.TUILogin.EVENT_IMSDK_INIT_STATE_CHANGED,
             TUIConstants.TUILogin.EVENT_SUB_KEY_START_INIT, this
         )
+        TUICore.registerEvent(
+            TUIConstants.TIMPush.EVENT_IM_LOGIN_AFTER_APP_WAKEUP_KEY,
+            TUIConstants.TIMPush.EVENT_IM_LOGIN_AFTER_APP_WAKEUP_SUB_KEY, this
+        )
 
         TUICore.registerService(TUIConstants.TUICalling.SERVICE_NAME, this)
 
@@ -46,7 +50,6 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
         TUICore.registerExtension(TUIConstants.TUIContact.Extension.FriendProfileItem.MINIMALIST_EXTENSION_ID, this)
         TUICore.registerExtension(TUIConstants.TUIChat.Extension.ChatNavigationMoreItem.CLASSIC_EXTENSION_ID, this)
         TUICore.registerExtension(TUIConstants.TUIChat.Extension.ChatNavigationMoreItem.MINIMALIST_EXTENSION_ID, this)
-
 
         TUICore.registerObjectFactory(TUIConstants.TUICalling.ObjectFactory.FACTORY_NAME, this)
     }
@@ -61,6 +64,22 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
             TUICallKit.createInstance(appContext)
             adaptiveComponentReport()
             setExcludeFromHistoryMessage()
+        }
+        if (TUIConstants.TIMPush.EVENT_IM_LOGIN_AFTER_APP_WAKEUP_KEY == key
+            && TUIConstants.TIMPush.EVENT_IM_LOGIN_AFTER_APP_WAKEUP_SUB_KEY == subKey
+        ) {
+            val data =
+                param?.get(TUIConstants.TIMPush.EVENT_IM_LOGIN_AFTER_APP_WAKEUP_PUSH_MESSAGE_KEY) as Map<String, String>
+            Log.i(TAG, "onNotifyEvent: callOfflineData : $data")
+
+            val map = HashMap<String, Any?>()
+            map[TUIConstants.TIMPush.NOTIFICATION.PUSH_ID] = data[TUIConstants.TIMPush.NOTIFICATION.PUSH_ID]
+            map[TUIConstants.TIMPush.NOTIFICATION.PUSH_EVENT_TIME_KEY] = System.currentTimeMillis() / 1000
+            map[TUIConstants.TIMPush.NOTIFICATION.PUSH_EVENT_TYPE_KEY] = 0
+
+            TUICore.callService(
+                TUIConstants.TIMPush.SERVICE_NAME, TUIConstants.TIMPush.METHOD_REPORT_NOTIFICATION_CLICKED, map
+            )
         }
     }
 
