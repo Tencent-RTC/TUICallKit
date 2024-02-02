@@ -58,7 +58,6 @@ android {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api project(":tuicallkit-kt")
-    api project(':tuiofflinepush')
     api project(':debug')
     implementation "androidx.recyclerview:recyclerview:1.2.1"
     implementation 'androidx.multidex:multidex:2.0.1'
