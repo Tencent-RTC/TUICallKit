@@ -11,8 +11,8 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import com.tencent.qcloud.tuicore.TUICore
+import com.tencent.qcloud.tuicore.permission.PermissionCallback
 import com.tencent.qcloud.tuicore.util.ScreenUtil
-import com.tencent.qcloud.tuikit.TUICommonDefine
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
 import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
@@ -22,6 +22,8 @@ import com.tencent.qcloud.tuikit.tuicallkit.data.User
 import com.tencent.qcloud.tuikit.tuicallkit.manager.EngineManager
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.utils.ImageLoader
+import com.tencent.qcloud.tuikit.tuicallkit.utils.PermissionRequest
+import com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout.VideoViewFactory
 
 class IncomingFloatView(context: Context) {
     companion object {
@@ -111,14 +113,43 @@ class IncomingFloatView(context: Context) {
             imageAccept?.setBackgroundResource(R.drawable.tuicallkit_bg_dialing)
         }
         imageAccept?.setOnClickListener {
-            TUICore.notifyEvent(Constants.EVENT_TUICALLKIT_CHANGED, Constants.EVENT_START_ACTIVITY, HashMap())
-            EngineManager.instance.accept(object : TUICommonDefine.Callback {
-                override fun onSuccess() {
-                }
+            if (TUICallState.instance.selfUser.get().callStatus.get() == TUICallDefine.Status.None) {
+                TUILog.w(TAG, "current status is None, ignore")
+                cancelIncomingView()
+                return@setOnClickListener
+            }
 
-                override fun onError(errCode: Int, errMsg: String?) {}
-            })
-            cancelIncomingView()
+            PermissionRequest.requestPermissions(appContext, TUICallState.instance.mediaType.get(),
+                object : PermissionCallback() {
+                    override fun onGranted() {
+                        if (TUICallState.instance.selfUser.get().callStatus.get() == TUICallDefine.Status.None) {
+                            TUILog.w(TAG, "current status is None, ignore")
+                            cancelIncomingView()
+                            return
+                        }
+                        TUILog.i(TAG, "accept the call")
+                        TUICore.notifyEvent(
+                            Constants.EVENT_TUICALLKIT_CHANGED, Constants.EVENT_START_ACTIVITY, HashMap()
+                        )
+                        EngineManager.instance.accept(null)
+                        if (TUICallState.instance.mediaType.get() == TUICallDefine.MediaType.Video) {
+                            val videoView = VideoViewFactory.instance.createVideoView(
+                                TUICallState.instance.selfUser.get(), appContext
+                            )
+
+                            EngineManager.instance.openCamera(
+                                TUICallState.instance.isFrontCamera.get(), videoView?.getVideoView(), null
+                            )
+                        }
+                        cancelIncomingView()
+                    }
+
+                    override fun onDenied() {
+                        super.onDenied()
+                        EngineManager.instance.reject(null)
+                        cancelIncomingView()
+                    }
+                })
         }
 
         windowManager = appContext.getSystemService(WINDOW_SERVICE) as WindowManager

@@ -27,6 +27,12 @@ object PermissionRequest {
             reason.append(getCameraPermissionHint(context))
             permissionList.add(Manifest.permission.CAMERA)
         }
+
+        if (PermissionRequester.newInstance(*permissionList.toTypedArray()).has()) {
+            callback?.onGranted()
+            return
+        }
+
         val permissionCallback: PermissionCallback = object : PermissionCallback() {
             override fun onGranted() {
                 requestBluetoothPermission(context, object : PermissionCallback() {
@@ -53,13 +59,14 @@ object PermissionRequest {
     }
 
     fun requestCameraPermission(context: Context, callback: PermissionCallback?) {
+        if (PermissionRequester.newInstance(Manifest.permission.CAMERA).has()) {
+            callback?.onGranted()
+            return
+        }
+
         val permissionCallback: PermissionCallback = object : PermissionCallback() {
             override fun onGranted() {
-                requestBluetoothPermission(context, object : PermissionCallback() {
-                    override fun onGranted() {
-                        callback?.onGranted()
-                    }
-                })
+                callback?.onGranted()
             }
 
             override fun onDenied() {
@@ -89,6 +96,11 @@ object PermissionRequest {
             callback.onGranted()
             return
         }
+        if (PermissionRequester.newInstance(Manifest.permission.BLUETOOTH_CONNECT).has()) {
+            callback.onGranted()
+            return
+        }
+
         val title = context.getString(R.string.tuicallkit_permission_bluetooth)
         val reason = context.getString(R.string.tuicallkit_permission_bluetooth_reason)
         val applicationInfo = context.applicationInfo
