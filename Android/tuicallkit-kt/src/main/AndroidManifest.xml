@@ -24,10 +24,6 @@
     <!-- Support Android S(31) Bluetooth-->
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
-    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.MANAGE_OWN_CALLS" />
-
     <application>
         <activity
             android:name="com.tencent.qcloud.tuikit.tuicallkit.view.CallKitActivity"
