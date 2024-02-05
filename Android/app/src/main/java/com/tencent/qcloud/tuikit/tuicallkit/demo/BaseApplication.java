@@ -6,6 +6,8 @@ import android.os.StrictMode;
 
 import androidx.multidex.MultiDex;
 
+import com.tencent.qcloud.tim.tuiofflinepush.TUIOfflinePushConfig;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -23,6 +25,7 @@ public class BaseApplication extends Application {
             builder.detectFileUriExposure();
         }
         closeAndroidPDialog();
+        TUIOfflinePushConfig.getInstance().setAndroidPrivateRing(true);
     }
 
     private void closeAndroidPDialog() {
