@@ -152,6 +152,8 @@ extension TUIAudioMessageRecordService {
     }
     
     func stopRecordAudioMessage() {
+        guard let _ = audioRecordInfo else { return }
+        
         let jsonParams: [String: Any] = ["api": "stopRecordAudioMessage",
                                          "params": [:] as  [String : Any],]
         
