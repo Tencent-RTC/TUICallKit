@@ -113,9 +113,9 @@ extension TUICallState: TUICallObserver {
                 TUICallState.instance.audioDevice.value = TUIAudioPlaybackDevice.speakerphone
                 TUICallState.instance.isCameraOpen.value = true
             }
-            
-            let _ = CallingBellFeature.instance.startPlayMusic(type: .CallingBellTypeCalled)
         }
+        
+        let _ = CallingBellFeature.instance.startPlayMusic(type: .CallingBellTypeCalled)
     }
     
     func onCallCancelled(callerId: String) {
