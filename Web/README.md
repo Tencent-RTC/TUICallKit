@@ -1,11 +1,10 @@
 <h1 align="center"> TUICallKit </h1>
 
 <p align="center"> 
-<a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/README.en.md"> English </a> | <b> 简体中文 </b>
+<b> English </b> | <a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/README.zh-CN.md"> 简体中文 </a>
 </p>
 
-<p align="center">Vue3 版本的音视频通话 UI 组件，通过编写几行代码，就可以为您的 Web 应用添加音视频通话功能。Vue2 请参见 <a href="https://www.npmjs.com/package/@tencentcloud/call-uikit-vue2"> @tencentcloud/call-uikit-vue2 </a></p>
-<!-- <p>在线演示 | Demo 跑通 | 快速接入 </p> -->
+<p align="center">  A Vue2 & Vue3 Voice & Video Calling UI Component, easily add calling capabilities to  your web application.Vue2 version <a href="https://www.npmjs.com/package/@tencentcloud/call-uikit-vue2"> @tencentcloud/call-uikit-vue2 </a></p>
 
 <div align="center">
 <img src="https://img.shields.io/npm/v/@tencentcloud/call-uikit-vue">
@@ -16,75 +15,74 @@
 GitHub Release Date: -->
 </div>
 
-<img src="https://user-images.githubusercontent.com/57169560/194707785-6d2e1aca-5ee7-427a-be62-19699578e684.gif" style="width: 1000px; margin: 10px;" align="center">
+<img src="https://user-images.githubusercontent.com/57169560/205650396-476e0e20-42a3-493a-8e90-6f7ba50da83e.gif" style="width: 1000px; margin: 10px;" align="center">
 
-## 特性
+## Features
 
-<!-- - 底层使用 腾讯云即时通信与音视频能力，效果媲美微信 -->
-<!-- - 📦 开箱即用 —— 未引入除 SDK 外其他 npm 依赖，有效控制代码体积 -->
-- ⚡️ 功能全面 —— 支持单人/多人/音频/视频通话、支持视频转音频通话、支持自由选择通话设备
-- 🌟 低门槛 —— 仅需 3 行代码即可跑通测试 Demo，6 行代码完成通用能力接入
-- 📱 多设备适配 —— 支持 H5 1v1 布局
-- 🎨 灵活样式 —— 组件开源，可复用逻辑，自定义 UI 样式
-- 🛠 优秀生态 —— 与 [TUIKit](https://cloud.tencent.com/document/product/269/79737) 协同使用，可以在 [TIM](https://cloud.tencent.com/document/product/269) 会话中直接发起音视频通话
-- 🔥 先进技术栈 —— `TypeScript` 类型，支持 Vue3 `Composition API`
-- 🌍 跨平台 —— 支持 Android、iOS、Web、小程序、Flutter、UniApp 等[多个开发平台](https://cloud.tencent.com/document/product/647/78742)
-- ☁️ 低延迟 —— 腾讯云全球链路资源储备，保证国际链路端到端平均时延 < 300ms
-- 🤙🏻 低卡顿 —— 抗丢包率超过 80%、抗网络抖动超过 1000ms，弱网环境仍顺畅稳定
-- 🌈 高品质 —— 支持 720P、1080P 高清画质，70% 丢包率仍可正常视频
+- ⚡️ Supports C2C/Group/Voice/Video calls, switch calling type, select calling devices
+- 🌟 3 lines of code to run through the test demo, 6 lines of code to complete the common ability to access
+- 📱 Multi-device adaptation, support H5 webview
+- 🛠 Ecology system, works with [TUIKit](https://www.tencentcloud.com/document/product/1047/50061) to initiate audio/video calls directly in [TIM](https://www.tencentcloud.com/document/product/1047/33513) sessions
+- 🔥 Out-of-the-box TypeScript support, support for Vue3 `Composition API`
+- 🌍 Cross-platform, support for Android, iOS, Web, applets, Flutter, uniapp, etc. [multiple development platforms](https://www.tencentcloud.com/document/product/647/35078)
+- ☁️ Deploy on Tencent Cloud, end-to-end average latency < 300ms on international links
+- 🤙🏻 Low lag, anti-packet loss rate over 80%, anti-network jitter over 1000ms, still smooth and stable in weak network environment
+- 🌈 High calling quality, support 720P, 1080P HD quality, 70% packet loss can still running
 
-## 使用指引
+## How to use
 
-```text
-我们团队即将在 Web 端丰富更多不同的组件，以满足您的开发需求。
-希望您能抽出几分钟时间，为您自己的需求投上一票，我们将优先开发！
-问卷地址：https://wj.qq.com/s2/11263124/1556/
-```
+This is a documentation for the TUICallKit project. It provides instructions for using and integrating TUICallKit into your website or application.
 
-为方便您的使用，本组件配套多篇使用指引：
+Here are a few guidelines for using this component.
 
-- 如果您想在线体验通话效果，请访问 [1v1音视频通话体验馆](https://web.sdk.qcloud.com/component/experience-center/index.html#/detail?scene=callkit)
+- Click [here](https://tcms-demo.tencentcloud.com/exp-center/index.html#/detail?scene=callkit) to try out 1v1 Voice and Video Call online.
 
-- 如果您想要调试通话效果，请阅读 [Vue3 Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue3/README.md) 或者 [Vue2 Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue2/README.md)
+- If you want to experience it in your dev mode, please read [Run the Vue3 Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue3/README.en.md) or [Run the Vue2 Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue2/README.en.md)
 
-- 如果您想把我们的功能直接嵌入到您的项目中，请阅读 [快速接入 TUICallKit](https://cloud.tencent.com/document/product/647/78731)
+- If you want to install this component into your project, please read [TUICallKit Getting Started](https://www.tencentcloud.com/document/product/647/50993)
 
-- 如果您想要修改 UI 界面，请阅读 [TUICallKit 界面定制指引](https://cloud.tencent.com/document/product/647/81014)
+- If you want to modify the CSS Style, please read [UI Customization](https://www.tencentcloud.com/document/product/647/50997)
 
-## 目录说明
+## Contents
 
 ```text
 .
 ├── README.md
+├── demos/basic-react/
 ├── demos/basic-vue3/
-├── demos/basic-vue2/
-└── TUICallKit/
+├── demos/basic-vue2.7/
+├── demos/basic-vue2.6/
 ```
+
+**demos/basic-react/**
+
+- The `demos/basic-react/` directory contains the React basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
+- A debug panel is integrated at the bottom of the demo page. You can enter your application information directly, please refer to [Run the react Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-react/README.md).
 
 **demos/basic-vue3/**
 
-- 此文件夹下是 Vue3 基础版 demo，集成了完整的 TUICallKit 组件功能，可以直接搜索用户拨打音视频通话。
-- demo 页面下方集成了调试面板，可直接输入您的应用信息，具体流程请参考：[Vue3 Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue3/README.md)。
+- The `demos/basic-vue3/` directory contains the Vue3 basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
+- A debug panel is integrated at the bottom of the demo page. You can enter your application information directly, please refer to [Run the Vue3 Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue3/README.md).
 
-**demos/basic-vue2/**
+**demos/basic-vue2.7/**
 
-- 此文件夹下是 Vue2.7 基础版 demo，集成了完整的 TUICallKit 组件功能，可以直接搜索用户拨打音视频通话。
-- demo 页面下方集成了调试面板，可直接输入您的应用信息，具体流程请参考：[Vue2 Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue2/README.md)。
+- The `demos/basic-vue2.7/` directory contains the Vue2.7 basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
+- A debug panel is integrated at the bottom of the demo page. You can enter your application information directly, please refer to [Run the Vue2.7 Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue2.7/README.md).
 
-**TUICallKit/** 
+**demos/basic-vue2.6/**
 
-- 此文件夹下是 TUICallKit 组件源文件，支持 Vue3 与 Vue2.7+ 的项目直接引入。包含全部 UI 层与逻辑层代码，入口文件为 `index.ts`。
-- 推荐直接使用打包方式引入，如 [快速接入 TUICallKit](https://cloud.tencent.com/document/product/647/78731)。可直接复制此文件到您的工程中进行组件的引入，详细的源码接入组件过程请参考 [TUICallKit 界面定制指引](https://cloud.tencent.com/document/product/647/81014)。
+- The `demos/basic-vue2.6/` directory contains the Vue2.6 basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
+- A debug panel is integrated at the bottom of the demo page. You can enter your application information directly, please refer to [Run the Vue2.6 Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue2.6/README.md).
 
-## Changelog
+## Contact Us
 
-版本更新历史请点击 [SDK 发布日志(Web)](https://cloud.tencent.com/document/product/647/80930)。
-
-## 附录
-
-- 如果你遇到了困难，可以先参阅 [常见问题](https://cloud.tencent.com/document/product/647/78769)；
-- 如果发现了示例代码的 bug，欢迎提交 issue；
-- 欢迎加入 QQ 群：**646165204**，进行技术交流和反馈~
+- If you have questions, see [FAQs](https://www.tencentcloud.com/document/product/647/51024)；
+- To report bugs in our sample code, please create an issue.
+- Communication & Feedback
+Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you~
+Click to join: [https://t.me/+EPk6TMZEZMM5OGY1](https://t.me/+EPk6TMZEZMM5OGY1)
+Or scan the QR code
+  <img src="https://qcloudimg.tencent-cloud.cn/raw/79cbfd13877704ff6e17f30de09002dd.jpg" width="300px">    
 
 ## License
 
