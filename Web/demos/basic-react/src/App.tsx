@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import "./App.css";
 import { TUICallKit, TUICallKitServer, TUIGlobal } from "@tencentcloud/call-uikit-react";
-import "tdesign-react/es/style/index.css"; // 少量公共样式
+import "tdesign-react/es/style/index.css";
 import SwitchMode from "./components/SwitchMode/SwitchMode";
 import DebugPanel from "./components/DebugPanel/DebugPanel";
 import ResultList from "./components/ResultList/ResultList";

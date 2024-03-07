@@ -2,54 +2,54 @@
   <div v-if="activeDetector === currentDetector" class="testing-body">
     <div class="testing-list">
       <div class="testing-item-container">
-        <div>操作系统</div>
+        <div>operating system</div>
         <div :class="!detectorInfo.system ? 'network-loading' : ''">
           {{ detectorInfo.system }}
         </div>
       </div>
       <div class="testing-item-container">
-        <div>浏览器</div>
+        <div>Browser</div>
         <div :class="!detectorInfo.browser ? 'network-loading' : ''">
           {{ detectorInfo.browser }}
         </div>
       </div>
       <div class="testing-item-container">
-        <div>是否支持TRTC</div>
+        <div>Whether to support TRTC</div>
         <div :class="!detectorInfo.TRTCSupport ? 'network-loading' : ''">
           {{ detectorInfo.TRTCSupport }}
         </div>
       </div>
       <div class="testing-item-container">
-        <div>是否支持屏幕分享</div>
+        <div>Whether to support screen sharing</div>
         <div :class="!detectorInfo.screenMediaSupport ? 'network-loading' : ''">
           {{ detectorInfo.screenMediaSupport }}
         </div>
       </div>
       <div class="testing-item-container">
-        <div>网络延时</div>
+        <div>Network delay</div>
         <div :class="!detectorInfo.rtt ? 'network-loading' : ''">
           {{ detectorInfo.rtt ? `${detectorInfo.rtt}ms` : '' }}
         </div>
       </div>
       <div class="testing-item-container">
-        <div>上行网络质量</div>
+        <div>Uplink network quality</div>
         <div :class="!NETWORK_QUALITY[detectorInfo.uplinkQuality] ? 'network-loading' : ''">
           {{ NETWORK_QUALITY[detectorInfo.uplinkQuality] || '' }}
         </div>
       </div>
       <div class="testing-item-container">
-        <div>下行网络质量</div>
+        <div>Downstream network quality</div>
         <div :class="!NETWORK_QUALITY[detectorInfo.downlinkQuality] ? 'network-loading' : ''">
           {{ NETWORK_QUALITY[detectorInfo.downlinkQuality] || '' }}
         </div>
       </div>
     </div>
-    <Button v-if="count > 0" class="gray-button" type="disabled">{{ `剩余检测时间（${count}）s` }}</Button>
+    <Button v-if="count > 0" class="gray-button" type="disabled">{{ `Remaining detection time（${count}）s` }}</Button>
     <Button
       v-else
       class="report-button"
       type="contained"
-      :onClick="generateReport">查看检测报告</Button>
+      :onClick="generateReport">View test report</Button>
   </div>
 </template>
 
@@ -111,7 +111,6 @@ export default {
     },
   },
   methods: {
-    // 获取上行网络质量和RTT
     async testUplinkNetworkQuality() {
       const { sdkAppId, roomId } = this.networkDetectInfo;
       const { uplinkUserId, uplinkUserSig } = this.networkDetectInfo.uplinkUserInfo;
@@ -135,10 +134,9 @@ export default {
         this.networkTestingResult.rttList.push(rtt);
       });
 
-      await this.uplinkClient.join({ roomId }); // 加入用于测试的房间
+      await this.uplinkClient.join({ roomId });
       await this.uplinkClient.publish(this.uplinkStream);
     },
-    // 获取下行网络质量
     async testDownlinkNetworkQuality() {
       const { sdkAppId, roomId } = this.networkDetectInfo;
       const { downlinkUserId, downlinkUserSig } = this.networkDetectInfo.downlinkUserInfo;
@@ -159,9 +157,8 @@ export default {
         });
       });
 
-      await this.downlinkClient.join({ roomId }); // 加入用于测试的房间
+      await this.downlinkClient.join({ roomId });
     },
-    // 获取15秒检测平均值
     getAverageInfo(detectorInfo) {
       const uplinkAverageQuality = Math.ceil(this.networkTestingResult.uplinkNetworkQualities
         .reduce((value, current) => value + current, 0) / this.networkTestingResult.uplinkNetworkQualities.length);
@@ -187,8 +184,8 @@ export default {
       this.detectorInfo = {
         system: systemResult.OS,
         browser: `${systemResult.browser.name} ${systemResult.browser.version}`,
-        TRTCSupport: webRTCSupportResult.result ? '支持' : '不支持',
-        screenMediaSupport: APISupportResult.isScreenCaptureAPISupported ? '支持' : '不支持',
+        TRTCSupport: webRTCSupportResult.result ? 'support' : 'not support',
+        screenMediaSupport: APISupportResult.isScreenCaptureAPISupported ? 'support' : 'not support',
       };
 
       this.timer = setInterval(() => {

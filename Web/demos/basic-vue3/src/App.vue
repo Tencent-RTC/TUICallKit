@@ -285,7 +285,7 @@ function handleKickedOut() {
 let TUICallKitStatus: string = STATUS.IDLE;
 function handleStatusChanged(args: { oldStatus: string; newStatus: string; }) {
   const { oldStatus, newStatus } = args;
-  console.log("通话状态变更: " + oldStatus + " -> " + newStatus);
+  console.log("Call status changes: " + oldStatus + " -> " + newStatus);
   TUICallKitStatus = newStatus;
 }
 
@@ -293,10 +293,10 @@ async function accept() {
   try {
     if (TUICallKitStatus === STATUS.BE_INVITED) {
       await TUICallKitServer.accept();
-      ElMessage.warning("已自动接听");
+      ElMessage.warning("Answered automatically");
     }
   } catch (error: any) {
-    alert(`自动接听失败，原因：${error}`);
+    alert(`Automatic answering failed, reason: ${error}`);
   }
 }
 
@@ -304,10 +304,10 @@ async function reject() {
   try {
     if (TUICallKitStatus === STATUS.BE_INVITED) {
       await TUICallKitServer.reject();
-      ElMessage.warning("已自动拒绝");
+      ElMessage.warning("Automatically rejected");
     }
   } catch (error: any) {
-    alert(`自动拒绝失败，原因：${error}`);
+    alert(`Automatic rejection failed due to: ${error}`);
   }
 }
 
@@ -315,10 +315,10 @@ async function hangup() {
   try {
     if (TUICallKitStatus === STATUS.CALLING_C2C_AUDIO || TUICallKitStatus === STATUS.CALLING_C2C_VIDEO || TUICallKitStatus === STATUS.CALLING_GROUP_AUDIO || TUICallKitStatus === STATUS.CALLING_GROUP_VIDEO) {
       await TUICallKitServer.hangup();
-      ElMessage.warning("已自动挂断");
+      ElMessage.warning("Automatically hung up");
     }
   } catch (error: any) {
-    alert(`自动挂断失败，原因：${error}`);
+    alert(`Automatic hang-up failed, reason: ${error}`);
   }
 }
 

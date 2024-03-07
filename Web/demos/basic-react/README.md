@@ -1,108 +1,99 @@
 # TUICallKit basic demo
 
-<a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-react/README.en.md"> English </a> | <b> 简体中文 </b> 
+<b> English </b> | <a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-react/README.zh-CN.md"> 简体中文 </a>
 
-## 简介
+## Overview
 
-本 demo 演示了如何在项目中集成 TUICallKit 音视频通话组件。
+This the basic demo shows how to integrate TUICallKit voice/video calling component in your project.
 
-- 环境：建议 React ≥ v18.0
-- 附有调试面板可快速体验电话互通
-- [在线体验](https://web.sdk.qcloud.com/component/TUICallKit/demos/basic-react/index.html)
+- Environment: React ≥ v18.0  is recommended
+- With debug panel to quickly experience calling
+- [Live Demo](https://web.sdk.qcloud.com/component/TUICallKit/demos/basic-react/index.html)
 
-## 快速跑通
+## Getting Started
 
-### 第一步：下载源码，编译运行
+### Installation
 
-1. 克隆或者直接下载此仓库源码
+1. clone the repository
 
 ```
 git clone https://github.com/tencentyun/TUICallKit.git
 ```
 
-2. 进入 demo 目录
+2. enter the demo directory
 
 ```shell
 cd ./TUICallKit/Web/demos/basic-react
 ```
 
-3. 安装依赖
+3. install dependencies
 
 ```shell
 npm install
 ```
 
-4. 运行 demo
+4. run the demo
 
 ```shell
 npm run dev
 ```
+### How to use
 
-### 第二步：示例体验
-
-1. 打开正在运行的页面，在最下方 debug 面板中，填入相关参数（若当前未取得，需阅读文末 [如何获得 SDKAppID 与 SecretKey？](#如何获得-SDKAppID-与-SecretKey？)）：
+1. Open the running page, fill in the parameters in the bottom debug panel (if not currently available, read the [hint](#How-to-get-SDKAppID-and-SecretKey？) first).
 
     - SDKAPPID
     - SECRETKEY
-    - UserID: 想要登录的用户 ID，字符串类型，如 `user1`
+    - UserID: such as `user1`
 
 <div style="margin-left:43px">
 <img style="width:300px; max-width: inherit;" src="https://web.sdk.qcloud.com/component/TUICallKit/image/react-debug.png"/>
 </div>
 
-2. 然后点击登录，显示 `userId: (user1)`即为登录成功。
+
+2. Then click on the login button, and if you see `userId: (user1)`, it means you have successfully logged in.
 
 <div style="margin-left:43px">
 <img style="width:400px; max-width: inherit;" src="https://web.sdk.qcloud.com/component/TUICallKit/image/react-loginuser1.jpg"/>
 </div>
-
-3. 扫描右上角的二维码，登录其他 `userId: (user2)`，进行互通。
+  
+3. Scan the QR code in the top right corner, log in with another `userId: (user2)`, to enable communication between them.
 
 <div style="margin-left:43px">
 <img style="width:400px; max-width: inherit;" src="https://web.sdk.qcloud.com/component/TUICallKit/image/react-h5login.png"/>
 </div>
   
-4. 呼叫
+3. Calling
   
-    - 可直接复制或手动输入 `user2` 这个 userID，填入到 `user1` 的搜索框中，添加到拨打列表，点击通话。
-
-    - `user2` 会收到来电，点击接听即可开始通话。
+    - Enter `user2` into `user1`'s calling list, click to call
+        
+    - `user2` will be invited, click accept to start the call
 
 <div style="margin-left:43px">
    <img style="width:400px; max-width: inherit;" src="https://web.sdk.qcloud.com/component/TUICallKit/image/react-call.jpg" />
 </div>
 
-## 其他文档
+## Read more
 
-- [TUICallKit 快速接入](https://cloud.tencent.com/document/product/647/102510)
-- [TUICallKit API](https://cloud.tencent.com/document/product/647/81015)
-- [TUICallKit (Web) 常见问题](https://cloud.tencent.com/document/product/647/78769)
-- 欢迎加入腾讯云官方通信社群：[知了-TUICallKit](https://zhiliao.qq.com/s/cWSPGIIM62CC/cEUPGIIM62CE)，进行技术交流和反馈~
+- [TUICallKit Getting Started](https://www.tencentcloud.com/document/product/647/50993)
+- [TUICallKit API](https://www.tencentcloud.com/document/product/647/51015)
+- [TUICallKit (Web) FAQs](https://www.tencentcloud.com/document/product/647/51024)
 
-## 如何获得 SDKAppID 与 SecretKey？
+## How to get SDKAppID and SecretKey？
 
-### 开通服务
+### Activate the service
 
-TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/document/product/269/42440) 和 [实时音视频 TRTC](https://cloud.tencent.com/document/product/647/16788) 两项付费 PaaS 服务构建出的音视频通信组件。您可以按照如下步骤开通相关的服务并体验 7 天的免费试用服务：
+`TUICallKit` is an audio/video call component developed based on two paid PaaS services: [IM](https://www.tencentcloud.com/document/product/1047/35448) and [TRTC](https://www.tencentcloud.com/document/product/647/35078). You can activate the services and enjoy a 60-day free trial as follows:
+1. Log in to the [IM console](https://console.tencentcloud.com/im) and click **Create Application**. In the pop-up window, enter your application name and click **OK**.
 
-1. 登录到 [即时通信 IM 控制台](https://console.cloud.tencent.com/im)，单击**创建新应用**，在弹出的对话框中输入您的应用名称，并单击**确定**。
+<img style="width:500px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/205657194-b70e5de2-e49c-4e57-9371-fe71bd1792d0.png"/>
 
-<img style="width:400px; max-width: inherit; margin-left: 43px;" src="https://web.sdk.qcloud.com/component/TUICallKit/image/service-create.png"/>
+2. Click the application you just created to enter the **Basic Configuration page**. In the **Tencent Real-Time Communication** area at the bottom right of the page, click **Try now**. In the pop-up window, click **Activate now** to activate a **60-day free trial** of TUICallKit.
 
-2. 单击刚刚创建出的应用，进入**基本配置**页面，并在页面的右下角找到**开通腾讯实时音视频服务**功能区，单击**免费体验**即可开通 TUICallKit 的 7 天免费试用服务。
+<img style="width:500px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/205658037-9ebb754d-d32f-4dea-90ec-60e9332592c1.png"/>
 
-<img style="width: 500px; max-width: inherit; margin-left: 43px;" src="https://web.sdk.qcloud.com/component/TUICallKit/image/service-experience.png"/>
+3. On the same page, find and record the **SDKAppID** and **Key**(also called SecretKey), which will be used in subsequent steps.
 
-3. 在同一页面找到 **SDKAppID** 和 **密钥(SecretKey)** 并记录下来，它们会在后续的 [第二步](#第二步：示例体验) 中被用到。
+<img style="width:500px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/205658322-067476bd-164e-4ed2-bc15-ec253321f2a7.png"/>
 
-<img style="width: 500px; max-width: inherit; margin-left: 43px;" src="https://web.sdk.qcloud.com/component/TUICallKit/image/service-info.png"/>
-
-> **注意**：
-> 单击 **免费体验** 以后，部分之前使用过 [实时音视频 TRTC](https://cloud.tencent.com/document/product/647/16788) 服务的用户会提示：
->
-> ```shell
-> TRTC service is suspended. Please check if the package balance is 0 or the Tencent Cloud accountis in arrears
-> ```
->
-> 因为新的 IM 音视频通话能力是整合了腾讯云 [实时音视频 TRTC](https://cloud.tencent.com/document/product/647/16788) 和 [即时通信 IM](https://cloud.tencent.com/document/product/269/42440) 两个基础的 PaaS 服务，所以当 [实时音视频 TRTC](https://cloud.tencent.com/document/product/647/16788) 的免费额度（10000 分钟）已经过期或者耗尽，就会导致开通此项服务失败，这里您可以单击 [TRTC 控制台](https://console.cloud.tencent.com/trtc/app)，找到对应 SDKAppID 的应用管理页，示例如图，开通后付费功能后，再次 **启用应用** 即可正常体验音视频通话能力。
-> <img style="width: 500px; max-width: inherit;" src="https://user-images.githubusercontent.com/57169560/194735851-56218484-55c7-4875-999c-1b58691bd744.png"/>
+- `SDKAppID`: The IM application ID, which is used for business isolation; that is, calls with different `SDKAppID` values cannot be interconnected.
+- `SecretKey`: The IM application key, which needs to be used together with `SDKAppID` to generate the authentication credential `UserSig` for authorized use of IM. It will be used in step 5.
