@@ -1,14 +1,14 @@
 <template>
   <div v-if="activeDetector === currentDetector" class="testing-body">
       <div class="device-list">
-        <span class="device-list-title">麦克风选择</span>
+        <span class="device-list-title">Microphone selection</span>
         <DeviceSelect
           deviceType="microphone"
           :choseDevice="choseDevice"
           :onChange="handleMicrophoneChange"></DeviceSelect>
       </div>
       <div class="mic-testing-container">
-        <div class="mic-testing-info">对着麦克风说"哈喽"试试～</div>
+        <div class="mic-testing-info">Try saying "Hello" into the microphone~</div>
         <div class="mic-bar-container">
           <div
             v-for="(item, index) in new Array(28).fill('')"
@@ -18,10 +18,10 @@
         <div id="audio-container"></div>
       </div>
       <div class="testing-info-container">
-        <div class="testing-info">是否可以看到音量图标跳动？</div>
+        <div class="testing-info">Can you see the volume icon jumping?</div>
         <div class="button-list">
-          <Button type="outlined" :onClick="() => handleCompleted('error', microphoneLabel)">看不到</Button>
-          <Button type="contained" :onClick="() => handleCompleted('success', microphoneLabel)">看的到</Button>
+          <Button type="outlined" :onClick="() => handleCompleted('error', microphoneLabel)">can not see</Button>
+          <Button type="contained" :onClick="() => handleCompleted('success', microphoneLabel)">can see</Button>
         </div>
       </div>
     </div>

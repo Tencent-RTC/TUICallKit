@@ -1,15 +1,14 @@
-/* eslint-disable */
 /**
- * 生成临时 UserSig，请不要将如下代码发布或者提交到您的代码仓库中。
+ * Generate a temporary UserSig. Please do not publish or submit the following code to your code repository.
  *
  * @param {{userID: string, SDKAppID: number, SecretKey: string, ExpireTime?: number}} options
- * @param {string} options.userID - 用户名
- * @param {string} options.SDKAppID：开发者在控制台注册的应用的 SDKAppID
- * @param {string} options.SecretKey：开发者在控制台注册的应用的 SecretKey
- * @param {number=} options.ExpireTime：签名过期时间，建议不要设置的过短，时间单位：秒，默认时间：7 x 24 x 60 x 60 = 604800 = 7 天
+ * @param {string} options.userID - userID
+ * @param {string} options.SDKAppID：SDKAppID of the application registered by the developer in the console.
+ * @param {string} options.SecretKey：SecretKey of the application registered by the developer in the console.
+ * @param {number=} options.ExpireTime：Signature validity period, which should not be set too short，Unit: second，Default value：7 x 24 x 60 x 60 = 604800 = 7 days
  * 
  * @returns {{userSig: string, SDKAppID: number}} result
- * @returns {string} result.userSig：用户签名
+ * @returns {string} result.userSig：User Signature
  * @returns {number} result.SDKAppID：SDKAppID
  * 
  * @example
@@ -19,6 +18,8 @@
  *  SecretKey: "YOUR_SECRETKEY" 
  * });
  */
+declare var SDKAPPID: number;
+declare var SECRETKEY: string;
 declare function genTestUserSig({ userID, SDKAppID, SecretKey, ExpireTime }: {
   userID: string;
   SDKAppID: number;
@@ -29,4 +30,4 @@ declare function genTestUserSig({ userID, SDKAppID, SecretKey, ExpireTime }: {
   SDKAppID: number;
 };
 
-export { genTestUserSig };
+export { genTestUserSig, SDKAPPID, SECRETKEY }

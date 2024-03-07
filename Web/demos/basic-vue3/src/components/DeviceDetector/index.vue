@@ -1,7 +1,7 @@
 <template>
   <div v-if="visible" class="device-detector-backdrop">
     <div class="root" @click="stopBubble">
-      <Button type="outlined" class="close" :onClick="handleClose">跳过检测</Button>
+      <Button type="outlined" class="close" :onClick="handleClose">Skip detection</Button>
       <DeviceConnect
         v-if="detectStage === 0"
         :stepNameList="stepNameList"
@@ -116,7 +116,6 @@ export default {
         this.activeStep = step;
       }
     },
-    // 处理step的完成事件
     handleCompleted(type, result) {
       this.completed[this.stepNameList[this.activeStep]] = {
         completed: true,
@@ -136,13 +135,11 @@ export default {
     setDetectStage(value) {
       this.detectStage = value;
     },
-    // 重新检测
     handleReset() {
       this.completed = {};
       this.detectStage = 0;
       this.activeStep = 0;
     },
-    // 结束检测
     handleClose() {
       this.handleReset();
       this.onClose && this.onClose();
@@ -156,7 +153,6 @@ export default {
     const detect = new RTCDetect();
     const result = detect.getSystem();
     const stepNameList = ['camera', 'microphone', 'speaker', 'network'];
-    // iOS系统和firefox浏览器，不包含扬声器检测
     if (result.browser.name === 'Firefox' || result.browser.name === 'Safari' || result.OS === 'iOS') {
       stepNameList.indexOf('speaker') >= 0 && stepNameList.splice(stepNameList.indexOf('speaker'), 1);
     }
