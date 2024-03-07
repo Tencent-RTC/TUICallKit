@@ -23,10 +23,8 @@ const getLanguage = () => {
 };
 
 i18n
-  // 将 i18n 实例传递给 react-i18next
   .use(initReactI18next)
-  // 初始化 i18next
-  // 所有配置选项: https://www.i18next.com/overview/configuration-options
+  // https://www.i18next.com/overview/configuration-options
   .init({
     resources,
     fallbackLng: getLanguage(),

@@ -4,8 +4,8 @@ import { Version } from "@tencentcloud/call-uikit-vue2";
 
 const aegis = new Aegis({
   id: "iHWefAYqUsdWyZYVKV",
-  reportApiSpeed: true, // 接口测速
-  reportAssetSpeed: true, // 静态资源测速
+  reportApiSpeed: true,
+  reportAssetSpeed: true,
   version: Version
 });
 

@@ -91,7 +91,6 @@ body,
   display: inline;
   width: 14px;
   margin-right: 3px;
-  /*animation (动画) :绑定选择器, 4s完成动画 linear(匀速) infinite(循环) */
   animation: loading 1.2s linear infinite;
 }
 

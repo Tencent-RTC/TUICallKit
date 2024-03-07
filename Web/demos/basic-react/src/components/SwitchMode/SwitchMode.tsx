@@ -7,7 +7,7 @@ import "./SwitchMode.less";
 
 export default function SingleSelect() {
   const { t } = useTranslation();
-  const [langTitle, setLangTitle] = useState("语言");
+  const [langTitle, setLangTitle] = useState("language");
   const context = useContext(StoreContext);
   const handleChange = (value) => {
     context.upDataCallType(value);

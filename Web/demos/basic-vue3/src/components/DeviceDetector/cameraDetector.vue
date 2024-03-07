@@ -1,7 +1,7 @@
 <template>
   <div v-if="activeDetector === currentDetector" class="testing-body">
       <div class="device-list">
-        <span class="device-list-title">摄像头选择</span>
+        <span class="device-list-title">Camera selection</span>
         <DeviceSelect
           deviceType="camera"
           :choseDevice="choseDevice"
@@ -9,10 +9,10 @@
       </div>
       <div id="camera-video" class="camera-video"></div>
       <div class="testing-info-container">
-        <div class="testing-info">是否可以清楚的看到自己？</div>
+        <div class="testing-info">Can you see yourself clearly?</div>
         <div class="button-list">
-          <Button type="outlined" :onClick="handleError">看不到</Button>
-          <Button type="contained" :onClick="handleSuccess">看的到</Button>
+          <Button type="outlined" :onClick="handleError">can not see</Button>
+          <Button type="contained" :onClick="handleSuccess">can see</Button>
         </div>
       </div>
     </div>

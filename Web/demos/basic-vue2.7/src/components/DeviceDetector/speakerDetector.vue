@@ -1,21 +1,21 @@
 <template>
   <div v-if="activeDetector === currentDetector" class="testing-body">
     <div class="device-list">
-      <span class="device-list-title">扬声器选择</span>
+      <span class="device-list-title">Speaker selection</span>
       <DeviceSelect
         deviceType="speaker"
         :choseDevice="choseDevice"
         :onChange="handleSpeakerChange"></DeviceSelect>
     </div>
     <div class="audio-player-container">
-      <div class="audio-player-info">请调高设备音量，点击播放下面的音频试试～</div>
+      <div class="audio-player-info">Please turn up the volume of your device and click to play the audio below to try ~</div>
       <audio id="audio-player" :src="audioUrl" controls></audio>
     </div>
     <div class="testing-info-container">
-      <div class="testing-info">是否可以听到声音？</div>
+      <div class="testing-info">Can you hear the sound?</div>
       <div class="button-list">
-        <Button type="outlined" :onClick="() => handleCompleted('error', speakerLabel)">听不到</Button>
-        <Button type="contained" :onClick="() => handleCompleted('success', speakerLabel)">听的到</Button>
+        <Button type="outlined" :onClick="() => handleCompleted('error', speakerLabel)">Can't hear</Button>
+        <Button type="contained" :onClick="() => handleCompleted('success', speakerLabel)">Can hear</Button>
       </div>
     </div>
   </div>
