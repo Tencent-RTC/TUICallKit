@@ -12,16 +12,13 @@ protocol BackToFlutterWidgetDelegate: NSObject {
     func backToFlutterWidget()
 }
 
-class FloatWindowManger: NSObject, FloatingWindowViewDelegate {
+class FloatWindowManger: NSObject, FloatWindowViewDelegate {
     
     static let instance = FloatWindowManger()
     
-    let mediaTypeObserver = Observer()
     let remoteUserVideoAvailableObserver = Observer()
     let selfUserCallStatusObserver = Observer()
     
-    let mediaType: Observable<TUICallMediaType> = Observable(TUICallState.instance.mediaType.value)
-    let remoteUserVideoAvailable: Observable<Bool> = Observable(TUICallState.instance.remoteUser.value.videoAvailable.value)
     let selfCallStatus: Observable<TUICallStatus> = Observable(TUICallState.instance.selfUser.value.callStatus.value)
 
     var floatWindowBeganPoint: CGPoint?
@@ -39,11 +36,14 @@ class FloatWindowManger: NSObject, FloatingWindowViewDelegate {
     func showFloatWindow() {
         let floatViewController = FloatWindowViewController()
         floatViewController.delegate = self
-        floatWindow.frame = CGRect(x: Screen_Width - kMicroVideoViewWidth, y: 150, width: kMicroVideoViewWidth, height: kMicroVideoViewHeight)
+        initFloatWindowFrame()
         floatWindow.backgroundColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
+        floatWindow.layer.shadowColor = UIColor.black.cgColor
+        floatWindow.layer.shadowOffset = CGSizeMake(10.0, 10.0);
+        floatWindow.layer.shadowOpacity = 1.0;
+        floatWindow.layer.shadowRadius = 1.0;
         floatWindow.layer.cornerRadius = 10.0
         floatWindow.layer.masksToBounds = true
-        updateFloatWindowFrame()
         floatWindow.rootViewController = floatViewController
         floatWindow.isHidden = false
         floatWindow.t_makeKeyAndVisible()
@@ -54,20 +54,6 @@ class FloatWindowManger: NSObject, FloatingWindowViewDelegate {
     }
 
     func registerObserveState() {
-        TUICallState.instance.mediaType.addObserver(mediaTypeObserver, closure: { [weak self] newValue, _ in
-            guard let self = self else { return }
-            if self.mediaType.value == newValue { return }
-            self.mediaType.value = newValue
-            self.updateFloatWindowFrame()
-        })
-
-        TUICallState.instance.remoteUser.value.videoAvailable.addObserver(remoteUserVideoAvailableObserver, closure: { [weak self] newValue, _ in
-            guard let self = self else { return }
-            if self.remoteUserVideoAvailable.value == newValue { return }
-            self.remoteUserVideoAvailable.value = newValue
-            self.updateFloatWindowFrame()
-        })
-        
         TUICallState.instance.selfUser.value.callStatus.addObserver(selfCallStatus, closure: { [weak self] newValue, _ in
             guard let self = self else { return }
             if self.selfCallStatus.value == newValue { return }
@@ -80,34 +66,43 @@ class FloatWindowManger: NSObject, FloatingWindowViewDelegate {
         })
     }
     
+    func initFloatWindowFrame() {
+        if TUICallState.instance.scene.value == .single {
+            if TUICallState.instance.mediaType.value == .audio {
+                floatWindow.frame = CGRect(x: Screen_Width - kSingleCallMicroAudioViewWidth - kMicroLeftRightEdge, y: kMicroTopEdge, 
+                                           width: kSingleCallMicroAudioViewWidth, height: kSingleCallMicroAudioViewHeight)
+            } else {
+                floatWindow.frame = CGRect(x: Screen_Width - kSingleCallMicroVideoViewWidth - kMicroLeftRightEdge, y: kMicroTopEdge, 
+                                           width: kSingleCallMicroVideoViewWidth, height: kSingleCallMicroVideoViewHeight)
+            }
+        } else {
+            floatWindow.frame = CGRect(x: Screen_Width - kGroupCallMicroViewWidth - kMicroLeftRightEdge, y: kMicroTopEdge, 
+                                       width: kGroupCallMicroViewWidth, height: kGroupCallMicroViewHeight)
+        }
+    }
+
     func updateFloatWindowFrame() {
         let originY = floatWindow.frame.origin.y
         if TUICallState.instance.scene.value == .single {
             if TUICallState.instance.mediaType.value == .audio {
-                let dstX = floatWindow.frame.origin.x < Screen_Width / 2.0 ? 0 : Screen_Width - kMicroAudioViewWidth
-                floatWindow.frame = CGRect(x: dstX, y: originY, width: kMicroAudioViewWidth, height: kMicroAudioViewHeight)
+                let dstX = floatWindow.frame.origin.x < Screen_Width / 2.0 ? kMicroLeftRightEdge : Screen_Width - kSingleCallMicroAudioViewWidth - kMicroLeftRightEdge
+                floatWindow.frame = CGRect(x: dstX, y: originY, width: kSingleCallMicroAudioViewWidth, height: kSingleCallMicroAudioViewHeight)
             } else {
-                let dstX = floatWindow.frame.origin.x < Screen_Width / 2.0 ? 0 : Screen_Width - kMicroVideoViewWidth
-                if TUICallState.instance.selfUser.value.callStatus.value == TUICallStatus.waiting {
-                    floatWindow.frame = CGRect(x: dstX, y: originY, width: kMicroVideoViewWidth, height: kMicroVideoViewHeight)
-                } else {
-                    if TUICallState.instance.remoteUser.value.videoAvailable.value {
-                        floatWindow.frame = CGRect(x: dstX, y: originY, width: kMicroVideoViewWidth, height: kMicroVideoViewHeight)
-                    } else {
-                        floatWindow.frame = CGRect(x: dstX, y: originY, width: kMicroVideoViewWidth, height: kMicroVideoViewHeight - 60)
-                    }
-                }
+                let dstX = floatWindow.frame.origin.x < Screen_Width / 2.0 ? kMicroLeftRightEdge : Screen_Width - kSingleCallMicroVideoViewWidth - kMicroLeftRightEdge
+                floatWindow.frame = CGRect(x: dstX, y: originY, width: kSingleCallMicroVideoViewWidth, height: kSingleCallMicroVideoViewHeight)
             }
         } else {
-            let dstX = floatWindow.frame.origin.x < Screen_Width / 2.0 ? 0 : Screen_Width - kMicroAudioViewWidth
-            floatWindow.frame = CGRect(x: dstX, y: originY, width: kMicroAudioViewWidth, height: kMicroAudioViewHeight)
+            let dstX = floatWindow.frame.origin.x < Screen_Width / 2.0 ? kMicroLeftRightEdge : Screen_Width - kGroupCallMicroViewWidth - kMicroLeftRightEdge
+            floatWindow.frame = CGRect(x: dstX, y: originY, width: kGroupCallMicroViewWidth, height: kGroupCallMicroViewHeight)
         }
     }
 
     //MARK: FloatingWindowViewDelegate
     func tapGestureAction(tapGesture: UITapGestureRecognizer) {
         closeFloatWindow()
-        if self.backToFlutterWidgetDelegate != nil && ((self.backToFlutterWidgetDelegate?.responds(to: Selector(("backToFlutterWidget")))) != nil) {
+        if self.backToFlutterWidgetDelegate != nil &&
+            ((self.backToFlutterWidgetDelegate?.responds(to: Selector(("backToFlutterWidget")))) != nil) &&
+            TUICallState.instance.selfUser.value.callStatus.value != .none {
             self.backToFlutterWidgetDelegate?.backToFlutterWidget()
         }
     }
@@ -145,10 +140,10 @@ class FloatWindowManger: NSObject, FloatingWindowViewDelegate {
             break
         case.ended:
             var dstX: CGFloat = 0
-            if floatWindow.frame.origin.x < Screen_Width / 2 {
-                dstX = CGFloat(0)
-            } else if floatWindow.frame.origin.x > Screen_Width / 2 {
-                dstX = CGFloat(Screen_Width - floatWindow.frame.size.width)
+            if (floatWindow.frame.origin.x + floatWindow.frame.size.width / 2) < Screen_Width / 2 {
+                dstX = kMicroLeftRightEdge
+            } else if (floatWindow.frame.origin.x + floatWindow.frame.size.width / 2) > Screen_Width / 2 {
+                dstX = CGFloat(Screen_Width - floatWindow.frame.size.width - kMicroLeftRightEdge)
             }
             floatWindow.frame = CGRect(x: dstX,
                                        y: floatWindow.frame.origin.y,

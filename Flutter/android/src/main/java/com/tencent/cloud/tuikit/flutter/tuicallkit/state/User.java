@@ -12,6 +12,7 @@ public class User {
     public TUICallDefine.Status callStatus     = TUICallDefine.Status.None;
     public boolean              audioAvailable = false;
     public boolean              videoAvailable = false;
+    public int                  playoutVolume  = 0;
 
     public boolean isSameUser(User user) {
         if (id != user.id
@@ -20,7 +21,8 @@ public class User {
                 || callRole != user.callRole
                 || callStatus != user.callStatus
                 || audioAvailable != user.audioAvailable
-                || videoAvailable != user.videoAvailable) {
+                || videoAvailable != user.videoAvailable
+                || playoutVolume != user.playoutVolume) {
             return false;
         }
         return true;
@@ -37,6 +39,7 @@ public class User {
                 ", callStatus: " + callStatus +
                 ", audioAvailable: " + audioAvailable +
                 ", videoAvailable: " + videoAvailable +
+                ", playoutVolume: " + playoutVolume +
                 "}";
     }
 }

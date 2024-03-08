@@ -4,6 +4,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
 
@@ -88,6 +89,12 @@ class MockCallsUikitPlatform
   @override
   Future<void> openMicrophone() {
     // TODO: implement openMicrophone
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> apiLog(TRTCLoggerLevel level, String logString) {
+    // TODO: implement apiLog
     throw UnimplementedError();
   }
 }

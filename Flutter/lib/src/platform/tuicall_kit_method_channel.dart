@@ -1,12 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_calls_uikit/src/call_manager.dart';
+import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
-import 'package:tencent_calls_uikit/src/data/user.dart';
-import 'package:tencent_calls_uikit/src/ui/tuicall_navigator_observer.dart';
 import 'package:tencent_calls_uikit/src/call_state.dart';
 import 'package:tencent_calls_uikit/tuicall_kit.dart';
 import 'package:tencent_calls_uikit/src/utils/event_bus.dart';
@@ -43,15 +40,20 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
 
   @override
   Future<void> updateCallStateToNative() async {
+    List remoteUserList = [];
+    for (var i = 0; i < CallState.instance.remoteUserList.length; ++i) {
+      remoteUserList.add(CallState.instance.remoteUserList[i].toJson());
+    }
+
     methodChannel.invokeMethod('updateCallStateToNative', {
       'selfUser': CallState.instance.selfUser.toJson(),
-      'remoteUser': CallState.instance.remoteUserList.isNotEmpty
-          ? CallState.instance.remoteUserList[0].toJson()
-          : User().toJson(),
+      'remoteUserList': remoteUserList.isNotEmpty ? remoteUserList : [],
       'scene': CallState.instance.scene.index,
       'mediaType': CallState.instance.mediaType.index,
       'startTime': CallState.instance.startTime,
-      'camera': CallState.instance.camera.index
+      'camera': CallState.instance.camera.index,
+      'isCameraOpen': CallState.instance.isCameraOpen,
+      'isMicrophoneMute': CallState.instance.isMicrophoneMute,
     });
   }
 
@@ -109,12 +111,17 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
     await methodChannel.invokeMethod('closeMicrophone', {});
   }
 
+  @override
+  Future<void> apiLog(TRTCLoggerLevel level, String logString) async {
+    await methodChannel.invokeMethod('apiLog', {'level': level.index, 'logString': logString});
+  }
+
   void _handleNativeCall(MethodCall call) {
     debugPrint(
         "CallHandler method:${call.method}, arguments:${call.arguments}");
     switch (call.method) {
-      case "gotoCallingPage":
-        _gotoCallingPage();
+      case "backCallingPage":
+        _handleBackCallingPage();
         break;
       case "handleCallReceived":
         _handleCallReceived();
@@ -149,16 +156,12 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
     }
   }
 
-  void _gotoCallingPage() {
-    TUICallKitNavigatorObserver.getInstance().enterCallingPage();
+  void _handleBackCallingPage() {
+    CallManager.instance.backCallingPageFormFloatWindow();
   }
 
   void _handleCallReceived() {
-    CallState.instance.handleCallReceived(
-        CallState.instance.caller.id,
-        CallState.instance.calleeIdList,
-        CallState.instance.groupId,
-        CallState.instance.mediaType);
+    CallManager.instance.launchCallingPage();
   }
 
   void _handleEnableFloatWindow(MethodCall call) {

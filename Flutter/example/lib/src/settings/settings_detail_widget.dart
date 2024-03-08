@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tencent_calls_uikit/tuicall_kit.dart';
 import 'package:tuicall_kit_example/src/settings/settings_config.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
-import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 enum SettingWidgetType {
   avatar,
   extendInfo,
@@ -49,7 +48,7 @@ class _SettingsDetailWidgetState extends State<SettingsDetailWidget> {
               autofocus: true,
               textAlign: TextAlign.left,
               decoration: InputDecoration(
-                hintText: CallKit_t('请输入'),
+                hintText: AppLocalizations.of(context)!.please_enter,
                 border: InputBorder.none,
               ),
               onChanged: (value) => _data = value),
@@ -59,11 +58,11 @@ class _SettingsDetailWidgetState extends State<SettingsDetailWidget> {
   _getTitle() {
     switch (widget.widgetType) {
       case SettingWidgetType.avatar:
-        return CallKit_t('头像设置');
+        return AppLocalizations.of(context)!.avatar_settings;
       case SettingWidgetType.extendInfo:
-        return CallKit_t('扩展信息设置');
+        return AppLocalizations.of(context)!.extended_info_settings;
       case SettingWidgetType.offlinePush:
-        return CallKit_t('离线推送消息设置');
+        return AppLocalizations.of(context)!.offline_push_info_settings;
     }
   }
 

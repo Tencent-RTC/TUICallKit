@@ -8,29 +8,39 @@
 import Foundation
 import TUICallEngine
 
-class FloatingWindowViewModel {
+class FloatWindowViewModel {
     
     let selfCallStatusObserver = Observer()
-    let mediaTypeObserver = Observer()
-    let remoteUserVideoAvailableObserver = Observer()
-    let scenceObserver = Observer()
+    let remoteUserListObserver = Observer()
+    let fristRemoteUserVideoAvailableObserver = Observer()
+    let isCameraOpenObserver = Observer()
+    let isMicMuteObserver = Observer()
+    let selfPlayoutVolumeObserver = Observer()
+    let remotePlayoutVolumeObserver = Observer()
 
     let mediaType: Observable<TUICallMediaType> = Observable(.unknown)
-    let remoteUserVideoAvailable: Observable<Bool> = Observable(false)
+    let remoteUserList: Observable<[User]> = Observable(Array())
+    let firstRemoteUserVideoAvailable: Observable<Bool> = Observable(false)
     let selfCallStatus: Observable<TUICallStatus> = Observable(TUICallStatus.none)
-    let scence: Observable<TUICallScene> = Observable(TUICallScene.single)
+    let isCameraOpen: Observable<Bool> = Observable(false)
+    let isMicMute: Observable<Bool> = Observable(false)
+    let currentSpeakUser: Observable<User> = Observable(User())
     
     let timeCount: Observable<Int> = Observable(0)
     var timerName: String?
         
     init() {
         mediaType.value = TUICallState.instance.mediaType.value
-        remoteUserVideoAvailable.value = TUICallState.instance.remoteUser.value.videoAvailable.value
+        remoteUserList.value = TUICallState.instance.remoteUserList.value
         selfCallStatus.value = TUICallState.instance.selfUser.value.callStatus.value
-        scence.value = TUICallState.instance.scene.value
+        isCameraOpen.value = TUICallState.instance.isCameraOpen.value
+        isMicMute.value = TUICallState.instance.isMicrophoneMute.value
         
+        if TUICallState.instance.remoteUserList.value.first != nil {
+            firstRemoteUserVideoAvailable.value = TUICallState.instance.remoteUserList.value.first?.videoAvailable.value ?? false
+        }
+    
         registerObserve()
-        
         if selfCallStatus.value == TUICallStatus.accept {
             startTimer()
         }
@@ -38,24 +48,36 @@ class FloatingWindowViewModel {
     
     deinit {
         TUICallState.instance.selfUser.value.callStatus.removeObserver(selfCallStatusObserver)
-        TUICallState.instance.mediaType.removeObserver(mediaTypeObserver)
-        TUICallState.instance.remoteUser.removeObserver(remoteUserVideoAvailableObserver)
-        TUICallState.instance.scene.removeObserver(scenceObserver)
+        TUICallState.instance.remoteUserList.removeObserver(remoteUserListObserver)
+        TUICallState.instance.isCameraOpen.removeObserver(isCameraOpenObserver)
+        TUICallState.instance.isMicrophoneMute.removeObserver(isMicMuteObserver)
+        TUICallState.instance.selfUser.value.playoutVolume.removeObserver(selfPlayoutVolumeObserver)
+        
+        if TUICallState.instance.remoteUserList.value.first != nil {
+            TUICallState.instance.remoteUserList.value.first?.videoAvailable.removeObserver(fristRemoteUserVideoAvailableObserver)
+        }
+        
+        for index in 0..<TUICallState.instance.remoteUserList.value.count {
+            guard index < TUICallState.instance.remoteUserList.value.count else {
+                break
+            }
+            TUICallState.instance.remoteUserList.value[index].playoutVolume.removeObserver(remotePlayoutVolumeObserver)
+        }
     }
     
     func registerObserve() {
         
         TUICallState.instance.selfUser.value.callStatus.addObserver(selfCallStatusObserver, closure: { [weak self] newValue, _ in
             guard let self = self else { return }
-            if self.selfCallStatus.value == newValue  { return }
             self.selfCallStatus.value = newValue
             
             if self.selfCallStatus.value == TUICallStatus.none {
                 self.closeCamera()
-                self.stopRemoteView()
+                if self.remoteUserList.value.first != nil, let remoteUserId = self.remoteUserList.value.first?.id.value {
+                    self.stopRemoteView(userId: remoteUserId)
+                }
             }
 
-            
             if self.selfCallStatus.value == TUICallStatus.accept {
                 self.startTimer()
             } else {
@@ -64,38 +86,49 @@ class FloatingWindowViewModel {
                 }
             }
         })
-        
-        TUICallState.instance.mediaType.addObserver(mediaTypeObserver, closure: { [weak self] newValue, _ in
+                
+        TUICallState.instance.isCameraOpen.addObserver(isCameraOpenObserver) { [weak self] newValue, _ in
             guard let self = self else { return }
-            if self.mediaType.value == newValue  { return }
-            self.mediaType.value = newValue
-        })
+            self.isCameraOpen.value = newValue
+        }
         
-        TUICallState.instance.remoteUser.value.videoAvailable.addObserver(remoteUserVideoAvailableObserver, closure: { [weak self] newValue, _ in
+        TUICallState.instance.isMicrophoneMute.addObserver(isMicMuteObserver) { [weak self] newValue, _ in
             guard let self = self else { return }
-            if self.remoteUserVideoAvailable.value == newValue  { return }
-            self.remoteUserVideoAvailable.value = newValue
-        })
+            self.isMicMute.value = newValue
+        }
         
-        TUICallState.instance.scene.addObserver(scenceObserver) { [weak self] newValue, _ in
+        if TUICallState.instance.remoteUserList.value.first != nil {
+            TUICallState.instance.remoteUserList.value.first?.videoAvailable.addObserver(fristRemoteUserVideoAvailableObserver, closure: { [weak self] newValue, _ in
+                guard let self = self else { return }
+                self.firstRemoteUserVideoAvailable.value = newValue
+            })
+        }
+        
+        TUICallState.instance.selfUser.value.playoutVolume.addObserver(selfPlayoutVolumeObserver) { [weak self] newValue, _ in
             guard let self = self else { return }
-            if self.scence.value == newValue  { return }
-            self.scence.value = newValue
+            if newValue > 30 {
+                self.updateCurrentSpeakUser(user: TUICallState.instance.selfUser.value)
+            }
+        }
+        
+        for index in 0..<TUICallState.instance.remoteUserList.value.count {
+            guard index < TUICallState.instance.remoteUserList.value.count else {
+                break
+            }
+            let user = TUICallState.instance.remoteUserList.value[index]
+            TUICallState.instance.remoteUserList.value[index].playoutVolume.addObserver(remotePlayoutVolumeObserver) { [weak self] newValue, _ in
+                guard let self = self else { return }
+                if newValue > 30 {
+                    self.updateCurrentSpeakUser(user: user)
+                }
+            }
         }
     }
     
-    func getRemoteAvatar() -> UIImage {
-        var output = UIImage()
-        if TUICallState.instance.remoteUser.value.avatar.value == "" {
-            if let image = BundleUtils.getBundleImage(name: "userIcon") {
-                output = image
-            }
-        } else {
-            if let image = BundleUtils.getUrlImage(url: TUICallState.instance.remoteUser.value.avatar.value) {
-                output = image
-            }
+    func updateCurrentSpeakUser(user: User) {
+        if user.id.value.count > 0 && currentSpeakUser.value.id.value != user.id.value {
+            self.currentSpeakUser.value = user
         }
-        return output
     }
     
     func startTimer() {
@@ -109,8 +142,8 @@ class FloatingWindowViewModel {
         return GCDTimer.secondToHMSString(second: timeCount.value)
     }
     
-    func startRemoteView(videoView: TUIVideoView){
-        TUICallEngine.createInstance().startRemoteView(userId: TUICallState.instance.remoteUser.value.id.value, videoView: videoView) { videoId in
+    func startRemoteView(userId: String, videoView: TUIVideoView){
+        TUICallEngine.createInstance().startRemoteView(userId: userId, videoView: videoView) { videoId in
             
         } onLoading: { videoId in
             
@@ -119,8 +152,8 @@ class FloatingWindowViewModel {
         }
     }
     
-    func stopRemoteView(){
-        TUICallEngine.createInstance().stopRemoteView(userId: TUICallState.instance.remoteUser.value.id.value)
+    func stopRemoteView(userId: String){
+        TUICallEngine.createInstance().stopRemoteView(userId: userId)
     }
 
     func openCamera(videoView: TUIVideoView) {

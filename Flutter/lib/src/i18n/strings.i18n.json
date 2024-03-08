@@ -1,7 +1,8 @@
 {
-  "k_0000001": "Waiting for the other party to accept the invitation……",
-  "k_0000002": "Invited you to call……",
-  "k_0000003": "Invited you to a group call……",
+  "k_0000001": "Waiting for the other party to accept the invitation",
+  "k_0000002": "Invited you to audio call",
+  "k_0000002_1": "Invited you to video call",
+  "k_0000003": "Invited you to a group call",
   "k_0000004": "A new call is incoming, but cannot be answered due to insufficient permissions. Please make sure the camera/microphone permission is turned on.",
   "k_0000005": "Invite members",
   "k_0000006": "yourself",
@@ -88,5 +89,13 @@
   "k_0000087": "You need to access your microphone and camera permissions, which can be used for voice calls, multi-person voice calls, video calls, multi-person video calls, etc.",
   "k_0000088": "Waiting",
   "k_0000089": "Display pop-up window while running in the background and Display pop-up Window permissions",
-  "k_0000090": "You have a new call"
+  "k_0000090": "You have a new call",
+  "k_0000091": "Microphone is on",
+  "k_0000092": "Microphone is off",
+  "k_0000093": "Speaker is on",
+  "k_0000094": "Speaker is off",
+  "k_0000095": "Camera is on",
+  "k_0000096": "Camera is off",
+  "k_0000097": "Connected",
+  "k_0000098": "They are also there"
 }

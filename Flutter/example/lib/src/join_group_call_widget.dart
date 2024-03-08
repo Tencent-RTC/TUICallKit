@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tencent_calls_uikit/tuicall_kit.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
-import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class JoinInGroupCallWidget extends StatefulWidget {
   const JoinInGroupCallWidget({Key? key}) : super(key: key);
 
@@ -20,12 +20,12 @@ class _JoinInGroupCallWidgetState extends State<JoinInGroupCallWidget> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text(CallKit_t('群组通话')),
+        title: Text(AppLocalizations.of(context)!.group_call),
         leading: IconButton(
             onPressed: () => _goBack(),
             icon: const Icon(
               Icons.arrow_back,
-              color: Colors.white,
+              color: Colors.black,
             )),
       ),
       body: Stack(
@@ -45,7 +45,7 @@ class _JoinInGroupCallWidgetState extends State<JoinInGroupCallWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('群组ID'),
+                  AppLocalizations.of(context)!.group_id,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -58,7 +58,7 @@ class _JoinInGroupCallWidgetState extends State<JoinInGroupCallWidget> {
                         autofocus: true,
                         textAlign: TextAlign.right,
                         decoration: InputDecoration(
-                          hintText: CallKit_t("请输入GroupId"),
+                          hintText: AppLocalizations.of(context)!.enter_group_id,
                           border: InputBorder.none,
                         ),
                         onChanged: ((value) => _groupId = value)))
@@ -70,8 +70,8 @@ class _JoinInGroupCallWidgetState extends State<JoinInGroupCallWidget> {
                 DropdownButton(
                   value: _roomIdType,
                   items: [
-                    DropdownMenuItem(value: 0, child: Text(CallKit_t('数字房间号'))),
-                    DropdownMenuItem(value: 1, child: Text(CallKit_t('字符串房间号'))),
+                    DropdownMenuItem(value: 0, child: Text(AppLocalizations.of(context)!.digital_room)),
+                    DropdownMenuItem(value: 1, child: Text(AppLocalizations.of(context)!.string_room)),
                   ],
                   onChanged: (value) {
                     setState(() {
@@ -86,7 +86,7 @@ class _JoinInGroupCallWidgetState extends State<JoinInGroupCallWidget> {
                         autofocus: true,
                         textAlign: TextAlign.right,
                         decoration: InputDecoration(
-                          hintText: CallKit_t('请输入RoomId'),
+                          hintText: AppLocalizations.of(context)!.enter_room_id,
                           border: InputBorder.none,
                         ),
                         onChanged: ((value) => _roomId = value)))
@@ -96,7 +96,7 @@ class _JoinInGroupCallWidgetState extends State<JoinInGroupCallWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                CallKit_t('媒体类型'),
+                  AppLocalizations.of(context)!.media_type,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -116,7 +116,7 @@ class _JoinInGroupCallWidgetState extends State<JoinInGroupCallWidget> {
                         shape: const CircleBorder(),
                       ),
                     Text(
-                      CallKit_t('视频通话'),
+                      AppLocalizations.of(context)!.video_call,
                         style: const TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.normal,
@@ -138,7 +138,7 @@ class _JoinInGroupCallWidgetState extends State<JoinInGroupCallWidget> {
                         shape: const CircleBorder(),
                       ),
                       Text(
-                      CallKit_t('语音通话'),
+                        AppLocalizations.of(context)!.voice_call,
                         style: const TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.normal,
@@ -177,7 +177,7 @@ class _JoinInGroupCallWidgetState extends State<JoinInGroupCallWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        CallKit_t('加入群组通话'),
+                      AppLocalizations.of(context)!.join_group_call,
                         style: const TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.normal,

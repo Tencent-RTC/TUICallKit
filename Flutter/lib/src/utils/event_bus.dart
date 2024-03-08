@@ -43,3 +43,5 @@ const setStateEventOnCallReceived = 'SET_STATE_EVENT_ONCALLRECEIVED';
 const setStateEventOnCallEnd = 'SET_STATE_EVENT_ONCALLEND';
 const setStateEventRefreshTiming = 'SET_STATE_EVENT_REFRESH_TIMING';
 const setStateEventOnCallBegin = 'SET_STATE_EVENT_CALLBEGIN';
+
+const setStateEventGroupCallUserWidgetRefresh = 'SET_STATE_EVENT_GROUP_CALL_USER_WIDGET_REFRESH';

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.RoundShadowLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+        <RelativeLayout
+            android:id="@+id/ll_root"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.tencent.qcloud.tuikit.TUIVideoView
+                android:id="@+id/tui_video_view"
+                android:layout_width="110dp"
+                android:layout_height="196dp"
+                android:visibility="gone" />
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/iv_avatar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                app:round="5dp" />
+
+            <ImageView
+                android:id="@+id/iv_audio_icon"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/tuicallkit_ic_float" />
+
+            <TextView
+                android:id="@+id/tv_call_status"
+                android:layout_width="wrap_content"
+                android:layout_height="16dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="48dp"
+                android:textColor="#FF29CC85"
+                android:textSize="12sp"
+                android:visibility="gone" />
+        </RelativeLayout>
+</com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.RoundShadowLayout>

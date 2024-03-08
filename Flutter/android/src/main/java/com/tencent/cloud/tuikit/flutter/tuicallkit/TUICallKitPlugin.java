@@ -1,15 +1,19 @@
 package com.tencent.cloud.tuikit.flutter.tuicallkit;
 
-import static com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.FloatCallView.KEY_TUISTATE_CHANGE;
-import static com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.FloatCallView.SUBKEY_REFRESH_VIEW;
+import static com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.SingleCallFloatView.KEY_TUISTATE_CHANGE;
+import static com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.SingleCallFloatView.SUBKEY_REFRESH_VIEW;
+import static com.tencent.liteav.base.ContextUtils.getApplicationContext;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.FloatWindowService;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.IncomingFloatView;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.IncomingNotificationView;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.service.CallingBellService;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.service.ForegroundService;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.TUICallState;
@@ -43,7 +47,7 @@ import io.flutter.plugin.common.MethodChannel.Result;
  * TUICallKitPlugin
  */
 public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUINotification {
-    private static final String TAG = "TUICallKitPlugin";
+    public static final String TAG = "TUICallKitPlugin";
 
     private MethodChannel      mChannel;
     private Context            mApplicationContext;
@@ -51,6 +55,7 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+        Logger.info(TAG, "TUICallKitPlugin onAttachedToEngine");
         mChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "tuicall_kit");
         mChannel.setMethodCallHandler(this);
 
@@ -62,7 +67,6 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-        Logger.info(TAG, "onMethodCall -> method:" + call.method + ", arguments:" + call.arguments);
         try {
             Method method = TUICallKitPlugin.class.getDeclaredMethod(call.method, MethodCall.class, MethodChannel.Result.class);
             method.invoke(this, call, result);
@@ -92,6 +96,7 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         TUICore.registerEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_GROUP_CALL, this);
         TUICore.registerEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_LOGIN_SUCCESS, this);
         TUICore.registerEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_LOGOUT_SUCCESS, this);
+        TUICore.registerEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_ENTER_FOREGROUND, this);
     }
 
     private void unRegisterObserver() {
@@ -116,6 +121,10 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
 
     public void stopRing(MethodCall call, MethodChannel.Result result) {
         mCallingBellService.stopRing();
+        IncomingNotificationView.getInstance(mApplicationContext).cancelNotification();
+        if (TUICallState.getInstance().mIncomingFloatView != null) {
+            TUICallState.getInstance().mIncomingFloatView.cancelIncomingView();
+        }
         result.success(0);
     }
 
@@ -130,13 +139,12 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
             TUICallState.getInstance().mSelfUser = selfUser;
         }
 
-        Map remoteUserMap = MethodCallUtils.getMethodParams(call, "remoteUser");
-        User remoteUser = KitObjectUtils.getUserByMap(remoteUserMap);
-        if (!TUICallState.getInstance().mRemoteUser.isSameUser(remoteUser)) {
-            if (remoteUser.videoAvailable != TUICallState.getInstance().mRemoteUser.videoAvailable) {
-                needRefreshView = true;
-            }
-            TUICallState.getInstance().mRemoteUser = remoteUser;
+        List<Map> remoteUserMapList = MethodCallUtils.getMethodParams(call, "remoteUserList");
+        TUICallState.getInstance().mRemoteUserList.clear();
+        for (Map remoteUserMap : remoteUserMapList) {
+            User remoteUser = KitObjectUtils.getUserByMap(remoteUserMap);
+            TUICallState.getInstance().mRemoteUserList.add(remoteUser);
+            needRefreshView = true;
         }
 
         int sceneIndex = MethodCallUtils.getMethodParams(call, "scene");
@@ -153,20 +161,30 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         int cameraIndex = MethodCallUtils.getMethodParams(call, "camera");
         TUICallState.getInstance().mCamera = EnumUtils.getCameraType(cameraIndex);
 
+        TUICallState.getInstance().mIsCameraOpen = MethodCallUtils.getMethodParams(call, "isCameraOpen");
+
+        TUICallState.getInstance().mIsMicrophoneMute = MethodCallUtils.getMethodParams(call, "isMicrophoneMute");
+
         if (needRefreshView) {
             TUICore.notifyEvent(KEY_TUISTATE_CHANGE, SUBKEY_REFRESH_VIEW, new HashMap<>());
         }
-        Log.i(TAG, TUICallState.getInstance().toString());
         result.success(0);
     }
 
     public void startFloatWindow(MethodCall call, MethodChannel.Result result) {
-        FloatWindowService.startFloatWindow(mApplicationContext);
-        result.success(0);
+        if (KitPermissionUtils.hasPermission(PermissionRequester.FLOAT_PERMISSION)) {
+            Intent mStartIntent = new Intent(mApplicationContext, FloatWindowService.class);
+            mApplicationContext.startService(mStartIntent);
+            result.success(0);
+        } else {
+            KitPermissionUtils.requestFloatPermission();
+            result.error("-1", "No Permission", null);
+        }
     }
 
     public void stopFloatWindow(MethodCall call, MethodChannel.Result result) {
-        FloatWindowService.stopFloatWindow(mApplicationContext);
+        Intent mStartIntent = new Intent(mApplicationContext, FloatWindowService.class);
+        mApplicationContext.stopService(mStartIntent);
         result.success(0);
     }
 
@@ -200,21 +218,39 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         result.success(0);
     }
 
-    public void gotoCallingPage() {
-        mChannel.invokeMethod("gotoCallingPage", new HashMap(), new Result() {
+    public void apiLog(MethodCall call, MethodChannel.Result result) {
+        String logString = MethodCallUtils.getMethodRequiredParams(call, "logString", result);
+        int level = MethodCallUtils.getMethodRequiredParams(call, "level", result);
+
+        switch (level) {
+            case 1:
+                Logger.warning(TAG, logString);
+                break;
+            case 2:
+                Logger.error(TAG, logString);
+                break;
+            default:
+                Logger.info(TAG, logString);
+                break;
+        }
+        result.success(0);
+    }
+
+    public void backCallingPage() {
+        mChannel.invokeMethod("backCallingPage", new HashMap(), new Result() {
             @Override
             public void success(@Nullable Object result) {
             }
 
             @Override
             public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
-                Logger.error(TAG, "gotoCallingPage error code: " + code + " message:" + message + "details:"
+                Logger.error(TAG, "backCallingPage error code: " + code + " message:" + message + "details:"
                         + details);
             }
 
             @Override
             public void notImplemented() {
-                Logger.error(TAG, "gotoCallingPage notImplemented");
+                Logger.error(TAG, "backCallingPage notImplemented");
             }
         });
     }
@@ -227,8 +263,6 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
 
             @Override
             public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
-                Logger.error(TAG, "handleCallReceived error code: " + code + " message:" + message + "details:"
-                        + details);
             }
 
             @Override
@@ -341,6 +375,26 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         });
     }
 
+    public void appEnterForeground() {
+        mChannel.invokeMethod("appEnterForeground", new HashMap(), new Result() {
+            @Override
+            public void success(@Nullable Object result) {
+                Logger.info(TAG, "appEnterForeground success");
+            }
+
+            @Override
+            public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
+                Logger.error(TAG, "appEnterForeground error code: " + code + " message:" + message + "details:"
+                        + details);
+            }
+
+            @Override
+            public void notImplemented() {
+                Logger.error(TAG, "appEnterForeground notImplemented");
+            }
+        });
+    }
+
     @Override
     public void onNotifyEvent(String key, String subKey, Map<String, Object> params) {
         if (!Constants.KEY_CALLKIT_PLUGIN.equals(key)) {
@@ -348,7 +402,7 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         }
 
         if (Constants.SUB_KEY_GOTO_CALLING_PAGE.equals(subKey)) {
-            gotoCallingPage();
+            backCallingPage();
             return;
         }
 
@@ -379,6 +433,11 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
 
         if (Constants.SUB_KEY_LOGOUT_SUCCESS.equals(subKey)) {
            handleLogoutSuccess();
+           return;
+        }
+
+        if (Constants.SUB_KEY_ENTER_FOREGROUND.equals(subKey)) {
+            appEnterForeground();
         }
     }
 }

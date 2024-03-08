@@ -1,3 +1,31 @@
+## 2.2.2
+### New Features
+- Android & iOS :The onCallReceived callback of TUICallObserver adds a new user-defined parameter userData.
+
+## 2.2.1
+### Bug Fixes
+- Android: After killing the process, the application received the FCM push but did not answer it, and then entered the application page with an exception.
+
+## 2.2.0
+### New Features
+- Android: Supports FCM push and needs to be used together with tencent_cloud_chat_push
+
+## 2.1.1
+### New Features
+- Android&iOS : Use the new UI3.0.
+
+## 2.1.0
+### New Features
+- Android&iOS : Use the new UI3.0.
+
+## 2.0.6
+### Bug Fixes
+- iOS : The problem of missing some fields in iOS offline push information
+
+## 2.0.5
+### Bug Fixes
+- iOS : Fixed the issue of abnormal ringtone when entering the call page during VoIP push and abnormal pulling of remote stream.
+- Android :  Fixed an issue where the incoming call page would be abnormal when in the background when the floating window permission was not obtained.
 ## 2.0.4
 ### Bug Fixes
 - Android&iOS : Fixed the intermittent issue of incoming call page not displaying sometimes after clicking on an incoming call notification.

@@ -5,7 +5,7 @@ import 'package:tuicall_kit_example/src/group_call_widget.dart';
 import 'package:tuicall_kit_example/src/settings/settings_config.dart';
 import 'package:tuicall_kit_example/src/single_call_widget.dart';
 import 'package:tuicall_kit_example/src/login_widget.dart';
-import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainWidget extends StatefulWidget {
   const MainWidget({Key? key}) : super(key: key);
@@ -87,16 +87,16 @@ class _MainWidgetState extends State<MainWidget> {
                 ),
                 const SizedBox(width: 20),
                 SizedBox(
-                    width: _calculateTextWidth(CallKit_t('腾讯云音视频'), const TextStyle(fontSize: 32)) >
+                    width: _calculateTextWidth(AppLocalizations.of(context)!.trtc, const TextStyle(fontSize: 32)) >
                             (MediaQuery.of(context).size.width - 70 - 10)
-                        ? _calculateTextWidth(CallKit_t('腾讯云音视频'), const TextStyle(fontSize: 32)) / 2
-                        : _calculateTextWidth(CallKit_t('腾讯云音视频'), const TextStyle(fontSize: 32)),
+                        ? _calculateTextWidth(AppLocalizations.of(context)!.trtc, const TextStyle(fontSize: 32)) / 2
+                        : _calculateTextWidth(AppLocalizations.of(context)!.trtc, const TextStyle(fontSize: 32)),
                     child: Text(
-                      CallKit_t('腾讯云音视频'),
+                      AppLocalizations.of(context)!.trtc,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                          fontSize: 32, fontStyle: FontStyle.normal, fontWeight: FontWeight.w400, color: Colors.black),
+                          fontSize: 30, fontStyle: FontStyle.normal, fontWeight: FontWeight.w400, color: Colors.black),
                     ))
               ],
             ),
@@ -127,7 +127,7 @@ class _MainWidgetState extends State<MainWidget> {
                       const Icon(Icons.person_outline_outlined),
                       const SizedBox(width: 10),
                       Text(
-                        CallKit_t('单人通话'),
+                        AppLocalizations.of(context)!.single_call,
                         style: const TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.normal,
@@ -153,7 +153,7 @@ class _MainWidgetState extends State<MainWidget> {
                       const Icon(Icons.people_outline),
                       const SizedBox(width: 10),
                       Text(
-                        CallKit_t('群组通话'),
+                        AppLocalizations.of(context)!.group_call,
                         style: const TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.normal,
@@ -172,11 +172,11 @@ class _MainWidgetState extends State<MainWidget> {
         context: context,
         builder: (BuildContext context) {
           return CupertinoAlertDialog(
-            title: Text(CallKit_t('退出登录')),
+            title: Text(AppLocalizations.of(context)!.logout),
             actions: [
-              CupertinoDialogAction(child: Text(CallKit_t('取消')), onPressed: () => Navigator.of(context).pop()),
+              CupertinoDialogAction(child: Text(AppLocalizations.of(context)!.cancel), onPressed: () => Navigator.of(context).pop()),
               CupertinoDialogAction(
-                  child: Text(CallKit_t('确定')),
+                  child: Text(AppLocalizations.of(context)!.confirm),
                   onPressed: () {
                     Navigator.of(context).pop();
                     _logout();

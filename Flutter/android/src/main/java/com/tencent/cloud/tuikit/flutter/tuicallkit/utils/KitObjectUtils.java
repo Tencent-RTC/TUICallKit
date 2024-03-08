@@ -33,6 +33,9 @@ public class KitObjectUtils {
         if (map.get("videoAvailable") != null) {
             user.videoAvailable = (boolean) map.get("videoAvailable");
         }
+        if (map.get("playOutVolume") != null) {
+            user.playoutVolume = (int) map.get("playOutVolume");
+        }
         return user;
     }
 }

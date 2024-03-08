@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tencent_calls_uikit/tuicall_kit.dart';
-import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tuicall_kit_example/src/settings/settings_config.dart';
 import 'package:tuicall_kit_example/src/settings/settings_widget.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class SingleCallWidget extends StatefulWidget {
   const SingleCallWidget({Key? key}) : super(key: key);
 
@@ -21,12 +20,12 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text(CallKit_t('1V1通话')),
+        title: Text(AppLocalizations.of(context)!.single_call),
         leading: IconButton(
             onPressed: () => _goBack(),
             icon: const Icon(
               Icons.arrow_back,
-              color: Colors.white,
+              color: Colors.black,
             )),
       ),
       body: Stack(
@@ -38,15 +37,15 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
   _getCallParamsWidget() {
     return Positioned(
         top: 38,
-        left: 20,
-        width: MediaQuery.of(context).size.width - 40,
+        left: 10,
+        width: MediaQuery.of(context).size.width - 20,
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('用户ID'),
+                  AppLocalizations.of(context)!.user_id,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -59,7 +58,7 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
                         autofocus: true,
                         textAlign: TextAlign.right,
                         decoration: InputDecoration(
-                          hintText: CallKit_t("请输入您要呼叫的UserId"),
+                          hintText: AppLocalizations.of(context)!.enter_callee_id,
                           border: InputBorder.none,
                         ),
                         onChanged: ((value) => _calledUserId = value)))
@@ -72,7 +71,7 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('媒体类型'),
+                  AppLocalizations.of(context)!.media_type,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -92,7 +91,7 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
                         shape: const CircleBorder(),
                       ),
                       Text(
-                        CallKit_t('视频通话'),
+                        AppLocalizations.of(context)!.video_call,
                         style: const TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.normal,
@@ -114,7 +113,7 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
                         shape: const CircleBorder(),
                       ),
                       Text(
-                        CallKit_t('语音通话'),
+                        AppLocalizations.of(context)!.video_call,
                         style: const TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.normal,
@@ -130,7 +129,7 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
             InkWell(
               onTap: () => _goSettings(),
               child: Text(
-                '${CallKit_t('通话设置')} >',
+                '${AppLocalizations.of(context)!.settings} >',
                 style: const TextStyle(
                     fontSize: 16,
                     fontStyle: FontStyle.normal,
@@ -167,7 +166,7 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
                       const Icon(Icons.call),
                       const SizedBox(width: 10),
                       Text(
-                        CallKit_t('发起通话'),
+                        AppLocalizations.of(context)!.call,
                         style: const TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.normal,

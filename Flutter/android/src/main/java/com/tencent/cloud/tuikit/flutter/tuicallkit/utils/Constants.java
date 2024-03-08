@@ -10,4 +10,5 @@ public class Constants {
     public static String SUB_KEY_CALL                 = "call";
     public static String SUB_KEY_LOGIN_SUCCESS        = "login_success";
     public static String SUB_KEY_LOGOUT_SUCCESS       = "logout_success";
+    public static String SUB_KEY_ENTER_FOREGROUND     = "enter_foreground";
 }

@@ -3,8 +3,7 @@ import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_calls_uikit/tuicall_kit.dart';
 import 'package:tuicall_kit_example/src/login_widget.dart';
 
-/// 设置回调
-void setObserverFubction({required TUICallEngine callsEnginePlugin}) {
+void setObserverFunction({required TUICallEngine callsEnginePlugin}) {
   callsEnginePlugin.addObserver(TUICallObserver(onError:
       (int code, String message) {
     debugPrint('------------------------------------------------onError');
@@ -46,7 +45,7 @@ void setObserverFubction({required TUICallEngine callsEnginePlugin}) {
     debugPrint(
         '------------------------------------------------onUserNetworkQualityChanged');
   }, onCallReceived: (String callerId, List<String> calleeIdList,
-      String groupId, TUICallMediaType callMediaType) {
+      String groupId, TUICallMediaType callMediaType, String? userData) {
     debugPrint(
         '------------------------------------------------onCallReceived');
   }, onUserVoiceVolumeChanged: (Map<String, int> volumeMap) {

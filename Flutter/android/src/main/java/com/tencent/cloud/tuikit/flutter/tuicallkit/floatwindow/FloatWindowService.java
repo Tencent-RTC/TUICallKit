@@ -13,58 +13,33 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.tencent.cloud.tuikit.flutter.tuicallkit.R;
-import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitPermissionUtils;
-import com.tencent.qcloud.tuicore.permission.PermissionRequester;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.state.TUICallState;
+import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
 
 public class FloatWindowService extends Service {
-    private static Intent        mStartIntent;
-    private static FloatCallView mCallView;
-    private static Context       mContext;
+    private CallFloatView mCallView;
+    private Context       mContext;
 
     private WindowManager              mWindowManager;
     private WindowManager.LayoutParams mWindowLayoutParams;
 
-    private int mScreenWidth;
-    private int mWidth;
-    private int mTouchStartX;
-    private int mTouchStartY;
-    private int mTouchCurrentX;
-    private int mTouchCurrentY;
-    private int mStartX;
-    private int mStartY;
-    private int mStopX;
-    private int mStopY;
-
+    private int     mScreenWidth;
+    private int     mWidth;
+    private int     mTouchStartX;
+    private int     mTouchStartY;
+    private int     mTouchCurrentX;
+    private int     mTouchCurrentY;
+    private int     mStartX;
+    private int     mStartY;
+    private int     mStopX;
+    private int     mStopY;
     private boolean mIsMove;
-
-    public static void startFloatWindow(Context context) {
-        if (KitPermissionUtils.hasPermission(PermissionRequester.FLOAT_PERMISSION)) {
-            mContext = context;
-            mCallView = new FloatCallView(context);
-            mCallView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mCallView.destory();
-                }
-            });
-            mStartIntent = new Intent(context, FloatWindowService.class);
-            context.startService(mStartIntent);
-        } else {
-            KitPermissionUtils.requestFloatPermission();
-        }
-    }
-
-    public static void stopFloatWindow(Context context) {
-        if (null != mStartIntent) {
-            context.stopService(mStartIntent);
-        }
-    }
+    private int     mLeftRightEdge = 20;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        initWindow();
+        init();
     }
 
     @Override
@@ -86,13 +61,18 @@ public class FloatWindowService extends Service {
         }
     }
 
-    private void initWindow() {
+    private void init() {
+        mContext = getApplicationContext();
+        mCallView = TUICallState.getInstance().mScene == TUICallDefine.Scene.SINGLE_CALL ?
+                new SingleCallFloatView(mContext) : new GroupCallFloatView(mContext);
+        mCallView.setOnClickListener((view) -> {
+            mCallView.destory();
+        });
         mWindowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         mWindowLayoutParams = getViewParams();
         mScreenWidth = mWindowManager.getDefaultDisplay().getWidth();
 
         if (null != mCallView) {
-            mCallView.setBackgroundResource(R.drawable.tuicallkit_bg_floatwindow_left);
             mWindowManager.addView(mCallView, mWindowLayoutParams);
             mCallView.setOnTouchListener(new FloatingListener());
         }
@@ -110,7 +90,7 @@ public class FloatWindowService extends Service {
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
 
         mWindowLayoutParams.gravity = Gravity.LEFT | Gravity.TOP;
-        mWindowLayoutParams.x = 0;
+        mWindowLayoutParams.x = mLeftRightEdge;
         mWindowLayoutParams.y = mWindowManager.getDefaultDisplay().getHeight() / 2;
 
         mWindowLayoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -182,12 +162,10 @@ public class FloatWindowService extends Service {
                 }
                 mWidth = mCallView.getWidth();
                 if (isLeft) {
-                    mWindowLayoutParams.x = (int) (start * (1 - animation.getAnimatedFraction()));
-                    mCallView.setBackgroundResource(R.drawable.tuicallkit_bg_floatwindow_left);
+                    mWindowLayoutParams.x = (int) (start * (1 - animation.getAnimatedFraction()) + mLeftRightEdge);
                 } else {
                     float end = (mScreenWidth - start - mWidth) * animation.getAnimatedFraction();
-                    mWindowLayoutParams.x = (int) (start + end);
-                    mCallView.setBackgroundResource(R.drawable.tuicallkit_bg_floatwindow_right);
+                    mWindowLayoutParams.x = (int) (start + end - mLeftRightEdge);
                 }
                 calculateHeight();
                 mWindowManager.updateViewLayout(mCallView, mWindowLayoutParams);
