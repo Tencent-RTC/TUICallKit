@@ -30,7 +30,7 @@ class SettingsConfig {
     var avatar = ""
     var name = ""
     var ringUrl = ""
-
+    
     var mute: Bool = false
     var floatWindow: Bool = false
     var intRoomId: UInt32 = 0

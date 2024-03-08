@@ -15,9 +15,9 @@
 "TUICallKitApp.Audio.call" = "语音通话";
 "TUICallKitApp.Video.call" = "视频通话";
 
-"TUICallKitApp.Home.areyousureloginout" = "确定要退出登录吗？";
-"TUICallKitApp.Home.cancel" = "取消";
-"TUICallKitApp.Home.determine" = "确定";
+"TUICallKitApp.Home.AreYouSureLogout" = "确定要退出登录吗？";
+"TUICallKitApp.Home.Cancel" = "取消";
+"TUICallKitApp.Home.Determine" = "确定";
 
 "TUICallKitApp.Call.UserId" = "用户ID";
 "TUICallKitApp.Call.InputUserId" = "请输入要呼叫的User ID";
@@ -28,16 +28,16 @@
 "TUICallKitApp.Call.RoomIdString" = "房间Id(字符串)";
 "TUICallKitApp.Call.InputRoomId" = "请输入Room ID";
 
-"TUICallKitApp.Login.tencentcloud" = "腾讯云音视频";
-"TUICallKitApp.Login.enterphonenumber" = "请输入用户名";
-"TUICallKitApp.Login.enterverificationcode" = "请输入验证码";
-"TUICallKitApp.Login.getverificationcode" = "获取验证码";
-"TUICallKitApp.login" = "登录";
-"TUICallKitApp.Login.loginsuccess" = "登录成功";
-"TUICallKitApp.Login.register" = "注册";
-"TUICallKitApp.Login.enterusername" = "请输入用户昵称";
-"TUICallKitApp.Login.limit20count" = "仅限中文、字母、数字和下划线，2-20个字";
-"TUICallKitApp.Login.registersuccess" = "注册成功";
+"TUICallKitApp.Login.Product" = "实时音视频";
+"TUICallKitApp.Login.EnterUserId" = "请输入用户ID";
+"TUICallKitApp.Login.EnterVerificationCode" = "请输入验证码";
+"TUICallKitApp.Login.GetVerificationCode" = "获取验证码";
+"TUICallKitApp.Login" = "登录";
+"TUICallKitApp.Login.LoginSuccess" = "登录成功";
+"TUICallKitApp.Login.Register" = "注册";
+"TUICallKitApp.Login.EnterUserName" = "请输入用户昵称";
+"TUICallKitApp.Login.Limit20Count" = "仅限中文、字母、数字和下划线，2-20个字";
+"TUICallKitApp.Login.RegisterSuccess" = "注册成功";
 
 "TUICallKitApp.Login.Introduce" = "TUICallKit是腾讯云推出的一款音视频通话UI组件，通过集成该组件，您只需要编写几行代码就可以为您的App添加音视频通话能力。";
 "TUICallKitApp.Login.Platform" = "TUICallKit支持离线唤醒能力，支持Android、iOS、Web、小程序、Flutter、uni-app等多个平台。";

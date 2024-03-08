@@ -31,25 +31,23 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         navigationController?.navigationBar.barTintColor = .white
         ToastManager.shared.position = .center
+        
         view.addSubview(loading)
         loading.snp.makeConstraints { (make) in
             make.width.height.equalTo(40)
             make.centerX.centerY.equalTo(view)
         }
     }
-        
+    
     func login(userId: String) {
         loading.startAnimating()
         TUILogin.login(Int32(SDKAPPID), userID: userId, userSig: GenerateTestUserSig.genTestUserSig(identifier: userId)) { [weak self] in
-            guard let `self` = self else { return }
+            guard let self = self else { return }
             self.loading.stopAnimating()
-
-            // IM登录成功后，处理离线推送相关
-            AppUtils.reportAPNSDeviceToken()
-            
             SettingsConfig.share.userId = userId
+            
             V2TIMManager.sharedInstance()?.getUsersInfo([userId], succ: { [weak self] (infos) in
-                guard let `self` = self else { return }
+                guard let self = self else { return }
                 if let info = infos?.first {
                     SettingsConfig.share.avatar = info.faceURL ?? TUI_CALL_DEFAULT_AVATAR
                     SettingsConfig.share.name = info.nickName ?? ""
@@ -59,20 +57,20 @@ class LoginViewController: UIViewController {
                 
             })
         } fail: { [weak self] code, errorDes in
-            guard let `self` = self else { return }
+            guard let self = self else { return }
             self.loading.stopAnimating()
             TUITool.makeToast("login failed, code:\(code), error: \(errorDes ?? "nil")")
         }
     }
-        
+    
     func loginSucc() {
         if SettingsConfig.share.name.count == 0 {
             let vc = RegisterViewController()
             navigationController?.pushViewController(vc, animated: true)
         } else {
-            self.view.makeToast(TUICallKitAppLocalize("TUICallKitApp.Login.loginsuccess"))
+            self.view.makeToast(TUICallKitAppLocalize("TUICallKitApp.Login.LoginSuccess"))
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                AppUtils.shared.showMainController()
+                SceneDelegate.showMainController()
             }
         }
     }

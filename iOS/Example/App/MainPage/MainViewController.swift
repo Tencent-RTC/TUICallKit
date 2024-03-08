@@ -9,7 +9,7 @@ import UIKit
 import TUICore
 
 class MainViewController: UIViewController {
-
+    
     lazy var userInfoContentView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = .white
@@ -19,34 +19,33 @@ class MainViewController: UIViewController {
         let imageView = UIImageView(image: UIImage(named: "tencent_cloud"))
         let faceURL = SettingsConfig.share.avatar
         if let imageURL = URL(string: faceURL) {
-            imageView.kf.setImage(with: .network(imageURL), placeholder: AppUtils.getBundleImage(withName: "userIcon"))
+            imageView.kf.setImage(with: .network(imageURL), placeholder: getBundleImage(withName: "userIcon"))
         }
         imageView.layer.cornerRadius = 30
         imageView.layer.masksToBounds = true
         imageView.isUserInteractionEnabled = true
         return imageView
     }()
-    lazy var userNameLable: UILabel = {
+    lazy var userNameLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 20)
         label.textColor = UIColor.black
         label.text = SettingsConfig.share.name
         return label
     }()
-    lazy var userIdLable: UILabel = {
+    lazy var userIdLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 15)
         label.textColor = UIColor.black
         label.text = "UserID: \(SettingsConfig.share.userId)"
         return label
     }()
-        
     lazy var logoContentView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor.white
         return view
     }()
-    lazy var tencentCloudImage: UIImageView = {
+    lazy var logoImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "tencent_cloud"))
         return imageView
     }()
@@ -54,11 +53,10 @@ class MainViewController: UIViewController {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 32)
         label.textColor = UIColor(hex: "333333") ?? .black
-        label.text = TUICallKitAppLocalize("TUICallKitApp.Login.tencentcloud")
+        label.text = TUICallKitAppLocalize("TUICallKitApp.Login.Product")
         label.numberOfLines = 0
         return label
     }()
-    
     lazy var singleCallBtn: UIButton = {
         let btn = UIButton(type: .system)
         btn.setTitleColor(.white, for: .normal)
@@ -72,7 +70,6 @@ class MainViewController: UIViewController {
         btn.layer.cornerRadius = 10
         return btn
     }()
-
     lazy var groupCallBtn: UIButton = {
         let btn = UIButton(type: .system)
         btn.setTitleColor(.white, for: .normal)
@@ -86,12 +83,11 @@ class MainViewController: UIViewController {
         btn.layer.cornerRadius = 10
         return btn
     }()
-
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.isHidden = true
-        constructViewHierarchy() // 视图层级布局
-        activateConstraints() // 生成约束（此时有可能拿不到父视图正确的frame）
+        constructViewHierarchy()
+        activateConstraints()
         bindInteraction()
     }
     
@@ -102,26 +98,26 @@ class MainViewController: UIViewController {
     func updateView() {
         let faceURL = SettingsConfig.share.avatar
         if let imageURL = URL(string: faceURL) {
-            userAvImage.kf.setImage(with: .network(imageURL), placeholder: AppUtils.getBundleImage(withName: "userIcon"))
+            userAvImage.kf.setImage(with: .network(imageURL), placeholder: getBundleImage(withName: "userIcon"))
         }
-        userNameLable.text = SettingsConfig.share.name
-        userIdLable.text = "UserID: \(SettingsConfig.share.userId)"
+        userNameLabel.text = SettingsConfig.share.name
+        userIdLabel.text = "UserID: \(SettingsConfig.share.userId)"
     }
-
+    
     func constructViewHierarchy() {
         view.addSubview(userInfoContentView)
         userInfoContentView.addSubview(userAvImage)
-        userInfoContentView.addSubview(userNameLable)
-        userInfoContentView.addSubview(userIdLable)
-
+        userInfoContentView.addSubview(userNameLabel)
+        userInfoContentView.addSubview(userIdLabel)
+        
         view.addSubview(logoContentView)
-        logoContentView.addSubview(tencentCloudImage)
+        logoContentView.addSubview(logoImageView)
         logoContentView.addSubview(titleLabel)
         
         view.addSubview(singleCallBtn)
-        
         view.addSubview(groupCallBtn)
     }
+    
     func activateConstraints() {
         userInfoContentView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(100)
@@ -134,33 +130,31 @@ class MainViewController: UIViewController {
             make.centerY.leading.equalToSuperview()
             make.height.width.equalTo(60)
         }
-        userNameLable.snp.makeConstraints { make in
+        userNameLabel.snp.makeConstraints { make in
             make.leading.equalTo(userAvImage.snp.trailing).offset(10)
             make.top.equalToSuperview().offset(5)
         }
-        userIdLable.snp.makeConstraints { make in
+        userIdLabel.snp.makeConstraints { make in
             make.leading.equalTo(userAvImage.snp.trailing).offset(10)
             make.bottom.equalToSuperview().offset(-5)
         }
-        
         logoContentView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(200)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
             make.height.equalTo(100)
         }
-        tencentCloudImage.snp.makeConstraints { (make) in
+        logoImageView.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(40)
             make.height.equalTo(80)
             make.width.equalTo(80)
         }
         titleLabel.snp.makeConstraints { (make) in
-            make.centerY.equalTo(tencentCloudImage.snp.centerY)
-            make.leading.equalTo(tencentCloudImage.snp.trailing).offset(10)
+            make.centerY.equalTo(logoImageView.snp.centerY)
+            make.leading.equalTo(logoImageView.snp.trailing).offset(10)
             make.trailing.equalToSuperview()
         }
-        
         groupCallBtn.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-60)
             make.leading.equalToSuperview().offset(40)
@@ -183,13 +177,13 @@ class MainViewController: UIViewController {
     }
     
     @objc func userAvImageClick() {
-        let alertVC = UIAlertController(title: TUICallKitAppLocalize("TUICallKitApp.Home.areyousureloginout"), message: nil, preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: TUICallKitAppLocalize("TUICallKitApp.Home.cancel"), style: .cancel, handler: nil)
-        let sureAction = UIAlertAction(title: TUICallKitAppLocalize("TUICallKitApp.Home.determine"), style: .default) { (action) in
+        let alertVC = UIAlertController(title: TUICallKitAppLocalize("TUICallKitApp.Home.AreYouSureLogout"), message: nil, preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: TUICallKitAppLocalize("TUICallKitApp.Home.Cancel"), style: .cancel, handler: nil)
+        let sureAction = UIAlertAction(title: TUICallKitAppLocalize("TUICallKitApp.Home.Determine"), style: .default) { (action) in
             SettingsConfig.share.avatar = ""
             SettingsConfig.share.name = ""
             SettingsConfig.share.userId = ""
-            AppUtils.shared.appDelegate.showLoginViewController()
+            SceneDelegate.showLoginViewController()
             TUILogin.logout {
             } fail: { _, _ in
             }
@@ -203,26 +197,25 @@ class MainViewController: UIViewController {
         let singleCallVC = SingleCallViewController()
         singleCallVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(singleCallVC, animated: true)
-
+        
     }
-
+    
     @objc func groupCallBtnClick() {
         let groupCallVC = GroupCallViewController()
         groupCallVC.title = TUICallKitAppLocalize("TUICallKitApp.GroupCall")
         groupCallVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(groupCallVC, animated: true)
     }
+    
 }
 
 extension MainViewController {
     
-    func getUrlImage(url: String) -> UIImage? {
-        guard let url = URL(string: url) else { return nil }
-        var data = Data()
-        do {
-            data = try Data(contentsOf: url)
-        } catch _ as NSError {}
-        return  UIImage(data: data)
+    func getBundleImage(withName: String) -> UIImage {
+        guard let callingKitBundleURL = Bundle.main.url(forResource: "TUICallKitBundle", withExtension: "bundle") else { return UIImage() }
+        let bundle = Bundle(url: callingKitBundleURL)
+        guard let image = UIImage(named: withName, in: bundle, compatibleWith: nil) else { return UIImage() }
+        return image
     }
     
 }

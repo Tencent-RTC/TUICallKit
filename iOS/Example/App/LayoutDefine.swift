@@ -11,7 +11,7 @@ import UIKit
 public let ScreenWidth = UIScreen.main.bounds.width
 public let ScreenHeight = UIScreen.main.bounds.height
 
-public let kDeviceIsIphoneX : Bool = {
+public let kDeviceIsIPhoneX : Bool = {
     if UIDevice.current.userInterfaceIdiom == .pad {
         return false
     }
@@ -24,11 +24,11 @@ public let kDeviceIsIphoneX : Bool = {
 }()
 
 public let kDeviceSafeTopHeight : CGFloat = {
-    return kDeviceIsIphoneX ? 44 : 20
+    return kDeviceIsIPhoneX ? 44 : 20
 }()
 
 public let kDeviceSafeBottomHeight : CGFloat = {
-    return kDeviceIsIphoneX ? 34 : 0
+    return kDeviceIsIPhoneX ? 34 : 0
 }()
 
 public func convertPixel(w:CGFloat) -> CGFloat {
