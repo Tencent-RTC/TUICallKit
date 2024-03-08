@@ -1,4 +1,5 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_method_channel.dart';
 
 abstract class TUICallKitPlatform extends PlatformInterface {
@@ -65,5 +66,9 @@ abstract class TUICallKitPlatform extends PlatformInterface {
 
   Future<void> closeMicrophone() async {
     await instance.openMicrophone();
+  }
+
+  Future<void> apiLog(TRTCLoggerLevel level, String logString) async {
+    await instance.apiLog(level, logString);
   }
 }

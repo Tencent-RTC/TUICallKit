@@ -2,10 +2,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:tencent_calls_uikit/tuicall_kit.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
-import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tuicall_kit_example/src/main_widget.dart';
 import 'package:tuicall_kit_example/src/settings/settings_config.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({Key? key}) : super(key: key);
@@ -66,19 +65,19 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   children: [
                     SizedBox(
                         width: _calculateTextWidth(
-                            CallKit_t('腾讯云音视频'), const TextStyle(
+                            AppLocalizations.of(context)!.trtc, const TextStyle(
                             fontSize: 32)) > (MediaQuery
                             .of(context)
                             .size
                             .width - 70 - 10) ?
                         _calculateTextWidth(
-                            CallKit_t('腾讯云音视频'), const TextStyle(
+                            AppLocalizations.of(context)!.trtc, const TextStyle(
                             fontSize: 32)) / 2 :
                         _calculateTextWidth(
-                            CallKit_t('腾讯云音视频'), const TextStyle(
+                            AppLocalizations.of(context)!.trtc, const TextStyle(
                             fontSize: 32)),
                         child: Text(
-                          CallKit_t('腾讯云音视频'),
+                          AppLocalizations.of(context)!.trtc,
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -126,7 +125,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 children: [
                   const SizedBox(width: 10),
                   Text(
-                    CallKit_t('昵称'),
+                    AppLocalizations.of(context)!.nick_name,
                     style: const TextStyle(
                         fontSize: 16,
                         fontStyle: FontStyle.normal,
@@ -142,7 +141,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       autofocus: true,
                       decoration: InputDecoration(
                         hintStyle: const TextStyle(fontSize: 16),
-                        hintText: CallKit_t("输入你的用户昵称"),
+                        hintText: AppLocalizations.of(context)!.enter_nickname,
                         border: InputBorder.none,
                         labelStyle: const TextStyle(fontSize: 16),
                       ),
@@ -169,7 +168,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15))),
                 ),
-                child: Text(CallKit_t("确定")
+                child: Text(AppLocalizations.of(context)!.confirm
                 ),
               ),
             )
@@ -196,7 +195,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           ),
           const Padding(padding: EdgeInsets.only(left: 10)),
           Text(
-            CallKit_t("腾讯云"),
+            AppLocalizations.of(context)!.tencent_cloud,
             style: const TextStyle(fontSize: 15.0),
           ),
         ],
@@ -243,7 +242,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(CallKit_t("登录失败")),
+          title: Text(AppLocalizations.of(context)!.login_fail),
           content: Text(
               "result.code:${result.code}, result.message: ${result
                   .message}？"),
@@ -252,7 +251,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(CallKit_t("继续")),
+              child: Text(AppLocalizations.of(context)!.next),
             ),
           ],
         );

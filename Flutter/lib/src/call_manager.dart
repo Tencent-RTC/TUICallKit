@@ -1,11 +1,12 @@
+import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/widgets.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/data/offline_push_info.dart';
 import 'package:tencent_calls_uikit/src/data/user.dart';
 import 'package:tencent_calls_uikit/src/extensions/calling_bell_feature.dart';
+import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/ui/tuicall_navigator_observer.dart';
@@ -25,13 +26,18 @@ class CallManager {
 
   CallManager() {
     eventBus.register(setStateEventOnCallReceived, (arg) async {
-      if (Platform.isAndroid) {
-        final permissionResult = await PermissionRequest.checkCallingPermission(CallState.instance.mediaType);
+      if (Platform.isAndroid && await TUICallKitPlatform.instance.isAppInForeground()) {
+        var permissionResult =
+            await PermissionRequest.checkCallingPermission(CallState.instance.mediaType);
+        if (CallState.instance.scene != TUICallScene.singleCall) {
+          permissionResult = await PermissionRequest.checkCallingPermission(TUICallMediaType.video);
+        }
+
         if (TUIPermissionResult.granted == permissionResult) {
           TUICallKitNavigatorObserver.getInstance().enterCallingPage();
         } else {
           CallManager.instance.reject();
-          TUICallKitPlatform.instance.stopRing();
+          CallingBellFeature.stopRing();
         }
       } else {
         TUICallKitNavigatorObserver.getInstance().enterCallingPage();
@@ -40,22 +46,27 @@ class CallManager {
   }
 
   Future<void> initEngine(int sdkAppID, String userId, String userSig) async {
+    TRTCLogger.info(
+        'CallManager initEngine(sdkAppID:$sdkAppID, userId: $userId, userSig:$userSig)');
     CallManager.instance.initResources();
     final result = await TUICallEngine.instance.init(sdkAppID, userId, userSig);
 
     if (result.code.isEmpty) {
-      TUICallEngine.instance.setVideoEncoderParams(
-          VideoEncoderParams(resolution: Resolution.resolution_640_360, resolutionMode: ResolutionMode.portrait));
-      TUICallEngine.instance
-          .setVideoRenderParams(userId, VideoRenderParams(fillMode: FillMode.fill, rotation: Rotation.rotation_0));
+      TUICallEngine.instance.setVideoEncoderParams(VideoEncoderParams(
+          resolution: Resolution.resolution_640_360, resolutionMode: ResolutionMode.portrait));
+      TUICallEngine.instance.setVideoRenderParams(
+          userId, VideoRenderParams(fillMode: FillMode.fill, rotation: Rotation.rotation_0));
       TUICallEngine.instance.setBeautyLevel(6.0);
-      _updateLocalSelfUser(userId);
+      _updateLocalSelfUserInfo(userId);
     } else {
-      TUIToast.show(content: 'Init Engine Fail');
+      CallManager.instance.showToast('Init Engine Fail');
     }
   }
 
-  Future<TUIResult> call(String userId, TUICallMediaType callMediaType, [TUICallParams? params]) async {
+  Future<TUIResult> call(String userId, TUICallMediaType callMediaType,
+      [TUICallParams? params]) async {
+    TRTCLogger.info(
+        'CallManager call(userId:$userId, callMediaType: $callMediaType, params:${params.toString()}), version:${Constants.pluginVersion}');
     if (userId.isEmpty) {
       debugPrint("Call failed, userId is empty");
       return TUIResult(code: "-1", message: "Call failed, userId is empty");
@@ -64,7 +75,9 @@ class CallManager {
       debugPrint("Call failed, callMediaType is Unknown");
       return TUIResult(code: "-1", message: "Call failed, callMediaType is Unknown");
     }
-    if (params != null && params.roomId != null && params.roomId!.intRoomId > Constants.roomIdMaxValue) {
+    if (params != null &&
+        params.roomId != null &&
+        params.roomId!.intRoomId > Constants.roomIdMaxValue) {
       return TUIResult(
           code: "-1",
           message: "Call failed, roomId.intRoomId Max Value is "
@@ -95,11 +108,8 @@ class CallManager {
           CallState.instance.scene = TUICallScene.singleCall;
           CallState.instance.selfUser.callRole = TUICallRole.caller;
           CallState.instance.selfUser.callStatus = TUICallStatus.waiting;
-
-          TUICallKitPlatform.instance.updateCallStateToNative();
-          initAudioPlayDevice();
           CallingBellFeature.startRing();
-          TUICallKitNavigatorObserver.getInstance().enterCallingPage();
+          launchCallingPage();
           return callResult;
         } else {
           return TUIResult(code: "-1", message: "Call Fail, engine call fail");
@@ -125,11 +135,8 @@ class CallManager {
         CallState.instance.scene = TUICallScene.singleCall;
         CallState.instance.selfUser.callRole = TUICallRole.caller;
         CallState.instance.selfUser.callStatus = TUICallStatus.waiting;
-
-        TUICallKitPlatform.instance.updateCallStateToNative();
-        initAudioPlayDevice();
         CallingBellFeature.startRing();
-        TUICallKitNavigatorObserver.getInstance().enterCallingPage();
+        launchCallingPage();
         return callResult;
       } else {
         return TUIResult(code: "-1", message: "Call Fail, engine call fail");
@@ -139,6 +146,8 @@ class CallManager {
 
   Future<TUIResult> groupCall(String groupId, List<String> userIdList, TUICallMediaType mediaType,
       [TUICallParams? params]) async {
+    TRTCLogger.info(
+        'CallManager groupCall(groupId:$groupId, userIdList:$userIdList, mediaType:$mediaType, params:${params.toString()}), version:${Constants.pluginVersion}');
     if (groupId.isEmpty) {
       debugPrint("groupCall failed, groupId is empty");
       return TUIResult(code: "-1", message: "groupCall failed, groupId is empty");
@@ -154,14 +163,16 @@ class CallManager {
           message: "groupCall failed, userIdList is "
               "empty");
     }
-    if (params != null && params.roomId != null && params.roomId!.intRoomId > Constants.roomIdMaxValue) {
+    if (params != null &&
+        params.roomId != null &&
+        params.roomId!.intRoomId > Constants.roomIdMaxValue) {
       return TUIResult(
           code: "-1",
           message: "Call failed, roomId.intRoomId Max Value is "
               "2147483647");
     }
     if (userIdList.length >= Constants.groupCallMaxUserCount) {
-      TUIToast.show(content: "groupCall failed, exceeding max user number: 9");
+      CallManager.instance.showToast("groupCall failed, exceeding max user number: 9");
       return TUIResult(code: "-1", message: "groupCall failed, exceeding max user number: 9");
     }
     if (params == null) {
@@ -171,7 +182,8 @@ class CallManager {
     if (Platform.isAndroid) {
       final permissionResult = await PermissionRequest.checkCallingPermission(mediaType);
       if (TUIPermissionResult.granted == permissionResult) {
-        final callResult = await TUICallEngine.instance.groupCall(groupId, userIdList, mediaType, params);
+        final callResult =
+            await TUICallEngine.instance.groupCall(groupId, userIdList, mediaType, params);
         if (callResult.code.isEmpty) {
           for (String userId in userIdList) {
             if (userId.isNotEmpty) {
@@ -199,10 +211,8 @@ class CallManager {
           CallState.instance.selfUser.callStatus = TUICallStatus.waiting;
           CallState.instance.caller = CallState.instance.selfUser;
 
-          TUICallKitPlatform.instance.updateCallStateToNative();
-          initAudioPlayDevice();
           CallingBellFeature.startRing();
-          TUICallKitNavigatorObserver.getInstance().enterCallingPage();
+          launchCallingPage();
           return callResult;
         } else {
           return TUIResult(code: "-1", message: "Call Fail, engine call fail");
@@ -211,7 +221,8 @@ class CallManager {
         return TUIResult(code: "-1", message: "Permission result fail");
       }
     } else {
-      final callResult = await TUICallEngine.instance.groupCall(groupId, userIdList, mediaType, params);
+      final callResult =
+          await TUICallEngine.instance.groupCall(groupId, userIdList, mediaType, params);
       if (callResult.code.isEmpty) {
         for (String userId in userIdList) {
           if (userId.isNotEmpty) {
@@ -237,10 +248,8 @@ class CallManager {
         CallState.instance.selfUser.callRole = TUICallRole.caller;
         CallState.instance.selfUser.callStatus = TUICallStatus.waiting;
 
-        TUICallKitPlatform.instance.updateCallStateToNative();
-        initAudioPlayDevice();
         CallingBellFeature.startRing();
-        TUICallKitNavigatorObserver.getInstance().enterCallingPage();
+        launchCallingPage();
         return callResult;
       } else {
         return TUIResult(code: "-1", message: "Call Fail, engine call fail");
@@ -249,6 +258,8 @@ class CallManager {
   }
 
   Future<void> joinInGroupCall(TUIRoomId roomId, String groupId, TUICallMediaType mediaType) async {
+    TRTCLogger.info(
+        'CallManager joinInGroupCall(roomId:$roomId, groupId:$groupId, mediaType:$mediaType), version:${Constants.pluginVersion}');
     if (roomId.intRoomId <= 0 || roomId.intRoomId >= Constants.roomIdMaxValue) {
       debugPrint("joinInGroupCall failed, roomId is invalid");
       return;
@@ -273,18 +284,15 @@ class CallManager {
           CallState.instance.selfUser.callRole = TUICallRole.called;
           CallState.instance.selfUser.callStatus = TUICallStatus.accept;
 
-          TUICallKitPlatform.instance.updateCallStateToNative();
-          _instance.initAudioPlayDevice();
-          TUICallKitNavigatorObserver.getInstance().enterCallingPage();
+          launchCallingPage();
           return;
         } else {
-          TUIToast.show(
-              content: "joinInGroupCall Fail, engine call "
-                  "fail");
+          CallManager.instance.showToast("joinInGroupCall Fail, engine call "
+              "fail");
           return;
         }
       } else {
-        TUIToast.show(content: "Permission result fail");
+        CallManager.instance.showToast("Permission result fail");
         return;
       }
     } else {
@@ -296,12 +304,11 @@ class CallManager {
         CallState.instance.scene = TUICallScene.groupCall;
         CallState.instance.selfUser.callRole = TUICallRole.called;
         CallState.instance.selfUser.callStatus = TUICallStatus.accept;
-        TUICallKitPlatform.instance.updateCallStateToNative();
-        _instance.initAudioPlayDevice();
-        TUICallKitNavigatorObserver.getInstance().enterCallingPage();
+
+        launchCallingPage();
         return;
       } else {
-        TUIToast.show(content: "joinInGroupCall Fail,engine call fail");
+        CallManager.instance.showToast("joinInGroupCall Fail,engine call fail");
         return;
       }
     }
@@ -403,6 +410,7 @@ class CallManager {
   }
 
   Future<void> startRemoteView(String userId, int viewId) async {
+    TRTCLogger.info('CallManager startRemoteView(userId:$userId, viewId:$viewId)');
     await TUICallEngine.instance.startRemoteView(userId, viewId);
 
     TUICallKitPlatform.instance.updateCallStateToNative();
@@ -456,7 +464,9 @@ class CallManager {
   }
 
   Future<TUIResult> login(int sdkAppId, String userId, String userSig) async {
-    await CallState.instance.registerEngineObserver();
+    TRTCLogger.info(
+        'CallManager login(sdkAppId:$sdkAppId, userId:$userId) version:${Constants.pluginVersion}');
+    CallState.instance.registerEngineObserver();
     TUIResult result = TUIResult(code: '', message: 'success');
     await TUILogin.instance.login(
         sdkAppId,
@@ -471,6 +481,7 @@ class CallManager {
   }
 
   Future<void> logout() async {
+    TRTCLogger.info('CallManager logout()');
     await TUILogin.instance.logout(TUICallback(onSuccess: () {}, onError: (code, message) {}));
   }
 
@@ -485,28 +496,33 @@ class CallManager {
 
   Future<void> enableMuteMode(bool enable) async {
     CallState.instance.enableMuteMode = enable;
-    PreferenceUtils.getInstance().saveBool(Constants.spKeyEnableMuteMode, CallState.instance.enableMuteMode);
+    PreferenceUtils.getInstance()
+        .saveBool(Constants.spKeyEnableMuteMode, CallState.instance.enableMuteMode);
   }
 
-  void initAudioPlayDevice() {
-    if (TUICallMediaType.audio == CallState.instance.mediaType && TUICallScene.singleCall == CallState.instance.scene) {
+  void initAudioPlayDeviceAndCamera() {
+    if (TUICallMediaType.audio == CallState.instance.mediaType) {
       CallState.instance.audioDevice = TUIAudioPlaybackDevice.earpiece;
+      CallState.instance.isCameraOpen = false;
     } else {
       CallState.instance.audioDevice = TUIAudioPlaybackDevice.speakerphone;
+      CallState.instance.isCameraOpen = true;
     }
+
     CallManager.instance.selectAudioPlaybackDevice(CallState.instance.audioDevice);
   }
 
-  void handleLoginSuccess(int sdkAppId, String userId, String userSig) async {
-    await CallState.instance.registerEngineObserver();
-    await CallManager.instance.initEngine(sdkAppId, userId, userSig);
+  void handleLoginSuccess(int sdkAppId, String userId, String userSig) {
+    TRTCLogger.info('CallManager handleLoginSuccess()');
+    CallManager.instance.initEngine(sdkAppId, userId, userSig);
     _instance._adaptiveComponentReport();
   }
 
   void handleLogoutSuccess() {
+    TRTCLogger.info('CallManager handleLogoutSuccess()');
     TUICallEngine.instance.unInit();
     CallState.instance.unRegisterEngineObserver();
-    TUICallKitPlatform.instance.stopRing();
+    CallingBellFeature.stopRing();
     CallState.instance.cleanState();
     TUICallKitPlatform.instance.updateCallStateToNative();
   }
@@ -519,11 +535,37 @@ class CallManager {
   }
 
   void handleAppEnterForeground() {
-    if (Platform.isIOS &&
-        CallState.instance.selfUser.callStatus != TUICallStatus.none &&
-        TUICallKitNavigatorObserver.currentPage == CallPage.none) {
-      CallState.instance.handleCallReceived(CallState.instance.caller.id,
-          CallState.instance.calleeIdList, CallState.instance.groupId, CallState.instance.mediaType);
+    TRTCLogger.info('CallManager handleAppEnterForeground()');
+    if (CallState.instance.selfUser.callStatus != TUICallStatus.none &&
+        TUICallKitNavigatorObserver.currentPage == CallPage.none &&
+        CallState.instance.isOpenFloatWindow == false) {
+      launchCallingPage();
+    }
+  }
+
+  void launchCallingPage() {
+    TRTCLogger.info('CallManager launchCallWidget()');
+    _checkLocalSelfUserInfo();
+    CallManager.instance.initAudioPlayDeviceAndCamera();
+    eventBus.notify(setStateEventOnCallReceived);
+    TUICallKitPlatform.instance.updateCallStateToNative();
+    CallState.instance.isOpenFloatWindow = false;
+  }
+
+  void openFloatWindow() {
+    TUICallKitPlatform.instance.startFloatWindow();
+    CallState.instance.isOpenFloatWindow = true;
+    TUICallKitNavigatorObserver.isClose = true;
+  }
+
+  void backCallingPageFormFloatWindow() {
+    TUICallKitNavigatorObserver.getInstance().enterCallingPage();
+    CallState.instance.isOpenFloatWindow = false;
+  }
+
+  void showToast(String string) {
+    if (!CallState.instance.isOpenFloatWindow || Platform.isAndroid) {
+      TUIToast.show(content: string);
     }
   }
 
@@ -538,11 +580,24 @@ class CallManager {
     });
   }
 
-  void _updateLocalSelfUser(String userId) async {
-    CallState.instance.selfUser.id = userId;
-    final imInfo = await _im.getUsersInfo(userIDList: [userId]);
-    CallState.instance.selfUser.nickname = StringStream.makeNull(imInfo.data?[0].nickName, '');
-    CallState.instance.selfUser.avatar =
-        StringStream.makeNull(imInfo.data?[0].faceUrl, Constants.defaultAvatar);
+  Future<void> _updateLocalSelfUserInfo(String userId) async {
+    Timer.periodic(const Duration(milliseconds: 1000), (timer) async {
+      CallState.instance.selfUser.id = userId;
+      final imInfo = await _im.getUsersInfo(userIDList: [userId]);
+      CallState.instance.selfUser.nickname = StringStream.makeNull(imInfo.data?[0].nickName, '');
+      CallState.instance.selfUser.avatar =
+          StringStream.makeNull(imInfo.data?[0].faceUrl, Constants.defaultAvatar);
+      timer.cancel();
+    });
+  }
+
+  _checkLocalSelfUserInfo() async {
+    if (CallState.instance.selfUser.nickname == '' &&
+        CallState.instance.selfUser.avatar == Constants.defaultAvatar) {
+      final imInfo = await _im.getUsersInfo(userIDList: [CallState.instance.selfUser.id]);
+      CallState.instance.selfUser.nickname = StringStream.makeNull(imInfo.data?[0].nickName, '');
+      CallState.instance.selfUser.avatar =
+          StringStream.makeNull(imInfo.data?[0].faceUrl, Constants.defaultAvatar);
+    }
   }
 }

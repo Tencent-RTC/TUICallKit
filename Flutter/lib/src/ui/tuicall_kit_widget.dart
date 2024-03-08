@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_calls_uikit/src/call_state.dart';
+import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/groupcall/group_call_widget.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/singlecall/single_call_widget.dart';
 import 'package:tencent_calls_uikit/src/utils/event_bus.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class TUICallKitWidget extends StatefulWidget {
   final Function close;
@@ -16,24 +18,24 @@ class TUICallKitWidget extends StatefulWidget {
 }
 
 class _TUICallKitWidgetState extends State<TUICallKitWidget> {
-  EventCallback? setSateCallBack;
   EventCallback? onCallEndCallBack;
 
   @override
   void initState() {
     super.initState();
-    setSateCallBack = (arg) {
-      if (mounted) {
-        setState(() {});
-      }
-    };
+    TRTCLogger.info('TUICallKitWidget initState');
+    if (CallState.instance.selfUser.callStatus == TUICallStatus.none) {
+      Future.microtask(() {
+        widget.close();
+      });
+    }
     onCallEndCallBack = (arg) {
       if (mounted) {
         widget.close();
       }
     };
-    eventBus.register(setStateEvent, setSateCallBack);
     eventBus.register(setStateEventOnCallEnd, onCallEndCallBack);
+    WakelockPlus.enable();
   }
 
   @override
@@ -62,7 +64,8 @@ class _TUICallKitWidgetState extends State<TUICallKitWidget> {
   @override
   void dispose() {
     super.dispose();
-    eventBus.unregister(setStateEvent, setSateCallBack);
+    TRTCLogger.info('TUICallKitWidget dispose');
     eventBus.unregister(setStateEventOnCallEnd, onCallEndCallBack);
+    WakelockPlus.disable();
   }
 }

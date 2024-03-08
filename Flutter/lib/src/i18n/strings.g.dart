@@ -3,9 +3,9 @@
  * Generated file. Do not edit.
  *
  * Locales: 3
- * Strings: 270 (90.0 per locale)
+ * Strings: 297 (99.0 per locale)
  *
- * Built on 2023-10-12 at 11:17 UTC
+ * Built on 2024-01-10 at 09:50 UTC
  */
 
 import 'package:flutter/widgets.dart';
@@ -315,9 +315,10 @@ class _StringsEn {
 	late final _StringsEn _root = this; // ignore: unused_field
 
 	// Translations
-	String get k_0000001 => 'Waiting for the other party to accept the invitation……';
-	String get k_0000002 => 'Invited you to call……';
-	String get k_0000003 => 'Invited you to a group call……';
+	String get k_0000001 => 'Waiting for the other party to accept the invitation';
+	String get k_0000002 => 'Invited you to audio call';
+	String get k_0000002_1 => 'Invited you to video call';
+	String get k_0000003 => 'Invited you to a group call';
 	String get k_0000004 => 'A new call is incoming, but cannot be answered due to insufficient permissions. Please make sure the camera/microphone permission is turned on.';
 	String get k_0000005 => 'Invite members';
 	String get k_0000006 => 'yourself';
@@ -405,6 +406,14 @@ class _StringsEn {
 	String get k_0000088 => 'Waiting';
 	String get k_0000089 => 'Display pop-up window while running in the background and Display pop-up Window permissions';
 	String get k_0000090 => 'You have a new call';
+	String get k_0000091 => 'Microphone is on';
+	String get k_0000092 => 'Microphone is off';
+	String get k_0000093 => 'Speaker is on';
+	String get k_0000094 => 'Speaker is off';
+	String get k_0000095 => 'Camera is on';
+	String get k_0000096 => 'Camera is off';
+	String get k_0000097 => 'Connected';
+	String get k_0000098 => 'They are also there';
 }
 
 // Path: <root>
@@ -423,11 +432,12 @@ class _StringsJa implements _StringsEn {
 	@override late final _StringsJa _root = this; // ignore: unused_field
 
 	// Translations
-	@override String get k_0000001 => '相手が招待を承諾するのを待っています。';
-	@override String get k_0000002 => '通話に招待されました。';
-	@override String get k_0000003 => 'グループ通話に招待されました。';
-	@override String get k_0000004 => '新通話の呼入がありますが、権限不足により、接听できません。カメラ/マイクの権限が有効かどうか確認してください。';
-	@override String get k_0000005 => '邀请メンバーを翻訳します。';
+	@override String get k_0000001 => '相手が招待を承諾するのを待っています';
+	@override String get k_0000002 => '音声通話に招待する';
+	@override String get k_0000002_1 => 'ビデオ通話に招待する';
+	@override String get k_0000003 => 'グループ通話に招待されました';
+	@override String get k_0000004 => '新通話の呼入がありますが、権限不足により、接听できません。カメラ/マイクの権限が有効かどうか確認してください';
+	@override String get k_0000005 => '邀请メンバーを翻訳します';
 	@override String get k_0000006 => '自分';
 	@override String get k_0000007 => 'マイク';
 	@override String get k_0000008 => '通話終了';
@@ -487,7 +497,7 @@ class _StringsJa implements _StringsEn {
 	@override String get k_0000062 => 'オフライン メッセージ情報の json 文字列を入力してください';
 	@override String get k_0000063 => '携帯電話番号/ユーザーIDを入力してください';
 	@override String get k_0000064 => 'グループIDを入力してください';
-	@override String get k_0000065 => '用户ID使用逗号隔开';
+	@override String get k_0000065 => 'ユーザー ID を区切るにはカンマを使用します';
 	@override String get k_0000066 => 'ルームIDを入力してください';
 	@override String get k_0000067 => '注: TUICallKit はオフライン通話をサポートし、Android、iOS、Web、Flutter などの複数のプラットフォームをサポートします。';
 	@override String get k_0000068 => 'ニックネーム';
@@ -498,7 +508,7 @@ class _StringsJa implements _StringsEn {
 	@override String get k_0000073 => 'TRTC';
 	@override String get k_0000074 => 'ログアウト';
 	@override String get k_0000075 => 'ユーザーIDを入力してください';
-	@override String get k_0000076 => 'ユーザーIDのリストを入力してください';
+	@override String get k_0000076 => 'ユーザーID一覧';
 	@override String get k_0000077 => '通話終了';
 	@override String get k_0000078 => '通話が拒否されました';
 	@override String get k_0000079 => '相手が通話中です';
@@ -513,6 +523,14 @@ class _StringsJa implements _StringsEn {
 	@override String get k_0000088 => '応答を待っています';
 	@override String get k_0000089 => 'バックグラウンドポップアップインターフェースを有効にし、同時にフローティングウィンドウ権限を表示してください。';
 	@override String get k_0000090 => '新しい電話があります';
+	@override String get k_0000091 => 'マイクオン';
+	@override String get k_0000092 => 'マイクがオフ';
+	@override String get k_0000093 => 'スピーカーオン';
+	@override String get k_0000094 => 'スピーカーオフ';
+	@override String get k_0000095 => 'カメラオン';
+	@override String get k_0000096 => 'カメラオフ';
+	@override String get k_0000097 => '接続済み';
+	@override String get k_0000098 => '彼らもそこにいる';
 }
 
 // Path: <root>
@@ -531,9 +549,10 @@ class _StringsZhHans implements _StringsEn {
 	@override late final _StringsZhHans _root = this; // ignore: unused_field
 
 	// Translations
-	@override String get k_0000001 => '正在等待对方接受邀请……';
-	@override String get k_0000002 => '邀请您进行通话……';
-	@override String get k_0000003 => '邀请您进行多人通话……';
+	@override String get k_0000001 => '等待对方接受邀请';
+	@override String get k_0000002 => '邀请你进行语音通话';
+	@override String get k_0000002_1 => '邀请你进行视频通话';
+	@override String get k_0000003 => '邀请你进行多人通话';
 	@override String get k_0000004 => '新通话呼入，但因权限不足，无法接听。请确认摄像头/麦克风权限已开启。';
 	@override String get k_0000005 => '邀请成员';
 	@override String get k_0000006 => '你';
@@ -621,6 +640,14 @@ class _StringsZhHans implements _StringsEn {
 	@override String get k_0000088 => '等待接听';
 	@override String get k_0000089 => '请同时打开后台弹出界面和显示悬浮窗权限';
 	@override String get k_0000090 => '您有一个新的通话';
+	@override String get k_0000091 => '麦克风已开启';
+	@override String get k_0000092 => '麦克风已关闭';
+	@override String get k_0000093 => '扬声器已开启';
+	@override String get k_0000094 => '扬声器已关闭';
+	@override String get k_0000095 => '摄像头已开启';
+	@override String get k_0000096 => '摄像头已关闭';
+	@override String get k_0000097 => '已接通';
+	@override String get k_0000098 => '他们也在';
 }
 
 /// Flat map(s) containing all translations.
@@ -629,9 +656,10 @@ class _StringsZhHans implements _StringsEn {
 extension on _StringsEn {
 	Map<String, dynamic> _buildFlatMap() {
 		return <String, dynamic>{
-			'k_0000001': 'Waiting for the other party to accept the invitation……',
-			'k_0000002': 'Invited you to call……',
-			'k_0000003': 'Invited you to a group call……',
+			'k_0000001': 'Waiting for the other party to accept the invitation',
+			'k_0000002': 'Invited you to audio call',
+			'k_0000002_1': 'Invited you to video call',
+			'k_0000003': 'Invited you to a group call',
 			'k_0000004': 'A new call is incoming, but cannot be answered due to insufficient permissions. Please make sure the camera/microphone permission is turned on.',
 			'k_0000005': 'Invite members',
 			'k_0000006': 'yourself',
@@ -719,6 +747,14 @@ extension on _StringsEn {
 			'k_0000088': 'Waiting',
 			'k_0000089': 'Display pop-up window while running in the background and Display pop-up Window permissions',
 			'k_0000090': 'You have a new call',
+			'k_0000091': 'Microphone is on',
+			'k_0000092': 'Microphone is off',
+			'k_0000093': 'Speaker is on',
+			'k_0000094': 'Speaker is off',
+			'k_0000095': 'Camera is on',
+			'k_0000096': 'Camera is off',
+			'k_0000097': 'Connected',
+			'k_0000098': 'They are also there',
 		};
 	}
 }
@@ -726,11 +762,12 @@ extension on _StringsEn {
 extension on _StringsJa {
 	Map<String, dynamic> _buildFlatMap() {
 		return <String, dynamic>{
-			'k_0000001': '相手が招待を承諾するのを待っています。',
-			'k_0000002': '通話に招待されました。',
-			'k_0000003': 'グループ通話に招待されました。',
-			'k_0000004': '新通話の呼入がありますが、権限不足により、接听できません。カメラ/マイクの権限が有効かどうか確認してください。',
-			'k_0000005': '邀请メンバーを翻訳します。',
+			'k_0000001': '相手が招待を承諾するのを待っています',
+			'k_0000002': '音声通話に招待する',
+			'k_0000002_1': 'ビデオ通話に招待する',
+			'k_0000003': 'グループ通話に招待されました',
+			'k_0000004': '新通話の呼入がありますが、権限不足により、接听できません。カメラ/マイクの権限が有効かどうか確認してください',
+			'k_0000005': '邀请メンバーを翻訳します',
 			'k_0000006': '自分',
 			'k_0000007': 'マイク',
 			'k_0000008': '通話終了',
@@ -790,7 +827,7 @@ extension on _StringsJa {
 			'k_0000062': 'オフライン メッセージ情報の json 文字列を入力してください',
 			'k_0000063': '携帯電話番号/ユーザーIDを入力してください',
 			'k_0000064': 'グループIDを入力してください',
-			'k_0000065': '用户ID使用逗号隔开',
+			'k_0000065': 'ユーザー ID を区切るにはカンマを使用します',
 			'k_0000066': 'ルームIDを入力してください',
 			'k_0000067': '注: TUICallKit はオフライン通話をサポートし、Android、iOS、Web、Flutter などの複数のプラットフォームをサポートします。',
 			'k_0000068': 'ニックネーム',
@@ -801,7 +838,7 @@ extension on _StringsJa {
 			'k_0000073': 'TRTC',
 			'k_0000074': 'ログアウト',
 			'k_0000075': 'ユーザーIDを入力してください',
-			'k_0000076': 'ユーザーIDのリストを入力してください',
+			'k_0000076': 'ユーザーID一覧',
 			'k_0000077': '通話終了',
 			'k_0000078': '通話が拒否されました',
 			'k_0000079': '相手が通話中です',
@@ -816,6 +853,14 @@ extension on _StringsJa {
 			'k_0000088': '応答を待っています',
 			'k_0000089': 'バックグラウンドポップアップインターフェースを有効にし、同時にフローティングウィンドウ権限を表示してください。',
 			'k_0000090': '新しい電話があります',
+			'k_0000091': 'マイクオン',
+			'k_0000092': 'マイクがオフ',
+			'k_0000093': 'スピーカーオン',
+			'k_0000094': 'スピーカーオフ',
+			'k_0000095': 'カメラオン',
+			'k_0000096': 'カメラオフ',
+			'k_0000097': '接続済み',
+			'k_0000098': '彼らもそこにいる',
 		};
 	}
 }
@@ -823,9 +868,10 @@ extension on _StringsJa {
 extension on _StringsZhHans {
 	Map<String, dynamic> _buildFlatMap() {
 		return <String, dynamic>{
-			'k_0000001': '正在等待对方接受邀请……',
-			'k_0000002': '邀请您进行通话……',
-			'k_0000003': '邀请您进行多人通话……',
+			'k_0000001': '等待对方接受邀请',
+			'k_0000002': '邀请你进行语音通话',
+			'k_0000002_1': '邀请你进行视频通话',
+			'k_0000003': '邀请你进行多人通话',
 			'k_0000004': '新通话呼入，但因权限不足，无法接听。请确认摄像头/麦克风权限已开启。',
 			'k_0000005': '邀请成员',
 			'k_0000006': '你',
@@ -913,6 +959,14 @@ extension on _StringsZhHans {
 			'k_0000088': '等待接听',
 			'k_0000089': '请同时打开后台弹出界面和显示悬浮窗权限',
 			'k_0000090': '您有一个新的通话',
+			'k_0000091': '麦克风已开启',
+			'k_0000092': '麦克风已关闭',
+			'k_0000093': '扬声器已开启',
+			'k_0000094': '扬声器已关闭',
+			'k_0000095': '摄像头已开启',
+			'k_0000096': '摄像头已关闭',
+			'k_0000097': '已接通',
+			'k_0000098': '他们也在',
 		};
 	}
 }

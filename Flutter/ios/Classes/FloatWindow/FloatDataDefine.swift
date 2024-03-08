@@ -4,20 +4,18 @@
 //
 //  Created by vincepzhang on 2023/6/27.
 //
-let kMicroWindowCornerRatio = 15.0
-let kMicroContainerViewOffset = 8.0
+let kMicroTopEdge = 75.scaleWidth()
+let kMicroLeftRightEdge = 6.scaleWidth()
+let kMicroWindowCornerRatio = 15.scaleWidth()
 
-let kMicroAudioViewWidth = 80.0
-let kMicroAudioViewHeight = 80.0
-let kMicroVideoViewWidth = 100.0
-let kMicroVideoViewHeight = (100.0 * 16) / 9.0
+let kSingleCallMicroAudioViewWidth = 72.scaleWidth()
+let kSingleCallMicroAudioViewHeight = 72.scaleWidth()
 
+let kSingleCallMicroVideoViewWidth = 110.scaleWidth()
+let kSingleCallMicroVideoViewHeight = 196.scaleWidth()
 
-let kCallKitSingleSmallVideoViewWidth = 100.0
-let kCallKitSingleSmallVideoViewFrame = CGRect(x: 5, y: 5, width: kCallKitSingleSmallVideoViewWidth - 10,
-                                               height: (kCallKitSingleSmallVideoViewWidth / 9.0 * 16.0) - 10 )
-
+let kGroupCallMicroViewWidth = 72.scaleWidth()
+let kGroupCallMicroViewHeight = 90.scaleWidth()
 
 let Screen_Width = UIScreen.main.bounds.size.width
 let Screen_Height = UIScreen.main.bounds.size.height
-let kMicroVideoViewRect = CGRect(x: Screen_Width - kMicroVideoViewWidth, y: 150, width: kMicroVideoViewWidth, height: kMicroVideoViewHeight)

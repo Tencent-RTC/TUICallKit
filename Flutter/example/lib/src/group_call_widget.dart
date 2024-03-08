@@ -4,7 +4,7 @@ import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tuicall_kit_example/src/join_group_call_widget.dart';
 import 'package:tuicall_kit_example/src/settings/settings_config.dart';
 import 'package:tuicall_kit_example/src/settings/settings_widget.dart';
-import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class GroupCallWidget extends StatefulWidget {
   const GroupCallWidget({Key? key}) : super(key: key);
 
@@ -23,12 +23,12 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text(CallKit_t('群组通话')),
+        title: Text(AppLocalizations.of(context)!.group_call),
         leading: IconButton(
             onPressed: () => _goBack(),
             icon: const Icon(
               Icons.arrow_back,
-              color: Colors.white,
+              color: Colors.black,
             )),
       ),
       body: Stack(
@@ -40,15 +40,15 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
   _getCallParamsWidget() {
     return Positioned(
         top: 20,
-        left: 20,
-        width: MediaQuery.of(context).size.width - 40,
+        left: 10,
+        width: MediaQuery.of(context).size.width - 20,
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('群组ID'),
+                  AppLocalizations.of(context)!.group_id,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -61,7 +61,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
                         autofocus: true,
                         textAlign: TextAlign.right,
                         decoration: InputDecoration(
-                          hintText: CallKit_t("请输入GroupId"),
+                          hintText: AppLocalizations.of(context)!.enter_group_id,
                           border: InputBorder.none,
                         ),
                         onChanged: ((value) => _groupId = value)))
@@ -71,7 +71,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('用户ID列表'),
+                  AppLocalizations.of(context)!.callee_id_list,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -84,7 +84,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
                         autofocus: true,
                         textAlign: TextAlign.right,
                         decoration: InputDecoration(
-                          hintText: CallKit_t('用户ID使用逗号隔开'),
+                          hintText: AppLocalizations.of(context)!.separated,
                           border: InputBorder.none,
                         ),
                         onChanged: ((value) => _userIDsStr = value)))
@@ -94,7 +94,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('媒体类型'),
+                  AppLocalizations.of(context)!.media_type,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -114,7 +114,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
                         shape: const CircleBorder(),
                       ),
                       Text(
-                        CallKit_t('视频通话'),
+                        AppLocalizations.of(context)!.media_type,
                         style: const TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.normal,
@@ -136,7 +136,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
                         shape: const CircleBorder(),
                       ),
                       Text(
-                        CallKit_t('语音通话'),
+                        AppLocalizations.of(context)!.voice_call,
                         style: const TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.normal,
@@ -152,7 +152,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
             InkWell(
               onTap: () => _goSettings(),
               child: Text(
-                '${CallKit_t('通话设置')} >',
+                '${AppLocalizations.of(context)!.settings} >',
                 style: const TextStyle(
                     fontSize: 16,
                     fontStyle: FontStyle.normal,
@@ -175,7 +175,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
             InkWell(
               onTap: () => _joinGroupCall(),
               child: Text(
-                CallKit_t('加入群组通话'),
+                AppLocalizations.of(context)!.join_group_call,
                 style: const TextStyle(
                     fontSize: 16,
                     fontStyle: FontStyle.normal,
@@ -201,7 +201,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
                       const Icon(Icons.call),
                       const SizedBox(width: 10),
                       Text(
-                        CallKit_t('发起通话'),
+                        AppLocalizations.of(context)!.call,
                         style: const TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.normal,

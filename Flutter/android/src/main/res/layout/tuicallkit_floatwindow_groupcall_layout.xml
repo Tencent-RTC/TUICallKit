@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.RoundShadowLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:id="@+id/ll_root"
+        android:layout_width="72dp"
+        android:layout_height="90dp"
+        android:background="#FFFFFFFF">
+
+        <com.tencent.qcloud.tuikit.TUIVideoView
+            android:id="@+id/tui_video_view"
+            android:layout_width="72dp"
+            android:layout_height="70dp"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone" />
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/iv_avatar"
+            android:layout_width="72dp"
+            android:layout_height="70dp"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/iv_audio_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/tuicallkit_ic_float" />
+
+        <TextView
+            android:id="@+id/tv_call_userName"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="48dp"
+            android:textColor="#FFBBBBBB"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_call_status"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="48dp"
+            android:textColor="#FF29CC85"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/ll_mic_camera_status"
+            android:layout_width="72dp"
+            android:layout_height="20dp"
+            android:background="@drawable/tuicallkit_bg_mic_camera_status"
+            android:gravity="center"
+            android:layout_marginTop="70dp">
+
+            <ImageView
+                android:id="@+id/iv_float_video_mark"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="2dp"
+                android:src="@drawable/tuicallkit_ic_float_video_off" />
+
+            <ImageView
+                android:id="@+id/iv_float_audio_mark"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:src="@drawable/tuicallkit_ic_float_audio_off" />
+        </LinearLayout>
+    </RelativeLayout>
+</com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.RoundShadowLayout>
+
+

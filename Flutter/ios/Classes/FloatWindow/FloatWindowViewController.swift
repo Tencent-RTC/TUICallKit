@@ -8,30 +8,36 @@
 import Foundation
 import TUICore
 import SnapKit
+import TUICallEngine
 
-class FloatWindowViewController: UIViewController, FloatingWindowViewDelegate {
+protocol FloatWindowViewDelegate: NSObject {
+    func tapGestureAction(tapGesture: UITapGestureRecognizer)
+    func panGestureAction(panGesture: UIPanGestureRecognizer)
+}
+
+class FloatWindowView: UIView {
+    weak var delegate: FloatWindowViewDelegate?
+}
+
+class FloatWindowViewController: UIViewController, FloatWindowViewDelegate {
     
-    weak var delegate: FloatingWindowViewDelegate?
+    weak var delegate: FloatWindowViewDelegate?
 
     lazy var floatView: FloatWindowView = {
-        let view =  FloatWindowView(frame: CGRect.zero)
+        let view = TUICallState.instance.scene.value == TUICallScene.single ?
+        SingleCallFloatWindowView(frame: CGRect.zero) : GroupCallFloatWindowView(frame: CGRect.zero)
         view.delegate = self
         return view
     }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         view.addSubview(floatView)
         floatView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.size.equalToSuperview()
+            make.edges.equalToSuperview()
         }
     }
-    
-    deinit {
 
-    }
-    
     //MARK: FloatingWindowViewDelegate
     func tapGestureAction(tapGesture: UITapGestureRecognizer) {
         if self.delegate != nil && ((self.delegate?.responds(to: Selector(("tapGestureAction")))) != nil) {

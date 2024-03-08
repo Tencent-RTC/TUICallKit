@@ -8,7 +8,8 @@ import 'package:tuicall_kit_example/src/settings/settings_config.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
-import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class LoginWidget extends StatefulWidget {
   const LoginWidget({Key? key}) : super(key: key);
 
@@ -57,18 +58,18 @@ class _LoginWidgetState extends State<LoginWidget> {
                 Column(
                   children: [
                     SizedBox(
-                        width: _calculateTextWidth(CallKit_t('腾讯云音视频'), const TextStyle(
+                        width: _calculateTextWidth(AppLocalizations.of(context)!.trtc, const TextStyle(
                             fontSize: 32))  > (MediaQuery.of(context).size.width - 70 - 10) ?
-                        _calculateTextWidth(CallKit_t('腾讯云音视频'), const TextStyle(
+                        _calculateTextWidth(AppLocalizations .of(context)!.trtc, const TextStyle(
                             fontSize: 32)) / 2 :
-                        _calculateTextWidth(CallKit_t('腾讯云音视频'), const TextStyle(
+                        _calculateTextWidth(AppLocalizations .of(context)!.trtc, const TextStyle(
                             fontSize: 32)),
                         child: Text(
-                          CallKit_t('腾讯云音视频'),
+                          AppLocalizations .of(context)!.trtc,
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                              fontSize: 32,
+                              fontSize: 30,
                               fontStyle: FontStyle.normal,
                               fontWeight: FontWeight.w400,
                               color: Colors.black),
@@ -101,7 +102,7 @@ class _LoginWidgetState extends State<LoginWidget> {
               children: [
                 const SizedBox(width: 10),
                 Text(
-                  CallKit_t('用户ID'),
+                  AppLocalizations .of(context)!.user_id,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -109,12 +110,11 @@ class _LoginWidgetState extends State<LoginWidget> {
                 ),
                 const SizedBox(width: 10),
                 SizedBox(
-                    width: MediaQuery.of(context).size.width - 150,
+                    width: MediaQuery.of(context).size.width - 160,
                     child: TextField(
                         autofocus: true,
                         decoration: InputDecoration(
-                          hintStyle: const TextStyle(fontSize: 16),
-                          hintText: CallKit_t("请输入您的UserId"),
+                          hintText: AppLocalizations .of(context)!.enter_user_id,
                           border: InputBorder.none,
                           labelStyle: const TextStyle(fontSize: 16),
                         ),
@@ -135,7 +135,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                     borderRadius: BorderRadius.circular(8))),
               ),
               child: Text(
-                CallKit_t('登录'),
+                AppLocalizations .of(context)!.login,
                 style: const TextStyle(
                     fontSize: 16,
                     fontStyle: FontStyle.normal,
@@ -160,7 +160,7 @@ class _LoginWidgetState extends State<LoginWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: MediaQuery.of(context).size.width / 3,
+                  width: MediaQuery.of(context).size.width / 3 - 10,
                   height: 1,
                   decoration: const BoxDecoration(
                     color: Colors.grey,
@@ -168,7 +168,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 ),
                 const SizedBox(width: 5),
                 Text(
-                  CallKit_t('快速访问'),
+                  AppLocalizations .of(context)!.quick_access,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -176,7 +176,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 ),
                 const SizedBox(width: 5),
                 Container(
-                  width: MediaQuery.of(context).size.width / 3,
+                  width: MediaQuery.of(context).size.width / 3 - 10,
                   height: 1,
                   decoration: const BoxDecoration(
                     color: Colors.grey,
@@ -196,7 +196,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                     child: Text(
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      CallKit_t('套餐购买'),
+                      AppLocalizations .of(context)!.package_purchase,
                       style: const TextStyle(fontSize: 14, color: Color(0xff056DF6)),
                     ),
                   ),
@@ -206,7 +206,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width / 4 - 20,
                     child: Text(
-                    CallKit_t('快速接入'),
+                      AppLocalizations .of(context)!.integration,
                     style: const TextStyle(fontSize: 14, color: Color(0xff056DF6)),
                     )
                   ),
@@ -216,7 +216,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width / 4 - 20,
                     child: Text(
-                    CallKit_t('API文档'),
+                      AppLocalizations .of(context)!.api_docs,
                     style: const TextStyle(fontSize: 14, color: Color(0xff056DF6)),
                     )
                   ),
@@ -226,7 +226,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width / 4 - 20,
                     child: Text(
-                    CallKit_t('常见问题'),
+                      AppLocalizations .of(context)!.common_problems,
                     style: const TextStyle(fontSize: 14, color: Color(0xff056DF6)),
                     )
                   ),
@@ -274,7 +274,7 @@ class _LoginWidgetState extends State<LoginWidget> {
     final result = await TUICallKit.instance.login(GenerateTestUserSig.sdkAppId,
         _userId, GenerateTestUserSig.genTestSig(_userId));
     if (result.code.isEmpty) {
-      setObserverFubction(callsEnginePlugin: TUICallEngine.instance);
+      setObserverFunction(callsEnginePlugin: TUICallEngine.instance);
       SettingsConfig.userId = _userId;
       final imInfo = await TencentImSDKPlugin.v2TIMManager
           .getUsersInfo(userIDList: [_userId]);
