@@ -20,12 +20,13 @@ import TUICallKit
 #endif
 
 class RegisterViewController: UIViewController {
-
+    
     let loading = UIActivityIndicatorView(style: .large)
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        view.backgroundColor = UIColor.white
+        self.title = .titleText
         ToastManager.shared.position = .center
         
         view.addSubview(loading)
@@ -39,7 +40,7 @@ class RegisterViewController: UIViewController {
         loading.startAnimating()
         
         TUICallKit.createInstance().setSelfInfo(nickname: nickName, avatar: SettingsConfig.share.avatar) { [weak self] in
-            guard let `self` = self else { return }
+            guard let self = self else { return }
             self.registerSuccess()
         } fail: { code, message in
             TUITool.makeToast("login failed, code:\(code), error: \(message ?? "nil")")
@@ -54,8 +55,7 @@ class RegisterViewController: UIViewController {
         self.loading.stopAnimating()
         self.view.makeToast(.registerSuccessText)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            //show main vc
-            AppUtils.shared.showMainController()
+            SceneDelegate.showMainController()
         }
     }
     
@@ -67,8 +67,8 @@ class RegisterViewController: UIViewController {
     }
 }
 
-/// MARK: - internationalization string
 fileprivate extension String {
-    static let registerSuccessText = TUICallKitAppLocalize("TUICallKitApp.Login.registersuccess")
+    static let titleText = TUICallKitAppLocalize("TUICallKitApp.Login.Register")
+    static let registerSuccessText = TUICallKitAppLocalize("TUICallKitApp.Login.RegisterSuccess")
 }
 

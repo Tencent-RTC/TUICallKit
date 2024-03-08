@@ -11,14 +11,6 @@ import Kingfisher
 
 class RegisterRootView: UIView {
     
-    lazy var titleLabel: UILabel = {
-        let label = UILabel(frame: .zero)
-        label.font = UIFont.systemFont(ofSize: 20)
-        label.textColor = UIColor(hex: "333333") ?? .black
-        label.text = .titleText
-        return label
-    }()
-    
     lazy var headImageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
         imageView.contentMode = .scaleAspectFill
@@ -152,7 +144,6 @@ class RegisterRootView: UIView {
     }
     
     func constructViewHierarchy() {
-        addSubview(titleLabel)
         addSubview(headImageView)
         addSubview(textField)
         addSubview(textFieldSpacingLine)
@@ -160,13 +151,9 @@ class RegisterRootView: UIView {
         addSubview(registerBtn)
     }
     func activateConstraints() {
-        titleLabel.snp.makeConstraints { (make) in
-            make.centerX.equalToSuperview()
-            make.top.equalToSuperview().offset(kDeviceSafeTopHeight+10)
-        }
         headImageView.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(40)
+            make.top.equalToSuperview().offset(kDeviceSafeTopHeight + 80)
             make.size.equalTo(CGSize(width: 100, height: 100))
         }
         textField.snp.makeConstraints { (make) in
@@ -265,10 +252,8 @@ extension RegisterRootView : UITextFieldDelegate {
     }
 }
 
-/// MARK: - internationalization string
 fileprivate extension String {
-    static let titleText = TUICallKitAppLocalize("TUICallKitApp.Login.register")
-    static let nicknamePlaceholderText = TUICallKitAppLocalize("TUICallKitApp.Login.enterusername")
-    static let descText = TUICallKitAppLocalize("TUICallKitApp.Login.limit20count")
-    static let registerText = TUICallKitAppLocalize("TUICallKitApp.Login.register")
+    static let nicknamePlaceholderText = TUICallKitAppLocalize("TUICallKitApp.Login.EnterUserName")
+    static let descText = TUICallKitAppLocalize("TUICallKitApp.Login.Limit20Count")
+    static let registerText = TUICallKitAppLocalize("TUICallKitApp.Login.Register")
 }

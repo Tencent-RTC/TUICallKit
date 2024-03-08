@@ -24,13 +24,13 @@ public class JoinGroupCallViewController: UIViewController, UITextFieldDelegate 
         view.backgroundColor = UIColor(hex: "EEEEEE")
         return view
     }()
-
+    
     lazy var groupIdContentView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor.white
         return view
     }()
-    lazy var groupIdTextLable: UILabel = {
+    lazy var groupIdTextLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = UIColor.black
@@ -47,7 +47,6 @@ public class JoinGroupCallViewController: UIViewController, UITextFieldDelegate 
         textField.delegate = self
         return textField
     }()
-    
     lazy var roomIdContentView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor.white
@@ -55,12 +54,12 @@ public class JoinGroupCallViewController: UIViewController, UITextFieldDelegate 
     }()
     let roomTypeData = [TUICallKitAppLocalize("TUICallKitApp.Call.RoomIdInt"), TUICallKitAppLocalize("TUICallKitApp.Call.RoomIdString")]
     var roomTypeIndex = 0
-    lazy var roomIdBtn: SwiftDropMenuListView = {
+    lazy var roomIdButton: SwiftDropMenuListView = {
         let menu = SwiftDropMenuListView(frame: CGRect.zero)
-        let titleStr: String = roomTypeData[roomTypeIndex] + " >"
+        let titleStr: String = roomTypeData[roomTypeIndex]
         menu.setTitle(titleStr, for: .normal)
         menu.setTitleColor(.black, for: .normal)
-        menu.titleLabel?.font = UIFont(name: "PingFangSC-Medium", size: 15)
+        menu.titleLabel?.font = UIFont(name: "PingFangSC-Medium", size: 16)
         menu.delegate = self
         menu.dataSource = self
         menu.backgroundColor = UIColor.clear
@@ -79,19 +78,19 @@ public class JoinGroupCallViewController: UIViewController, UITextFieldDelegate 
     }()
     
     weak var currentTextField: UITextField?
-        
+    
     lazy var line2View: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor(hex: "EEEEEE")
         return view
     }()
-
+    
     lazy var mediaTypeContentView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor.white
         return view
     }()
-    lazy var typeLable: UILabel = {
+    lazy var typeLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = UIColor.black
@@ -104,7 +103,7 @@ public class JoinGroupCallViewController: UIViewController, UITextFieldDelegate 
         button.titleSize = 16
         return button
     }()
-    lazy var vioceButton: RadioButton = {
+    lazy var voiceButton: RadioButton = {
         let button = RadioButton(frame: CGRect.zero)
         button.titleText = TUICallKitAppLocalize("TUICallKitApp.Audio.call")
         button.isSelected = true
@@ -112,11 +111,10 @@ public class JoinGroupCallViewController: UIViewController, UITextFieldDelegate 
         return button
     }()
     lazy var buttons: [RadioButton] = {
-        let buttons = [videoButton, vioceButton]
+        let buttons = [videoButton, voiceButton]
         return buttons
     }()
-    
-    lazy var callBtn: UIButton = {
+    lazy var callButton: UIButton = {
         let btn = UIButton(type: .system)
         btn.setTitleColor(.white, for: .normal)
         btn.setTitle(TUICallKitAppLocalize("TUICallKitApp.Call"), for: .normal)
@@ -138,102 +136,98 @@ public class JoinGroupCallViewController: UIViewController, UITextFieldDelegate 
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         
         let backButton = UIButton(type: .system)
-        backButton.setImage(UIImage(named: "calling_back"), for: .normal)
+        backButton.setImage(UIImage(named: "callKit_back"), for: .normal)
         backButton.addTarget(self, action: #selector(backButtonClick), for: .touchUpInside)
         let item = UIBarButtonItem(customView: backButton)
         item.tintColor = UIColor.black
         navigationItem.leftBarButtonItem = item
-
+        
         navigationController?.navigationBar.isHidden = false
         
-        constructViewHierarchy() // 视图层级布局
-        activateConstraints() // 生成约束（此时有可能拿不到父视图正确的frame）
+        constructViewHierarchy()
+        activateConstraints()
         bindInteraction()
     }
-        
+    
     func constructViewHierarchy() {
         view.addSubview(line1View)
         
         view.addSubview(groupIdContentView)
-        groupIdContentView.addSubview(groupIdTextLable)
+        groupIdContentView.addSubview(groupIdTextLabel)
         groupIdContentView.addSubview(groupIdTextField)
         
         view.addSubview(roomIdContentView)
         roomIdContentView.addSubview(roomIdTextField)
-        roomIdContentView.addSubview(roomIdBtn)
+        roomIdContentView.addSubview(roomIdButton)
         
         view.addSubview(line2View)
         
         view.addSubview(mediaTypeContentView)
-        mediaTypeContentView.addSubview(typeLable)
+        mediaTypeContentView.addSubview(typeLabel)
         mediaTypeContentView.addSubview(videoButton)
-        mediaTypeContentView.addSubview(vioceButton)
-                
-        view.addSubview(callBtn)
+        mediaTypeContentView.addSubview(voiceButton)
+        
+        view.addSubview(callButton)
     }
+    
     func activateConstraints() {
         line1View.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(100)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(10)
         }
-        
         groupIdContentView.snp.makeConstraints { make in
             make.top.equalTo(line1View.snp.bottom)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(50)
         }
-        groupIdTextLable.snp.makeConstraints { make in
+        groupIdTextLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().offset(40)
+            make.leading.equalToSuperview().offset(20)
         }
         groupIdTextField.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(groupIdTextLable.snp.trailing).offset(20)
+            make.leading.equalTo(groupIdTextLabel.snp.trailing).offset(20)
             make.trailing.equalToSuperview().offset(-20)
         }
-
         roomIdContentView.snp.makeConstraints { make in
             make.top.equalTo(groupIdContentView.snp.bottom)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(50)
         }
-        roomIdBtn.snp.makeConstraints { make in
+        roomIdButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().offset(40)
+            make.leading.equalToSuperview().offset(20)
         }
         roomIdTextField.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(roomIdBtn.snp.trailing).offset(20)
+            make.leading.equalTo(roomIdButton.snp.trailing).offset(20)
             make.trailing.equalToSuperview().offset(-20)
         }
-        
         line2View.snp.makeConstraints { make in
             make.top.equalTo(roomIdContentView.snp.bottom)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(10)
         }
-        
         mediaTypeContentView.snp.makeConstraints { make in
             make.top.equalTo(line2View.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview()
             make.width.equalToSuperview()
             make.height.equalTo(30)
         }
-        typeLable.snp.makeConstraints { make in
+        typeLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.equalToSuperview().offset(30)
+            make.leading.equalToSuperview().offset(20)
         }
         videoButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(typeLable.snp.trailing).offset(50)
+            make.leading.equalTo(typeLabel.snp.trailing).offset(40)
         }
-        vioceButton.snp.makeConstraints { make in
+        voiceButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(videoButton.snp.trailing).offset(100)
+            make.leading.equalTo(videoButton.snp.trailing).offset(80)
         }
-        
-        callBtn.snp.makeConstraints { make in
+        callButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-60)
             make.height.equalTo(60)
@@ -243,12 +237,11 @@ public class JoinGroupCallViewController: UIViewController, UITextFieldDelegate 
     
     func bindInteraction() {
         videoButton.addTarget(self, action: #selector(radioButtonTapped), for: .touchUpInside)
-        vioceButton.addTarget(self, action: #selector(radioButtonTapped), for: .touchUpInside)
-        callBtn.addTarget(self, action: #selector(callButtonClick), for: .touchUpInside)
+        voiceButton.addTarget(self, action: #selector(radioButtonTapped), for: .touchUpInside)
+        callButton.addTarget(self, action: #selector(callButtonClick), for: .touchUpInside)
     }
     
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
         super.touchesBegan(touches, with: event)
         
         if let current = currentTextField {
@@ -275,14 +268,14 @@ public class JoinGroupCallViewController: UIViewController, UITextFieldDelegate 
             TUITool.makeToast("Please input roomId & groupId ")
             return
         }
-
+        
         let roomId = TUIRoomId()
         if roomTypeIndex == 0 {
             roomId.intRoomId = UInt32(roomIdString) ?? 0
         } else {
             roomId.strRoomId = roomIdString
         }
-                
+        
         TUICallKit.createInstance().joinInGroupCall(roomId: roomId, groupId: groupId, callMediaType: callType)
     }
     
@@ -336,9 +329,9 @@ extension JoinGroupCallViewController: SwiftDropMenuListViewDataSource, SwiftDro
     public func dropMenu(_ menu: SwiftDropMenuListView, didSelectItem: String?, atIndex index: Int) {
         roomTypeIndex = index
         if index == 0 {
-            roomIdBtn.setTitle(TUICallKitAppLocalize("TUICallKitApp.Call.RoomIdInt") + " >", for: .normal)
+            roomIdButton.setTitle(TUICallKitAppLocalize("TUICallKitApp.Call.RoomIdInt") + " >", for: .normal)
         } else {
-            roomIdBtn.setTitle(TUICallKitAppLocalize("TUICallKitApp.Call.RoomIdString") + " >", for: .normal)
+            roomIdButton.setTitle(TUICallKitAppLocalize("TUICallKitApp.Call.RoomIdString") + " >", for: .normal)
         }
         
     }

@@ -16,7 +16,7 @@ class LoginRootView: UIView {
         view.backgroundColor = UIColor.white
         return view
     }()
-    lazy var tencentCloudImage: UIImageView = {
+    lazy var logoImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "tencent_cloud"))
         return imageView
     }()
@@ -28,7 +28,6 @@ class LoginRootView: UIView {
         label.numberOfLines = 0
         return label
     }()
-    
     lazy var userIdContentView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor.white
@@ -38,19 +37,20 @@ class LoginRootView: UIView {
         view.layer.borderColor = UIColor.gray.cgColor
         return view
     }()
-    lazy var userIdTextLable: UILabel = {
+    lazy var userIdTextLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 20)
         label.textColor = UIColor.black
-        label.text = "UserId"
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        label.text = "UserId:"
         return label
     }()
     lazy var calledUserIdTextField: UITextField = {
         let textField = UITextField(frame: .zero)
         textField.backgroundColor = UIColor.white
-        textField.font = UIFont(name: "PingFangSC-Regular", size: 20)
+        textField.font = UIFont(name: "PingFangSC-Regular", size: 18)
         textField.textColor = UIColor(hex: "333333")
-        textField.attributedPlaceholder = NSAttributedString(string: "userId")
+        textField.placeholder = TUICallKitAppLocalize("TUICallKitApp.Login.EnterUserId")
         textField.delegate = self
         textField.keyboardType = .phonePad
         return textField
@@ -69,10 +69,10 @@ class LoginRootView: UIView {
         btn.layer.cornerRadius = 10
         return btn
     }()
-    
     lazy var otherContentView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor.white
+        view.isHidden = true
         return view
     }()
     lazy var lineView: UIView = {
@@ -88,57 +88,56 @@ class LoginRootView: UIView {
         label.numberOfLines = 4
         return label
     }()
-    lazy var  buyLableTapGesture: UITapGestureRecognizer = {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(buyLableTapGestureClick))
+    lazy var buyLabelTapGesture: UITapGestureRecognizer = {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(buyLabelTapGestureClick))
         return tapGesture
     }()
-    lazy var buyLable: UILabel = {
+    lazy var buyLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 10)
         label.textColor = UIColor.blue
         label.text = .buyText
         label.isUserInteractionEnabled = true
-        label.addGestureRecognizer(buyLableTapGesture)
+        label.addGestureRecognizer(buyLabelTapGesture)
         return label
     }()
-    lazy var accessLableTapGesture = {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(accessLableTapGestureClick))
+    lazy var accessLabelTapGesture = {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(accessLabelTapGestureClick))
         return tapGesture
     }()
-    lazy var accessLable: UILabel = {
+    lazy var accessLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 10)
         label.textColor = UIColor.blue
         label.text = .accessText
         label.isUserInteractionEnabled = true
-        label.addGestureRecognizer(accessLableTapGesture)
+        label.addGestureRecognizer(accessLabelTapGesture)
         return label
     }()
-    
-    lazy var  apiLableTapGesture = {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(apiLableTapGestureClick))
+    lazy var apiLabelTapGesture = {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(apiLabelTapGestureClick))
         return tapGesture
     }()
-    lazy var apiLable: UILabel = {
+    lazy var apiLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 10)
         label.textColor = UIColor.blue
         label.text = .apiText
         label.isUserInteractionEnabled = true
-        label.addGestureRecognizer(apiLableTapGesture)
+        label.addGestureRecognizer(apiLabelTapGesture)
         return label
     }()
-    lazy var  problemLableTapGesture = {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(problemLableTapGestureClick))
+    lazy var problemLabelTapGesture = {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(problemLabelTapGestureClick))
         return tapGesture
     }()
-    lazy var problemLable: UILabel = {
+    lazy var problemLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 10)
         label.textColor = UIColor.blue
         label.text = .problemText
         label.isUserInteractionEnabled = true
-        label.addGestureRecognizer(problemLableTapGesture)
+        label.addGestureRecognizer(problemLabelTapGesture)
         return label
     }()
     
@@ -155,7 +154,7 @@ class LoginRootView: UIView {
         textField.delegate = self
         return textField
     }
-        
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         
@@ -185,30 +184,28 @@ class LoginRootView: UIView {
             return
         }
         isViewReady = true
-        constructViewHierarchy() // 视图层级布局
-        activateConstraints() // 生成约束（此时有可能拿不到父视图正确的frame）
+        constructViewHierarchy()
+        activateConstraints()
         bindInteraction()
     }
     
     func constructViewHierarchy() {
         addSubview(logoContentView)
-        logoContentView.addSubview(tencentCloudImage)
+        logoContentView.addSubview(logoImageView)
         logoContentView.addSubview(titleLabel)
-        
         addSubview(userIdContentView)
-        userIdContentView.addSubview(userIdTextLable)
+        userIdContentView.addSubview(userIdTextLabel)
         userIdContentView.addSubview(calledUserIdTextField)
-        
         addSubview(loginBtn)
-        
         addSubview(otherContentView)
         otherContentView.addSubview(lineView)
         otherContentView.addSubview(quickAccessLabel)
-        otherContentView.addSubview(buyLable)
-        otherContentView.addSubview(accessLable)
-        otherContentView.addSubview(apiLable)
-        otherContentView.addSubview(problemLable)
+        otherContentView.addSubview(buyLabel)
+        otherContentView.addSubview(accessLabel)
+        otherContentView.addSubview(apiLabel)
+        otherContentView.addSubview(problemLabel)
     }
+    
     func activateConstraints() {
         logoContentView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(100)
@@ -216,41 +213,38 @@ class LoginRootView: UIView {
             make.trailing.equalToSuperview().offset(-20)
             make.height.equalTo(100)
         }
-        tencentCloudImage.snp.makeConstraints { (make) in
+        logoImageView.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(40)
             make.height.equalTo(80)
             make.width.equalTo(80)
         }
         titleLabel.snp.makeConstraints { (make) in
-            make.centerY.equalTo(tencentCloudImage.snp.centerY)
-            make.leading.equalTo(tencentCloudImage.snp.trailing).offset(10)
+            make.centerY.equalTo(logoImageView.snp.centerY)
+            make.leading.equalTo(logoImageView.snp.trailing).offset(10)
             make.trailing.equalToSuperview()
         }
-        
         userIdContentView.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
             make.height.equalTo(60)
         }
-        userIdTextLable.snp.makeConstraints { (make) in
+        userIdTextLabel.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(20)
         }
         calledUserIdTextField.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(userIdTextLable.snp.trailing).offset(20)
+            make.leading.equalTo(userIdTextLabel.snp.trailing).offset(20)
             make.trailing.equalToSuperview().offset(-20)
         }
-        
         loginBtn.snp.makeConstraints { (make) in
             make.top.equalTo(userIdContentView.snp.bottom).offset(40)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
             make.height.equalTo(52)
         }
-        
         otherContentView.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-50)
             make.leading.equalToSuperview().offset(20)
@@ -266,19 +260,19 @@ class LoginRootView: UIView {
             make.trailing.equalToSuperview().offset(-20)
             make.height.equalTo(1)
         }
-        accessLable.snp.makeConstraints { make in
+        accessLabel.snp.makeConstraints { make in
             make.bottom.equalToSuperview()
             make.leading.equalToSuperview().offset(20)
         }
-        apiLable.snp.makeConstraints { make in
+        apiLabel.snp.makeConstraints { make in
             make.bottom.equalToSuperview()
             make.trailing.equalTo(self.snp.centerX).offset(-20)
         }
-        buyLable.snp.makeConstraints { make in
+        buyLabel.snp.makeConstraints { make in
             make.bottom.equalToSuperview()
             make.leading.equalTo(self.snp.centerX).offset(20)
         }
-        problemLable.snp.makeConstraints { make in
+        problemLabel.snp.makeConstraints { make in
             make.bottom.equalToSuperview()
             make.trailing.equalToSuperview().offset(-20)
         }
@@ -298,25 +292,25 @@ class LoginRootView: UIView {
         rootVC?.login(userId: phone)
     }
     
-    @objc func buyLableTapGestureClick() {
+    @objc func buyLabelTapGestureClick() {
         if let url = URL(string: PURCHASE_URL){
             UIApplication.shared.open(url, options: [:], completionHandler: { success in })
         }
     }
     
-    @objc func accessLableTapGestureClick() {
+    @objc func accessLabelTapGestureClick() {
         if let url = URL(string: ACCESS_URL){
             UIApplication.shared.open(url, options: [:], completionHandler: { success in })
         }
     }
     
-    @objc func apiLableTapGestureClick() {
+    @objc func apiLabelTapGestureClick() {
         if let url = URL(string: API_URL){
             UIApplication.shared.open(url, options: [:], completionHandler: { success in })
         }
     }
-
-    @objc func problemLableTapGestureClick() {
+    
+    @objc func problemLabelTapGestureClick() {
         if let url = URL(string: PROBLEM_URL){
             UIApplication.shared.open(url, options: [:], completionHandler: { success in })
         }
@@ -331,28 +325,25 @@ extension LoginRootView: UITextFieldDelegate {
         currentTextField = textField
         textField.becomeFirstResponder()
     }
+    
     public func textFieldDidEndEditing(_ textField: UITextField) {
         textField.resignFirstResponder()
         currentTextField = nil
     }
+    
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
+    
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         return true
     }
 }
 
-/// MARK: - internationalization string
 fileprivate extension String {
-    static let titleText = TUICallKitAppLocalize("TUICallKitApp.Login.tencentcloud")
-    static let phoneNumPlaceholderText = TUICallKitAppLocalize("TUICallKitApp.Login.enterphonenumber")
-    static let verifyCodePlaceholderText = TUICallKitAppLocalize("TUICallKitApp.Login.enterverificationcode")
-    static let getVerifyCodeText = TUICallKitAppLocalize("TUICallKitApp.Login.getverificationcode")
-    static let loginText = TUICallKitAppLocalize("TUICallKitApp.login")
-    static let tuicallkitIntroduceText = TUICallKitAppLocalize("TUICallKitApp.Login.Introduce")
-    static let tuicallkitPlatformText = TUICallKitAppLocalize("TUICallKitApp.Login.Platform")
+    static let titleText = TUICallKitAppLocalize("TUICallKitApp.Login.Product")
+    static let loginText = TUICallKitAppLocalize("TUICallKitApp.Login")
     static let buyText = TUICallKitAppLocalize("TUICallKitApp.Login.Purchase")
     static let accessText = TUICallKitAppLocalize("TUICallKitApp.Login.Access")
     static let apiText = TUICallKitAppLocalize("TUICallKitApp.Login.APIDocumentation")

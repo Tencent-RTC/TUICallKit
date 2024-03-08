@@ -24,13 +24,12 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
         view.backgroundColor = UIColor(hex: "EEEEEE")
         return view
     }()
-
     lazy var groupIdContentView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor.white
         return view
     }()
-    lazy var groupIdTextLable: UILabel = {
+    lazy var groupIdTextLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = UIColor.black
@@ -47,13 +46,12 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
         textField.delegate = self
         return textField
     }()
-    
     lazy var userIdContentView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor.white
         return view
     }()
-    lazy var userIdTextLable: UILabel = {
+    lazy var userIdTextLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = UIColor.black
@@ -72,19 +70,18 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
     }()
     
     weak var currentTextField: UITextField?
-        
+    
     lazy var line2View: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor(hex: "EEEEEE")
         return view
     }()
-
     lazy var mediaTypeContentView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor.white
         return view
     }()
-    lazy var typeLable: UILabel = {
+    lazy var typeLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = UIColor.black
@@ -97,7 +94,7 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
         button.titleSize = 16
         return button
     }()
-    lazy var vioceButton: RadioButton = {
+    lazy var voiceButton: RadioButton = {
         let button = RadioButton(frame: CGRect.zero)
         button.titleText = TUICallKitAppLocalize("TUICallKitApp.Audio.call")
         button.isSelected = true
@@ -105,11 +102,10 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
         return button
     }()
     lazy var buttons: [RadioButton] = {
-        let buttons = [videoButton, vioceButton]
+        let buttons = [videoButton, voiceButton]
         return buttons
     }()
-        
-    lazy var callSettingsLable: UILabel = {
+    lazy var callSettingsLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = UIColor.blue
@@ -118,7 +114,7 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
         return label
     }()
     
-    lazy var joinInGroupLable: UILabel = {
+    lazy var joinInGroupLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = UIColor.blue
@@ -126,8 +122,7 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
         label.isUserInteractionEnabled = true
         return label
     }()
-    
-    lazy var callBtn: UIButton = {
+    lazy var callButton: UIButton = {
         let btn = UIButton(type: .system)
         btn.setTitleColor(.white, for: .normal)
         btn.setTitle(TUICallKitAppLocalize("TUICallKitApp.Call"), for: .normal)
@@ -149,117 +144,109 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         
         let backButton = UIButton(type: .system)
-        backButton.setImage(UIImage(named: "calling_back"), for: .normal)
+        backButton.setImage(UIImage(named: "callKit_back"), for: .normal)
         backButton.addTarget(self, action: #selector(backButtonClick), for: .touchUpInside)
         let item = UIBarButtonItem(customView: backButton)
         item.tintColor = UIColor.black
         navigationItem.leftBarButtonItem = item
-
+        
         navigationController?.navigationBar.isHidden = false
         
-        constructViewHierarchy() // 视图层级布局
-        activateConstraints() // 生成约束（此时有可能拿不到父视图正确的frame）
+        constructViewHierarchy()
+        activateConstraints()
         bindInteraction()
     }
-        
+    
     func constructViewHierarchy() {
         view.addSubview(line1View)
         
         view.addSubview(groupIdContentView)
-        groupIdContentView.addSubview(groupIdTextLable)
+        groupIdContentView.addSubview(groupIdTextLabel)
         groupIdContentView.addSubview(groupIdTextField)
         
         view.addSubview(userIdContentView)
         userIdContentView.addSubview(calledUserIdTextField)
-        userIdContentView.addSubview(userIdTextLable)
+        userIdContentView.addSubview(userIdTextLabel)
         
         view.addSubview(line2View)
         
         view.addSubview(mediaTypeContentView)
-        mediaTypeContentView.addSubview(typeLable)
+        mediaTypeContentView.addSubview(typeLabel)
         mediaTypeContentView.addSubview(videoButton)
-        mediaTypeContentView.addSubview(vioceButton)
+        mediaTypeContentView.addSubview(voiceButton)
         
-        view.addSubview(callSettingsLable)
-        
-        view.addSubview(joinInGroupLable)
-        
-        view.addSubview(callBtn)
+        view.addSubview(callSettingsLabel)
+        view.addSubview(joinInGroupLabel)
+        view.addSubview(callButton)
     }
+    
     func activateConstraints() {
         line1View.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(100)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(10)
         }
-        
         groupIdContentView.snp.makeConstraints { make in
             make.top.equalTo(line1View.snp.bottom)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(50)
         }
-        groupIdTextLable.snp.makeConstraints { make in
+        groupIdTextLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().offset(40)
+            make.leading.equalToSuperview().offset(20)
         }
         groupIdTextField.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(groupIdTextLable.snp.trailing).offset(20)
+            make.leading.equalTo(groupIdTextLabel.snp.trailing).offset(20)
             make.trailing.equalToSuperview().offset(-20)
         }
-
         userIdContentView.snp.makeConstraints { make in
             make.top.equalTo(groupIdContentView.snp.bottom)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(50)
         }
-        userIdTextLable.snp.makeConstraints { make in
+        userIdTextLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().offset(40)
+            make.leading.equalToSuperview().offset(20)
             make.width.equalTo(80)
         }
         calledUserIdTextField.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(userIdTextLable.snp.trailing).offset(20)
+            make.leading.equalTo(userIdTextLabel.snp.trailing).offset(20)
             make.trailing.equalToSuperview().offset(-20)
         }
-        
         line2View.snp.makeConstraints { make in
             make.top.equalTo(userIdContentView.snp.bottom)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(10)
         }
-        
         mediaTypeContentView.snp.makeConstraints { make in
             make.top.equalTo(line2View.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview()
             make.width.equalToSuperview()
             make.height.equalTo(30)
         }
-        typeLable.snp.makeConstraints { make in
+        typeLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.equalToSuperview().offset(30)
+            make.leading.equalToSuperview().offset(20)
         }
         videoButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(typeLable.snp.trailing).offset(50)
+            make.leading.equalTo(typeLabel.snp.trailing).offset(40)
         }
-        vioceButton.snp.makeConstraints { make in
+        voiceButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(videoButton.snp.trailing).offset(100)
+            make.leading.equalTo(videoButton.snp.trailing).offset(80)
         }
-        
-        callSettingsLable.snp.makeConstraints { make in
+        callSettingsLabel.snp.makeConstraints { make in
             make.top.equalTo(mediaTypeContentView.snp.bottom).offset(50)
             make.centerX.equalToSuperview()
         }
-        
-        joinInGroupLable.snp.makeConstraints { make in
+        joinInGroupLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(callBtn.snp.top).offset(-40)
+            make.bottom.equalTo(callButton.snp.top).offset(-40)
         }
-        
-        callBtn.snp.makeConstraints { make in
+        callButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-60)
             make.height.equalTo(60)
@@ -269,15 +256,15 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
     
     func bindInteraction() {
         videoButton.addTarget(self, action: #selector(radioButtonTapped), for: .touchUpInside)
-        vioceButton.addTarget(self, action: #selector(radioButtonTapped), for: .touchUpInside)
+        voiceButton.addTarget(self, action: #selector(radioButtonTapped), for: .touchUpInside)
         
-        let callSettingsLableTapGesture = UITapGestureRecognizer(target: self, action: #selector(settingButtonClick))
-        callSettingsLable.addGestureRecognizer(callSettingsLableTapGesture)
+        let callSettingsLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(settingButtonClick))
+        callSettingsLabel.addGestureRecognizer(callSettingsLabelTapGesture)
         
-        let joinInGroupLableTapGesture = UITapGestureRecognizer(target: self, action: #selector(joinInGroupClick))
-        joinInGroupLable.addGestureRecognizer(joinInGroupLableTapGesture)
-
-        callBtn.addTarget(self, action: #selector(callButtonClick), for: .touchUpInside)
+        let joinInGroupLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(joinInGroupClick))
+        joinInGroupLabel.addGestureRecognizer(joinInGroupLabelTapGesture)
+        
+        callButton.addTarget(self, action: #selector(callButtonClick), for: .touchUpInside)
     }
     
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -301,14 +288,14 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func callButtonClick() {
-        guard let arryUserIds = calledUserIdTextField.text else { return }
+        guard let userIdArray = calledUserIdTextField.text else { return }
         guard let groupId = groupIdTextField.text else { return }
         
-        if arryUserIds.isEmpty || groupId.isEmpty {
+        if userIdArray.isEmpty || groupId.isEmpty {
             TUITool.makeToast("Please input userId & groupId ")
             return
         }
-        let userIds = arryUserIds.components(separatedBy: ",")
+        let userIds = userIdArray.components(separatedBy: ",")
         
         let params = TUICallParams()
         params.timeout = Int32(SettingsConfig.share.timeout)
@@ -337,7 +324,7 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
         settingVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(settingVC, animated: true)
     }
-
+    
     @objc func joinInGroupClick() {
         let joinInGroupVC = JoinGroupCallViewController()
         joinInGroupVC.title = TUICallKitAppLocalize("TUICallKitApp.JoinGroupCall")

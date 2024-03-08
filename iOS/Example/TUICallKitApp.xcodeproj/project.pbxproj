@@ -13,19 +13,16 @@
 		4739C7DB2657507900CA7C45 /* TUICallKitAppLocalized.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4739C7D52657507800CA7C45 /* TUICallKitAppLocalized.strings */; };
 		4739C7DC2657507900CA7C45 /* TUICallKitAppLocalized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4739C7D82657507800CA7C45 /* TUICallKitAppLocalized.swift */; };
 		4739C7DF265750A800CA7C45 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 47D9D36226521A7A0007EE1F /* Assets.xcassets */; };
-		47D9D36A26521A7A0007EE1F /* LaunchScreen.strings in Resources */ = {isa = PBXBuildFile; fileRef = 47D9D35D26521A7A0007EE1F /* LaunchScreen.strings */; };
-		47D9D36B26521A7A0007EE1F /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 47D9D35F26521A7A0007EE1F /* Main.strings */; };
 		47D9D36E26521A7A0007EE1F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47D9D36326521A7A0007EE1F /* LaunchScreen.storyboard */; };
 		47D9D36F26521A7A0007EE1F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47D9D36526521A7A0007EE1F /* Main.storyboard */; };
 		47D9D37026521A7A0007EE1F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D9D36726521A7A0007EE1F /* AppDelegate.swift */; };
 		47D9D37226521A7A0007EE1F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D9D36926521A7A0007EE1F /* SceneDelegate.swift */; };
-		4F3F7CA826D65D38002912DE /* RegisterRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7C9A26D65D38002912DE /* RegisterRootView.swift */; };
 		4F3F7CA926D65D38002912DE /* LoginRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7C9B26D65D38002912DE /* LoginRootView.swift */; };
 		4F3F7CAD26D65D38002912DE /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA226D65D38002912DE /* LoginViewController.swift */; };
-		4F3F7CAF26D65D38002912DE /* AppUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA426D65D38002912DE /* AppUtils.swift */; };
-		4F3F7CB026D65D38002912DE /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA526D65D38002912DE /* RegisterViewController.swift */; };
 		4F3F7CB226D65D38002912DE /* LayoutDefine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA726D65D38002912DE /* LayoutDefine.swift */; };
 		4F3F7CB526D65DE3002912DE /* GenerateTestUserSig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CB426D65DE3002912DE /* GenerateTestUserSig.swift */; };
+		4F450FAD2B986641004A4B8A /* RegisterRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F450FAA2B986641004A4B8A /* RegisterRootView.swift */; };
+		4F450FAE2B986641004A4B8A /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F450FAB2B986641004A4B8A /* RegisterViewController.swift */; };
 		4FE7A785275E3A89009CCB09 /* phone_ringing.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4FE7A784275E3A89009CCB09 /* phone_ringing.mp3 */; };
 		B811E29B2A09E45100E74024 /* SingleCallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B811E29A2A09E45100E74024 /* SingleCallViewController.swift */; };
 		B811E29D2A09F6E600E74024 /* RadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B811E29C2A09F6E600E74024 /* RadioButton.swift */; };
@@ -46,21 +43,20 @@
 		4739C7D72657507800CA7C45 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/TUICallKitAppLocalized.strings; sourceTree = "<group>"; };
 		4739C7D82657507800CA7C45 /* TUICallKitAppLocalized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TUICallKitAppLocalized.swift; sourceTree = "<group>"; };
 		474E0FE52644DFAE002AFADB /* TUICallKitApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TUICallKitApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		47D9D35E26521A7A0007EE1F /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
-		47D9D36026521A7A0007EE1F /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		47D9D36226521A7A0007EE1F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		47D9D36426521A7A0007EE1F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		47D9D36626521A7A0007EE1F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		47D9D36726521A7A0007EE1F /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		47D9D36826521A7A0007EE1F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		47D9D36926521A7A0007EE1F /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		4F3F7C9A26D65D38002912DE /* RegisterRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterRootView.swift; sourceTree = "<group>"; };
 		4F3F7C9B26D65D38002912DE /* LoginRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginRootView.swift; sourceTree = "<group>"; };
 		4F3F7CA226D65D38002912DE /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		4F3F7CA426D65D38002912DE /* AppUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppUtils.swift; sourceTree = "<group>"; };
-		4F3F7CA526D65D38002912DE /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		4F3F7CA726D65D38002912DE /* LayoutDefine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutDefine.swift; sourceTree = "<group>"; };
 		4F3F7CB426D65DE3002912DE /* GenerateTestUserSig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateTestUserSig.swift; sourceTree = "<group>"; };
+		4F440B022B99E1E7005AB80F /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4F450FAA2B986641004A4B8A /* RegisterRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterRootView.swift; sourceTree = "<group>"; };
+		4F450FAB2B986641004A4B8A /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
+		4F450FAF2B986821004A4B8A /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		4F9E8F6E2AD9413C00DB82C4 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/TUICallKitAppLocalized.strings; sourceTree = "<group>"; };
 		4FE7A784275E3A89009CCB09 /* phone_ringing.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = phone_ringing.mp3; sourceTree = "<group>"; };
 		4FF707AB28A9EFBE0044B20E /* TUICallKitApp.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = TUICallKitApp.entitlements; sourceTree = "<group>"; };
@@ -93,6 +89,7 @@
 		45BC76B78942804520FA6869 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4F450FAF2B986821004A4B8A /* CoreMotion.framework */,
 				704D44628D9621C9B6C42E48 /* Pods_TUICallKitApp.framework */,
 			);
 			name = Frameworks;
@@ -102,8 +99,6 @@
 			isa = PBXGroup;
 			children = (
 				4FE7A784275E3A89009CCB09 /* phone_ringing.mp3 */,
-				47D9D35F26521A7A0007EE1F /* Main.strings */,
-				47D9D35D26521A7A0007EE1F /* LaunchScreen.strings */,
 				470EB700266A49380072071F /* InfoPlist.strings */,
 				4739C7D42657507800CA7C45 /* Localized */,
 			);
@@ -124,10 +119,10 @@
 			children = (
 				4FF707AB28A9EFBE0044B20E /* TUICallKitApp.entitlements */,
 				4F3F7CB326D65DE3002912DE /* Debug */,
+				47D9D35C26521A7A0007EE1F /* App */,
 				45BC76B78942804520FA6869 /* Frameworks */,
 				914460EA7D352CBA688E2356 /* Pods */,
 				474E0FE62644DFAE002AFADB /* Products */,
-				47D9D35C26521A7A0007EE1F /* App */,
 			);
 			sourceTree = "<group>";
 		};
@@ -144,11 +139,10 @@
 			children = (
 				47D9D36726521A7A0007EE1F /* AppDelegate.swift */,
 				47D9D36926521A7A0007EE1F /* SceneDelegate.swift */,
-				4F3F7CA426D65D38002912DE /* AppUtils.swift */,
 				4F3F7CA726D65D38002912DE /* LayoutDefine.swift */,
 				B833837F2A08DB7D00E71348 /* Login */,
+				4F450FAC2B986641004A4B8A /* Register */,
 				B81C962D2A2DC65100E3CBC6 /* MainPage */,
-				4F3F7C9926D65D38002912DE /* Register */,
 				B89ECFCA2A0CFD3000D7F0EB /* Call */,
 				B83383802A08DBA300E71348 /* Setting */,
 				4739C7D32657507800CA7C45 /* Resource */,
@@ -161,21 +155,21 @@
 			path = App;
 			sourceTree = "<group>";
 		};
-		4F3F7C9926D65D38002912DE /* Register */ = {
-			isa = PBXGroup;
-			children = (
-				4F3F7CA526D65D38002912DE /* RegisterViewController.swift */,
-				4F3F7C9A26D65D38002912DE /* RegisterRootView.swift */,
-			);
-			path = Register;
-			sourceTree = SOURCE_ROOT;
-		};
 		4F3F7CB326D65DE3002912DE /* Debug */ = {
 			isa = PBXGroup;
 			children = (
 				4F3F7CB426D65DE3002912DE /* GenerateTestUserSig.swift */,
 			);
 			path = Debug;
+			sourceTree = "<group>";
+		};
+		4F450FAC2B986641004A4B8A /* Register */ = {
+			isa = PBXGroup;
+			children = (
+				4F450FAA2B986641004A4B8A /* RegisterRootView.swift */,
+				4F450FAB2B986641004A4B8A /* RegisterViewController.swift */,
+			);
+			path = Register;
 			sourceTree = "<group>";
 		};
 		914460EA7D352CBA688E2356 /* Pods */ = {
@@ -290,14 +284,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				47D9D36A26521A7A0007EE1F /* LaunchScreen.strings in Resources */,
 				470EB6FE266A49380072071F /* InfoPlist.strings in Resources */,
 				47D9D36F26521A7A0007EE1F /* Main.storyboard in Resources */,
 				47D9D36E26521A7A0007EE1F /* LaunchScreen.storyboard in Resources */,
 				470EB6FB266A49200072071F /* LaunchScreen_en.storyboard in Resources */,
 				4739C7DB2657507900CA7C45 /* TUICallKitAppLocalized.strings in Resources */,
 				4739C7DF265750A800CA7C45 /* Assets.xcassets in Resources */,
-				47D9D36B26521A7A0007EE1F /* Main.strings in Resources */,
 				4FE7A785275E3A89009CCB09 /* phone_ringing.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -372,17 +364,16 @@
 				B811E2A92A0A5C0800E74024 /* GroupCallViewController.swift in Sources */,
 				B811E29F2A0A318500E74024 /* SettingsViewController.swift in Sources */,
 				47D9D37026521A7A0007EE1F /* AppDelegate.swift in Sources */,
+				4F450FAE2B986641004A4B8A /* RegisterViewController.swift in Sources */,
 				4739C7DC2657507900CA7C45 /* TUICallKitAppLocalized.swift in Sources */,
-				4F3F7CAF26D65D38002912DE /* AppUtils.swift in Sources */,
 				4F3F7CB526D65DE3002912DE /* GenerateTestUserSig.swift in Sources */,
 				4F3F7CAD26D65D38002912DE /* LoginViewController.swift in Sources */,
-				4F3F7CB026D65D38002912DE /* RegisterViewController.swift in Sources */,
 				B811E29D2A09F6E600E74024 /* RadioButton.swift in Sources */,
 				B8D16ED72A1321F100937E40 /* DropMenuView.swift in Sources */,
 				4F3F7CB226D65D38002912DE /* LayoutDefine.swift in Sources */,
-				4F3F7CA826D65D38002912DE /* RegisterRootView.swift in Sources */,
 				4F3F7CA926D65D38002912DE /* LoginRootView.swift in Sources */,
 				B811E2AB2A0A5C3200E74024 /* JoinGroupCallViewController.swift in Sources */,
+				4F450FAD2B986641004A4B8A /* RegisterRootView.swift in Sources */,
 				B8D77D452A42E45200377391 /* SettingDetailViewController.swift in Sources */,
 				47D9D37226521A7A0007EE1F /* SceneDelegate.swift in Sources */,
 				B81C962F2A2DC68200E3CBC6 /* MainViewController.swift in Sources */,
@@ -406,6 +397,7 @@
 			children = (
 				470EB6FF266A49380072071F /* en */,
 				470EB701266A493E0072071F /* zh-Hans */,
+				4F440B022B99E1E7005AB80F /* ja */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -418,22 +410,6 @@
 				4F9E8F6E2AD9413C00DB82C4 /* ja */,
 			);
 			name = TUICallKitAppLocalized.strings;
-			sourceTree = "<group>";
-		};
-		47D9D35D26521A7A0007EE1F /* LaunchScreen.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				47D9D35E26521A7A0007EE1F /* zh-Hans */,
-			);
-			name = LaunchScreen.strings;
-			sourceTree = "<group>";
-		};
-		47D9D35F26521A7A0007EE1F /* Main.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				47D9D36026521A7A0007EE1F /* zh-Hans */,
-			);
-			name = Main.strings;
 			sourceTree = "<group>";
 		};
 		47D9D36326521A7A0007EE1F /* LaunchScreen.storyboard */ = {
@@ -697,7 +673,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.2.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

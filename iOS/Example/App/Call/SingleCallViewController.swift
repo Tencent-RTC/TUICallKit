@@ -23,13 +23,12 @@ public class SingleCallViewController: UIViewController, UITextFieldDelegate {
         view.backgroundColor = UIColor(hex: "EEEEEE")
         return view
     }()
-
     lazy var userIdContentView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor.white
         return view
     }()
-    lazy var userIdTextLable: UILabel = {
+    lazy var userIdTextLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = UIColor.black
@@ -53,13 +52,12 @@ public class SingleCallViewController: UIViewController, UITextFieldDelegate {
         view.backgroundColor = UIColor(hex: "EEEEEE")
         return view
     }()
-
     lazy var mediaTypeContentView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor.white
         return view
     }()
-    lazy var typeLable: UILabel = {
+    lazy var typeLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = UIColor.black
@@ -72,7 +70,7 @@ public class SingleCallViewController: UIViewController, UITextFieldDelegate {
         button.titleSize = 16
         return button
     }()
-    lazy var vioceButton: RadioButton = {
+    lazy var voiceButton: RadioButton = {
         let button = RadioButton(frame: CGRect.zero)
         button.titleText = TUICallKitAppLocalize("TUICallKitApp.Audio.call")
         button.isSelected = true
@@ -80,11 +78,10 @@ public class SingleCallViewController: UIViewController, UITextFieldDelegate {
         return button
     }()
     lazy var buttons: [RadioButton] = {
-        let buttons = [videoButton, vioceButton]
+        let buttons = [videoButton, voiceButton]
         return buttons
     }()
-        
-    lazy var callSettingsLable: UILabel = {
+    lazy var callSettingsLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = UIColor.blue
@@ -92,8 +89,7 @@ public class SingleCallViewController: UIViewController, UITextFieldDelegate {
         label.isUserInteractionEnabled = true
         return label
     }()
-    
-    lazy var callBtn: UIButton = {
+    lazy var callButton: UIButton = {
         let btn = UIButton(type: .system)
         btn.setTitleColor(.white, for: .normal)
         btn.setTitle(TUICallKitAppLocalize("TUICallKitApp.Call"), for: .normal)
@@ -116,90 +112,86 @@ public class SingleCallViewController: UIViewController, UITextFieldDelegate {
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         
         let backButton = UIButton(type: .system)
-        backButton.setImage(UIImage(named: "calling_back"), for: .normal)
+        backButton.setImage(UIImage(named: "callKit_back"), for: .normal)
         backButton.addTarget(self, action: #selector(backButtonClick), for: .touchUpInside)
         let item = UIBarButtonItem(customView: backButton)
         item.tintColor = UIColor.black
         navigationItem.leftBarButtonItem = item
-
+        
         navigationController?.navigationBar.isHidden = false
         
-        constructViewHierarchy() // 视图层级布局
-        activateConstraints() // 生成约束（此时有可能拿不到父视图正确的frame）
+        constructViewHierarchy()
+        activateConstraints()
         bindInteraction()
     }
-        
+    
     func constructViewHierarchy() {
         view.addSubview(line1View)
         
         view.addSubview(userIdContentView)
         userIdContentView.addSubview(calledUserIdTextField)
-        userIdContentView.addSubview(userIdTextLable)
+        userIdContentView.addSubview(userIdTextLabel)
         
         view.addSubview(line2View)
         
         view.addSubview(mediaTypeContentView)
-        mediaTypeContentView.addSubview(typeLable)
+        mediaTypeContentView.addSubview(typeLabel)
         mediaTypeContentView.addSubview(videoButton)
-        mediaTypeContentView.addSubview(vioceButton)
+        mediaTypeContentView.addSubview(voiceButton)
         
-        view.addSubview(callSettingsLable)
+        view.addSubview(callSettingsLabel)
         
-        view.addSubview(callBtn)
+        view.addSubview(callButton)
     }
+    
     func activateConstraints() {
         line1View.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(100)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(10)
         }
-        
         userIdContentView.snp.makeConstraints { make in
             make.top.equalTo(line1View.snp.bottom)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(50)
         }
-        userIdTextLable.snp.makeConstraints { make in
+        userIdTextLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().offset(40)
+            make.leading.equalToSuperview().offset(20)
         }
         calledUserIdTextField.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(userIdTextLable.snp.trailing).offset(20)
+            make.leading.equalTo(userIdTextLabel.snp.trailing).offset(20)
             make.trailing.equalToSuperview().offset(-20)
         }
-        
         line2View.snp.makeConstraints { make in
             make.top.equalTo(userIdContentView.snp.bottom)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(10)
         }
-        
         mediaTypeContentView.snp.makeConstraints { make in
             make.top.equalTo(calledUserIdTextField.snp.bottom).offset(40)
             make.leading.trailing.equalToSuperview()
             make.width.equalToSuperview()
             make.height.equalTo(30)
         }
-        typeLable.snp.makeConstraints { make in
+        typeLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.equalToSuperview().offset(30)
+            make.leading.equalToSuperview().offset(20)
         }
         videoButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(typeLable.snp.trailing).offset(50)
+            make.leading.equalTo(typeLabel.snp.trailing).offset(40)
         }
-        vioceButton.snp.makeConstraints { make in
+        voiceButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(videoButton.snp.trailing).offset(100)
+            make.leading.equalTo(videoButton.snp.trailing).offset(80)
         }
-        
-        callSettingsLable.snp.makeConstraints { make in
+        callSettingsLabel.snp.makeConstraints { make in
             make.top.equalTo(mediaTypeContentView.snp.bottom).offset(50)
             make.centerX.equalToSuperview()
         }
-        
-        callBtn.snp.makeConstraints { make in
+        callButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-60)
             make.height.equalTo(60)
@@ -209,12 +201,12 @@ public class SingleCallViewController: UIViewController, UITextFieldDelegate {
     
     func bindInteraction() {
         videoButton.addTarget(self, action: #selector(radioButtonTapped), for: .touchUpInside)
-        vioceButton.addTarget(self, action: #selector(radioButtonTapped), for: .touchUpInside)
+        voiceButton.addTarget(self, action: #selector(radioButtonTapped), for: .touchUpInside)
         
-        let callSettingsLableTapGesture = UITapGestureRecognizer(target: self, action: #selector(settingButtonClick))
-        callSettingsLable.addGestureRecognizer(callSettingsLableTapGesture)
-
-        callBtn.addTarget(self, action: #selector(callButtonClick), for: .touchUpInside)
+        let callSettingsLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(settingButtonClick))
+        callSettingsLabel.addGestureRecognizer(callSettingsLabelTapGesture)
+        
+        callButton.addTarget(self, action: #selector(callButtonClick), for: .touchUpInside)
     }
     
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -240,7 +232,7 @@ public class SingleCallViewController: UIViewController, UITextFieldDelegate {
         
         if userId.isEmpty {
             TUITool.makeToast("Please input userId & groupId ")
-            return 
+            return
         }
         
         let params = TUICallParams()

@@ -9,18 +9,18 @@
 import Foundation
 
 public extension UIStackView {
-
+    
     func safelyRemoveArrangedSubviews() {
-
+        
         // Remove all the arranged subviews and save them to an array
         let removedSubviews = arrangedSubviews.reduce([]) { (sum, next) -> [UIView] in
             self.removeArrangedSubview(next)
             return sum + [next]
         }
-
+        
         // Deactive all constraints at once
         NSLayoutConstraint.deactivate(removedSubviews.flatMap({ $0.constraints }))
-
+        
         // Remove the views from self
         removedSubviews.forEach({ $0.removeFromSuperview() })
     }
@@ -59,7 +59,7 @@ public extension UIColor {
     @objc static var inputImageBackColor: UIColor {
         return UIColor(hex: "#092650") ?? UIColor(red: 9.0 / 255.0, green: 38.0 / 255.0, blue: 80.0 / 255.0, alpha: 1.0)
     }
-
+    
     // MARK: - Initialization
     @objc convenience init?(hex: String) {
         var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -75,13 +75,13 @@ public extension UIColor {
             r = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
             g = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
             b = CGFloat(rgb & 0x0000FF) / 255.0
-
+            
         } else if length == 8 {
             r = CGFloat((rgb & 0xFF000000) >> 24) / 255.0
             g = CGFloat((rgb & 0x00FF0000) >> 16) / 255.0
             b = CGFloat((rgb & 0x0000FF00) >> 8) / 255.0
             a = CGFloat(rgb & 0x000000FF) / 255.0
-
+            
         } else {
             return nil
         }
@@ -92,7 +92,7 @@ public extension UIColor {
 extension Dictionary {
     func toJsonString() -> String {
         if let json = try? JSONSerialization.data(withJSONObject: self, options: []),
-            let jsonStr = String(data: json, encoding: .utf8)
+           let jsonStr = String(data: json, encoding: .utf8)
         {
             return jsonStr
         }
@@ -103,7 +103,7 @@ extension Dictionary {
 extension String {
     func toJson() -> [String: Any]? {
         if let infoData = data(using: .utf8),
-            let dict = try? JSONSerialization.jsonObject(with: infoData, options: []) as? [String: Any]
+           let dict = try? JSONSerialization.jsonObject(with: infoData, options: []) as? [String: Any]
         {
             return dict
         }

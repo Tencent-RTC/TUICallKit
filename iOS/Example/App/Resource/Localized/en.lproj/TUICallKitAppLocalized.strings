@@ -15,9 +15,9 @@
 "TUICallKitApp.Audio.call" = "Voice Call";
 "TUICallKitApp.Video.call" = "Video Call";
 
-"TUICallKitApp.Home.areyousureloginout" = "Are you sure you want to log out?";
-"TUICallKitApp.Home.cancel" = "Cancel";
-"TUICallKitApp.Home.determine" = "Confirm";
+"TUICallKitApp.Home.AreYouSureLogout" = "Are you sure you want to log out?";
+"TUICallKitApp.Home.Cancel" = "Cancel";
+"TUICallKitApp.Home.Determine" = "Confirm";
 
 "TUICallKitApp.Call.UserId" = "User ID";
 "TUICallKitApp.Call.InputUserId" = "Please enter the user ID";
@@ -28,16 +28,16 @@
 "TUICallKitApp.Call.RoomIdString" = "Room Id(String)";
 "TUICallKitApp.Call.InputRoomId" = "Please enter the Room ID";
 
-"TUICallKitApp.Login.tencentcloud" = "Tencent Real-Time Communication";
-"TUICallKitApp.Login.enterphonenumber" = "Enter a User Name";
-"TUICallKitApp.Login.enterverificationcode" = "Enter a verification code";
-"TUICallKitApp.Login.getverificationcode" = "Get";
-"TUICallKitApp.login" = "Log In";
-"TUICallKitApp.Login.loginsuccess" = "Logged in";
-"TUICallKitApp.Login.register" = "Register";
-"TUICallKitApp.Login.enterusername" = "Please enter a nickname";
-"TUICallKitApp.Login.limit20count" = "Chinese characters, letters, numbers and underscores, 2 - 20 words";
-"TUICallKitApp.Login.registersuccess" = "Registration successful";
+"TUICallKitApp.Login.Product" = "Tencent RTC";
+"TUICallKitApp.Login.EnterUserId" = "Please enter the user ID";
+"TUICallKitApp.Login.EnterVerificationCode" = "Enter a verification code";
+"TUICallKitApp.Login.GetVerificationCode" = "Get";
+"TUICallKitApp.Login" = "Log In";
+"TUICallKitApp.Login.LoginSuccess" = "Logged in";
+"TUICallKitApp.Login.Register" = "Register";
+"TUICallKitApp.Login.EnterUserName" = "Please enter a nickname";
+"TUICallKitApp.Login.Limit20Count" = "Chinese characters, letters, numbers and underscores, 2 - 20 words";
+"TUICallKitApp.Login.RegisterSuccess" = "Registration successful";
 
 "TUICallKitApp.Login.Introduce" = "TUICallKit is an audio and video call UI component launched by Tencent Cloud. By integrating this component, you only need to write a few lines of code to add audio and video call capabilities to your App.";
 "TUICallKitApp.Login.Platform" = "TUICallKit supports offline wake-up capabilities, and supports multiple platforms such as Android, iOS, Web, applets, Flutter, and uni-app.";
