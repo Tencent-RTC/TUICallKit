@@ -1,82 +1,65 @@
-# Quick Run of TUICallKit Demo for iOS
+# Call UIKit for iOS Quickstart
 
 _English | [简体中文](README-zh_CN.md)_
 
-This document describes how to quickly run the TUICallKit demo project to make a high-quality audio/video call. For more information on the TUICallKit component connection process, see **[Integrating TUICallKit (iOS)](https://www.tencentcloud.com/document/product/647/46660)**.
+<img src="https://qcloudimg.tencent-cloud.cn/raw/ec034fc6e4cf42cae579d32f5ab434a1.png" align="left" width=120 height=120>TUICallKit is a UIKit about **audio&video calls** launched by Tencent Cloud. By integrating this component, you can write a few lines of code to use the video calling function, TUICallKit support offline calling and multiple  platforms such as Android, iOS, Web, Flutter, etc.
 
-## Directory Structure
+<a href="https://apps.apple.com/cn/app/%E8%85%BE%E8%AE%AF%E4%BA%91%E8%A7%86%E7%AB%8B%E6%96%B9trtc/id1400663224"><img src="https://qcloudimg.tencent-cloud.cn/raw/afe9b8cc4c715346cf3d9feea8a65e33.svg" height=40></a> <a href="https://dldir1.qq.com/hudongzhibo/liteav/TRTCDemo.apk"><img src="https://qcloudimg.tencent-cloud.cn/raw/006d5ed3359640424955baa08dab7c7f.svg" height=40></a> <a href="https://web.sdk.qcloud.com/trtc/webrtc/demo/api-sample/login.html"><img src="https://qcloudimg.tencent-cloud.cn/raw/d326e70750f8bbad7245e229c5bd6d2b.svg" height=40></a>
 
-```
-TUICallKit
-├─ Example              // Audio/Video call demo project
-    ├─ App              // Folder of audio/video call homepage UI code and used images and internationalization string resources
-    ├─ Debug            // Folder of the key business code required for project debugging and running
-    └─ TXAppBasic       // Dependent basic components of the project
-├─ TUICallKit           // Folder of the core business logic code of audio/video call(Objective-C)
-├─ TUICallKit-Swift     // Folder of the core business logic code of audio/video call（Swift）
-```
+## Before getting started
 
-## Environment Requirements
+This section shows you the prerequisites you need for testing Calls for iOS example.
+
+### Requirements
+
 - Xcode 13.0 or above
 - Operating system: iOS 13.0 or later
 
-## Running the Demo
+## Getting started
 
-[](id:ui.step1)
-### Step 1. Create a TRTC application
-1. Go to the [Application management](https://console.trtc.io/) page in the TRTC console, select **Create Application**, enter an application name such as `TUIKitDemo`, and click **Confirm**.
-2. Please record the `SDKAppID` and `SDKSecretKey`.
+If you would like to try the sample app specifically fit to your usage, you can do so by following the steps below.
 
-[](id:ui.step2)
-### Step 2. Configure the project
-1. Open the demo project `TUICallKitApp.xcworkspace` with Xcode 13.0 or later.
-2. Find the `iOS/Example/Debug/GenerateTestUserSig.swift` file in the project.
-3. Set parameters in `GenerateTestUserSig.swift`:
-<ul style="margin:0"><li/>SDKAPPID: `0` by default. Set it to the SDKAppID that you noted down in step 1.
-<li/>SECRETKEY: Left empty by default. Set it to the key information that you noted down in step 1.</ul>
+### Create an application.
 
-[](id:ui.step3)
-### Step 3. Compile and run the application
+1. Login or Sign-up for an account on [Tencent RTC Console](https://console.trtc.io/).
+2. Create or select an application on the console.
+3. Note your `SDKAppID` and `SDKSecretKey` for future reference.
 
-1. Open Terminal, enter the project directory, run the `pod install` command, and wait for it to complete.
-2. Open the demo project `TUICallKit/Example/TUICallKitApp.xcworkspace` with Xcode 11.0 or later and click **Run**.
+### Build and run the example
 
-[](id:ui.step4)
-### Step 4. Try out the demo
-
-Note: You need to prepare at least two devices to try out the call feature of TUICallKit. Here, users A and B represent two different devices:
-
-**Device A (userId: 111)**
-
-- Step 1: On the welcome page, enter the username (<font color=red>which must be unique</font>), such as `111`. 
-- Step 2: Enter the different scenario pages, such as video call, based on your scenario and requirements.
-- Step 3: Enter `userId` of user B to be called, click **Search**, and click **Call**.
-
-**Device B (userId: 222)**
-
-- Step 1: On the welcome page, enter the username (<font color=red>which must be unique</font>), such as `222`.
-- Step 2: Enter the homepage and wait for the call.
-
-## Switch to Objective-C version
-1. Open the 'Example/Podfile' file and replace 'pod 'TUICallKit-Swift', :path => "../", :subspecs => ["TRTC"]' with 'pod 'TUICallKit', :path => "../", :subspecs => ["TRTC"]'.
-1. Run 'pod update' in the console.
-1. Open the Example project, select the target -> Build Settings -> search for Swift Compiler - Custom Flags.
-1. Expand "Other Swift Flags" and delete "USE_TUICALLKIT_SWIFT" and the corresponding "-D".
-
-## FAQs
-
-### What should I do if the following error messages are still prompted during debugging on a real device when the TUICallKit demo has been configured with a real device certificate?
+#### 1. Clone this repository
 
 ```
-Provisioning profile "XXXXXX" doesn't support the Push Notifications capability.  
-Provisioning profile "XXXXXX" doesn't include the aps-environment entitlement.
+$ git clone git@github.com:tencentyun/TUICallKit.git
 ```
 
-You can delete the `Push Notifications` feature as shown below:
+#### 2. Install dependencies
 
-![](https://qcloudimg.tencent-cloud.cn/raw/800bfcdc73e1927e24b5419f09ecef7a.png)
+```
+$ cd TUICallKit/iOS/Example
+$ pod install
+```
 
+#### 3. Specify the SDKAppID and SDKSecretKey
 
-## Have any questions?
-Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you~
-Click to join: https://t.me/+EPk6TMZEZMM5OGY1
+In `GenerateTestUserSig.swift`, you need to configure the application's `SDKAppId` and `SDKSecretKey`.
+
+```
+let SDKAPPID: Int = 0
+let SECRETKEY = ""
+```
+
+#### 4. Build and run the example application on Simulator or iOS devices
+
+## Making your first call
+
+1. Log in to the sample app on the primary device with the user ID set as the `caller`.
+2. Log in to the sample app on the secondary device using the ID of the user set as the `callee`.
+3. On the primary device, specify the user ID of the `callee` and initiate a call.
+4. If all steps are followed correctly, an incoming call invitation will appear on the device of the `callee`.
+
+## Reference
+
+- If you want to learn more about the product features, you can click on the following [link](https://trtc.io/products/call).
+- If you encounter difficulties, you can refer to [FAQs](https://trtc.io/document/53565), here are the most frequently encountered problems of developers, covering various platforms, I hope it can Help you solve problems quickly.
+- For complete API documentation, see [iOS Video Call SDK API Example](https://trtc.io/document/51010): including TUICallKit (with UIKit), TUICallEngine (without UIKit), and call events Callbacks, etc.
