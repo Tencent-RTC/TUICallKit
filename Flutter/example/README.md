@@ -1,4 +1,4 @@
-English | [简体中文](https://github.com/tencentyun/TUICallKit/blob/main/Flutter/example/README_zh-CN.md)
+English | [简体中文](https://github.com/tencentyun/TUICallKit/blob/main/Flutter/example/README.zh_CN.md)
 
 
 # Call UIKit for Flutter Quickstart
@@ -31,7 +31,7 @@ For more details on installing and configuring the TUICallKit for Flutter, refer
 ## Getting started
 #### Create an application
 
-1. Login or Sign-up for an account on [Tencent RTC console](https://trtc.io/login?s_url=https://console.trtc.io).
+1. Login or Sign-up for an account on [Tencent RTC console](https://console.trtc.io).
 
 2. Create or select a calls-enabled application on the console.
 
