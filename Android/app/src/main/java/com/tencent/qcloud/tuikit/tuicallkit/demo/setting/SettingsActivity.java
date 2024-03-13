@@ -191,7 +191,7 @@ public class SettingsActivity extends BaseActivity {
 
         mEditBeauty.setOnEditorActionListener((v, actionId, event) -> {
             if (EditorInfo.IME_ACTION_DONE == actionId) {
-                setBeautyLeval();
+                setBeautyLevel();
             }
             return false;
         });
@@ -249,7 +249,7 @@ public class SettingsActivity extends BaseActivity {
         }
     }
 
-    private void setBeautyLeval() {
+    private void setBeautyLevel() {
         if (TextUtils.isEmpty(mEditBeauty.getText().toString())) {
             ToastUtil.toastShortMessage(getString(R.string.app_please_set_beauty_level));
             return;
