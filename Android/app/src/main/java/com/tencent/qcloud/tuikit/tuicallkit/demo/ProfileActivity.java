@@ -32,7 +32,7 @@ public class ProfileActivity extends BaseActivity {
     private TextView  mTvInputTips;     //nickname constraints
     private String    mAvatarUrl;
 
-    private static final String USER_AVATAR_ARRAY[] = {
+    private static final String[] USER_AVATAR_ARRAY = {
             "https://liteav.sdk.qcloud.com/app/res/picture/voiceroom/avatar/user_avatar1.png",
             "https://liteav.sdk.qcloud.com/app/res/picture/voiceroom/avatar/user_avatar2.png",
             "https://liteav.sdk.qcloud.com/app/res/picture/voiceroom/avatar/user_avatar3.png",
