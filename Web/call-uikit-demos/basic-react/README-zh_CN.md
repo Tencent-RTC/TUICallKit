@@ -1,6 +1,6 @@
 # Call UIKit for React QuickStart
 
-<a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-react/README.md"> English </a> | <b> 简体中文 </b> 
+<a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/call-uikit-demos/basic-react/README.md"> English </a> | <b> 简体中文 </b> 
 
 <img src="https://img.shields.io/badge/Platform-React-orange.svg"><img src="https://img.shields.io/badge/Language-Typescript-orange.svg">
 
