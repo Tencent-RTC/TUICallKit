@@ -1,6 +1,6 @@
 # Call UIKit for Vue QuickStart
 
-<a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-vue3/README.md"> English </a> | <b> 简体中文 </b>
+<a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/call-uikit-demos/basic-vue3/README.md"> English </a> | <b> 简体中文 </b>
 
 <img src="https://img.shields.io/badge/Platform-Vue3-orange.svg"><img src="https://img.shields.io/badge/Language-Typescript-orange.svg">
 
