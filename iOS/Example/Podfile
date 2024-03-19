@@ -5,7 +5,6 @@ target 'TUICallKitApp' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
   
-  pod 'TXAppBasic', :path => "./TXAppBasic/"
   pod 'Toast-Swift'
   pod 'Alamofire', '~> 5.6.4'
   pod 'Kingfisher', '<= 6.3.1'

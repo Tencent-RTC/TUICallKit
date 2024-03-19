@@ -8,7 +8,6 @@
 
 import Foundation
 import Toast_Swift
-import TXAppBasic
 import SnapKit
 import UIKit
 import TUICore
