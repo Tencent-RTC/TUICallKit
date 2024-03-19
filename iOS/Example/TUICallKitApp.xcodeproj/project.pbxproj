@@ -17,6 +17,7 @@
 		47D9D36F26521A7A0007EE1F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47D9D36526521A7A0007EE1F /* Main.storyboard */; };
 		47D9D37026521A7A0007EE1F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D9D36726521A7A0007EE1F /* AppDelegate.swift */; };
 		47D9D37226521A7A0007EE1F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D9D36926521A7A0007EE1F /* SceneDelegate.swift */; };
+		4F0CA2492BA9307D00994340 /* CommonUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0CA2462BA9307D00994340 /* CommonUtils.swift */; };
 		4F3F7CA926D65D38002912DE /* LoginRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7C9B26D65D38002912DE /* LoginRootView.swift */; };
 		4F3F7CAD26D65D38002912DE /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA226D65D38002912DE /* LoginViewController.swift */; };
 		4F3F7CB226D65D38002912DE /* LayoutDefine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA726D65D38002912DE /* LayoutDefine.swift */; };
@@ -49,6 +50,7 @@
 		47D9D36726521A7A0007EE1F /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		47D9D36826521A7A0007EE1F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		47D9D36926521A7A0007EE1F /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		4F0CA2462BA9307D00994340 /* CommonUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonUtils.swift; sourceTree = "<group>"; };
 		4F3F7C9B26D65D38002912DE /* LoginRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginRootView.swift; sourceTree = "<group>"; };
 		4F3F7CA226D65D38002912DE /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		4F3F7CA726D65D38002912DE /* LayoutDefine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutDefine.swift; sourceTree = "<group>"; };
@@ -139,13 +141,13 @@
 			children = (
 				47D9D36726521A7A0007EE1F /* AppDelegate.swift */,
 				47D9D36926521A7A0007EE1F /* SceneDelegate.swift */,
-				4F3F7CA726D65D38002912DE /* LayoutDefine.swift */,
 				B833837F2A08DB7D00E71348 /* Login */,
 				4F450FAC2B986641004A4B8A /* Register */,
 				B81C962D2A2DC65100E3CBC6 /* MainPage */,
 				B89ECFCA2A0CFD3000D7F0EB /* Call */,
 				B83383802A08DBA300E71348 /* Setting */,
 				4739C7D32657507800CA7C45 /* Resource */,
+				4F0CA23E2BA92FE200994340 /* Utils */,
 				47D9D36226521A7A0007EE1F /* Assets.xcassets */,
 				47D9D36326521A7A0007EE1F /* LaunchScreen.storyboard */,
 				470EB6F9266A49200072071F /* LaunchScreen_en.storyboard */,
@@ -153,6 +155,15 @@
 				47D9D36826521A7A0007EE1F /* Info.plist */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		4F0CA23E2BA92FE200994340 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				4F0CA2462BA9307D00994340 /* CommonUtils.swift */,
+				4F3F7CA726D65D38002912DE /* LayoutDefine.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		4F3F7CB326D65DE3002912DE /* Debug */ = {
@@ -366,6 +377,7 @@
 				47D9D37026521A7A0007EE1F /* AppDelegate.swift in Sources */,
 				4F450FAE2B986641004A4B8A /* RegisterViewController.swift in Sources */,
 				4739C7DC2657507900CA7C45 /* TUICallKitAppLocalized.swift in Sources */,
+				4F0CA2492BA9307D00994340 /* CommonUtils.swift in Sources */,
 				4F3F7CB526D65DE3002912DE /* GenerateTestUserSig.swift in Sources */,
 				4F3F7CAD26D65D38002912DE /* LoginViewController.swift in Sources */,
 				B811E29D2A09F6E600E74024 /* RadioButton.swift in Sources */,
@@ -572,7 +584,6 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Alamofire/Alamofire.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Kingfisher/Kingfisher.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/SnapKit/SnapKit.framework/Headers\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/TXAppBasic/TXAppBasic.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Toast-Swift/Toast_Swift.framework/Headers\"",
 					"${PODS_ROOT}/TXImSDK_Plus_iOS/ImSDK_Plus.framework/Headers/",
 				);
@@ -607,8 +618,6 @@
 					"\"QuartzCore\"",
 					"-framework",
 					"\"SnapKit\"",
-					"-framework",
-					"\"TXAppBasic\"",
 					"-framework",
 					"\"Toast_Swift\"",
 					"-weak_framework",
@@ -651,7 +660,6 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/SDWebImage\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/SnapKit\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/TUICore\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/TXAppBasic\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Toast-Swift\"",
 					"\"${PODS_ROOT}/TXIMSDK_Plus_iOS\"",
 					"\"${PODS_ROOT}/TXLiteAVSDK_TRTC/TXLiteAVSDK_TRTC\"",
@@ -663,7 +671,6 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Alamofire/Alamofire.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Kingfisher/Kingfisher.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/SnapKit/SnapKit.framework/Headers\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/TXAppBasic/TXAppBasic.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Toast-Swift/Toast_Swift.framework/Headers\"",
 					"${PODS_ROOT}/TXImSDK_Plus_iOS/ImSDK_Plus.framework/Headers/",
 				);
@@ -698,8 +705,6 @@
 					"\"QuartzCore\"",
 					"-framework",
 					"\"SnapKit\"",
-					"-framework",
-					"\"TXAppBasic\"",
 					"-framework",
 					"\"Toast_Swift\"",
 					"-weak_framework",
