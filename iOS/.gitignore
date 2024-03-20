@@ -3,10 +3,5 @@
 **/.DS_Store
 
 Example/Pods
-SDK
 Example/Podfile.lock
-Example/TUICallingApp.xcworkspace/xcuserdata/
-
-
-
-
+Example/TUICallKitApp.xcworkspace/xcuserdata/
