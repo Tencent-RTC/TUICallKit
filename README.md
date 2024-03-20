@@ -29,24 +29,22 @@ _English | [简体中文](README-zh_CN.md)_
 
 Here is an example of integration with UI (ie TUICallKit),  which is also our recommended integration method. The key steps are as follows:
 
-- **Step1**: Activate the [Tencent Cloud Audio and Video Call Service](https://console.cloud.tencent.com/vcube/project/manage), for developer integration, we also provide a free trial version, [More introduction](https://cloud.tencent.com/document/product/1640/81130).
+- **Step1**: Activate the [Tencent Cloud Audio and Video Call Service](https://trtc.io/login?s_url=https://console.trtc.io), for developer integration, we also provide a free trial version, [More introduction](https://trtc.io/document/50989?platform=web).
 
-- **Step2**: Access TUICallKit to your project, the detailed access process of each platform/framework: [Web](https://cloud.tencent.com/document/product/1640/81132), [ Android](https://cloud.tencent.com/document/product/647/78729), [iOS](https://cloud.tencent.com/document/product/647/78730).
+- **Step2**: Access TUICallKit to your project, the detailed access process of each platform/framework: [Web](https://trtc.io/document/58484), [Android](https://trtc.io/document/50991), [iOS](https://trtc.io/document/50992), [Flutter](https://trtc.io/document/54896).
 
 - **Step3**: Make your first video call!
 
 
 ## Quick link
 
-- If you encounter difficulties, you can refer to [FAQs](https://cloud.tencent.com/document/product/647/78767), here are the most frequently encountered problems of developers, covering various platforms, I hope you can Help you solve problems quickly.
+- If you encounter difficulties, you can refer to [FAQs](https://trtc.io/document/53565?platform=web), here are the most frequently encountered problems of developers, covering various platforms, I hope you can Help you solve problems quickly.
 
-- If you would like to see more official examples, you can refer to the example Demo of each platform: [Web](Web/), [Android](Android/), [iOS](iOS/).
+- If you would like to see more official examples, you can refer to the example Demo of each platform: [Web](Web/), [Android](Android/), [iOS](iOS/), [Flutter](Flutter/).
 
-- If you would like to see some of our latest product features, you can check the [Update Log](https://cloud.tencent.com/document/product/647/80931), here are the latest features of TUICallKit, as well as the historical version features iterate
-- For complete API documentation, see [Audio Video Call SDK API Example](https://cloud.tencent.com/document/product/647/78748): including TUICallKit (with UIKit), TUICallEngine (without UIKit), and call events Callbacks, etc.
-- If you want to learn more about the projects maintained by Tencent Cloud  Media Services Team, you can check our [Product Official Website](https://cloud.tencent.com/product/rtcube), [Github Organizations](https://github.com/LiteAVSDK) etc.
-- If the project clone or download fails due to network problems, you can visit [Gitee TUICallKit](https://gitee.com/tencent-cloud-uikit/TUICallKit).
-
+- If you would like to see some of our latest product features, you can check the [Update Log](https://trtc.io/document/51019?platform=web), here are the latest features of TUICallKit, as well as the historical version features iterate
+- For complete API documentation, see [Audio Video Call SDK API Example](https://trtc.io/document/51014): including TUICallKit (with UIKit), TUICallEngine (without UIKit), and call events Callbacks, etc.
+- If you want to learn more about the projects maintained by Tencent Cloud  Media Services Team, you can check our [Product Official Website](https://trtc.io/), [Github Organizations](https://github.com/LiteAVSDK) etc.
 
 
 ## Have any questions?
