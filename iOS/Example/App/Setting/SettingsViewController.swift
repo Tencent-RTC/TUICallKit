@@ -36,7 +36,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     
     lazy var basicSettingContentView: UIView = {
         let view = UIView(frame: .zero)
-        view.backgroundColor = UIColor(hex: "EEEEEE")
+        view.backgroundColor = UIColor(hex: "AAAAAA")
         return view
     }()
     lazy var basicSettingLabel: UILabel = {
@@ -54,12 +54,13 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     lazy var userAvInfoLabel: UILabel = {
         let place: String = SettingsConfig.share.avatar.isEmpty ? TUICallKitAppLocalize("TUICallKitApp.Setting.NotSet") : SettingsConfig.share.avatar
         let view = createLabel(textSize: 16, text: place)
-        view.textColor = UIColor(hex: "EEEEEE")
+        view.textColor = UIColor(hex: "AAAAAA")
         view.textAlignment = .right
         return view
     }()
     lazy var userAvBtn: UILabel = {
         let view = createLabel(textSize: 16, text: " > ")
+        view.textAlignment = .center
         view.isUserInteractionEnabled = true
         return view
     }()
@@ -89,12 +90,13 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         let place: String = SettingsConfig.share.ringUrl.isEmpty ?
         TUICallKitAppLocalize("TUICallKitApp.Setting.NotSet") : SettingsConfig.share.ringUrl
         let view = createLabel(textSize: 16, text: place)
-        view.textColor = UIColor(hex: "EEEEEE")
+        view.textColor = UIColor(hex: "AAAAAA")
         view.textAlignment = .right
         return view
     }()
     lazy var ringAvBtn: UILabel = {
         let view = createLabel(textSize: 16, text: " > ")
+        view.textAlignment = .center
         view.isUserInteractionEnabled = true
         return view
     }()
@@ -108,7 +110,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         return createLabel(textSize: 16, text: TUICallKitAppLocalize("TUICallKitApp.Setting.MuteMode"))
     }()
     lazy var muteSwitch: UISwitch = {
-        return createSwich(isOn: SettingsConfig.share.mute)
+        return createSwitch(isOn: SettingsConfig.share.mute)
     }()
     
     lazy var floatingContentView: UIView = {
@@ -120,12 +122,12 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         return createLabel(textSize: 16, text: TUICallKitAppLocalize("TUICallKitApp.Setting.EnableFloating"))
     }()
     lazy var floatingSwitch: UISwitch = {
-        return createSwich(isOn: SettingsConfig.share.floatWindow)
+        return createSwitch(isOn: SettingsConfig.share.floatWindow)
     }()
     
     lazy var callSettingContentView: UIView = {
         let view = UIView(frame: .zero)
-        view.backgroundColor = UIColor(hex: "EEEEEE")
+        view.backgroundColor = UIColor(hex: "AAAAAA")
         return view
     }()
     lazy var callSettingLabel: UILabel = {
@@ -155,12 +157,13 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     lazy var extendedInfo: UILabel = {
         let place = SettingsConfig.share.userData.isEmpty ? TUICallKitAppLocalize("TUICallKitApp.Setting.NotSet") : SettingsConfig.share.userData
         let view = createLabel(textSize: 16, text: place)
-        view.textColor = UIColor(hex: "EEEEEE")
+        view.textColor = UIColor(hex: "AAAAAA")
         view.textAlignment = .right
         return view
     }()
     lazy var extendedBtn: UILabel = {
         let view = createLabel(textSize: 16, text: " > ")
+        view.textAlignment = .center
         view.isUserInteractionEnabled = true
         return view
     }()
@@ -175,19 +178,20 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     }()
     lazy var offlinePushInfo: UILabel = {
         let view = createLabel(textSize: 16, text: TUICallKitAppLocalize("TUICallKitApp.Setting.GoToSettings"))
-        view.textColor = UIColor(hex: "EEEEEE")
+        view.textColor = UIColor(hex: "AAAAAA")
         view.textAlignment = .right
         return view
     }()
     lazy var offlinePushBtn: UILabel = {
         let view = createLabel(textSize: 16, text: " > ")
+        view.textAlignment = .center
         view.isUserInteractionEnabled = true
         return view
     }()
     
     lazy var videoSettingContentView: UIView = {
         let view = UIView(frame: .zero)
-        view.backgroundColor = UIColor(hex: "EEEEEE")
+        view.backgroundColor = UIColor(hex: "AAAAAA")
         return view
     }()
     lazy var videoSettingLabel: UILabel = {
@@ -811,7 +815,7 @@ extension SettingsViewController {
         return label
     }
     
-    func createSwich(isOn: Bool) -> UISwitch {
+    func createSwitch(isOn: Bool) -> UISwitch {
         let switchBtn = UISwitch(frame: CGRect.zero)
         switchBtn.isOn = isOn
         return switchBtn
