@@ -1,0 +1,60 @@
+<view class="container">
+  <view class="trtc-calling-index">
+    <view class="trtc-calling-index-title">
+      <image class="btn-goback" src="../Resources/back.png" bind:tap="onBack" />
+      <view class="trtc-calling-index-title title">多人通话</view>
+    </view>
+    <view class="trtc-calling-index-search">
+      <view class="search">
+        <view class="input-box">
+          <input class="input-search-user" value="{{userIDToSearch}}" maxlength="11" type="text"
+            bindinput="userIDToSearchInput" placeholder="搜索用户ID" />
+        </view>
+        <view class="btn-search" bindtap="searchUser">搜索</view>
+      </view>
+      <view class="search-selfInfo">
+        <label class="search-selfInfo-label">您的ID</label>
+        <view class="search-selfInfo-phone">
+          {{userID}}
+        </view>
+
+         <view wx:if="{{searchList.length !==0}}">
+          <view class="allcheck" bindtap="allCheck" wx:if="{{isCheck}}">
+          全选
+         </view>
+          <view class="allcheck" bindtap="allCancel" wx:else>
+          取消
+         </view>
+        </view>   
+        
+      </view>
+
+      <scroll-view wx:if="{{callBtn}}"  scroll-y class="trtc-calling-group-user-list">
+      <view>
+        <view class="trtc-calling-group-user-row" wx:for="{{searchList}}" wx:key="userID"> 
+         <view class="trtc-calling-group-user-item">
+            <view  wx:if="{{!item.checked}}" class="trtc-calling-group-user-switch" bindtap="addUser"
+            data-word="{{item}}">
+            </view>
+            <image wx:else class="trtc-calling-group-user-checkimg" bindtap="removeUser"  data-word="{{item}}" src="../Resources/check.png">
+            </image>
+            <image class="trtc-calling-group-user-avatar userInfo-avatar"  src="{{item.avatar || '../Resources/avatar1_100.png'}}">{{item.userID}}</image>
+            <view class="trtc-calling-group-user-name">{{item.userID}}</view>
+          </view> 
+        </view>
+      </view>
+      </scroll-view >
+
+      <view wx:if="{{callBtn && searchList.length>0}}" class="trtc-calling-group-user-callbtn"  bindtap='groupCall'>开始通话</view>
+
+      <view wx:if="{{!callBtn}}" class="search-default">
+        <view class="search-default-box">
+          <image class="search-default-img" src="../Resources/search.png" lazy-load="true" />
+          <view class="search-default-message">
+            搜索添加已注册用户以发起通话
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
