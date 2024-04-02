@@ -7,7 +7,7 @@
   
 */
 
-"UILaunchStoryboardName" = "LaunchScreen_en";
+"UILaunchStoryboardName" = "LaunchScreen_ja";
 
-NSCameraUsageDescription = "TUICallKitApp needs access to your camera, and it can be used for functions such as Video Call, Group Video Call.";
-NSMicrophoneUsageDescription = "TUICallKitApp needs access to your microphone，and it can be used for functions such as Audio Call, Group Audio Call, Video Call, Group Video Call.";
+NSCameraUsageDescription = "カメラへのアクセス許可が必要で、ビデオ通話、グループビデオ通話などの機能に使用できます。美顔機能を使用する場合は、カメラで撮影された映像から顔の特徴点情報をリアルタイムで収集し、より自然な美しさを提供します。";
+NSMicrophoneUsageDescription = "マイクへのアクセス許可が必要で、音声/ビデオ通話、グループ音声/ビデオ通話などの機能に使用できます。マイクをオンにした場合のみ、録画した動画に音声が保存されます。";

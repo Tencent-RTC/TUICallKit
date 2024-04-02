@@ -10,10 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@tencentcloud/call-uikit-wechat": "^3.0.4",
-    "@tencentcloud/tui-core": "^0.0.3",
+    "@tencentcloud/call-uikit-wechat": "latest",
     "@vue/composition-api": "^1.7.2",
-    "tuicall-engine-wx": "^2.0.1",
     "unplugin-vue2-script-setup": "^0.11.4"
   },
   "devDependencies": {

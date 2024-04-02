@@ -4,7 +4,7 @@ import 'package:tencent_calls_uikit/src/call_state.dart';
 import 'package:tuicall_kit_example/src/settings/settings_config.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tuicall_kit_example/src/settings/settings_detail_widget.dart';
-import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class SettingsWidget extends StatefulWidget {
   const SettingsWidget({Key? key}) : super(key: key);
 
@@ -23,12 +23,12 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text(CallKit_t('通话设置')),
+        title: Text(AppLocalizations.of(context)!.settings),
         leading: IconButton(
             onPressed: () => _goBack(),
             icon: const Icon(
               Icons.arrow_back,
-              color: Colors.white,
+              color: Colors.black,
             )),
       ),
       body: Container(
@@ -51,7 +51,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         SizedBox(
           height: 40,
           child: Text(
-            CallKit_t('通话设置'),
+            AppLocalizations.of(context)!.settings,
             style: const TextStyle(
                 fontSize: 16,
                 fontStyle: FontStyle.normal,
@@ -66,7 +66,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              CallKit_t('头像'),
+              AppLocalizations.of(context)!.avatar,
               style: const TextStyle(
                   fontSize: 16,
                   fontStyle: FontStyle.normal,
@@ -80,7 +80,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                       width: 200,
                       child: Text(
                         (SettingsConfig.avatar.isEmpty)
-                            ? CallKit_t('未设置')
+                            ? AppLocalizations.of(context)!.not_set
                             : SettingsConfig.avatar,
                         maxLines: 1,
                         style: const TextStyle(
@@ -103,7 +103,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              CallKit_t('昵称'),
+              AppLocalizations.of(context)!.nick_name,
               style: const TextStyle(
                   fontSize: 16,
                   fontStyle: FontStyle.normal,
@@ -117,7 +117,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                     textAlign: TextAlign.right,
                     decoration: InputDecoration(
                       hintText: (SettingsConfig.nickname.isEmpty)
-                          ? CallKit_t('未设置')
+                          ? AppLocalizations.of(context)!.not_set
                           : SettingsConfig.nickname,
                       border: InputBorder.none,
                     ),
@@ -138,7 +138,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('静音模式'),
+                  AppLocalizations.of(context)!.silent_mode,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -164,7 +164,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('显示悬浮窗按钮'),
+                  AppLocalizations.of(context)!.enable_floating,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -196,7 +196,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         SizedBox(
           height: 40,
           child: Text(
-            CallKit_t('通话自定义参数设置'),
+            AppLocalizations.of(context)!.call_custom_setiings,
             style: const TextStyle(
                 fontSize: 16,
                 fontStyle: FontStyle.normal,
@@ -211,7 +211,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('数字房间号'),
+                  AppLocalizations.of(context)!.digital_room,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -239,7 +239,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('字符串房间号'),
+                  AppLocalizations.of(context)!.string_room,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -266,7 +266,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('呼叫超时时常'),
+                  AppLocalizations.of(context)!.timeout,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -294,7 +294,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('扩展信息'),
+                  AppLocalizations.of(context)!.extended_info,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -306,7 +306,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                     child: Row(children: [
                       Text(
                         SettingsConfig.extendInfo.isEmpty
-                            ? CallKit_t('未设置')
+                            ? AppLocalizations.of(context)!.not_set
                             : SettingsConfig.extendInfo,
                         maxLines: 1,
                         style: const TextStyle(
@@ -329,7 +329,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('离线推送消息'),
+                  AppLocalizations.of(context)!.offline_push_info,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -340,7 +340,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                     onTap: () => _goDetailSettings(SettingWidgetType.offlinePush),
                     child: Row(children: [
                       Text(
-                        SettingsConfig.offlinePushInfo == null ? CallKit_t('未设置') : CallKit_t('去设置'),
+                        SettingsConfig.offlinePushInfo == null ? AppLocalizations.of(context)!.not_set : AppLocalizations.of(context)!.go_set,
                         maxLines: 1,
                         style: const TextStyle(
                             fontSize: 16,
@@ -368,7 +368,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         SizedBox(
             height: 40,
             child: Text(
-              CallKit_t('视频设置'),
+              AppLocalizations.of(context)!.video_settings,
               style: const TextStyle(
                   fontSize: 16,
                   fontStyle: FontStyle.normal,
@@ -384,7 +384,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('分辨率'),
+                  AppLocalizations.of(context)!.resolution,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -425,7 +425,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('横竖屏'),
+                  AppLocalizations.of(context)!.resolution_mode,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -435,8 +435,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                 DropdownButton(
                   value: _resolutionModeIndex,
                   items: [
-                    DropdownMenuItem(value: 0, child: Text(CallKit_t('横屏'))),
-                    DropdownMenuItem(value: 1, child: Text(CallKit_t('竖屏'))),
+                    DropdownMenuItem(value: 0, child: Text(AppLocalizations.of(context)!.horizontal)),
+                    DropdownMenuItem(value: 1, child: Text(AppLocalizations.of(context)!.vertical)),
                   ],
                   onChanged: (value) {
                     setState(() {
@@ -462,7 +462,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('填充模式'),
+                  AppLocalizations.of(context)!.fill_pattern,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -472,8 +472,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                 DropdownButton(
                   value: _fillModeIndex,
                   items: [
-                    DropdownMenuItem(value: 0, child: Text(CallKit_t('充满'))),
-                    DropdownMenuItem(value: 1, child: Text(CallKit_t('自适应'))),
+                    DropdownMenuItem(value: 0, child: Text(AppLocalizations.of(context)!.fill)),
+                    DropdownMenuItem(value: 1, child: Text(AppLocalizations.of(context)!.fit)),
                   ],
                   onChanged: (value) {
                     setState(() {
@@ -495,7 +495,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('旋转角度'),
+                  AppLocalizations.of(context)!.rotation,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,
@@ -530,7 +530,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CallKit_t('美颜等级'),
+                  AppLocalizations.of(context)!.beauty_level,
                   style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.normal,

@@ -1,6 +1,6 @@
 //
 //  TUIAudioMessageRecordService.swift
-//  TUICallKit-Swift
+//  TUICallKit
 //
 //  Created by vincepzhang on 2023/8/16.
 //
@@ -152,6 +152,8 @@ extension TUIAudioMessageRecordService {
     }
     
     func stopRecordAudioMessage() {
+        guard let _ = audioRecordInfo else { return }
+        
         let jsonParams: [String: Any] = ["api": "stopRecordAudioMessage",
                                          "params": [:] as  [String : Any],]
         
@@ -168,14 +170,14 @@ extension TUIAudioMessageRecordService {
     }
 }
 
-//MARK: TUICallObserver
+// MARK: TUICallObserver
 extension TUIAudioMessageRecordService {
     func onCallReceived(callerId: String, calleeIdList: [String], groupId: String?, callMediaType: TUICallMediaType, userData: String?) {
         stopRecordAudioMessage()
     }
 }
 
-//MARK: TRTCCloudDelegate
+// MARK: TRTCCloudDelegate
 extension TUIAudioMessageRecordService {
     func onError(_ errCode: TXLiteAVError, errMsg: String?, extInfo: [AnyHashable : Any]?) {
         if errCode.rawValue == TUICore_RecordAudioMessageNotifyError_MicStartFail ||
@@ -215,7 +217,7 @@ extension TUIAudioMessageRecordService {
     }
 }
 
-//MARK: Private
+// MARK: Private
 extension TUIAudioMessageRecordService {
     
     func requestAudioFocus() -> Bool {

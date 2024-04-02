@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/app_color_white">
+    android:background="@color/app_color_white"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -29,14 +29,14 @@
             android:text="@string/app_group_call"
             android:textColor="#000000"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_marginTop="40dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="40dp"
         android:layout_marginRight="16dp">
 
         <TextView
@@ -52,21 +52,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:gravity="right"
-            android:background="@null"
-            android:hint="@string/app_please_input_group_id"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/tv_group_call_group_id"
+            android:background="@null"
+            android:gravity="right"
+            android:hint="@string/app_please_input_group_id"
             android:textColor="@color/app_color_black"
             android:textColorHint="@color/app_color_input_normal"
             android:textSize="16sp" />
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="16dp">
 
         <TextView
@@ -82,28 +82,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:gravity="right"
-            android:background="@null"
-            android:hint="@string/app_please_input_user_id_list"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/tv_group_call_user_id"
+            android:background="@null"
+            android:gravity="right"
+            android:hint="@string/app_please_input_user_id_list"
             android:textColor="@color/app_color_black"
             android:textColorHint="@color/app_color_input_normal"
             android:textSize="16sp" />
 
     </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="40dp"
         android:layout_marginRight="16dp">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/tuicalling_color_black"
-            android:text="@string/app_media_type"/>
+            android:text="@string/app_media_type"
+            android:textColor="@color/app_color_black"
+            android:textSize="16sp" />
 
         <RadioGroup
             android:id="@+id/rg_media_type"
@@ -115,32 +117,32 @@
 
             <RadioButton
                 android:id="@+id/rb_video"
-                android:layout_marginLeft="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/tuicalling_color_black"
-                android:text="@string/app_video_call"
+                android:layout_marginLeft="10dp"
                 android:background="@null"
                 android:button="@drawable/app_bg_rb_selector"
                 android:drawableLeft="@drawable/app_bg_rb_selector"
                 android:drawablePadding="5dp"
-                android:textSize="16sp"
-                android:gravity="center" />
+                android:gravity="center"
+                android:text="@string/app_video_call"
+                android:textColor="@color/app_color_black"
+                android:textSize="16sp" />
 
             <RadioButton
                 android:id="@+id/rb_audio"
-                android:layout_marginLeft="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/tuicalling_color_black"
+                android:layout_marginLeft="15dp"
                 android:background="@null"
                 android:button="@drawable/app_bg_rb_selector"
+                android:checked="true"
                 android:drawableLeft="@drawable/app_bg_rb_selector"
                 android:drawablePadding="5dp"
-                android:text="@string/app_audio_call"
-                android:textSize="16sp"
                 android:gravity="center"
-                android:checked="true" />
+                android:text="@string/app_audio_call"
+                android:textColor="@color/app_color_black"
+                android:textSize="16sp" />
         </RadioGroup>
     </RelativeLayout>
 
@@ -156,16 +158,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/app_call_setting"
             android:layout_gravity="center_horizontal"
+            android:text="@string/app_call_setting"
             android:textColor="#0062E3"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <ImageView
-            android:layout_marginLeft="9.5dp"
             android:layout_width="5.3dp"
             android:layout_height="9dp"
-            android:background="@drawable/app_right"/>
+            android:layout_marginLeft="9.5dp"
+            android:background="@drawable/app_right" />
 
     </LinearLayout>
 
@@ -176,28 +178,28 @@
 
     <TextView
         android:id="@+id/tv_join_group_call"
-        android:layout_marginBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
         android:text="@string/app_join_group_call"
         android:textColor="#0062E3"
-        android:gravity="center"
         android:textSize="16sp"
         android:textStyle="bold" />
 
     <Button
         android:id="@+id/btn_call"
-        android:layout_marginBottom="46dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_media_type"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:layout_marginBottom="46dp"
         android:background="@drawable/app_bg_button"
         android:text="@string/app_start_call"
         android:textAllCaps="false"
         android:textColor="@color/app_color_white"
-        android:textSize="16sp"
-        android:layout_below="@+id/ll_media_type"/>
+        android:textSize="16sp" />
 </LinearLayout>

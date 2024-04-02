@@ -56,23 +56,23 @@ class _InviteUserWidgetState extends State<InviteUserWidget> {
                 child: Row(
                   children: [
                     const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20)),
+                        padding: EdgeInsets.symmetric(horizontal: 10)),
                     Image.asset(
                       _groupMemberList[index].isSelected
                           ? 'assets/images/check_box_group_selected.png'
                           : 'assets/images/check_box_group_unselected.png',
                       package: 'tencent_calls_uikit',
-                      width: 20,
-                      height: 20,
+                      width: 18,
+                      height: 18,
                     ),
                     const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10)),
                     Container(
-                      width: 50,
-                      height: 50,
+                      width: 40,
+                      height: 40,
                       clipBehavior: Clip.hardEdge,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
+                        borderRadius: BorderRadius.circular(40),
                       ),
                       child: Image(
                         image: NetworkImage(_groupMemberList[index].avatar),
@@ -84,10 +84,10 @@ class _InviteUserWidgetState extends State<InviteUserWidget> {
                       ),
                     ),
                     const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10)),
+                        padding: EdgeInsets.symmetric(horizontal: 5)),
                     Text(
                       _getMemberDisPlayName(_groupMemberList[index]),
-                      style: const TextStyle(color: Colors.black, fontSize: 20),
+                      style: const TextStyle(color: Colors.black, fontSize: 18),
                     )
                   ],
                 ),

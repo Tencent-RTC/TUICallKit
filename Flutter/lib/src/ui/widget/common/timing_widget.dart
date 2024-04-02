@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_calls_uikit/src/call_state.dart';
 import 'package:tencent_calls_uikit/src/utils/event_bus.dart';
 
@@ -26,9 +25,7 @@ class _TimingWidgetState extends State<TimingWidget> {
   Widget build(BuildContext context) {
     return Text(
       _formatCallTime(),
-      style: (TUICallMediaType.audio == CallState.instance.mediaType)
-          ? const TextStyle(color: Colors.black, fontSize: 14)
-          : const TextStyle(color: Colors.white, fontSize: 14),
+      style: const TextStyle(color: Colors.white, fontSize: 14),
     );
   }
 

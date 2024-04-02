@@ -1,6 +1,6 @@
 # Tencent Cloud UIKit for Video Calls 
 
-English | [简体中文](https://github.com/tencentyun/TUICallKit/blob/main/Flutter/README_zh-CN.md)
+English | [简体中文](https://github.com/tencentyun/TUICallKit/blob/main/Flutter/README.zh-CN.md)
 
 <img src="https://qcloudimg.tencent-cloud.cn/raw/ec034fc6e4cf42cae579d32f5ab434a1.png" align="left" width=120 height=120>TUICallKit is a UIKit about **audio&video calls** launched by Tencent Cloud. By integrating this component, you can write a few lines of code to use the video calling function, TUICallKit support offline calling and multiple  platforms such as Android, iOS, Web, Flutter(doing), etc.
 

@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICallKit-Swift'
-  spec.version      = '2.0.0.750'
+  spec.version      = '2.2.0.860'
   spec.platform     = :ios
   spec.ios.deployment_target = '10.0'
   spec.license      = { :type => 'Proprietary',
@@ -14,7 +14,7 @@ Pod::Spec.new do |spec|
   spec.summary      = 'TUICallKit'
   spec.xcconfig     = { 'VALID_ARCHS' => 'armv7 arm64 x86_64' }
   
-  spec.dependency 'TUICore', '~> 7.6.5011'
+  spec.dependency 'TUICore'
   spec.dependency 'SnapKit'
 
   spec.requires_arc = true
@@ -29,24 +29,23 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'TRTC' do |trtc|
     trtc.dependency 'TXLiteAVSDK_TRTC'
-    trtc.dependency 'TUICallEngine/TRTC', '2.0.0.750'
+    trtc.dependency 'TUICallEngine/TRTC', '~> 2.2.0.860'
     trtc.source_files = 'TUICallKit-Swift/**/*.{h,m,mm,swift}'
     trtc.resource_bundles = {
-      'TUICallingKitBundle' => ['Resources/*.gif', 'Resources/Localized/**/*.strings', 'Resources/AudioFile', 'Resources/*.xcassets']
+      'TUICallKitBundle' => ['TUICallKit-Swift/Resources/*.gif', 'TUICallKit-Swift/Resources/**/*.strings', 'TUICallKit-Swift/Resources/AudioFile', 'TUICallKit-Swift/Resources/*.xcassets']
     }
-    trtc.resource = ['Resources/*.bundle']
+    trtc.resource = ['TUICallKit-Swift/Resources/*.bundle']
     trtc.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '$(inherited) -D USE_TRTC', 'GCC_PREPROCESSOR_DEFINITIONS' => "$(inherited) COCOAPODS=1 USE_TRTC=1" }
   end
   
   spec.subspec 'Professional' do |professional|
     professional.dependency 'TXLiteAVSDK_Professional'
-    professional.dependency 'TUICallEngine/Professional', '2.0.0.750'
+    professional.dependency 'TUICallEngine/Professional', '~> 2.2.0.860'
     professional.source_files = 'TUICallKit-Swift/**/*.{h,m,mm,swift}'
     professional.resource_bundles = {
-      'TUICallingKitBundle' => ['Resources/*.gif', 'Resources/Localized/**/*.strings', 'Resources/AudioFile', 'Resources/*.xcassets']
+      'TUICallKitBundle' => ['TUICallKit-Swift/Resources/*.gif', 'TUICallKit-Swift/Resources/**/*.strings', 'TUICallKit-Swift/Resources/AudioFile', 'TUICallKit-Swift/Resources/*.xcassets']
     }
-    professional.resource = ['Resources/*.bundle']
+    professional.resource = ['TUICallKit-Swift/Resources/*.bundle']
   end
 
 end
-

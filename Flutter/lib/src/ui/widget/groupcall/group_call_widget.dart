@@ -1,18 +1,21 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
+import 'package:tencent_calls_uikit/src/call_manager.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/data/user.dart';
-import 'package:tencent_calls_uikit/src/call_manager.dart';
 import 'package:tencent_calls_uikit/src/ui/tuicall_navigator_observer.dart';
 import 'package:tencent_calls_uikit/src/call_state.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/common/extent_button.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/common/timing_widget.dart';
-import 'package:tencent_calls_uikit/src/ui/widget/groupcall/group_function_widget.dart';
+import 'package:tencent_calls_uikit/src/ui/widget/groupcall/group_call_user_widget_data.dart';
+import 'package:tencent_calls_uikit/src/utils/event_bus.dart';
+import 'package:tencent_calls_uikit/src/utils/permission_request.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
+import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
+import 'group_call_user_widget.dart';
 
 class GroupCallWidget extends StatefulWidget {
   final Function close;
@@ -27,19 +30,66 @@ class GroupCallWidget extends StatefulWidget {
 }
 
 class _GroupCallWidgetState extends State<GroupCallWidget> {
+  EventCallback? setSateCallBack;
+  EventCallback? groupCallUserWidgetRefreshCallback;
+  bool isFunctionExpand = true;
+  late final List<GroupCallUserWidget> _userViewWidgets = [];
+
+  _initUsersViewWidget() {
+    GroupCallUserWidgetData.initBlockCounter();
+    GroupCallUserWidgetData.updateBlockBigger(CallState.instance.remoteUserList.length + 1);
+    GroupCallUserWidgetData.initCanPlaceSquare(
+        GroupCallUserWidgetData.blockBigger, CallState.instance.remoteUserList.length + 1);
+    _userViewWidgets.clear();
+
+    GroupCallUserWidgetData.blockCount++;
+    _userViewWidgets.add(GroupCallUserWidget(
+        index: GroupCallUserWidgetData.blockCount, user: CallState.instance.selfUser));
+
+    for (var remoteUser in CallState.instance.remoteUserList) {
+      GroupCallUserWidgetData.blockCount++;
+      _userViewWidgets
+          .add(GroupCallUserWidget(index: GroupCallUserWidgetData.blockCount, user: remoteUser));
+    }
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
-    if (TUICallMediaType.video == CallState.instance.mediaType) {
-      CallState.instance.isCameraOpen = true;
-    } else {
-      CallState.instance.isCameraOpen = false;
-    }
+
+    setSateCallBack = (arg) {
+      if (mounted) {
+        setState(() {
+          _initUsersViewWidget();
+        });
+      }
+    };
+
+    groupCallUserWidgetRefreshCallback = (arg) {
+      if (mounted) {
+        if (GroupCallUserWidgetData.hasBiggerSquare()) {
+          isFunctionExpand = false;
+        } else {
+          isFunctionExpand = true;
+        }
+        setState(() {});
+      }
+    };
+
+    eventBus.register(setStateEvent, setSateCallBack);
+    eventBus.register(setStateEventGroupCallUserWidgetRefresh, groupCallUserWidgetRefreshCallback);
+
+    GroupCallUserWidgetData.initBlockBigger();
+    _initUsersViewWidget();
   }
 
   @override
   void dispose() {
     super.dispose();
+    eventBus.unregister(setStateEvent, setSateCallBack);
+    eventBus.unregister(
+        setStateEventGroupCallUserWidgetRefresh, groupCallUserWidgetRefreshCallback);
   }
 
   @override
@@ -47,25 +97,19 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
     return Scaffold(
       body: WillPopScope(
         onWillPop: () async {
-          _exitRoom();
           return true;
         },
         child: Container(
-          color: _getBackgroundColor(),
-          child: SafeArea(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints.expand(),
-              child: Stack(
-                alignment: Alignment.center,
-                children: <Widget>[
-                  _buildUserVideoList(),
-                  _buildInviteUserButton(),
-                  _buildFloatingWindowButton(),
-                  _buildTimingAndHintWidget(),
-                  _buildFunctionWidget(),
-                ],
-              ),
-            ),
+          padding: const EdgeInsets.only(top: 40),
+          color: const Color.fromRGBO(45, 45, 45, 1.0),
+          child: Stack(
+            alignment: Alignment.center,
+            fit: StackFit.expand,
+            children: <Widget>[
+              _buildUserVideoList(),
+              _buildTopWidget(),
+              _buildFunctionWidget(),
+            ],
           ),
         ),
       ),
@@ -73,56 +117,337 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
   }
 
   _buildUserVideoList() {
-    return Positioned(
-      top: 0,
-      left: 0,
-      width: MediaQuery.of(context).size.width,
-      child: (TUICallStatus.waiting == CallState.instance.selfUser.callStatus &&
-              CallState.instance.selfUser.callRole == TUICallRole.called)
-          ? _buildReceivedGroupCallWaitting()
-          : _buildGroupCallList(),
-    );
+    return (TUICallStatus.waiting == CallState.instance.selfUser.callStatus &&
+            CallState.instance.selfUser.callRole == TUICallRole.called)
+        ? _buildReceivedGroupCallWaitting()
+        : _buildGroupCallView();
   }
 
-  _buildInviteUserButton() {
+  _buildReceivedGroupCallWaitting() {
     return Positioned(
-      top: 15,
-      right: 10,
-      child: Visibility(
-        visible: TUICallStatus.accept == CallState.instance.selfUser.callStatus ||
-            TUICallRole.caller == CallState.instance.selfUser.callRole,
-        child: ExtendButton(
-          imgUrl: TUICallMediaType.audio == CallState.instance.mediaType
-              ? "assets/images/add_user_dark.png"
-              : "assets/images/add_user.png",
-          imgHieght: 32,
-          onTap: () {
-            TUICallKitNavigatorObserver.getInstance().enterInviteUserPage();
-          },
-        ),
-      ),
-    );
-  }
-
-  _buildFloatingWindowButton() {
-    return CallState.instance.enableFloatWindow
-        ? Positioned(
-            top: 15,
-            left: 10,
-            child: Visibility(
-              visible: CallState.instance.enableFloatWindow,
-              child: ExtendButton(
-                imgUrl: (CallState.instance.mediaType == TUICallMediaType.audio)
-                    ? "assets/images/floating_button_black.png"
-                    : "assets/images/floating_button_white.png",
-                imgHieght: 32,
-                onTap: () {
-                  _openFloatWindow();
-                },
+        top: 0,
+        left: 0,
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 150),
+              height: 120,
+              width: 120,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+              ),
+              child: Image(
+                image: NetworkImage(StringStream.makeNull(
+                    CallState.instance.caller.avatar, Constants.defaultAvatar)),
+                fit: BoxFit.cover,
+                errorBuilder: (ctx, err, stackTrace) => Image.asset(
+                  'assets/images/user_icon.png',
+                  package: 'tencent_calls_uikit',
+                ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Text(
+                User.getUserDisplayName(CallState.instance.caller),
+                style: const TextStyle(fontSize: 24, color: Colors.white),
+              ),
+            ),
+            Text(
+              CallKit_t("邀请你进行多人通话"),
+              style: const TextStyle(fontSize: 18, color: Colors.white),
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            Text(
+              CallKit_t("他们也在"),
+              style: const TextStyle(color: Colors.white),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 10),
+              child: Wrap(
+                spacing: 5,
+                runSpacing: 5,
+                children: List.generate(CallState.instance.calleeList.length, ((index) {
+                  return Container(
+                    height: 30,
+                    width: 30,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                    ),
+                    child: Image(
+                      image: NetworkImage(StringStream.makeNull(
+                          CallState.instance.calleeList[index].avatar, Constants.defaultAvatar)),
+                      fit: BoxFit.cover,
+                      errorBuilder: (ctx, err, stackTrace) => Image.asset(
+                        'assets/images/user_icon.png',
+                        package: 'tencent_calls_uikit',
+                      ),
+                    ),
+                  );
+                })),
+              ),
+            )
+          ],
+        ));
+  }
+
+  _buildGroupCallView() {
+    return Positioned(
+        top: 50,
+        left: 0,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.width * 4 / 3,
+        child: Stack(children: _userViewWidgets));
+  }
+
+  _buildTopWidget() {
+    final floatWindowBtnWidget = CallState.instance.enableFloatWindow
+        ? Visibility(
+            visible: CallState.instance.enableFloatWindow,
+            child: InkWell(
+                onTap: () => _openFloatWindow(),
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: Image.asset(
+                    'assets/images/floating_button.png',
+                    package: 'tencent_calls_uikit',
+                  ),
+                )),
           )
         : const SizedBox();
+
+    final timerWidget = (TUICallStatus.accept == CallState.instance.selfUser.callStatus)
+        ? const SizedBox(width: 100, child: Center(child: TimingWidget()))
+        : const SizedBox();
+
+    final inviteBtnWidget = Visibility(
+      visible: TUICallStatus.accept == CallState.instance.selfUser.callStatus ||
+          TUICallRole.caller == CallState.instance.selfUser.callRole,
+      child: InkWell(
+          onTap: () => TUICallKitNavigatorObserver.getInstance().enterInviteUserPage(),
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: Image.asset(
+              'assets/images/add_user.png',
+              package: 'tencent_calls_uikit',
+            ),
+          )),
+    );
+
+    return Positioned(
+        top: 15,
+        width: MediaQuery.of(context).size.width,
+        height: 100,
+        child: Stack(
+          children: [
+            Positioned(left: 16, child: floatWindowBtnWidget),
+            Positioned(left: (MediaQuery.of(context).size.width / 2) - 50, child: timerWidget),
+            Positioned(right: 16, child: inviteBtnWidget),
+          ],
+        ));
+  }
+
+  _buildFunctionWidget() {
+    Widget functionWidget;
+    if (TUICallStatus.waiting == CallState.instance.selfUser.callStatus &&
+        TUICallRole.called == CallState.instance.selfUser.callRole) {
+      functionWidget = _buildAudioAndVideoCalleeWaitingFunctionView();
+    } else {
+      functionWidget = _buildVideoCallerAndCalleeAcceptedFunctionView();
+    }
+
+    return Positioned(bottom: 0, width: MediaQuery.of(context).size.width, child: functionWidget);
+  }
+
+  _buildAudioAndVideoCalleeWaitingFunctionView() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ExtendButton(
+              imgUrl: "assets/images/hangup.png",
+              tips: CallKit_t("挂断"),
+              textColor: Colors.white,
+              imgHeight: 64,
+              onTap: () {
+                _handleReject(widget.close);
+              },
+            ),
+            ExtendButton(
+              imgUrl: "assets/images/dialing.png",
+              tips: CallKit_t("接听"),
+              textColor: Colors.white,
+              imgHeight: 64,
+              onTap: () {
+                _handleAccept();
+              },
+            ),
+          ],
+        ),
+        const SizedBox(height: 80)
+      ],
+    );
+  }
+
+  _buildVideoCallerAndCalleeAcceptedFunctionView() {
+    double bigBtnHeight = 52;
+    double smallBtnHeight = 35;
+    double edge = 40;
+    double bottomEdge = 10;
+    int duration = 300;
+    int btnWidth = 100;
+    Curve curve = Curves.easeInOut;
+    return ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(16.0),
+          topRight: Radius.circular(16.0),
+        ),
+        child: GestureDetector(
+            onVerticalDragUpdate: (details) => _functionWidgetVerticalDragUpdate(details),
+            child: AnimatedContainer(
+              curve: curve,
+              height: isFunctionExpand ? 200 : 90,
+              duration: Duration(milliseconds: duration),
+              color: const Color.fromRGBO(52, 56, 66, 1.0),
+              child: Stack(
+                children: [
+                  AnimatedPositioned(
+                    curve: curve,
+                    duration: Duration(milliseconds: duration),
+                    left: isFunctionExpand
+                        ? ((MediaQuery.of(context).size.width / 4) - (btnWidth / 2))
+                        : (MediaQuery.of(context).size.width * 2 / 6 - btnWidth / 2),
+                    bottom: isFunctionExpand ? bottomEdge + bigBtnHeight + edge : bottomEdge,
+                    child: ExtendButton(
+                      imgUrl: CallState.instance.isMicrophoneMute
+                          ? "assets/images/mute_on.png"
+                          : "assets/images/mute.png",
+                      tips: isFunctionExpand
+                          ? (CallState.instance.isMicrophoneMute
+                          ? CallKit_t("麦克风已关闭")
+                          : CallKit_t("麦克风已开启"))
+                          : '',
+                      textColor: Colors.white,
+                      imgHeight: isFunctionExpand ? bigBtnHeight : smallBtnHeight,
+                      onTap: () {
+                        _handleSwitchMic();
+                      },
+                      userAnimation: true,
+                      duration: Duration(milliseconds: duration),
+                    ),
+                  ),
+                  AnimatedPositioned(
+                    curve: curve,
+                    duration: Duration(milliseconds: duration),
+                    left: isFunctionExpand
+                        ? (MediaQuery.of(context).size.width / 2 - btnWidth / 2)
+                        : (MediaQuery.of(context).size.width * 3 / 6 - btnWidth / 2),
+                    bottom: isFunctionExpand ? bottomEdge + bigBtnHeight + edge : bottomEdge,
+                    child: ExtendButton(
+                      imgUrl: CallState.instance.audioDevice == TUIAudioPlaybackDevice.speakerphone
+                          ? "assets/images/handsfree_on.png"
+                          : "assets/images/handsfree.png",
+                      tips: isFunctionExpand
+                          ? (CallState.instance.audioDevice == TUIAudioPlaybackDevice.speakerphone
+                          ? CallKit_t("扬声器已开启")
+                          : CallKit_t("扬声器已关闭"))
+                          : '',
+                      textColor: Colors.white,
+                      imgHeight: isFunctionExpand ? bigBtnHeight : smallBtnHeight,
+                      onTap: () {
+                        _handleSwitchAudioDevice();
+                      },
+                      userAnimation: true,
+                      duration: Duration(milliseconds: duration),
+                    ),
+                  ),
+                  AnimatedPositioned(
+                    curve: curve,
+                    duration: Duration(milliseconds: duration),
+                    left: isFunctionExpand
+                        ? (MediaQuery.of(context).size.width * 3 / 4 - btnWidth / 2)
+                        : (MediaQuery.of(context).size.width * 4 / 6 - btnWidth / 2),
+                    bottom: isFunctionExpand ? bottomEdge + bigBtnHeight + edge : bottomEdge,
+                    child: ExtendButton(
+                      imgUrl: CallState.instance.isCameraOpen
+                          ? "assets/images/camera_on.png"
+                          : "assets/images/camera_off.png",
+                      tips: isFunctionExpand
+                          ? (CallState.instance.isCameraOpen
+                          ? CallKit_t("摄像头已开启")
+                          : CallKit_t("摄像头已关闭"))
+                          : '',
+                      textColor: Colors.white,
+                      imgHeight: isFunctionExpand ? bigBtnHeight : smallBtnHeight,
+                      onTap: () {
+                        _handleOpenCloseCamera();
+                      },
+                      userAnimation: true,
+                      duration: Duration(milliseconds: duration),
+                    ),
+                  ),
+                  AnimatedPositioned(
+                    curve: curve,
+                    duration: Duration(milliseconds: duration),
+                    left: isFunctionExpand
+                        ? (MediaQuery.of(context).size.width / 2 - btnWidth / 2)
+                        : (MediaQuery.of(context).size.width * 5 / 6 - btnWidth / 2),
+                    bottom: bottomEdge,
+                    child: ExtendButton(
+                      imgUrl: "assets/images/hangup.png",
+                      textColor: Colors.white,
+                      imgHeight: isFunctionExpand ? bigBtnHeight : smallBtnHeight,
+                      onTap: () {
+                        _handleHangUp(widget.close);
+                      },
+                      userAnimation: true,
+                      duration: Duration(milliseconds: duration),
+                    ),
+                  ),
+                  AnimatedPositioned(
+                      curve: curve,
+                      duration: Duration(milliseconds: duration),
+                      left: (MediaQuery.of(context).size.width / 6 - smallBtnHeight / 2),
+                      bottom: isFunctionExpand ? bottomEdge + smallBtnHeight / 4 + 22 :
+                      bottomEdge + 22,
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            isFunctionExpand = !isFunctionExpand;
+                          });
+                        },
+                        child: Transform(
+                          alignment: Alignment.center,
+                          transform: Matrix4.identity()
+                            ..scale(1.0, isFunctionExpand ? 1.0 : -1.0, 1.0),
+                          child: Image.asset(
+                            'assets/images/arrow.png',
+                            package: 'tencent_calls_uikit',
+                            width: smallBtnHeight,
+                          ),
+                        ),
+                      ))
+                ],
+              ))
+        )
+    );
+  }
+
+  _functionWidgetVerticalDragUpdate(DragUpdateDetails details) {
+    if (details.delta.dy < 0 && !isFunctionExpand) {
+      isFunctionExpand = true;
+    } else if (details.delta.dy > 0 && isFunctionExpand) {
+      isFunctionExpand = false;
+    }
+    setState(() {});
   }
 
   _openFloatWindow() async {
@@ -132,230 +457,64 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
         return;
       }
     }
-    TUICallKitPlatform.instance.startFloatWindow();
+    CallManager.instance.openFloatWindow();
     TUICallKitNavigatorObserver.getInstance().exitCallingPage();
   }
 
-  _buildFunctionWidget() {
-    return Positioned(
-      bottom: 50,
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        child: GroupFunctionWidget.buildFunctionWidget(widget.close),
-      ),
-    );
-  }
-
-  _buildTimingAndHintWidget() {
-    return Positioned(
-        bottom: (TUICallMediaType.audio == CallState.instance.mediaType) ? 180 : 280,
-        child: (TUICallStatus.accept == CallState.instance.selfUser.callStatus)
-            ? const TimingWidget()
-            : Visibility(
-                visible: TUICallStatus.waiting == CallState.instance.selfUser.callStatus &&
-                    TUICallRole.caller == CallState.instance.selfUser.callRole,
-                child: Center(
-                  child: Text(CallKit_t("正在等待对方接受邀请……"),
-                      style: TextStyle(
-                        color: _getTextColor(),
-                        fontSize: 14,
-                      )),
-                ),
-              ));
-  }
-
-  Widget _buildReceivedGroupCallWaitting() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(top: 150),
-          height: 120,
-          width: 120,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-          ),
-          child: Image(
-            image: NetworkImage(
-                StringStream.makeNull(CallState.instance.caller.avatar, Constants.defaultAvatar)),
-            fit: BoxFit.cover,
-            errorBuilder: (ctx, err, stackTrace) => Image.asset(
-              'assets/images/user_icon.png',
-              package: 'tencent_calls_uikit',
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Text(
-            User.getUserDisplayName(CallState.instance.caller),
-            style: TextStyle(fontSize: 24, color: _getTextColor()),
-          ),
-        ),
-        Text(
-          CallKit_t("邀请您进行多人通话……"),
-          style: TextStyle(color: _getTextColor()),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Container(
-          margin: const EdgeInsets.only(top: 16),
-          child: Wrap(
-            spacing: 5,
-            runSpacing: 5,
-            children: List.generate(CallState.instance.calleeList.length, ((index) {
-              return Container(
-                height: 30,
-                width: 30,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                ),
-                child: Image(
-                  image: NetworkImage(StringStream.makeNull(
-                      CallState.instance.calleeList[index].avatar, Constants.defaultAvatar)),
-                  fit: BoxFit.cover,
-                  errorBuilder: (ctx, err, stackTrace) => Image.asset(
-                    'assets/images/user_icon.png',
-                    package: 'tencent_calls_uikit',
-                  ),
-                ),
-              );
-            })),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _buildGroupCallList() {
-    return Container(
-      margin: const EdgeInsets.only(top: 80, left: 10, right: 10),
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: Wrap(
-        spacing: 0,
-        runSpacing: 0,
-        direction: Axis.horizontal,
-        alignment: CallState.instance.remoteUserList.length == 2
-            ? WrapAlignment.center
-            : WrapAlignment.start,
-        children: List.generate(CallState.instance.remoteUserList.length + 1, (index) {
-          User user = _getUserByViewIndex(index);
-          return SizedBox(
-            width: _getVideoViewWidthHeight(),
-            height: _getVideoViewWidthHeight(),
-            child: Stack(
-              alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
-              children: <Widget>[
-                Visibility(
-                  visible: !user.videoAvailable,
-                  child: Container(
-                    width: _getVideoViewWidthHeight(),
-                    height: _getVideoViewWidthHeight(),
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(0)),
-                    ),
-                    child: Image(
-                      image:
-                          NetworkImage(StringStream.makeNull(user.avatar, Constants.defaultAvatar)),
-                      fit: BoxFit.cover,
-                      errorBuilder: (ctx, err, stackTrace) => Image.asset(
-                        'assets/images/user_icon.png',
-                        package: 'tencent_calls_uikit',
-                      ),
-                    ),
-                  ),
-                ),
-                Visibility(
-                  visible: TUICallMediaType.video == CallState.instance.mediaType,
-                  child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 100),
-                    opacity: user.videoAvailable ? 1.0 : 0,
-                    child: TUIVideoView(
-                      key: user.key,
-                      onPlatformViewCreated: (viewId) {
-                        _onPlatformViewCreated(user, viewId);
-                      },
-                    ),
-                  ),
-                ),
-                Visibility(
-                  visible: user.callStatus == TUICallStatus.waiting &&
-                      user.id != CallState.instance.selfUser.id,
-                  child: SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: Image.asset(
-                      "assets/images/loading.gif",
-                      package: 'tencent_calls_uikit',
-                    ),
-                  ),
-                ),
-                Positioned(
-                    left: 5,
-                    bottom: 5,
-                    child: Text(User.getUserDisplayName(user),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ))),
-              ],
-            ),
-          );
-        }),
-      ),
-    );
-  }
-
-  void _onPlatformViewCreated(User user, int viewId) {
-    debugPrint("_onPlatformViewCreated: user.id = ${user.id}, viewId = $viewId");
-    if (user.id == CallState.instance.selfUser.id) {
-      CallState.instance.isCameraOpen = true;
-      CallState.instance.selfUser.videoAvailable = true;
-      CallManager.instance.openCamera(CallState.instance.camera, viewId);
-      CallState.instance.selfUser.viewID = viewId;
+  _handleSwitchMic() async {
+    if (CallState.instance.isMicrophoneMute) {
+      CallState.instance.isMicrophoneMute = false;
+      await CallManager.instance.openMicrophone();
     } else {
-      CallManager.instance.startRemoteView(user.id, viewId);
+      CallState.instance.isMicrophoneMute = true;
+      await CallManager.instance.closeMicrophone();
     }
-    user.viewID = viewId;
+    setState(() {});
   }
 
-  /// -------2 * 2-------- View model ------3 * 3-------------
-  /// |   me   | remote |  ---  |   me   | remote | remote |
-  /// | remote | remote |  ---  | remote | remote | remote |
-  /// ------------------------  | remote | remote | remote |
-  /// --------------------------------------------------------
-  double _getVideoViewWidthHeight() {
-    int userCount = CallState.instance.remoteUserList.length + 1;
-    if (userCount > 4) {
-      return ((MediaQuery.of(context).size.width - 20) / 3);
+  _handleSwitchAudioDevice() async {
+    if (CallState.instance.audioDevice == TUIAudioPlaybackDevice.earpiece) {
+      CallState.instance.audioDevice = TUIAudioPlaybackDevice.speakerphone;
     } else {
-      return ((MediaQuery.of(context).size.width - 20) / 2);
+      CallState.instance.audioDevice = TUIAudioPlaybackDevice.earpiece;
     }
+    await CallManager.instance.selectAudioPlaybackDevice(CallState.instance.audioDevice);
+    setState(() {});
   }
 
-  User _getUserByViewIndex(int index) {
-    if (index == 0) {
-      if (TUICallMediaType.video == CallState.instance.mediaType) {
-        CallState.instance.selfUser.videoAvailable = CallState.instance.isCameraOpen;
-      } else {
-        CallState.instance.selfUser.videoAvailable = false;
-      }
-      return CallState.instance.selfUser;
+  _handleHangUp(Function close) async {
+    await CallManager.instance.hangup();
+    close();
+  }
+
+  _handleReject(Function close) async {
+    await CallManager.instance.reject();
+    close();
+  }
+
+  _handleAccept() async {
+    TUIPermissionResult permissionRequestResult = TUIPermissionResult.requesting;
+    if (Platform.isAndroid) {
+      permissionRequestResult =
+          await PermissionRequest.checkCallingPermission(CallState.instance.mediaType);
+    }
+    if (permissionRequestResult == TUIPermissionResult.granted || Platform.isIOS) {
+      await CallManager.instance.accept();
+      CallState.instance.selfUser.callStatus = TUICallStatus.accept;
     } else {
-      return CallState.instance.remoteUserList[index - 1];
+      CallManager.instance.showToast(CallKit_t("新通话呼入，但因权限不足，无法接听。请确认摄像头/麦克风权限已开启。"));
     }
+    setState(() {});
   }
 
-  _exitRoom() {}
-
-  Color _getBackgroundColor() {
-    return (TUICallMediaType.audio == CallState.instance.mediaType) ? Colors.white : Colors.black;
-  }
-
-  Color _getTextColor() {
-    return (TUICallMediaType.audio == CallState.instance.mediaType) ? Colors.black : Colors.white;
+  void _handleOpenCloseCamera() async {
+    CallState.instance.isCameraOpen = !CallState.instance.isCameraOpen;
+    if (CallState.instance.isCameraOpen) {
+      await CallManager.instance
+          .openCamera(CallState.instance.camera, CallState.instance.selfUser.viewID);
+    } else {
+      await CallManager.instance.closeCamera();
+    }
+    setState(() {});
   }
 }

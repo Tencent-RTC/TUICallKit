@@ -1,6 +1,5 @@
-import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
-
 class Constants {
+  static const String pluginVersion = '2.2.3';
   static const int groupCallMaxUserCount = 9;
   static const int roomIdMaxValue = 2147483647; // 2^31 - 1
   static const String spKeyEnableMuteMode = "enableMuteMode";

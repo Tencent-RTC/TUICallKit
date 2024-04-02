@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.os.Binder;
 import android.os.Build;
@@ -13,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.tencent.qcloud.tuikit.tuicallkit.R;
 
 public class FloatWindowService extends Service {
@@ -56,13 +58,24 @@ public class FloatWindowService extends Service {
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (mCallView == null || mWindowLayoutParams == null || mWindowManager == null) {
+            return;
+        }
+        mWindowLayoutParams.x = 0;
+        mWindowLayoutParams.y = (ScreenUtil.getScreenHeight(getApplication()) - mCallView.getHeight()) / 2;
+        mWindowManager.updateViewLayout(mCallView, mWindowLayoutParams);
+    }
+
+    @Override
     public IBinder onBind(Intent intent) {
         return new FloatBinder();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
+        return START_NOT_STICKY;
     }
 
     @Override
@@ -76,7 +89,7 @@ public class FloatWindowService extends Service {
     private void initWindow() {
         mWindowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         mWindowLayoutParams = getViewParams();
-        mScreenWidth = mWindowManager.getDefaultDisplay().getWidth();
+        mScreenWidth = ScreenUtil.getScreenWidth(getApplication());
 
         if (null != mCallView) {
             mCallView.setBackgroundResource(R.drawable.tuicalling_bg_floatwindow_left);
@@ -96,9 +109,9 @@ public class FloatWindowService extends Service {
                 | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
 
-        mWindowLayoutParams.gravity = Gravity.LEFT | Gravity.TOP;
+        mWindowLayoutParams.gravity = Gravity.START | Gravity.TOP;
         mWindowLayoutParams.x = 0;
-        mWindowLayoutParams.y = mWindowManager.getDefaultDisplay().getHeight() / 2;
+        mWindowLayoutParams.y = ScreenUtil.getScreenHeight(getApplication()) / 2;
 
         mWindowLayoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
         mWindowLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -188,7 +201,7 @@ public class FloatWindowService extends Service {
             return;
         }
         int height = mCallView.getHeight();
-        int screenHeight = mWindowManager.getDefaultDisplay().getHeight();
+        int screenHeight = ScreenUtil.getScreenHeight(getApplication());
         int resourceId = mContext.getResources().getIdentifier("status_bar_height",
                 "dimen", "android");
         int statusBarHeight = mContext.getResources().getDimensionPixelSize(resourceId);

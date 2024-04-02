@@ -41,6 +41,7 @@ public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, TUICallKit
         case openMicrophone
         case closeMicrophone
         case isAppInForeground
+        case apiLog
     }
     
     @objc func applicationWillResignActive() {
@@ -57,7 +58,7 @@ public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, TUICallKit
 extension TUICallKitPlugin {
     // MARK: BackToFlutterWidgetDelegate
     func backToFlutterWidget() {
-        channel.invokeMethod("gotoCallingPage", arguments: nil)
+        channel.invokeMethod("backCallingPage", arguments: nil)
     }
     
     // MARK: TUICallKitServiceDelegate
@@ -130,6 +131,8 @@ extension TUICallKitPlugin: FlutterPlugin {
             break
         case .closeMicrophone:
             TUICallKitManager.shared.closeMicrophone(call: call, result: result)
+        case .apiLog:
+            TUICallKitManager.shared.apiLog(call: call, result: result)
         default:
             break
         }

@@ -16,17 +16,17 @@ import TUICallKit
 #endif
 
 public class SettingDetailViewController: UIViewController, UITextViewDelegate {
-
+    
     enum detailType{
         case userAv
         case ringInfo
         case entendInfo
         case offlinePushInfo
     }
-    var detailtype: detailType
+    var detail: detailType
     
-    init(detailtype: detailType) {
-        self.detailtype = detailtype
+    init(type: detailType) {
+        self.detail = type
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -52,19 +52,19 @@ public class SettingDetailViewController: UIViewController, UITextViewDelegate {
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         
         let backButton = UIButton(type: .system)
-        backButton.setImage(UIImage(named: "calling_back"), for: .normal)
+        backButton.setImage(UIImage(named: "callKit_back"), for: .normal)
         backButton.addTarget(self, action: #selector(backButtonClick), for: .touchUpInside)
         let item = UIBarButtonItem(customView: backButton)
         item.tintColor = UIColor.black
         navigationItem.leftBarButtonItem = item
         
         let confirmButton = UIButton(type: .system)
-        confirmButton.setTitle(TUICallKitAppLocalize("TUICallKitApp.Home.determine"), for: .normal)
+        confirmButton.setTitle(TUICallKitAppLocalize("TUICallKitApp.Home.Determine"), for: .normal)
         confirmButton.addTarget(self, action: #selector(confirmButtonClick), for: .touchUpInside)
-        let rightitem = UIBarButtonItem(customView: confirmButton)
-        rightitem.tintColor = UIColor.black
-        navigationItem.rightBarButtonItem = rightitem
-
+        let rightItem = UIBarButtonItem(customView: confirmButton)
+        rightItem.tintColor = UIColor.black
+        navigationItem.rightBarButtonItem = rightItem
+        
         navigationController?.navigationBar.isHidden = false
         
         constructViewHierarchy()
@@ -72,7 +72,7 @@ public class SettingDetailViewController: UIViewController, UITextViewDelegate {
         
         setTextView()
     }
-        
+    
     func constructViewHierarchy() {
         view.addSubview(textView)
     }
@@ -85,7 +85,7 @@ public class SettingDetailViewController: UIViewController, UITextViewDelegate {
     }
     
     func setTextView() {
-        switch detailtype {
+        switch detail {
         case .userAv:
             textView.text = TUICallKitAppLocalize("TUICallKitApp.Setting.SetAvatarTip")
         case .ringInfo:
@@ -103,7 +103,7 @@ public class SettingDetailViewController: UIViewController, UITextViewDelegate {
     
     @objc func confirmButtonClick() {
         guard let textString = textView.text else { return }
-        switch detailtype {
+        switch detail {
         case .userAv:
             userAvSetting(text: textString)
         case .ringInfo:
@@ -203,5 +203,5 @@ public class SettingDetailViewController: UIViewController, UITextViewDelegate {
             }
         }
     }
-
+    
 }

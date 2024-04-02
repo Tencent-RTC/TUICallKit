@@ -22,22 +22,21 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     var timeout: Int = 30
     var userData: String = ""
     var offlineData: String = ""
-    
-    var beaurtLevel: Int = 6
+    var beautyLevel: Int = 6
     
     weak var currentTextField: UITextField?
     
-    lazy var scroView: UIScrollView = {
+    lazy var scrollView: UIScrollView = {
         return UIScrollView()
     }()
     
-    lazy var scroContentView: UIView = {
+    lazy var scrollContentView: UIView = {
         return UIView(frame: CGRect.zero)
     }()
-
+    
     lazy var basicSettingContentView: UIView = {
         let view = UIView(frame: .zero)
-        view.backgroundColor = UIColor(hex: "EEEEEE")
+        view.backgroundColor = UIColor(hex: "AAAAAA")
         return view
     }()
     lazy var basicSettingLabel: UILabel = {
@@ -55,12 +54,13 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     lazy var userAvInfoLabel: UILabel = {
         let place: String = SettingsConfig.share.avatar.isEmpty ? TUICallKitAppLocalize("TUICallKitApp.Setting.NotSet") : SettingsConfig.share.avatar
         let view = createLabel(textSize: 16, text: place)
-        view.textColor = UIColor(hex: "EEEEEE")
+        view.textColor = UIColor(hex: "AAAAAA")
         view.textAlignment = .right
         return view
     }()
     lazy var userAvBtn: UILabel = {
         let view = createLabel(textSize: 16, text: " > ")
+        view.textAlignment = .center
         view.isUserInteractionEnabled = true
         return view
     }()
@@ -77,7 +77,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         let place: String = SettingsConfig.share.name.isEmpty ? TUICallKitAppLocalize("TUICallKitApp.Setting.NotSet") : SettingsConfig.share.name
         return createTextField(text: place)
     }()
-
+    
     lazy var ringContentView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = .white
@@ -88,14 +88,15 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     }()
     lazy var ringInfoLabel: UILabel = {
         let place: String = SettingsConfig.share.ringUrl.isEmpty ?
-            TUICallKitAppLocalize("TUICallKitApp.Setting.NotSet") : SettingsConfig.share.ringUrl
+        TUICallKitAppLocalize("TUICallKitApp.Setting.NotSet") : SettingsConfig.share.ringUrl
         let view = createLabel(textSize: 16, text: place)
-        view.textColor = UIColor(hex: "EEEEEE")
+        view.textColor = UIColor(hex: "AAAAAA")
         view.textAlignment = .right
         return view
     }()
     lazy var ringAvBtn: UILabel = {
         let view = createLabel(textSize: 16, text: " > ")
+        view.textAlignment = .center
         view.isUserInteractionEnabled = true
         return view
     }()
@@ -109,7 +110,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         return createLabel(textSize: 16, text: TUICallKitAppLocalize("TUICallKitApp.Setting.MuteMode"))
     }()
     lazy var muteSwitch: UISwitch = {
-        return createSwich(isOn: SettingsConfig.share.mute)
+        return createSwitch(isOn: SettingsConfig.share.mute)
     }()
     
     lazy var floatingContentView: UIView = {
@@ -121,12 +122,12 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         return createLabel(textSize: 16, text: TUICallKitAppLocalize("TUICallKitApp.Setting.EnableFloating"))
     }()
     lazy var floatingSwitch: UISwitch = {
-        return createSwich(isOn: SettingsConfig.share.floatWindow)
+        return createSwitch(isOn: SettingsConfig.share.floatWindow)
     }()
     
     lazy var callSettingContentView: UIView = {
         let view = UIView(frame: .zero)
-        view.backgroundColor = UIColor(hex: "EEEEEE")
+        view.backgroundColor = UIColor(hex: "AAAAAA")
         return view
     }()
     lazy var callSettingLabel: UILabel = {
@@ -144,7 +145,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     lazy var timeoutTextField: UITextField = {
         return createTextField(text: "30")
     }()
-        
+    
     lazy var extendedInfoContentView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = .white
@@ -156,12 +157,13 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     lazy var extendedInfo: UILabel = {
         let place = SettingsConfig.share.userData.isEmpty ? TUICallKitAppLocalize("TUICallKitApp.Setting.NotSet") : SettingsConfig.share.userData
         let view = createLabel(textSize: 16, text: place)
-        view.textColor = UIColor(hex: "EEEEEE")
+        view.textColor = UIColor(hex: "AAAAAA")
         view.textAlignment = .right
         return view
     }()
     lazy var extendedBtn: UILabel = {
         let view = createLabel(textSize: 16, text: " > ")
+        view.textAlignment = .center
         view.isUserInteractionEnabled = true
         return view
     }()
@@ -176,19 +178,20 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     }()
     lazy var offlinePushInfo: UILabel = {
         let view = createLabel(textSize: 16, text: TUICallKitAppLocalize("TUICallKitApp.Setting.GoToSettings"))
-        view.textColor = UIColor(hex: "EEEEEE")
+        view.textColor = UIColor(hex: "AAAAAA")
         view.textAlignment = .right
         return view
     }()
     lazy var offlinePushBtn: UILabel = {
         let view = createLabel(textSize: 16, text: " > ")
+        view.textAlignment = .center
         view.isUserInteractionEnabled = true
         return view
     }()
-
+    
     lazy var videoSettingContentView: UIView = {
         let view = UIView(frame: .zero)
-        view.backgroundColor = UIColor(hex: "EEEEEE")
+        view.backgroundColor = UIColor(hex: "AAAAAA")
         return view
     }()
     lazy var videoSettingLabel: UILabel = {
@@ -225,7 +228,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     lazy var resolutionModeLabel: UILabel = {
         return createLabel(textSize: 16, text: TUICallKitAppLocalize("TUICallKitApp.Setting.ResolutionMode"))
     }()
-    lazy var resolutionModeSegmoent: UISegmentedControl = {
+    lazy var resolutionModeSegment: UISegmentedControl = {
         let index = SettingsConfig.share.resolutionMode == .landscape ? 0 : 1
         return createSegment(item: [TUICallKitAppLocalize("TUICallKitApp.Setting.ResolutionMode.Horizontal"),
                                     TUICallKitAppLocalize("TUICallKitApp.Setting.ResolutionMode.Vertical"),], select: index)
@@ -239,7 +242,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     lazy var fillModeLabel: UILabel = {
         return createLabel(textSize: 16, text: TUICallKitAppLocalize("TUICallKitApp.Setting.FillMode"))
     }()
-    lazy var fillModeSegmoent: UISegmentedControl = {
+    lazy var fillModeSegment: UISegmentedControl = {
         let index = SettingsConfig.share.fillMode == .fit ? 0 : 1
         return createSegment(item: [TUICallKitAppLocalize("TUICallKitApp.Setting.FillMode.Fit"),
                                     TUICallKitAppLocalize("TUICallKitApp.Setting.FillMode.Fill"),], select: index)
@@ -253,7 +256,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     lazy var rotationLabel: UILabel = {
         return createLabel(textSize: 16, text: TUICallKitAppLocalize("TUICallKitApp.Setting.Rotation"))
     }()
-    lazy var rotationSegmoent: UISegmentedControl = {
+    lazy var rotationSegment: UISegmentedControl = {
         return createSegment(item: ["0", "90", "180", "270"], select: convertRotationToIndex(rotation: SettingsConfig.share.rotation))
     }()
     
@@ -275,14 +278,14 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         view.backgroundColor = UIColor.white
         
         let backButton = UIButton(type: .system)
-        backButton.setImage(UIImage(named: "calling_back"), for: .normal)
+        backButton.setImage(UIImage(named: "callKit_back"), for: .normal)
         backButton.addTarget(self, action: #selector(backButtonClick), for: .touchUpInside)
         let item = UIBarButtonItem(customView: backButton)
         item.tintColor = UIColor.black
         navigationItem.leftBarButtonItem = item
-
-        constructViewHierarchy() // 视图层级布局
-        activateConstraints() // 生成约束（此时有可能拿不到父视图正确的frame）
+        
+        constructViewHierarchy()
+        activateConstraints()
         bindInteraction()
     }
     
@@ -300,91 +303,91 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     
     func updateView() {
         ringInfoLabel.text = SettingsConfig.share.ringUrl.isEmpty ?
-            TUICallKitAppLocalize("TUICallKitApp.Setting.NotSet") : SettingsConfig.share.ringUrl
+        TUICallKitAppLocalize("TUICallKitApp.Setting.NotSet") : SettingsConfig.share.ringUrl
         userAvInfoLabel.text = SettingsConfig.share.avatar.isEmpty ?
-            TUICallKitAppLocalize("TUICallKitApp.Setting.NotSet") : SettingsConfig.share.avatar
+        TUICallKitAppLocalize("TUICallKitApp.Setting.NotSet") : SettingsConfig.share.avatar
         extendedInfo.text = SettingsConfig.share.userData.isEmpty ?
-            TUICallKitAppLocalize("TUICallKitApp.Setting.NotSet") : SettingsConfig.share.userData
+        TUICallKitAppLocalize("TUICallKitApp.Setting.NotSet") : SettingsConfig.share.userData
     }
-
+    
     func constructViewHierarchy() {
-        view.addSubview(scroView)
-        scroView.addSubview(scroContentView)
+        view.addSubview(scrollView)
+        scrollView.addSubview(scrollContentView)
         
-        scroContentView.addSubview(basicSettingContentView)
+        scrollContentView.addSubview(basicSettingContentView)
         basicSettingContentView.addSubview(basicSettingLabel)
         
-        scroContentView.addSubview(userAvContentView)
+        scrollContentView.addSubview(userAvContentView)
         userAvContentView.addSubview(userAvLabel)
         userAvContentView.addSubview(userAvInfoLabel)
         userAvContentView.addSubview(userAvBtn)
         
-        scroContentView.addSubview(userNameContentView)
+        scrollContentView.addSubview(userNameContentView)
         userNameContentView.addSubview(userNameLabel)
         userNameContentView.addSubview(userNameTextField)
-                
-        scroContentView.addSubview(ringContentView)
+        
+        scrollContentView.addSubview(ringContentView)
         ringContentView.addSubview(ringLabel)
         ringContentView.addSubview(ringInfoLabel)
         ringContentView.addSubview(ringAvBtn)
         
-        scroContentView.addSubview(muteContentView)
+        scrollContentView.addSubview(muteContentView)
         muteContentView.addSubview(muteLabel)
         muteContentView.addSubview(muteSwitch)
         
-        scroContentView.addSubview(floatingContentView)
+        scrollContentView.addSubview(floatingContentView)
         floatingContentView.addSubview(floatingLabel)
         floatingContentView.addSubview(floatingSwitch)
         
-        scroContentView.addSubview(callSettingContentView)
+        scrollContentView.addSubview(callSettingContentView)
         callSettingContentView.addSubview(callSettingLabel)
         
-        scroContentView.addSubview(timeoutContentView)
+        scrollContentView.addSubview(timeoutContentView)
         timeoutContentView.addSubview(timeoutLabel)
         timeoutContentView.addSubview(timeoutTextField)
-                
-        scroContentView.addSubview(extendedInfoContentView)
+        
+        scrollContentView.addSubview(extendedInfoContentView)
         extendedInfoContentView.addSubview(extendedInfoLabel)
         extendedInfoContentView.addSubview(extendedInfo)
         extendedInfoContentView.addSubview(extendedBtn)
         
-        scroContentView.addSubview(offlinePushContentView)
+        scrollContentView.addSubview(offlinePushContentView)
         offlinePushContentView.addSubview(offlinePushLabel)
         offlinePushContentView.addSubview(offlinePushInfo)
         offlinePushContentView.addSubview(offlinePushBtn)
         
-        scroContentView.addSubview(videoSettingContentView)
+        scrollContentView.addSubview(videoSettingContentView)
         videoSettingContentView.addSubview(videoSettingLabel)
         
-        scroContentView.addSubview(resolutionContentView)
+        scrollContentView.addSubview(resolutionContentView)
         resolutionContentView.addSubview(resolutionLabel)
         resolutionContentView.addSubview(resolutionDropMenu)
         
-        scroContentView.addSubview(resolutionModeContentView)
+        scrollContentView.addSubview(resolutionModeContentView)
         resolutionModeContentView.addSubview(resolutionModeLabel)
-        resolutionModeContentView.addSubview(resolutionModeSegmoent)
+        resolutionModeContentView.addSubview(resolutionModeSegment)
         
-        scroContentView.addSubview(fillModeContentView)
+        scrollContentView.addSubview(fillModeContentView)
         fillModeContentView.addSubview(fillModeLabel)
-        fillModeContentView.addSubview(fillModeSegmoent)
+        fillModeContentView.addSubview(fillModeSegment)
         
-        scroContentView.addSubview(rotationContentView)
+        scrollContentView.addSubview(rotationContentView)
         rotationContentView.addSubview(rotationLabel)
-        rotationContentView.addSubview(rotationSegmoent)
+        rotationContentView.addSubview(rotationSegment)
         
-        scroContentView.addSubview(beautyLevelContentView)
+        scrollContentView.addSubview(beautyLevelContentView)
         beautyLevelContentView.addSubview(beautyLevelLabel)
         beautyLevelContentView.addSubview(beautyLevelTextField)
     }
     
     func activateConstraints() {
-        scroView.snp.makeConstraints { make in
+        scrollView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.top.equalToSuperview().offset(100)
         }
         
-        scroContentView.snp.makeConstraints { make in
-            make.top.bottom.equalTo(scroView)
+        scrollContentView.snp.makeConstraints { make in
+            make.top.bottom.equalTo(scrollView)
             make.left.right.equalTo(view)
         }
         
@@ -433,7 +436,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
             make.trailing.equalToSuperview().offset(-50)
             make.leading.equalTo(userNameLabel.snp.trailing).offset(20)
         }
-
+        
         ringContentView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
@@ -494,7 +497,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(20)
         }
-                
+        
         timeoutContentView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.top.equalTo(callSettingContentView.snp.bottom).offset(20)
@@ -585,7 +588,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
             make.leading.equalToSuperview().offset(20)
             make.width.equalTo(120)
         }
-        resolutionModeSegmoent.snp.makeConstraints { make in
+        resolutionModeSegment.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.trailing.equalToSuperview()
             make.leading.equalTo(resolutionModeLabel.snp.trailing).offset(20)
@@ -601,7 +604,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
             make.leading.equalToSuperview().offset(20)
             make.width.equalTo(120)
         }
-        fillModeSegmoent.snp.makeConstraints { make in
+        fillModeSegment.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.trailing.equalToSuperview()
             make.leading.equalTo(fillModeLabel.snp.trailing).offset(20)
@@ -617,7 +620,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
             make.leading.equalToSuperview().offset(20)
             make.width.equalTo(120)
         }
-        rotationSegmoent.snp.makeConstraints { make in
+        rotationSegment.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.trailing.equalToSuperview()
             make.leading.equalTo(rotationLabel.snp.trailing).offset(20)
@@ -645,51 +648,51 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     func bindInteraction() {
         let userAvBtnTapGesture = UITapGestureRecognizer(target: self, action: #selector(userAvBtnClick))
         userAvBtn.addGestureRecognizer(userAvBtnTapGesture)
-       
+        
         let ringAvBtnTapGesture = UITapGestureRecognizer(target: self, action: #selector(ringAvBtnClick))
         ringAvBtn.addGestureRecognizer(ringAvBtnTapGesture)
-
-        let offlinePushBtnTapGesture = UITapGestureRecognizer(target: self, action: #selector(offlinepushClick))
+        
+        let offlinePushBtnTapGesture = UITapGestureRecognizer(target: self, action: #selector(offlinePushClick))
         offlinePushBtn.addGestureRecognizer(offlinePushBtnTapGesture)
-
+        
         let extendedBtnTapGesture = UITapGestureRecognizer(target: self, action: #selector(extendClick))
         extendedBtn.addGestureRecognizer(extendedBtnTapGesture)
         
         muteSwitch.addTarget(self, action:  #selector(muteSwitchClick), for: .valueChanged)
         floatingSwitch.addTarget(self, action: #selector(floatingSwitchClick), for: .valueChanged)
-        resolutionModeSegmoent.addTarget(self, action: #selector(resolutionModeSegmoentClick), for: .valueChanged)
-        fillModeSegmoent.addTarget(self, action: #selector(fillModeSegmoentClick), for: .valueChanged)
-        rotationSegmoent.addTarget(self, action: #selector(rotationSegmoentClick), for: .valueChanged)
+        resolutionModeSegment.addTarget(self, action: #selector(resolutionModeSegmentClick), for: .valueChanged)
+        fillModeSegment.addTarget(self, action: #selector(fillModeSegmentClick), for: .valueChanged)
+        rotationSegment.addTarget(self, action: #selector(rotationSegmentClick), for: .valueChanged)
     }
     
     @objc func userAvBtnClick() {
-        let offlinepushVC = SettingDetailViewController(detailtype: .userAv)
-        offlinepushVC.title = TUICallKitAppLocalize("TUICallKitApp.Setting.SetAvatar")
-        offlinepushVC.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(offlinepushVC, animated: true)
+        let offlinePushVC = SettingDetailViewController(type: .userAv)
+        offlinePushVC.title = TUICallKitAppLocalize("TUICallKitApp.Setting.SetAvatar")
+        offlinePushVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(offlinePushVC, animated: true)
     }
-
+    
     @objc func ringAvBtnClick() {
-        let offlinepushVC = SettingDetailViewController(detailtype: .ringInfo)
-        offlinepushVC.title = TUICallKitAppLocalize("TUICallKitApp.Setting.SetRing")
-        offlinepushVC.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(offlinepushVC, animated: true)
+        let offlinePushVC = SettingDetailViewController(type: .ringInfo)
+        offlinePushVC.title = TUICallKitAppLocalize("TUICallKitApp.Setting.SetRing")
+        offlinePushVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(offlinePushVC, animated: true)
     }
-
-    @objc func offlinepushClick() {
-        let offlinepushVC = SettingDetailViewController(detailtype: .offlinePushInfo)
-        offlinepushVC.title = TUICallKitAppLocalize("TUICallKitApp.Setting.SetOffInleInfo")
-        offlinepushVC.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(offlinepushVC, animated: true)
+    
+    @objc func offlinePushClick() {
+        let offlinePushVC = SettingDetailViewController(type: .offlinePushInfo)
+        offlinePushVC.title = TUICallKitAppLocalize("TUICallKitApp.Setting.SetOffInleInfo")
+        offlinePushVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(offlinePushVC, animated: true)
     }
     
     @objc func extendClick() {
-        let extendVC = SettingDetailViewController(detailtype: .entendInfo)
+        let extendVC = SettingDetailViewController(type: .entendInfo)
         extendVC.title = TUICallKitAppLocalize("TUICallKitApp.Setting.SetExtend")
         extendVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(extendVC, animated: true)
     }
-        
+    
     @objc func muteSwitchClick(_ sender: UISwitch) {
         SettingsConfig.share.mute = sender.isOn
         TUICallKit.createInstance().enableMuteMode(enable: sender.isOn)
@@ -699,8 +702,8 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         SettingsConfig.share.floatWindow = sender.isOn
         TUICallKit.createInstance().enableFloatWindow(enable: sender.isOn)
     }
-            
-    @objc func resolutionModeSegmoentClick(_ sender: UISegmentedControl) {
+    
+    @objc func resolutionModeSegmentClick(_ sender: UISegmentedControl) {
         SettingsConfig.share.resolutionMode = sender.selectedSegmentIndex == 0 ? .landscape : .portrait
         let params = TUIVideoEncoderParams()
         params.resolution = SettingsConfig.share.resolution
@@ -710,7 +713,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    @objc func fillModeSegmoentClick(_ sender: UISegmentedControl) {
+    @objc func fillModeSegmentClick(_ sender: UISegmentedControl) {
         SettingsConfig.share.fillMode = sender.selectedSegmentIndex == 0 ? .fit : .fill
         
         let param = TUIVideoRenderParams()
@@ -721,7 +724,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    @objc func rotationSegmoentClick(_ sender: UISegmentedControl) {
+    @objc func rotationSegmentClick(_ sender: UISegmentedControl) {
         SettingsConfig.share.rotation = convertIndexToRotation(index: sender.selectedSegmentIndex)
         let param = TUIVideoRenderParams()
         param.fillMode = SettingsConfig.share.fillMode
@@ -730,7 +733,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         } fail: { code, message in
         }
     }
-        
+    
     @objc func backButtonClick() {
         navigationController?.popViewController(animated: true)
     }
@@ -739,7 +742,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         if text.isEmpty {
             return
         }
-
+        
         TUICallKit.createInstance().setSelfInfo(nickname: text, avatar: SettingsConfig.share.avatar) { [weak self] in
             guard let self = self else { return }
             SettingsConfig.share.name = text
@@ -750,7 +753,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
             TUITool.makeToast("Error \(code):\(message ?? "")")
         }
     }
-        
+    
     func timeoutButtonClick(text: String) {
         if text.isEmpty {
             return
@@ -812,7 +815,7 @@ extension SettingsViewController {
         return label
     }
     
-    func createSwich(isOn: Bool) -> UISwitch {
+    func createSwitch(isOn: Bool) -> UISwitch {
         let switchBtn = UISwitch(frame: CGRect.zero)
         switchBtn.isOn = isOn
         return switchBtn

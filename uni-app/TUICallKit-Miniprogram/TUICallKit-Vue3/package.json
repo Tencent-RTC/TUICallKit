@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@tencentcloud/call-uikit-wechat": "^3.0.4"
+    "@tencentcloud/call-uikit-wechat": "latest"
   }
 }

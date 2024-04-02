@@ -1,18 +1,17 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
+import 'package:tencent_calls_uikit/src/call_manager.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
+import 'package:tencent_calls_uikit/src/data/user.dart';
 import 'package:tencent_calls_uikit/src/extensions/calling_bell_feature.dart';
+import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
-import 'package:tencent_calls_uikit/src/data/user.dart';
-import 'package:tencent_calls_uikit/src/call_manager.dart';
 import 'package:tencent_calls_uikit/src/utils/event_bus.dart';
 import 'package:tencent_calls_uikit/src/utils/preference_utils.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
-import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
 
 //
@@ -49,6 +48,7 @@ class CallState {
   bool enableFloatWindow = false;
 
   bool isChangedBigSmallVideo = false;
+  bool isOpenFloatWindow = false;
 
   // 新增获取nickName
   NickNameCallback? nameCallback;
@@ -59,39 +59,45 @@ class CallState {
 
   TUICallObserver observer = TUICallObserver(
       onError: (int code, String message) {
-        TUIToast.show(content: 'Error: $code, $message');
+        TRTCLogger.info(
+            'TUICallObserver onError(code:$code, message:$message)');
+        CallManager.instance.showToast('Error: $code, $message');
       },
-      onCallReceived: (String callerId, List<String> calleeIdList,
-          String groupId, TUICallMediaType callMediaType) async {
-        debugPrint("----------onCallReceived----------");
-        CallState.instance.caller.id = callerId;
-        CallState.instance.calleeIdList.clear();
-        CallState.instance.calleeIdList.addAll(calleeIdList);
-        CallState.instance.groupId = groupId;
-        CallState.instance.mediaType = callMediaType;
-        CallState.instance.selfUser.callStatus = TUICallStatus.waiting;
+      onCallReceived: (String callerId,
+          List<String> calleeIdList,
+          String groupId,
+          TUICallMediaType callMediaType,
+          String? userData) async {
+        TRTCLogger.info(
+            'TUICallObserver onCallReceived(callerId:$callerId, calleeIdList:$calleeIdList, groupId:$groupId, callMediaType:$callMediaType, userData:$userData), version:${Constants.pluginVersion}');
+        await CallState.instance.handleCallReceivedData(
+            callerId, calleeIdList, groupId, callMediaType);
+        await TUICallKitPlatform.instance.updateCallStateToNative();
+        CallingBellFeature.startRing();
         if (!await TUICallKitPlatform.instance.isAppInForeground()) {
           if (Platform.isAndroid) {
-            await TUICallKitPlatform.instance.moveAppToFront("event_handle_receive_call");
+            await TUICallKitPlatform.instance
+                .moveAppToFront("event_handle_receive_call");
           }
         } else {
-          CallState.instance.handleCallReceived(callerId, calleeIdList, groupId, CallState.instance.mediaType);
+          CallManager.instance.launchCallingPage();
         }
       },
       onCallCancelled: (String callerId) {
-        debugPrint("----------onCallCancelled----------");
-        TUICallKitPlatform.instance.stopRing();
+        TRTCLogger.info('TUICallObserver onCallCancelled(callerId:$callerId)');
+        CallingBellFeature.stopRing();
         CallState.instance.cleanState();
         eventBus.notify(setStateEventOnCallEnd);
         TUICallKitPlatform.instance.updateCallStateToNative();
       },
       onCallBegin: (TUIRoomId roomId, TUICallMediaType callMediaType,
           TUICallRole callRole) {
+        TRTCLogger.info(
+            'TUICallObserver onCallBegin(roomId:$roomId, callMediaType:$callMediaType, callRole:$callRole)');
         TUICallKitPlatform.instance.startForegroundService();
-        debugPrint("----------onCallBegin----------");
         CallState.instance.startTime =
             DateTime.now().millisecondsSinceEpoch ~/ 1000;
-        TUICallKitPlatform.instance.stopRing();
+        CallingBellFeature.stopRing();
         CallState.instance.roomId = roomId;
         CallState.instance.mediaType = callMediaType;
         CallState.instance.selfUser.callRole = callRole;
@@ -104,13 +110,15 @@ class CallState {
         CallManager.instance
             .selectAudioPlaybackDevice(CallState.instance.audioDevice);
         CallState.instance.startTimer();
+        CallState.instance.isChangedBigSmallVideo = true;
         eventBus.notify(setStateEvent);
         eventBus.notify(setStateEventOnCallBegin);
         TUICallKitPlatform.instance.updateCallStateToNative();
       },
       onCallEnd: (TUIRoomId roomId, TUICallMediaType callMediaType,
           TUICallRole callRole, double totalTime) {
-        debugPrint("----------onCallEnd----------");
+        TRTCLogger.info(
+            'TUICallObserver onCallEnd(roomId:$roomId, callMediaType:$callMediaType, callRole:$callRole, totalTime:$totalTime)');
         CallState.instance.stopTimer();
         CallState.instance.cleanState();
         eventBus.notify(setStateEventOnCallEnd);
@@ -118,13 +126,12 @@ class CallState {
       },
       onCallMediaTypeChanged: (TUICallMediaType oldCallMediaType,
           TUICallMediaType newCallMediaType) {
-        debugPrint("----------onCallMediaTypeChanged----------");
         CallState.instance.mediaType = newCallMediaType;
         eventBus.notify(setStateEvent);
         TUICallKitPlatform.instance.updateCallStateToNative();
       },
       onUserReject: (String userId) async {
-        debugPrint("----------onUserReject----------");
+        TRTCLogger.info('TUICallObserver onUserReject(userId:$userId)');
         for (var remoteUser in CallState.instance.remoteUserList) {
           if (remoteUser.id == userId) {
             CallState.instance.remoteUserList.remove(remoteUser);
@@ -134,21 +141,21 @@ class CallState {
         }
 
         if (CallState.instance.remoteUserList.isEmpty) {
-          TUICallKitPlatform.instance.stopRing();
+          CallingBellFeature.stopRing();
           CallState.instance.cleanState();
           eventBus.notify(setStateEventOnCallEnd);
         }
         TUICallKitPlatform.instance.updateCallStateToNative();
         if (TUICallScene.singleCall == CallState.instance.scene) {
-          TUIToast.show(content: CallKit_t('对方拒绝了通话请求'));
+          CallManager.instance.showToast(CallKit_t('对方拒绝了通话请求'));
         } else {
           String? nickName =
               await CallState.instance.nameCallback?.call(userId) ?? userId;
-          TUIToast.show(content: '$nickName ${CallKit_t('拒绝了通话请求')}');
+          CallManager.instance.showToast('$nickName ${CallKit_t('拒绝了通话请求')}');
         }
       },
       onUserNoResponse: (String userId) async {
-        debugPrint("----------onUserNoResponse----------");
+        TRTCLogger.info('TUICallObserver onUserNoResponse(userId:$userId)');
         for (var remoteUser in CallState.instance.remoteUserList) {
           if (remoteUser.id == userId) {
             CallState.instance.remoteUserList.remove(remoteUser);
@@ -158,22 +165,22 @@ class CallState {
         }
 
         if (CallState.instance.remoteUserList.isEmpty) {
-          TUICallKitPlatform.instance.stopRing();
+          CallingBellFeature.stopRing();
           CallState.instance.cleanState();
           eventBus.notify(setStateEventOnCallEnd);
         }
 
         TUICallKitPlatform.instance.updateCallStateToNative();
         if (TUICallScene.singleCall == CallState.instance.scene) {
-          TUIToast.show(content: CallKit_t('对方未响应'));
+          CallManager.instance.showToast(CallKit_t('对方未响应'));
         } else {
           String? nickName =
               await CallState.instance.nameCallback?.call(userId) ?? userId;
-          TUIToast.show(content: '$nickName ${CallKit_t('未响应')}');
+          CallManager.instance.showToast('$nickName ${CallKit_t('未响应')}');
         }
       },
       onUserLineBusy: (String userId) async {
-        debugPrint("----------onUserLineBusy----------");
+        TRTCLogger.info('TUICallObserver onUserLineBusy(userId:$userId)');
         for (var remoteUser in CallState.instance.remoteUserList) {
           if (remoteUser.id == userId) {
             CallState.instance.remoteUserList.remove(remoteUser);
@@ -183,7 +190,7 @@ class CallState {
         }
 
         if (CallState.instance.remoteUserList.isEmpty) {
-          TUICallKitPlatform.instance.stopRing();
+          CallingBellFeature.stopRing();
           CallState.instance.cleanState();
 
           Timer.periodic(const Duration(milliseconds: 100), (timer) {
@@ -195,15 +202,15 @@ class CallState {
         TUICallKitPlatform.instance.updateCallStateToNative();
 
         if (TUICallScene.singleCall == CallState.instance.scene) {
-          TUIToast.show(content: CallKit_t('对方忙线'));
+          CallManager.instance.showToast(CallKit_t('对方忙线'));
         } else {
           String? nickName =
               await CallState.instance.nameCallback?.call(userId) ?? userId;
-          TUIToast.show(content: '$nickName ${CallKit_t('忙线')}');
+          CallManager.instance.showToast('$nickName ${CallKit_t('忙线')}');
         }
       },
       onUserJoin: (String userId) async {
-        debugPrint("onUserJoin: userId -> $userId");
+        TRTCLogger.info('TUICallObserver onUserJoin(userId:$userId)');
         for (var remoteUser in CallState.instance.remoteUserList) {
           if (remoteUser.id == userId) {
             remoteUser.callStatus = TUICallStatus.accept;
@@ -214,7 +221,7 @@ class CallState {
           }
         }
 
-        TUICallKitPlatform.instance.stopRing();
+        CallingBellFeature.stopRing();
 
         final user = User();
         user.id = userId;
@@ -223,17 +230,19 @@ class CallState {
         final imInfo = await TencentImSDKPlugin.v2TIMManager
             .getFriendshipManager()
             .getFriendsInfo(userIDList: [userId]);
-        user.nickname =
-            StringStream.makeNull(imInfo.data?[0].friendInfo?.userProfile?.nickName, '');
-        user.remark = StringStream.makeNull(imInfo.data?[0].friendInfo?.friendRemark, '');
+        user.nickname = StringStream.makeNull(
+            imInfo.data?[0].friendInfo?.userProfile?.nickName, '');
+        user.remark =
+            StringStream.makeNull(imInfo.data?[0].friendInfo?.friendRemark, '');
         user.avatar = StringStream.makeNull(
-            imInfo.data?[0].friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
+            imInfo.data?[0].friendInfo?.userProfile?.faceUrl,
+            Constants.defaultAvatar);
         eventBus.notify(setStateEvent);
 
         TUICallKitPlatform.instance.updateCallStateToNative();
       },
       onUserLeave: (String userId) async {
-        debugPrint("----------onUserLeave: userId -> $userId----------");
+        TRTCLogger.info('TUICallObserver onUserLeave(userId:$userId)');
         for (var remoteUser in CallState.instance.remoteUserList) {
           if (remoteUser.id == userId) {
             CallState.instance.remoteUserList.remove(remoteUser);
@@ -250,16 +259,16 @@ class CallState {
         TUICallKitPlatform.instance.updateCallStateToNative();
 
         if (TUICallScene.singleCall == CallState.instance.scene) {
-          TUIToast.show(content: CallKit_t('对方已挂断，通话结束'));
+          CallManager.instance.showToast(CallKit_t('对方已挂断，通话结束'));
         } else {
           String? nickName =
               await CallState.instance.nameCallback?.call(userId) ?? userId;
-          TUIToast.show(content: '$nickName ${CallKit_t('结束了通话')}');
+          CallManager.instance.showToast('$nickName ${CallKit_t('结束了通话')}');
         }
       },
       onUserVideoAvailable: (String userId, bool isVideoAvailable) {
-        debugPrint(
-            "onUserVideoAvailable:$userId isVideoAvailable:$isVideoAvailable");
+        TRTCLogger.info(
+            'TUICallObserver onUserVideoAvailable(userId:$userId, isVideoAvailable:$isVideoAvailable)');
         for (var remoteUser in CallState.instance.remoteUserList) {
           if (remoteUser.id == userId) {
             remoteUser.videoAvailable = isVideoAvailable;
@@ -271,6 +280,8 @@ class CallState {
         }
       },
       onUserAudioAvailable: (String userId, bool isAudioAvailable) {
+        TRTCLogger.info(
+            'TUICallObserver onUserAudioAvailable(userId:$userId, isVideoAvailable:$isAudioAvailable)');
         for (var remoteUser in CallState.instance.remoteUserList) {
           if (remoteUser.id == userId) {
             remoteUser.audioAvailable = isAudioAvailable;
@@ -285,19 +296,23 @@ class CallState {
         for (var remoteUser in CallState.instance.remoteUserList) {
           remoteUser.playOutVolume = volumeMap[remoteUser.id] ?? 0;
         }
+        CallState.instance.selfUser.playOutVolume =
+            volumeMap[CallState.instance.selfUser.id] ?? 0;
+        TUICallKitPlatform.instance.updateCallStateToNative();
+        eventBus.notify(setStateEvent);
       },
       onKickedOffline: () {
-        debugPrint("----------onKickedOffline----------");
+        TRTCLogger.info('TUICallObserver onKickedOffline()');
         CallManager.instance.hangup();
-        TUICallKitPlatform.instance.stopRing();
+        CallingBellFeature.stopRing();
         CallState.instance.cleanState();
         eventBus.notify(setStateEvent);
         TUICallKitPlatform.instance.updateCallStateToNative();
       },
       onUserSigExpired: () {
-        debugPrint("----------onUserSigExpired----------");
+        TRTCLogger.info('TUICallObserver onUserSigExpired()');
         CallManager.instance.hangup();
-        TUICallKitPlatform.instance.stopRing();
+        CallingBellFeature.stopRing();
         CallState.instance.cleanState();
         eventBus.notify(setStateEvent);
         TUICallKitPlatform.instance.updateCallStateToNative();
@@ -317,14 +332,24 @@ class CallState {
     TUICallEngine.instance.removeObserver(observer);
   }
 
-  void handleCallReceived(String callerId, List<String> calleeIdList,
-      String groupId, TUICallMediaType callMediaType) async {
+  Future<void> handleCallReceivedData(
+      String callerId,
+      List<String> calleeIdList,
+      String groupId,
+      TUICallMediaType callMediaType) async {
+    CallState.instance.caller.id = callerId;
+    CallState.instance.calleeIdList.clear();
+    CallState.instance.calleeIdList.addAll(calleeIdList);
+    CallState.instance.groupId = groupId;
+    CallState.instance.mediaType = callMediaType;
+    CallState.instance.selfUser.callStatus = TUICallStatus.waiting;
+
     if (callMediaType == TUICallMediaType.none || calleeIdList.isEmpty) {
       return;
     }
 
     if (calleeIdList.length >= Constants.groupCallMaxUserCount) {
-      TUIToast.show(content: CallKit_t('超过最大人数限制'));
+      CallManager.instance.showToast(CallKit_t('超过最大人数限制'));
       return;
     }
 
@@ -366,28 +391,31 @@ class CallState {
         .getFriendshipManager()
         .getFriendsInfo(userIDList: allUserId);
     for (var imFriendUserInfo in imFriendsUserInfos.data!) {
-      if (imFriendUserInfo.friendInfo?.userID == CallState.instance.selfUser.id) {
+      if (imFriendUserInfo.friendInfo?.userID ==
+          CallState.instance.selfUser.id) {
         continue;
       }
 
       if (imFriendUserInfo.friendInfo?.userID == callerId) {
-        CallState.instance.caller.nickname =
-            StringStream.makeNull(imFriendUserInfo.friendInfo?.userProfile?.nickName, "");
-        CallState.instance.caller.remark =
-            StringStream.makeNull(imFriendUserInfo.friendInfo?.friendRemark, "");
+        CallState.instance.caller.nickname = StringStream.makeNull(
+            imFriendUserInfo.friendInfo?.userProfile?.nickName, "");
+        CallState.instance.caller.remark = StringStream.makeNull(
+            imFriendUserInfo.friendInfo?.friendRemark, "");
         CallState.instance.caller.avatar = StringStream.makeNull(
-            imFriendUserInfo.friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
+            imFriendUserInfo.friendInfo?.userProfile?.faceUrl,
+            Constants.defaultAvatar);
         CallState.instance.caller.callStatus = TUICallStatus.waiting;
         CallState.instance.caller.callRole = TUICallRole.caller;
       } else {
         for (var calleeUser in CallState.instance.calleeList) {
           if (calleeUser.id == imFriendUserInfo.friendInfo?.userID) {
-            calleeUser.nickname =
-                StringStream.makeNull(imFriendUserInfo.friendInfo?.userProfile?.nickName, "");
-            calleeUser.remark =
-                StringStream.makeNull(imFriendUserInfo.friendInfo?.friendRemark, "");
+            calleeUser.nickname = StringStream.makeNull(
+                imFriendUserInfo.friendInfo?.userProfile?.nickName, "");
+            calleeUser.remark = StringStream.makeNull(
+                imFriendUserInfo.friendInfo?.friendRemark, "");
             calleeUser.avatar = StringStream.makeNull(
-                imFriendUserInfo.friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
+                imFriendUserInfo.friendInfo?.userProfile?.faceUrl,
+                Constants.defaultAvatar);
             calleeUser.callStatus = TUICallStatus.waiting;
             calleeUser.callRole = TUICallRole.called;
           }
@@ -406,11 +434,6 @@ class CallState {
       }
       CallState.instance.remoteUserList.add(callee);
     }
-
-    CallManager.instance.initAudioPlayDevice();
-    CallingBellFeature.startRing();
-    eventBus.notify(setStateEventOnCallReceived);
-    TUICallKitPlatform.instance.updateCallStateToNative();
   }
 
   void startTimer() {

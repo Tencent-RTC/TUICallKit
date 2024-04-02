@@ -17,6 +17,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   tencent_calls_uikit:
     # When depending on this package from a real application you should use:
@@ -31,6 +33,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   crypto: ^3.0.1
   url_launcher: ^6.1.11
+  intl: any
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +52,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
 
+  generate: true
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

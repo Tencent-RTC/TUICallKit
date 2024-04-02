@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tencent_calls_uikit/tuicall_kit.dart';
 import 'package:tuicall_kit_example/src/login_widget.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -23,6 +23,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        localizationsDelegates: AppLocalizations .localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         navigatorObservers: [TUICallKit.navigatorObserver],
         builder: (context, child) => Scaffold(
               resizeToAvoidBottomInset: false,

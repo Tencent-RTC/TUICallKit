@@ -1,6 +1,6 @@
 //
 //  TUICallKit.swift
-//  Alamofire
+//  TUICallKit
 //
 //  Created by vincepzhang on 2022/12/30.
 //
@@ -12,13 +12,13 @@ import TUICallEngine
 public class TUICallKit: NSObject {
     
     /**
-     * Create a TUICallKit instance 
+     * Create a TUICallKit instance
      */
     @objc
     public static func createInstance() -> TUICallKit {
         return TUICallKitImpl.instance
     }
-
+    
     /**
      * Set user profile
      *
@@ -42,7 +42,7 @@ public class TUICallKit: NSObject {
     public func call(userId: String, callMediaType: TUICallMediaType) {
         return TUICallKitImpl.instance.call(userId: userId, callMediaType: callMediaType)
     }
-
+    
     /**
      * Make a call
      *
@@ -55,7 +55,7 @@ public class TUICallKit: NSObject {
                      succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
         return TUICallKitImpl.instance.call(userId: userId, callMediaType: callMediaType, params: params, succ: succ, fail: fail)
     }
-
+    
     /**
      * Make a group call
      *
@@ -134,4 +134,5 @@ public class TUICallKit: NSObject {
     public func getCallViewController() -> UIViewController {
         return TUICallKitImpl.instance.getCallViewController()
     }
+    
 }
