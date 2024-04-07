@@ -6,11 +6,15 @@ import android.os.StrictMode;
 
 import androidx.multidex.MultiDex;
 
-import com.tencent.qcloud.tim.tuiofflinepush.TUIOfflinePushConfig;
+import com.tencent.qcloud.tim.push.TIMPushManager;
+import com.tencent.qcloud.tuicore.TUIConstants;
+import com.tencent.qcloud.tuicore.TUICore;
+import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 public class BaseApplication extends Application {
 
@@ -25,7 +29,25 @@ public class BaseApplication extends Application {
             builder.detectFileUriExposure();
         }
         closeAndroidPDialog();
-        TUIOfflinePushConfig.getInstance().setAndroidPrivateRing(true);
+
+        configFCMPrivateRing();
+    }
+
+    private void configFCMPrivateRing() {
+        String channelId = "fcm_push_channel";
+        TIMPushManager.getInstance().configFCMPrivateRing(channelId, "phone_ring", true);
+
+        TUICore.registerEvent(TUIConstants.TIMPush.EVENT_IM_LOGIN_AFTER_APP_WAKEUP_KEY,
+                TUIConstants.TIMPush.EVENT_IM_LOGIN_AFTER_APP_WAKEUP_SUB_KEY, new ITUINotification() {
+                    @Override
+                    public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
+                        if (TUIConstants.TIMPush.EVENT_IM_LOGIN_AFTER_APP_WAKEUP_KEY.equals(key)
+                                && TUIConstants.TIMPush.EVENT_IM_LOGIN_AFTER_APP_WAKEUP_SUB_KEY.equals(subKey)) {
+                            //you need to login again to launch call activity, please implement this method by yourself
+                            //autoLogin();
+                        }
+                    }
+                });
     }
 
     private void closeAndroidPDialog() {

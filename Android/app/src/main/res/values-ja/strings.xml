@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Tencent Real-Time Communication</string>
-    <string name="app_main_title">TRTC</string>
+    <string name="app_name">TUICallKit</string>
+    <string name="app_main_title">音声とビデオの通話</string>
     <string name="app_toast_login_fail">ログインに失敗しました。すべての機能が使用できません[%d]%s</string>
     <string name="app_toast_not_call_myself">自分に電話をかけることができません</string>
     <string name="app_audio_call">音声通話</string>
