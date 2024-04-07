@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
 
-// TUIOfflinePush: delete it without Google(FCM) or Huawei offline push function
+// delete it without offline push function
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.huawei.agconnect'
+apply plugin: 'com.hihonor.mcs.asplugin'
 
 android {
     compileSdkVersion 34
@@ -19,14 +20,6 @@ android {
             abiFilters 'armeabi-v7a', 'arm64-v8a'
         }
 
-        /*
-        * TUIOfflinePush : you should configure vivo application information, otherwise the compilation fails.
-        *  delete it without the offline push function.
-        *
-        *  "VIVO_APPKEY" : ViVo application AppKey registered in the ViVo platform.
-        *  "VIVO_APPID" : ViVo application AppId registered in the ViVo platform.
-        *  "HONOR_APPID" : Honor application AppId registered in the Honor platform.
-        */
         manifestPlaceholders = [
                 "VIVO_APPKEY": "PLACEHOLDER",
                 "VIVO_APPID" : "PLACEHOLDER",
@@ -58,11 +51,19 @@ android {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api project(":tuicallkit-kt")
-    api project(':tuiofflinepush')
     api project(':debug')
     implementation "androidx.recyclerview:recyclerview:1.2.1"
     implementation 'androidx.multidex:multidex:2.0.1'
 
     // Optional, if you use support library fragments:
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
+
+    implementation 'com.tencent.timpush:timpush:7.9.5668'
+    implementation 'com.tencent.timpush:huawei:7.9.5668'
+    implementation 'com.tencent.timpush:xiaomi:7.9.5668'
+    implementation 'com.tencent.timpush:oppo:7.9.5668'
+    implementation 'com.tencent.timpush:vivo:7.9.5668'
+    implementation 'com.tencent.timpush:honor:7.9.5668'
+    implementation 'com.tencent.timpush:meizu:7.9.5668'
+    implementation 'com.tencent.timpush:fcm:7.9.5668'
 }

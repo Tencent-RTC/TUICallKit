@@ -39,7 +39,7 @@ public class TUIAudioMessageRecordService implements ITUIService, ITUINotificati
     private AudioFocusRequest                       mFocusRequest;
     private AudioManager                            mAudioManager;
     private AudioManager.OnAudioFocusChangeListener mOnFocusChangeListener;
-    private TUIServiceCallback mAudioRecordValueCallback;
+    private TUIServiceCallback                      mAudioRecordValueCallback;
 
     public TUIAudioMessageRecordService(Context context) {
         mContext = context.getApplicationContext();
