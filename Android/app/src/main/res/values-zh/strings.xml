@@ -59,6 +59,7 @@
     <string name="app_mute_mode">静音模式</string>
     <string name="app_call_setting">通话设置</string>
     <string name="app_show_float_button">显示悬浮窗按钮</string>
+    <string name="app_blur_background">显示模糊背景按钮</string>
     <string name="app_call_params_setting">通话自定义参数设置</string>
     <string name="app_please_set_call_waiting_timeout">请设置呼叫等待超时时间</string>
     <string name="app_user_data">扩展信息</string>

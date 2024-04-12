@@ -234,6 +234,38 @@
                 app:trackTint="#FF999999" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_blur_background"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_blur_background"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:checked="true"
+                app:switchMinWidth="50dp"
+                app:thumbTint="@color/app_switch_selector"
+                app:thumbTintMode="multiply"
+                app:trackTint="#FF999999" />
+        </LinearLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="30dp"

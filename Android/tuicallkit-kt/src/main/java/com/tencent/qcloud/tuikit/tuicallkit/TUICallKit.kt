@@ -91,4 +91,9 @@ abstract class TUICallKit {
      * Enable the floating window
      */
     open fun enableFloatWindow(enable: Boolean) {}
+
+    /**
+     * Enable Virtual Background
+     */
+    open fun enableVirtualBackground(enable: Boolean) {}
 }

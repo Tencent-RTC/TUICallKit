@@ -26,24 +26,29 @@ class SingleCallVideoLayout(context: Context) : BaseCallView(context) {
         }
     }
 
+    private var blurBackgroundObserver = Observer<Boolean> {
+        if (it == true && viewModel.currentReverseRenderView) {
+            switchRenderLayout()
+        }
+    }
+
     init {
         initView()
         addObserver()
     }
-
 
     override fun clear() {
         removeObserver()
     }
 
     private fun addObserver() {
-        viewModel.selfUser.callStatus.observe(callStatusObserver)
         viewModel.remoteUser.callStatus.observe(callStatusObserver)
+        viewModel.enableBlurBackground.observe(blurBackgroundObserver)
     }
 
     private fun removeObserver() {
-        viewModel.selfUser.callStatus.removeObserver(callStatusObserver)
         viewModel.remoteUser.callStatus.removeObserver(callStatusObserver)
+        viewModel.enableBlurBackground.removeObserver(blurBackgroundObserver)
     }
 
     private fun initView() {
@@ -96,11 +101,7 @@ class SingleCallVideoLayout(context: Context) : BaseCallView(context) {
                 layoutRenderSmall?.removeAllViews()
             }
             layoutRenderSmall?.addView(videoViewSmall)
-            EngineManager.instance.startRemoteView(
-                viewModel.remoteUser.id,
-                videoViewSmall?.getVideoView(),
-                null
-            )
+            EngineManager.instance.startRemoteView(viewModel.remoteUser.id, videoViewSmall?.getVideoView(), null)
         }
     }
 
@@ -113,11 +114,7 @@ class SingleCallVideoLayout(context: Context) : BaseCallView(context) {
         layoutRenderBig?.addView(videoViewBig)
         if (!viewModel.isCameraOpen.get() && TUICallDefine.Status.Accept != viewModel.selfUser.callStatus.get()) {
             viewModel.selfUser.videoAvailable.set(true)
-            EngineManager.instance.openCamera(
-                viewModel.isFrontCamera.get(),
-                videoViewBig?.getVideoView(),
-                null
-            )
+            EngineManager.instance.openCamera(viewModel.isFrontCamera.get(), videoViewBig?.getVideoView(), null)
         }
     }
 
