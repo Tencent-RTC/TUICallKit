@@ -38,6 +38,8 @@ class TUICallState {
 
     public var enableMuteMode = false
     public var enableFloatWindow = false
+    public var showVirtualBackgroundButton = false
+    public var enableBlurBackground = LiveData<Boolean>()
     public var reverse1v1CallRenderView = false
     public var isShowFullScreen = LiveData<Boolean>()
     public var isBottomViewExpand = LiveData<Boolean>()
@@ -64,6 +66,7 @@ class TUICallState {
         isShowFullScreen.set(false)
         isBottomViewExpand.set(true)
         showLargeViewUserId.set(null)
+        enableBlurBackground.set(false)
     }
 
     val mTUICallObserver: TUICallObserver = object : TUICallObserver() {
@@ -318,6 +321,7 @@ class TUICallState {
         isShowFullScreen.set(false)
         isBottomViewExpand.set(true)
         showLargeViewUserId.set(null)
+        enableBlurBackground.set(false)
         selfUser.get().callStatus.set(TUICallDefine.Status.None)
         selfUser.get().clear()
         selfUser.set(User())
@@ -349,6 +353,7 @@ class TUICallState {
         isShowFullScreen.removeAll()
         isBottomViewExpand.removeAll()
         showLargeViewUserId.removeAll()
+        enableBlurBackground.removeAll()
     }
 
     private fun resetCall() {

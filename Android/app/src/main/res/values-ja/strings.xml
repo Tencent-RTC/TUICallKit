@@ -59,6 +59,7 @@
     <string name="app_mute_mode">ミュートモード</string>
     <string name="app_call_setting">通話設定</string>
     <string name="app_show_float_button">フローティングウィンドウの表示</string>
+    <string name="app_blur_background">背景をぼかす</string>
     <string name="app_call_params_setting">通話パラメータの設定</string>
     <string name="app_please_set_call_waiting_timeout">コールウェイティングのタイムアウト時間を設定してください</string>
     <string name="app_user_data">拡張情報</string>

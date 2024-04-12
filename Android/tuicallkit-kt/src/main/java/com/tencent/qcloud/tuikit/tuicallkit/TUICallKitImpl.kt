@@ -156,6 +156,11 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
         EngineManager.instance.enableFloatWindow(enable)
     }
 
+    override fun enableVirtualBackground(enable: Boolean) {
+        TUILog.i(TAG, "TUICallKit enableVirtualBackground{enable:${enable}")
+        TUICallState.instance.showVirtualBackgroundButton = enable
+    }
+
     fun queryOfflineCall() {
         TUILog.i(TAG, "queryOfflineCall start")
         if (TUICallDefine.Status.Accept != TUICallState.instance.selfUser.get().callStatus.get()) {
