@@ -113,7 +113,7 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
                         shape: const CircleBorder(),
                       ),
                       Text(
-                        AppLocalizations.of(context)!.video_call,
+                        AppLocalizations.of(context)!.voice_call,
                         style: const TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.normal,
@@ -199,8 +199,25 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
       params.roomId = TUIRoomId.strRoomId(strRoomId: SettingsConfig.strRoomId);
     }
     params.timeout = SettingsConfig.timeout;
-    params.offlinePushInfo = SettingsConfig.offlinePushInfo;
     params.userData = SettingsConfig.extendInfo;
+
+    if (SettingsConfig.offlinePushInfo == null || SettingsConfig.offlinePushInfo!.title == null ||
+        SettingsConfig.offlinePushInfo!.title!.isEmpty) {
+      TUIOfflinePushInfo offlinePushInfo = TUIOfflinePushInfo();
+      offlinePushInfo.title = "Flutter TUICallKit";
+      offlinePushInfo.desc = "This is an incoming call from Flutter TUICallkit";
+      offlinePushInfo.ignoreIOSBadge = false;
+      offlinePushInfo.iOSSound = "phone_ringing.mp3";
+      offlinePushInfo.androidSound = "phone_ringing";
+      offlinePushInfo.androidOPPOChannelID = "Flutter TUICallKit";
+      offlinePushInfo.androidVIVOClassification = 1;
+      offlinePushInfo.androidFCMChannelID = "fcm_push_channel";
+      offlinePushInfo.androidHuaWeiCategory = "Flutter TUICallKit";
+      offlinePushInfo.iOSPushType = TUICallIOSOfflinePushType.VoIP;
+      params.offlinePushInfo = offlinePushInfo;
+    } else {
+      params.offlinePushInfo = SettingsConfig.offlinePushInfo;
+    }
     return params;
   }
 

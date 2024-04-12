@@ -24,6 +24,7 @@ if (flutterVersionName == null) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion flutter.compileSdkVersion
@@ -39,7 +40,7 @@ android {
         applicationId "com.tencent.cloud.tuikit.flutter.tuicallkit"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -59,4 +60,9 @@ android {
 
 flutter {
     source '../..'
+}
+
+dependencies {
+    implementation "androidx.work:work-runtime:2.7.0"
+    implementation 'com.tencent.timpush:fcm:7.8.5484'
 }
