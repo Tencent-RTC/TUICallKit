@@ -337,4 +337,14 @@ class CallEngineManager {
         
         engine.callExperimentalAPI(jsonObject: paramsString)
     }
+    
+    func setBlurBackground() {
+        let currentEnable = TUICallState.instance.enableBlurBackground.value
+        let level = !currentEnable ? 3 : 0
+        TUICallState.instance.enableBlurBackground.value = !currentEnable
+        engine.setBlurBackground(level) { code, message in
+            TUICallState.instance.enableBlurBackground.value = false
+        }
+    }
+    
 }
