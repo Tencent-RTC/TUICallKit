@@ -214,6 +214,10 @@ class TUICallKitImpl: TUICallKit {
         
         return UIViewController()
     }
+    
+    override func enableVirtualBackground (enable: Bool) {
+        TUICallState.instance.showVirtualBackgroundButton = enable
+    }
 }
 
 // MARK: TUICallKit内部接口

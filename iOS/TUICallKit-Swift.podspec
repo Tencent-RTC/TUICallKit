@@ -1,8 +1,8 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICallKit-Swift'
-  spec.version      = '2.3.0.910'
+  spec.version      = '2.3.0.915'
   spec.platform     = :ios
-  spec.ios.deployment_target = '10.0'
+  spec.ios.deployment_target = '12.0'
   spec.license      = { :type => 'Proprietary',
     :text => <<-LICENSE
     copyright 2017 tencent Ltd. All rights reserved.
@@ -29,7 +29,7 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'TRTC' do |trtc|
     trtc.dependency 'TXLiteAVSDK_TRTC'
-    trtc.dependency 'TUICallEngine/TRTC', '~> 2.3.0.910'
+    trtc.dependency 'TUICallEngine/TRTC', '~> 2.3.0.915'
     trtc.source_files = 'TUICallKit-Swift/**/*.{h,m,mm,swift}'
     trtc.resource_bundles = {
       'TUICallKitBundle' => ['TUICallKit-Swift/Resources/*.gif', 'TUICallKit-Swift/Resources/**/*.strings', 'TUICallKit-Swift/Resources/AudioFile', 'TUICallKit-Swift/Resources/*.xcassets']
@@ -40,7 +40,7 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'Professional' do |professional|
     professional.dependency 'TXLiteAVSDK_Professional'
-    professional.dependency 'TUICallEngine/Professional', '~> 2.3.0.910'
+    professional.dependency 'TUICallEngine/Professional', '~> 2.3.0.915'
     professional.source_files = 'TUICallKit-Swift/**/*.{h,m,mm,swift}'
     professional.resource_bundles = {
       'TUICallKitBundle' => ['TUICallKit-Swift/Resources/*.gif', 'TUICallKit-Swift/Resources/**/*.strings', 'TUICallKit-Swift/Resources/AudioFile', 'TUICallKit-Swift/Resources/*.xcassets']

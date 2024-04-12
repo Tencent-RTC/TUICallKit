@@ -58,12 +58,12 @@ class AudioAndVideoCalleeWaitingView: UIView {
     func activateConstraints() {
         rejectBtn.snp.makeConstraints { make in
             make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? 80.scaleWidth() : -80.scaleWidth())
-            make.bottom.equalTo(self)
+            make.top.bottom.equalTo(self)
             make.size.equalTo(kControlBtnSize)
         }
         acceptBtn.snp.makeConstraints { make in
             make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? -80.scaleWidth() : 80.scaleWidth())
-            make.bottom.equalTo(self)
+            make.top.bottom.equalTo(self)
             make.size.equalTo(kControlBtnSize)
         }
     }

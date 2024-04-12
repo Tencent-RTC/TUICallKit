@@ -20,6 +20,7 @@ class GroupCallVideoCell: UICollectionViewCell {
     let remotePlayoutVolumeObserver = Observer()
     let selfPlayoutVolumeObserver = Observer()
     let isShowLargeViewUserIdObserver = Observer()
+    let enableBlurBackgroundObserver = Observer()
     
     private var viewModel = GroupCallVideoCellViewModel(remote: User())
     private var user: User = User()
@@ -65,12 +66,24 @@ class GroupCallVideoCell: UICollectionViewCell {
         return imageView
     }()
     
-    lazy var switchCameraBtn: UIButton = {
-        let btn = UIButton(type: .system)
+    lazy var switchCameraBtn: GroupCallVideoCustomButton = {
+        let btn = GroupCallVideoCustomButton(type: .system)
+        btn.contentMode = .scaleAspectFit
         if let image = TUICallKitCommon.getBundleImage(name: "group_switch_camera") {
             btn.setBackgroundImage(image, for: .normal)
         }
         btn.addTarget(self, action: #selector(switchCameraTouchEvent(sender: )), for: .touchUpInside)
+        return btn
+    }()
+    
+    lazy var virtualBackgroundBtn: GroupCallVideoCustomButton = {
+        let btn = GroupCallVideoCustomButton(type: .system)
+        btn.contentMode = .scaleAspectFit
+        let imageName = viewModel.enableBlurBackground.value ? "group_virtual_background_on" : "group_virtual_background_off"
+        if let image = TUICallKitCommon.getBundleImage(name: imageName) {
+            btn.setBackgroundImage(image, for: .normal)
+        }
+        btn.addTarget(self, action: #selector(virtualBackgroundTouchEvent(sender: )), for: .touchUpInside)
         return btn
     }()
     
@@ -98,10 +111,13 @@ class GroupCallVideoCell: UICollectionViewCell {
             viewModel.selfUserVideoAvailable.removeObserver(selfUserVideoAvailableObserver)
             viewModel.selfPlayoutVolume.removeObserver(selfPlayoutVolumeObserver)
             viewModel.isShowLargeViewUserId.removeObserver(isMicMuteObserver)
+            viewModel.enableBlurBackground.removeObserver(enableBlurBackgroundObserver)
         } else {
             viewModel.remoteUserStatus.removeObserver(remoteUserStatusObserver)
             viewModel.remoteUserVideoAvailable.removeObserver(remoteUserVideoAvailableObserver)
-            viewModel.remoteUserVolume.removeObserver(remotePlayoutVolumeObserver)
+            if TUICallState.instance.showVirtualBackgroundButton {
+                viewModel.remoteUserVolume.removeObserver(remotePlayoutVolumeObserver)
+            }
         }
         
         viewModel.isShowLargeViewUserId.removeObserver(isShowLargeViewUserIdObserver)
@@ -132,6 +148,9 @@ class GroupCallVideoCell: UICollectionViewCell {
         contentView.addSubview(micImageView)
         contentView.addSubview(volumeImageView)
         contentView.addSubview(switchCameraBtn)
+        if TUICallState.instance.showVirtualBackgroundButton {
+            contentView.addSubview(virtualBackgroundBtn)
+        }
     }
     
     func activateConstraints() {
@@ -169,9 +188,21 @@ class GroupCallVideoCell: UICollectionViewCell {
             make.leading.equalTo(titleLabel.snp.trailing).offset(8.scaleWidth())
             make.bottom.equalTo(self.contentView).offset(-8.scaleWidth())
         }
-        switchCameraBtn.snp.makeConstraints { make in
-            make.width.height.equalTo(24.scaleWidth())
-            make.bottom.trailing.equalTo(self.contentView).offset(-8.scaleWidth())
+        if TUICallState.instance.showVirtualBackgroundButton {
+            virtualBackgroundBtn.snp.makeConstraints { make in
+                make.width.height.equalTo(24.scaleWidth())
+                make.bottom.trailing.equalTo(self.contentView).offset(-8.scaleWidth())
+            }
+            switchCameraBtn.snp.makeConstraints { make in
+                make.width.height.equalTo(24.scaleWidth())
+                make.centerY.equalTo(virtualBackgroundBtn)
+                make.trailing.equalTo(virtualBackgroundBtn.snp.leading).offset(-10.scaleWidth())
+            }
+        } else {
+            switchCameraBtn.snp.makeConstraints { make in
+                make.width.height.equalTo(24.scaleWidth())
+                make.bottom.trailing.equalTo(self.contentView).offset(-8.scaleWidth())
+            }
         }
     }
     
@@ -200,6 +231,10 @@ class GroupCallVideoCell: UICollectionViewCell {
         viewModel.switchCamera()
     }
     
+    @objc func virtualBackgroundTouchEvent(sender: UIButton ) {
+        viewModel.virtualBackground()
+    }
+    
     // MARK: Register TUICallState Observer && Update UI
     func registerObserveState() {
         callStatusChanged()
@@ -208,6 +243,7 @@ class GroupCallVideoCell: UICollectionViewCell {
         volumeChanged()
         isShowLargeViewUserIdChanged()
         isMicMuteChanged()
+        enableBlurBackgroundChanged()
     }
     
     func callStatusChanged() {
@@ -282,15 +318,29 @@ class GroupCallVideoCell: UICollectionViewCell {
         }
     }
     
+    func enableBlurBackgroundChanged () {
+        if viewModel.isSelf && TUICallState.instance.showVirtualBackgroundButton {
+            viewModel.enableBlurBackground.addObserver(enableBlurBackgroundObserver) { [weak self] newValue, _ in
+                guard let self = self else { return }
+                let imageName = self.viewModel.enableBlurBackground.value ? "group_virtual_background_on" : "group_virtual_background_off"
+                if let image = TUICallKitCommon.getBundleImage(name: imageName) {
+                    self.virtualBackgroundBtn.setBackgroundImage(image, for: .normal)
+                }
+            }
+        }
+    }
+    
     func updateLargeViewUI() {
         activateLargeViewConstraints()
         
         if viewModel.isSelf {
             switchCameraBtn.isHidden = !viewModel.isCameraOpen.value
+            virtualBackgroundBtn.isHidden = !viewModel.isCameraOpen.value || !TUICallState.instance.showVirtualBackgroundButton
             titleLabel.isHidden = false
             micImageView.isHidden = !viewModel.isMicMute.value
         } else {
             switchCameraBtn.isHidden = true
+            virtualBackgroundBtn.isHidden = true
             titleLabel.isHidden = false
             micImageView.isHidden = true
         }
@@ -299,6 +349,7 @@ class GroupCallVideoCell: UICollectionViewCell {
     func updateSmallViewUI() {
         activateSmallViewConstraints()
         switchCameraBtn.isHidden = true
+        virtualBackgroundBtn.isHidden = true
         titleLabel.isHidden = true
         
         if viewModel.isSelf {
@@ -347,9 +398,11 @@ class GroupCallVideoCell: UICollectionViewCell {
             renderView.isHidden = false
             micImageView.isHidden = true
             switchCameraBtn.isHidden = false
+            virtualBackgroundBtn.isHidden = !TUICallState.instance.showVirtualBackgroundButton
             viewModel.openCamera(videoView: renderView)
         } else {
             switchCameraBtn.isHidden = true
+            virtualBackgroundBtn.isHidden = true
             micImageView.isHidden = false
             avatarImageView.isHidden = false
         }
@@ -382,6 +435,7 @@ class GroupCallVideoCell: UICollectionViewCell {
         micImageView.isHidden = true
         volumeImageView.isHidden = true
         switchCameraBtn.isHidden = true
+        virtualBackgroundBtn.isHidden = true
     }
     
     // MARK: Private Method
@@ -394,5 +448,12 @@ class GroupCallVideoCell: UICollectionViewCell {
         } else {
             avatarImageView.sd_setImage(with: URL(string: viewModel.remoteUser.avatar.value), placeholderImage: userIcon)
         }
+    }
+}
+
+class GroupCallVideoCustomButton: UIButton {
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let expandedBounds = bounds.insetBy(dx: -4.scaleWidth(), dy: -4.scaleWidth())
+        return expandedBounds.contains(point) ? self : nil
     }
 }

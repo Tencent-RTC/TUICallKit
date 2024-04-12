@@ -28,6 +28,7 @@ class TUICallState: NSObject {
     let audioDevice: Observable<TUIAudioPlaybackDevice> = Observable(TUIAudioPlaybackDevice.earpiece)
     let isShowFullScreen: Observable<Bool> = Observable(false)
     let showLargeViewUserId: Observable<String> = Observable("")
+    let enableBlurBackground: Observable<Bool> = Observable(false)
     
     var enableMuteMode: Bool = {
         let enable = UserDefaults.standard.bool(forKey: ENABLE_MUTEMODE_USERDEFAULT)
@@ -35,6 +36,7 @@ class TUICallState: NSObject {
     }()
     
     var enableFloatWindow: Bool = false
+    var showVirtualBackgroundButton = false
     
     private var timerName: String = ""
 }
@@ -292,6 +294,7 @@ extension TUICallState {
         TUICallState.instance.audioDevice.value = .earpiece
         TUICallState.instance.isShowFullScreen.value = false
         TUICallState.instance.showLargeViewUserId.value = ""
+        TUICallState.instance.enableBlurBackground.value = false
         
         GCDTimer.cancel(timerName: timerName) { return }
         

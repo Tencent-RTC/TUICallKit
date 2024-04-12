@@ -5,12 +5,12 @@
       "scale" : "1x"
     },
     {
-      "filename" : "switch2audio@2x.png",
+      "filename" : "virtual_background@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "switch2audio@3x.png",
+      "filename" : "virtual_background@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -133,4 +133,12 @@ public class TUICallKit: NSObject {
     public func getCallViewController() -> UIViewController {
         return TUICallKitImpl.instance.getCallViewController()
     }
+    
+    /**
+     * Enable Virtual Background
+     */
+    @objc
+    public func enableVirtualBackground(enable: Bool) {
+        return TUICallKitImpl.instance.enableVirtualBackground(enable: enable)
+    }
 }

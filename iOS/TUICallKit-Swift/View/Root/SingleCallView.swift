@@ -134,7 +134,7 @@ class SingleCallView: UIView {
             make.height.equalTo(100.scaleWidth() + 10.scaleHeight() + 30)
         }
         callStatusTipView.snp.makeConstraints { make in
-            make.top.equalTo(userInfoView.snp.bottom).offset(180.scaleHeight())
+            make.top.equalTo(userInfoView.snp.bottom).offset((TUICallState.instance.showVirtualBackgroundButton ? 120 : 180).scaleHeight())
             make.centerX.equalTo(self)
             make.width.equalTo(self)
             make.height.equalTo(20)
@@ -154,13 +154,11 @@ class SingleCallView: UIView {
         videoInviteFunctionView.snp.makeConstraints({ make in
             make.centerX.equalTo(self)
             make.bottom.equalTo(self.snp.bottom).offset(functionViewBottomOffset)
-            make.height.equalTo(baseControlHeight)
             make.width.equalTo(self.snp.width)
         })
         inviteeWaitFunctionView.snp.makeConstraints({ make in
             make.centerX.equalTo(self)
             make.bottom.equalTo(self.snp.bottom).offset(functionViewBottomOffset)
-            make.height.equalTo(baseControlHeight)
             make.width.equalTo(self.snp.width)
         })
         floatingWindowBtn.snp.makeConstraints { make in

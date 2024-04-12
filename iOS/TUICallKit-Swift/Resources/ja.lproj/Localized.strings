@@ -15,6 +15,8 @@
 "TUICallKit.determine" = "もちろん";
 "TUICallKit.lineBusy" = "回線ビジー";
 
+"TUICallKit.switchCamera" = "切り替え";
+"TUICallKit.blurBackground" = "背景をぼかす";
 "TUICallKit.hangup" = "通話終了";
 "TUICallKit.decline" = "拒否";
 "TUICallKit.switchToAudio" = "音声通話に切り替えます";
