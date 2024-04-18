@@ -18,6 +18,23 @@ Function CallKit_t_para(String template, String value) {
 class CallKitI18nUtils {
   static CallKitI18nUtils? _instance;
 
+  static setLanguage(Locale currentLocale) {
+    switch (currentLocale.languageCode) {
+      case 'zh': {
+        CallKitI18nUtils(null, 'zh');
+        break;
+      }
+      case 'en': {
+        CallKitI18nUtils(null, 'en');
+        break;
+      }
+      case 'ja': {
+        CallKitI18nUtils(null, 'ja');
+        break;
+      }
+    }
+  }
+
   CallKitI18nUtils._internal([String? language]) {
     _init(language);
   }
@@ -275,6 +292,8 @@ class CallKitI18nUtils {
   "k_0000095": "摄像头已开启",
   "k_0000096": "摄像头已关闭",
   "k_0000097": "已接通",
-  "k_0000098": "他们也在"
+  "k_0000098": "他们也在",
+  "k_0000099": "加入",
+  "k_0000100": "人正在通话"
   }''';
 }

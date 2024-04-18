@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tencent_calls_uikit/src/boot.dart';
 import 'package:tencent_calls_uikit/src/extensions/calling_bell_feature.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/inviteuser/invite_user_widget.dart';
@@ -17,7 +18,7 @@ class TUICallKitNavigatorObserver extends NavigatorObserver {
 
   TUICallKitNavigatorObserver() {
     TRTCLogger.info('TUICallKitNavigatorObserver Init');
-    _bootInit();
+    Boot.instance;
   }
 
   void enterCallingPage() async {
@@ -64,10 +65,6 @@ class TUICallKitNavigatorObserver extends NavigatorObserver {
   void exitInviteUserPage() {
     currentPage = CallPage.callingPage;
     TUICallKitNavigatorObserver.getInstance().navigator?.pop();
-  }
-
-  static void _bootInit() {
-    TUICallKitPlatform.instance;
   }
 }
 

@@ -11,8 +11,7 @@ import 'package:tencent_calls_uikit/src/call_state.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/common/extent_button.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/common/timing_widget.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/groupcall/group_call_user_widget_data.dart';
-import 'package:tencent_calls_uikit/src/utils/event_bus.dart';
-import 'package:tencent_calls_uikit/src/utils/permission_request.dart';
+import 'package:tencent_calls_uikit/src/utils/permission.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
 import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 import 'group_call_user_widget.dart';
@@ -30,8 +29,8 @@ class GroupCallWidget extends StatefulWidget {
 }
 
 class _GroupCallWidgetState extends State<GroupCallWidget> {
-  EventCallback? setSateCallBack;
-  EventCallback? groupCallUserWidgetRefreshCallback;
+  ITUINotificationCallback? setSateCallBack;
+  ITUINotificationCallback? groupCallUserWidgetRefreshCallback;
   bool isFunctionExpand = true;
   late final List<GroupCallUserWidget> _userViewWidgets = [];
 
@@ -77,8 +76,8 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
       }
     };
 
-    eventBus.register(setStateEvent, setSateCallBack);
-    eventBus.register(setStateEventGroupCallUserWidgetRefresh, groupCallUserWidgetRefreshCallback);
+    TUICore.instance.registerEvent(setStateEvent, setSateCallBack);
+    TUICore.instance.registerEvent(setStateEventGroupCallUserWidgetRefresh, groupCallUserWidgetRefreshCallback);
 
     GroupCallUserWidgetData.initBlockBigger();
     _initUsersViewWidget();
@@ -87,8 +86,8 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
   @override
   void dispose() {
     super.dispose();
-    eventBus.unregister(setStateEvent, setSateCallBack);
-    eventBus.unregister(
+    TUICore.instance.unregisterEvent(setStateEvent, setSateCallBack);
+    TUICore.instance.unregisterEvent(
         setStateEventGroupCallUserWidgetRefresh, groupCallUserWidgetRefreshCallback);
   }
 
@@ -211,12 +210,15 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
             visible: CallState.instance.enableFloatWindow,
             child: InkWell(
                 onTap: () => _openFloatWindow(),
-                child: SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: Image.asset(
-                    'assets/images/floating_button.png',
-                    package: 'tencent_calls_uikit',
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 12, 12),
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: Image.asset(
+                      'assets/images/floating_button.png',
+                      package: 'tencent_calls_uikit',
+                    ),
                   ),
                 )),
           )
@@ -493,12 +495,12 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
   }
 
   _handleAccept() async {
-    TUIPermissionResult permissionRequestResult = TUIPermissionResult.requesting;
+    PermissionResult permissionRequestResult = PermissionResult.requesting;
     if (Platform.isAndroid) {
       permissionRequestResult =
-          await PermissionRequest.checkCallingPermission(CallState.instance.mediaType);
+          await Permission.request(CallState.instance.mediaType);
     }
-    if (permissionRequestResult == TUIPermissionResult.granted || Platform.isIOS) {
+    if (permissionRequestResult == PermissionResult.granted || Platform.isIOS) {
       await CallManager.instance.accept();
       CallState.instance.selfUser.callStatus = TUICallStatus.accept;
     } else {

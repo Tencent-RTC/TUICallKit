@@ -5,8 +5,8 @@ import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_calls_uikit/src/call_manager.dart';
 import 'package:tencent_calls_uikit/src/call_state.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/common/extent_button.dart';
-import 'package:tencent_calls_uikit/src/utils/event_bus.dart';
-import 'package:tencent_calls_uikit/src/utils/permission_request.dart';
+import 'package:tencent_calls_uikit/src/utils/permission.dart';
+import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 
 class SingleFunctionWidget {
@@ -158,7 +158,8 @@ class SingleFunctionWidget {
               _handleHangUp(close);
             },
           ),
-          ExtendButton(
+          CallState.instance.isCameraOpen
+          ? ExtendButton(
             imgUrl: "assets/images/switch_camera.png",
             tips: CallKit_t(" "),
             textColor: _getTextColor(),
@@ -166,6 +167,9 @@ class SingleFunctionWidget {
             onTap: () {
               _handleSwitchCamera();
             },
+          )
+          : const SizedBox(
+            width: 100,
           ),
         ]),
       ],
@@ -211,7 +215,7 @@ class SingleFunctionWidget {
       CallState.instance.isMicrophoneMute = true;
       await CallManager.instance.closeMicrophone();
     }
-    eventBus.notify(setStateEvent);
+    TUICore.instance.notifyEvent(setStateEvent);
   }
 
   static _handleSwitchAudioDevice() async {
@@ -221,7 +225,7 @@ class SingleFunctionWidget {
       CallState.instance.audioDevice = TUIAudioPlaybackDevice.earpiece;
     }
     await CallManager.instance.selectAudioPlaybackDevice(CallState.instance.audioDevice);
-    eventBus.notify(setStateEvent);
+    TUICore.instance.notifyEvent(setStateEvent);
   }
 
   static _handleHangUp(Function close) async {
@@ -235,17 +239,17 @@ class SingleFunctionWidget {
   }
 
   static _handleAccept() async {
-    TUIPermissionResult permissionRequestResult = TUIPermissionResult.requesting;
+    PermissionResult permissionRequestResult = PermissionResult.requesting;
     if (Platform.isAndroid) {
-      permissionRequestResult = await PermissionRequest.checkCallingPermission(CallState.instance.mediaType);
+      permissionRequestResult = await Permission.request(CallState.instance.mediaType);
     }
-    if (permissionRequestResult == TUIPermissionResult.granted || Platform.isIOS) {
+    if (permissionRequestResult == PermissionResult.granted || Platform.isIOS) {
       await CallManager.instance.accept();
       CallState.instance.selfUser.callStatus = TUICallStatus.accept;
     } else {
       CallManager.instance.showToast(CallKit_t("新通话呼入，但因权限不足，无法接听。请确认摄像头/麦克风权限已开启。"));
     }
-    eventBus.notify(setStateEvent);
+    TUICore.instance.notifyEvent(setStateEvent);
   }
 
   static void _handleOpenCloseCamera() async {
@@ -255,7 +259,7 @@ class SingleFunctionWidget {
     } else {
       await CallManager.instance.closeCamera();
     }
-    eventBus.notify(setStateEvent);
+    TUICore.instance.notifyEvent(setStateEvent);
   }
 
   static void _handleSwitchCamera() async {
@@ -265,7 +269,7 @@ class SingleFunctionWidget {
       CallState.instance.camera = TUICamera.front;
     }
     await CallManager.instance.switchCamera(CallState.instance.camera);
-    eventBus.notify(setStateEvent);
+    TUICore.instance.notifyEvent(setStateEvent);
   }
 
   static Color _getTextColor() {

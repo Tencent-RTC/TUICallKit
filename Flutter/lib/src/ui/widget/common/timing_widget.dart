@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tencent_calls_uikit/src/call_state.dart';
-import 'package:tencent_calls_uikit/src/utils/event_bus.dart';
+import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
+import 'package:tencent_calls_uikit/src/data/constants.dart';
 
 class TimingWidget extends StatefulWidget {
   const TimingWidget({Key? key}) : super(key: key);
@@ -10,7 +11,7 @@ class TimingWidget extends StatefulWidget {
 }
 
 class _TimingWidgetState extends State<TimingWidget> {
-  EventCallback? refreshTimingCallBack;
+  ITUINotificationCallback? refreshTimingCallBack;
 
   @override
   void initState() {
@@ -18,7 +19,7 @@ class _TimingWidgetState extends State<TimingWidget> {
     refreshTimingCallBack = (arg) {
       setState(() {});
     };
-    eventBus.register(setStateEventRefreshTiming, refreshTimingCallBack);
+    TUICore.instance.registerEvent(setStateEventRefreshTiming, refreshTimingCallBack);
   }
 
   @override
@@ -32,7 +33,7 @@ class _TimingWidgetState extends State<TimingWidget> {
   @override
   void dispose() {
     super.dispose();
-    eventBus.unregister(setStateEventRefreshTiming, refreshTimingCallBack);
+    TUICore.instance.unregisterEvent(setStateEventRefreshTiming, refreshTimingCallBack);
   }
 
   String _formatCallTime() {

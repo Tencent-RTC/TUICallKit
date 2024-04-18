@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
+import 'package:tencent_calls_uikit/src/utils/permission.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
 
 class MockCallsUikitPlatform
@@ -95,6 +96,18 @@ class MockCallsUikitPlatform
   @override
   Future<void> apiLog(TRTCLoggerLevel level, String logString) {
     // TODO: implement apiLog
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> hasPermissions({required List<PermissionType> permissions}) {
+    // TODO: implement hasPermissions
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<PermissionResult> requestPermissions({required List<PermissionType> permissions, String title = "", String description = "", String settingsTip = ""}) {
+    // TODO: implement requestPermissions
     throw UnimplementedError();
   }
 }
