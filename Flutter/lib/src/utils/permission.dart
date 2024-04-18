@@ -1,8 +1,20 @@
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
-import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
+import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
 
-class PermissionRequest {
+enum PermissionResult {
+  granted,
+  denied,
+  requesting,
+}
+
+enum PermissionType {
+  camera,
+  microphone,
+  bluetooth,
+}
+
+class Permission {
   static String getPermissionRequestTitle(TUICallMediaType type) {
     if (TUICallMediaType.audio == type) {
       return CallKit_t("申请麦克风权限");
@@ -27,22 +39,27 @@ class PermissionRequest {
     }
   }
 
-  static Future<TUIPermissionResult> checkCallingPermission(
+  static Future<PermissionResult> request(
       TUICallMediaType type) async {
-    TUIPermissionResult result = TUIPermissionResult.denied;
+    PermissionResult result = PermissionResult.denied;
     if (TUICallMediaType.video == type) {
-      result = await TUIPermission.request(
-          permissions: [TUIPermissions.camera, TUIPermissions.microphone],
+      result = await TUICallKitPlatform.instance.requestPermissions(
+          permissions: [PermissionType.camera, PermissionType.microphone],
           title: getPermissionRequestTitle(type),
           description: getPermissionRequestDescription(type),
           settingsTip: getPermissionRequestDescription(type));
     } else {
-      result = await TUIPermission.request(
-          permissions: [TUIPermissions.microphone],
+      result = await TUICallKitPlatform.instance.requestPermissions(
+          permissions: [PermissionType.microphone],
           title: getPermissionRequestTitle(type),
           description: getPermissionRequestDescription(type),
           settingsTip: getPermissionRequestDescription(type));
     }
     return result;
+  }
+
+  static Future<bool> has({required List<PermissionType> permissions}) async {
+    return await TUICallKitPlatform.instance
+        .hasPermissions(permissions: permissions);
   }
 }

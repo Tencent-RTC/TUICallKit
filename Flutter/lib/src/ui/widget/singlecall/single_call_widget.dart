@@ -8,11 +8,11 @@ import 'package:tencent_calls_uikit/src/ui/widget/common/timing_widget.dart';
 import 'package:tencent_calls_uikit/src/ui/tuicall_navigator_observer.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/singlecall/single_function_widget.dart';
-import 'package:tencent_calls_uikit/src/utils/event_bus.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
 import 'package:tencent_calls_uikit/src/data/user.dart';
+import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 
 class SingleCallWidget extends StatefulWidget {
   final Function close;
@@ -27,7 +27,7 @@ class SingleCallWidget extends StatefulWidget {
 }
 
 class _SingleCallWidgetState extends State<SingleCallWidget> {
-  EventCallback? setSateCallBack;
+  ITUINotificationCallback? setSateCallBack;
   bool _hadShowAcceptText = false;
   bool _isShowAcceptText = false;
   double _smallViewTop = 128;
@@ -59,13 +59,13 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
         setState(() {});
       }
     };
-    eventBus.register(setStateEvent, setSateCallBack);
+    TUICore.instance.registerEvent(setStateEvent, setSateCallBack);
   }
 
   @override
   dispose() {
     super.dispose();
-    eventBus.unregister(setStateEvent, setSateCallBack);
+    TUICore.instance.unregisterEvent(setStateEvent, setSateCallBack);
   }
 
   @override
@@ -127,24 +127,21 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
   _buildFloatingWindowBtnWidget() {
     return CallState.instance.enableFloatWindow
         ? Positioned(
-            left: 24,
-            top: 64,
-            width: 20,
-            height: 20,
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  InkWell(
+            left: 12,
+            top: 52,
+            child: InkWell(
+                onTap: () => _openFloatWindow(),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
                     child: Image.asset(
                       'assets/images/floating_button.png',
                       package: 'tencent_calls_uikit',
                     ),
-                    onTap: () {
-                      _openFloatWindow();
-                    },
-                  )
-                ]),
+                  ),
+                )),
           )
         : const SizedBox();
   }

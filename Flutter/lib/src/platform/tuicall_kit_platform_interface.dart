@@ -1,6 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_method_channel.dart';
+import 'package:tencent_calls_uikit/src/utils/permission.dart';
 
 abstract class TUICallKitPlatform extends PlatformInterface {
   TUICallKitPlatform() : super(token: _token);
@@ -70,5 +71,22 @@ abstract class TUICallKitPlatform extends PlatformInterface {
 
   Future<void> apiLog(TRTCLoggerLevel level, String logString) async {
     await instance.apiLog(level, logString);
+  }
+
+  Future<bool> hasPermissions(
+      {required List<PermissionType> permissions}) async {
+    return await instance.hasPermissions(permissions: permissions);
+  }
+
+  Future<PermissionResult> requestPermissions(
+      {required List<PermissionType> permissions,
+        String title = "",
+        String description = "",
+        String settingsTip = ""}) async {
+    return await instance.requestPermissions(
+        permissions: permissions,
+        title: title,
+        description: description,
+        settingsTip: settingsTip);
   }
 }

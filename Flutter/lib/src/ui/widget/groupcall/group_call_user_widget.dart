@@ -6,10 +6,9 @@ import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/data/user.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/common/loading_animation.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/groupcall/group_call_user_widget_data.dart';
-import 'package:tencent_calls_uikit/src/utils/event_bus.dart';
-
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
 import 'package:tencent_calls_uikit/src/utils/tuple.dart';
+import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 
 class GroupCallUserWidget extends StatefulWidget {
   final int index;
@@ -22,7 +21,7 @@ class GroupCallUserWidget extends StatefulWidget {
 }
 
 class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
-  EventCallback? refreshCallback;
+  ITUINotificationCallback? refreshCallback;
   final _duration = const Duration(milliseconds: 300);
 
   @override
@@ -33,13 +32,13 @@ class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
         setState(() {});
       }
     };
-    eventBus.register(setStateEventGroupCallUserWidgetRefresh, refreshCallback);
+    TUICore.instance.registerEvent(setStateEventGroupCallUserWidgetRefresh, refreshCallback);
   }
 
   @override
   void dispose() {
     super.dispose();
-    eventBus.unregister(setStateEventGroupCallUserWidgetRefresh, refreshCallback);
+    TUICore.instance.unregisterEvent(setStateEventGroupCallUserWidgetRefresh, refreshCallback);
   }
 
   @override
@@ -80,7 +79,7 @@ class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
 
               GroupCallUserWidgetData.initCanPlaceSquare(GroupCallUserWidgetData.blockBigger,
                   CallState.instance.remoteUserList.length + 1);
-              eventBus.notify(setStateEventGroupCallUserWidgetRefresh);
+              TUICore.instance.notifyEvent(setStateEventGroupCallUserWidgetRefresh);
             },
             child: Stack(
               alignment: Alignment.center,
@@ -338,7 +337,7 @@ class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
       CallState.instance.camera = TUICamera.front;
     }
     await CallManager.instance.switchCamera(CallState.instance.camera);
-    eventBus.notify(setStateEvent);
+    TUICore.instance.notifyEvent(setStateEvent);
   }
 
   _handleVirtualBackgroubd() async {}

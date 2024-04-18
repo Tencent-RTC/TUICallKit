@@ -6,7 +6,9 @@ import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/call_state.dart';
 import 'package:tencent_calls_uikit/tuicall_kit.dart';
-import 'package:tencent_calls_uikit/src/utils/event_bus.dart';
+import 'package:tencent_calls_uikit/src/utils/permission.dart';
+import 'package:tencent_calls_uikit/src/data/constants.dart';
+import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 
 class MethodChannelTUICallKit extends TUICallKitPlatform {
   MethodChannelTUICallKit() {
@@ -116,6 +118,48 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
     await methodChannel.invokeMethod('apiLog', {'level': level.index, 'logString': logString});
   }
 
+  @override
+  Future<bool> hasPermissions(
+      {required List<PermissionType> permissions}) async {
+    List<int> permissionsList = [];
+    for (var element in permissions) {
+      permissionsList.add(element.index);
+    }
+    return await methodChannel
+        .invokeMethod('hasPermissions', {'permission': permissionsList});
+  }
+
+  @override
+  Future<PermissionResult> requestPermissions(
+      {required List<PermissionType> permissions,
+        String title = "",
+        String description = "",
+        String settingsTip = ""}) async {
+    try {
+      List<int> permissionsList = [];
+      for (var element in permissions) {
+        permissionsList.add(element.index);
+      }
+      int result = await methodChannel.invokeMethod('requestPermissions', {
+        'permission': permissionsList,
+        'title': title,
+        'description': description,
+        'settingsTip': settingsTip
+      });
+      if (result == PermissionResult.granted.index) {
+        return PermissionResult.granted;
+      } else if (result == PermissionResult.denied.index) {
+        return PermissionResult.denied;
+      } else {
+        return PermissionResult.requesting;
+      }
+    } on PlatformException catch (_) {
+      return PermissionResult.denied;
+    } on Exception catch (_) {
+      return PermissionResult.denied;
+    }
+  }
+
   void _handleNativeCall(MethodCall call) {
     debugPrint(
         "CallHandler method:${call.method}, arguments:${call.arguments}");
@@ -134,12 +178,6 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
         break;
       case "call":
         _handleCall(call);
-        break;
-      case "handleLoginSuccess":
-        _handleLoginSuccess(call);
-        break;
-      case "handleLogoutSuccess":
-        _handleLogoutSuccess();
         break;
       case "appEnterForeground":
         _appEnterForeground();
@@ -184,17 +222,6 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
     TUICallKit.instance.call(userId, mediaType);
   }
 
-  void _handleLoginSuccess(MethodCall call) {
-    var userId = call.arguments['userId'];
-    var sdkAppId = call.arguments['sdkAppId'];
-    var userSig = call.arguments['userSig'];
-    CallManager.instance.handleLoginSuccess(sdkAppId, userId, userSig);
-  }
-
-  void _handleLogoutSuccess() {
-    CallManager.instance.handleLogoutSuccess();
-  }
-
   void _appEnterForeground() {
     CallManager.instance.handleAppEnterForeground();
   }
@@ -202,14 +229,14 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
   void _handleVoipChangeMute(MethodCall call) {
     if (CallState.instance.selfUser.callStatus != TUICallStatus.none) {
       CallState.instance.isMicrophoneMute = call.arguments['mute'];
-      eventBus.notify(setStateEvent);
+      TUICore.instance.notifyEvent(setStateEvent);
     }
   }
 
   void _handleVoipChangeAudioPlaybackDevice(MethodCall call) {
     if (CallState.instance.selfUser.callStatus != TUICallStatus.none) {
       CallState.instance.audioDevice = call.arguments['audioPlaybackDevice'];
-      eventBus.notify(setStateEvent);
+      TUICore.instance.notifyEvent(setStateEvent);
     }
   }
 }

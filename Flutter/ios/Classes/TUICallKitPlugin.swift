@@ -62,31 +62,6 @@ extension TUICallKitPlugin {
     }
     
     // MARK: TUICallKitServiceDelegate
-    func callMethodHandleLoginSuccess(sdkAppID: Int, userId: String, userSig: String) {
-        channel.invokeMethod("handleLoginSuccess", arguments: ["sdkAppId": sdkAppID,
-                                                               "userId": userId,
-                                                               "userSig": userSig] as [String : Any])
-    }
-
-    func callMethodHandleLogoutSuccess() {
-        channel.invokeMethod("handleLogoutSuccess", arguments: nil)
-    }
-
-    func callMethodCall(userId: String, callMediaType: TUICallMediaType) {
-        channel.invokeMethod("call", arguments: ["userId": userId,
-                                                 "mediaType": callMediaType.rawValue] as [String : Any])
-    }
-
-    func callMethodGroupCall(groupId: String, userIdList: [String], callMediaType: TUICallMediaType) {
-        channel.invokeMethod("groupCall", arguments: ["groupId": groupId,
-                                                      "userIdList": userIdList,
-                                                      "mediaType": callMediaType.rawValue] as [String : Any])
-    }
-
-    func callMethodEnabelFloatWindow(enable: Bool) {
-        channel.invokeMethod("enabelFloatWindow", arguments: ["enable": enable])
-    }
-    
     func callMethodVoipChangeMute(mute: Bool) {
         channel.invokeMethod("voipChangeMute", arguments: ["mute": mute])
     }
