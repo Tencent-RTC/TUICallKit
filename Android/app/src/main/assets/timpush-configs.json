@@ -1,19 +1,6 @@
 {
   "com.tencent.trtc": {
-    "huaweiPushBussinessId": "",
-    "huaweiBadgeClassName": "",
-    "xiaomiPushBussinessId": "",
-    "xiaomiPushAppId": "",
-    "xiaomiPushAppKey": "",
-    "meizuPushBussinessId": "",
-    "meizuPushAppId": "",
-    "meizuPushAppKey": "",
-    "vivoPushBussinessId": "",
-    "fcmPushBussinessId": "",
-    "oppoPushBussinessId": "",
-    "oppoPushAppKey": "",
-    "oppoPushAppSecret": "",
-    "honorPushBussinessId": ""
+    "fcmPushBussinessId": ""
   },
   "version": "1.0.1"
 }
