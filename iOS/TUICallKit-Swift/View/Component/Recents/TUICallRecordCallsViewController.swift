@@ -132,7 +132,7 @@ public class TUICallRecordCallsViewController: UIViewController {
         viewModel.dataSource.removeObserver(dataSourceObserver)
     }
     
-    // 页面出现的时候注册刷行UI的数据回调，页面消失关闭，防止页面UI刷新在非主线程中运行
+    // Register the UI data refresh callback when the page appears, close it when the page disappears, to prevent the UI refresh from running in a non-main thread.
     public override func viewWillAppear(_ animated: Bool) {
         registerObserve()
         viewModel.queryRecentCalls()
