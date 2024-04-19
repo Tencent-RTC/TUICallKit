@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICallKit'
-  spec.version      = '2.3.0.860'
+  spec.version      = '2.3.0.920'
   spec.platform     = :ios
   spec.ios.deployment_target = '10.0'
   spec.license      = { :type => 'Proprietary',
@@ -20,10 +20,6 @@ Pod::Spec.new do |spec|
   spec.requires_arc = true
   spec.static_framework = true
   spec.source = { :path => './' }
-  spec.pod_target_xcconfig = {
-    'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
-  }
-  spec.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
   spec.swift_version = '5.0'
 
   spec.ios.framework = ['AVFoundation', 'Accelerate', 'AssetsLibrary']
@@ -50,5 +46,9 @@ Pod::Spec.new do |spec|
     }
     professional.resource = ['TUICallKit/Resources/*.bundle']
   end
+  
+  spec.resource_bundles = {
+    'TUICallKit_Privacy' => ['TUICallKit/Sources/PrivacyInfo.xcprivacy']
+  }
   
 end

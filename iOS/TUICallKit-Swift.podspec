@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICallKit-Swift'
-  spec.version      = '2.3.0.915'
+  spec.version      = '2.3.0.920'
   spec.platform     = :ios
   spec.ios.deployment_target = '12.0'
   spec.license      = { :type => 'Proprietary',
@@ -47,5 +47,9 @@ Pod::Spec.new do |spec|
     }
     professional.resource = ['TUICallKit-Swift/Resources/*.bundle']
   end
-
+  
+  spec.resource_bundles = {
+    'TUICallKit-Swift_Privacy' => ['TUICallKit-Swift/Sources/PrivacyInfo.xcprivacy']
+  }
+  
 end

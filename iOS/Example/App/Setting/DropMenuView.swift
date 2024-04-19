@@ -156,7 +156,7 @@ open class SwiftDropMenuControl: UIButton {
         contentView.isHidden = false
         
         if contentView.frame.size.height == 0 {
-            assertionFailure("ListView 高度为空，不应该被展开")
+            assertionFailure("ListView height is empty and should not be expanded.")
         }
         
         contentView.contentViewTop?.constant = 0.0

@@ -28,7 +28,7 @@
 "TUICallKitApp.Call.RoomIdString" = "ルームId(文字列)";
 "TUICallKitApp.Call.InputRoomId" = "Room IDを入力してください";
 
-"TUICallKitApp.Login.Product" = "TRTC";
+"TUICallKitApp.Login.Product" = "Tencent RTC";
 "TUICallKitApp.Login.EnterUserId" = "ユーザーIDを入力してください";
 "TUICallKitApp.Login.EnterVerificationCode" = "認証コードを入力してください";
 "TUICallKitApp.Login.GetVerificationCode" = "認証コードを取得";
