@@ -8,9 +8,9 @@
 import Foundation
 
 extension CGFloat {
-    /// 375设计图中的尺寸
+    /// 375 design in the design graph
     ///
-    /// - Returns: 最终结果缩放结果
+    /// - Returns: Final result scaling result
     public func scaleWidth(_ exceptPad: Bool = true) -> CGFloat {
         if UIDevice.current.userInterfaceIdiom == .pad {
             return exceptPad ? self * 1.5 : self * (Screen_Width / 375.00)
@@ -27,9 +27,9 @@ extension CGFloat {
 }
 
 extension Int {
-    /// 375设计图中的尺寸
+    /// 375 design in the design graph
     ///
-    /// - Returns: 最终结果缩放结果
+    /// - Returns: Final result scaling result
     public func scaleWidth(_ exceptPad: Bool = true) -> CGFloat {
         return CGFloat(self).scaleWidth()
     }

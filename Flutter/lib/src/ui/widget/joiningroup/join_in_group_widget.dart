@@ -68,7 +68,7 @@ class _JoinInGroupWidgetState extends State<JoinInGroupWidget> {
                           height: 20,
                         ),
                         const Padding(padding: EdgeInsets.only(left: 15)),
-                        Text('${widget.userIDs.length} ${CallKit_t("人正在通话")}'),
+                        Text('${widget.userIDs.length} ${CallKit_t("personIsOnTheCall")}'),
                         const Spacer(),
                         Image.asset(
                           _isExpand ? 'assets/images/join_group_compress.png' : 'assets/images/join_group_expand.png',
@@ -139,7 +139,7 @@ class _JoinInGroupWidgetState extends State<JoinInGroupWidget> {
                             child: Container(
                               height: 49,
                               alignment: Alignment.center,
-                              child: Text(CallKit_t('加入'),
+                              child: Text(CallKit_t('joinIn'),
                                 style: const TextStyle(fontSize: 16,
                                   fontWeight: FontWeight.w500),
                               ),

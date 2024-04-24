@@ -34,7 +34,6 @@ public class SingleCallFloatView extends CallFloatView implements ITUINotificati
     private ImageView      mImageAvatar;
     private ImageView      mImageAudio;
     private boolean        mIsCameraOpen = false;
-
     public SingleCallFloatView(Context context) {
         super(context);
         mContext = context;
@@ -147,6 +146,9 @@ public class SingleCallFloatView extends CallFloatView implements ITUINotificati
                 User remoteUser = TUICallState.getInstance().mRemoteUserList.get(0);
 
                 if (remoteUser.videoAvailable) {
+                    if (mTUIVideoView.getVisibility() == VISIBLE) {
+                        return;
+                    }
                     mTUIVideoView.setVisibility(VISIBLE);
                     mImageAvatar.setVisibility(GONE);
                     TUICallEngine.createInstance(mContext).startRemoteView(

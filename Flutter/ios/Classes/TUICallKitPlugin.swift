@@ -22,7 +22,7 @@ public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, TUICallKit
         
         super.init()
         
-        FloatWindowManger.instance.backToFlutterWidgetDelegate = self
+        WindowManger.instance.backToFlutterWidgetDelegate = self
         TUICallKitService.instance.callKitServiceDelegate = self
         
         NotificationCenter.default.addObserver(self, selector: #selector(applicationWillResignActive),
@@ -42,6 +42,7 @@ public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, TUICallKit
         case closeMicrophone
         case isAppInForeground
         case apiLog
+        case runAppToNative
     }
     
     @objc func applicationWillResignActive() {
@@ -57,8 +58,12 @@ public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, TUICallKit
 
 extension TUICallKitPlugin {
     // MARK: BackToFlutterWidgetDelegate
-    func backToFlutterWidget() {
-        channel.invokeMethod("backCallingPage", arguments: nil)
+    func backCallingPageFromFloatWindow() {
+        channel.invokeMethod("backCallingPageFromFloatWindow", arguments: nil)
+    }
+    
+    func launchCallingPageFromIncomingFloatWindow() {
+        channel.invokeMethod("launchCallingPageFromIncomingFloatWindow", arguments: nil)
     }
     
     // MARK: TUICallKitServiceDelegate
@@ -108,6 +113,8 @@ extension TUICallKitPlugin: FlutterPlugin {
             TUICallKitManager.shared.closeMicrophone(call: call, result: result)
         case .apiLog:
             TUICallKitManager.shared.apiLog(call: call, result: result)
+        case .runAppToNative:
+            TUICallKitManager.shared.runAppToNative(call: call, result: result)
         default:
             break
         }

@@ -30,7 +30,7 @@ class _InviteUserWidgetState extends State<InviteUserWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(CallKit_t('邀请成员')),
+          title: Text(CallKit_t('inviteMembers')),
           leading: IconButton(
               onPressed: _goBack,
               icon: const Icon(
@@ -115,7 +115,7 @@ class _InviteUserWidgetState extends State<InviteUserWidget> {
     var memberInfo = GroupMemberInfo();
     memberInfo.userId = CallState.instance.selfUser.id;
     memberInfo.userName =
-        '${StringStream.makeNull(CallState.instance.selfUser.nickname, CallState.instance.selfUser.id)} (${CallKit_t("你")})';
+        '${StringStream.makeNull(CallState.instance.selfUser.nickname, CallState.instance.selfUser.id)} (${CallKit_t("yourself")})';
     memberInfo.avatar =
         StringStream.makeNull(CallState.instance.selfUser.avatar, Constants.defaultAvatar);
     memberInfo.isSelected = true;

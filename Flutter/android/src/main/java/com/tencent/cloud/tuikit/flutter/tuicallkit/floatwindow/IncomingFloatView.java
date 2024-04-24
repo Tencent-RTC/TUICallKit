@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.R;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.TUICallKitPlugin;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.state.TUICallState;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.User;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitPermissionUtils;
@@ -79,11 +80,15 @@ public class IncomingFloatView {
 
         textFloatTitle.setText(user.nickname);
         if (mediaType == TUICallDefine.MediaType.Video) {
-            textFloatDescription.setText("video call");
-            imageAccept.setBackgroundResource(R.drawable.tuicallkit_ic_dialing_video);
+            String str = (String) TUICallState.getInstance().mResourceMap.get(TUICallState.getInstance().mScene == TUICallDefine.Scene.SINGLE_CALL ? "k_0000002_1" : "k_0000003");
+            textFloatDescription.setText(str);
+
+            imageAccept.setImageResource(R.drawable.tuicallkit_ic_dialing_video);
         } else {
-            textFloatDescription.setText("voice call");
-            imageAccept.setBackgroundResource(R.drawable.tuicallkit_bg_dialing);
+            String str = (String) TUICallState.getInstance().mResourceMap.get(TUICallState.getInstance().mScene == TUICallDefine.Scene.SINGLE_CALL ? "k_0000002" : "k_0000003");
+            textFloatDescription.setText(str);
+
+            imageAccept.setImageResource(R.drawable.tuicallkit_ic_dialing);
         }
         imageReject.setOnClickListener(new View.OnClickListener() {
             @Override

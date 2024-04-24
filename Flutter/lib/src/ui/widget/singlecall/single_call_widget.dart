@@ -242,17 +242,17 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
             isWaiting
                 ? Text(
                     CallState.instance.selfUser.callRole == TUICallRole.caller
-                        ? CallKit_t("等待对方接受邀请")
+                        ? CallKit_t("waitingForInvitationAcceptance")
                         : CallState.instance.mediaType == TUICallMediaType.audio
-                            ? CallKit_t("邀请你进行语音通话")
-                            : CallKit_t("邀请你进行视频通话"),
+                            ? CallKit_t("invitedToAudioCall")
+                            : CallKit_t("invitedToVideoCall"),
                     style: TextStyle(
                         fontSize: 12, fontWeight: FontWeight.w400, color: _getTextColor()),
                   )
                 : const SizedBox(),
             _isShowAcceptText
                 ? Text(
-                    CallKit_t('已接通'),
+                    CallKit_t('connected'),
                     style: TextStyle(
                         fontSize: 12, fontWeight: FontWeight.w600, color: _getTextColor()),
                   )
@@ -273,7 +273,6 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
     );
   }
 
-  // 占满全屏幕的大窗
   Widget _buildBigVideoWidget() {
     var remoteAvatar = '';
     var remoteVideoAvailable = false;

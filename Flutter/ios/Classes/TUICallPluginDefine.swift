@@ -11,12 +11,12 @@ import Foundation
 
 enum TUICallKitFlutterCode: Int {
     case ok = 0
-    /// 暂未归类的错误码
+    /// The error code that has not yet classified
     case unknown = -1
-    /// 参数未找到
+    /// The parameters were not found
     case paramNotFound = -1_001
-    /// 参数类型错误
+    /// Parameter type error
     case paramTypeError = -1_002
-    /// 获取value为空
+    /// Get Value as empty
     case valueIsNull = -1_004
 }

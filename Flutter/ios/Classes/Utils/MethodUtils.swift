@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Flutter方法取值函数
+/// Flutter method value function
 public class MethodUtils {
     public static func getMethodParams<T: Any>(call: FlutterMethodCall, key: String, resultType: T.Type) -> T? {
         guard let arguments = call.arguments as? [String: Any] else { return nil }
@@ -16,15 +16,15 @@ public class MethodUtils {
     }
 }
 
-/// Flutter-Result 回调处理
+/// Flutter-Result
 public class FlutterResultUtils {
     
-    /// 处理Method-Result
+    /// Process Method-Result
     /// - Parameters:
-    ///   - code: 错误码
-    ///   - methodName: 接口名称
-    ///   - paramKey: 参数key
-    ///   - result: flutter回调
+    ///   - code: error code
+    ///   - methodName: Interface name
+    ///   - paramKey: Parameter key
+    ///   - result: Flutter callback
     static func handleMethod(code: TUICallKitFlutterCode = .unknown,
                              methodName: String,
                              paramKey: String,
@@ -39,7 +39,7 @@ public class FlutterResultUtils {
         }
     }
     
-    /// 处理result回调
+    /// Process Result
     static func handle(code: TUICallKitFlutterCode = .unknown,
                        msg: String = "unknown msg",
                        details: Any? = nil,

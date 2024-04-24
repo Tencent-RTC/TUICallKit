@@ -53,8 +53,8 @@ abstract class TUICallKitPlatform extends PlatformInterface {
     return await instance.isAppInForeground();
   }
 
-  Future<bool> moveAppToFront(String event) async {
-    return await instance.moveAppToFront(event);
+  Future<bool> runAppToNative(String event) async {
+    return await instance.runAppToNative(event);
   }
 
   Future<bool> initResources(Map resources) async {

@@ -63,6 +63,10 @@ class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
     bool isShowSwitchCameraAndVB = GroupCallUserWidgetData.blockBigger[widget.index]! &&
         (widget.user.id == CallState.instance.selfUser.id) &&
         (CallState.instance.isCameraOpen == true);
+    bool isShowVBButton = GroupCallUserWidgetData.blockBigger[widget.index]! &&
+        (widget.user.id == CallState.instance.selfUser.id) &&
+        (CallState.instance.isCameraOpen == true) &&
+        (CallState.instance.showVirtualBackgroundButton == true);
 
     return AnimatedPositioned(
         width: wh,
@@ -178,35 +182,34 @@ class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
                                 ],
                               )))),
                 ),
-                // TODO: 虚拟背景开关
-                // Visibility(
-                //   visible: isShowSwitchCameraAndVB,
-                //   child: Positioned(
-                //       right: 50,
-                //       bottom: 5,
-                //       width: 24,
-                //       height: 24,
-                //       child: InkWell(
-                //           onTap: () {
-                //             _handleVirtualBackgroubd();
-                //           },
-                //           child: Container(
-                //               decoration: BoxDecoration(
-                //                 color: Colors.black54,
-                //                 shape: BoxShape.rectangle,
-                //                 borderRadius: BorderRadius.circular(12),
-                //               ),
-                //               child: Stack(
-                //                 alignment: AlignmentDirectional.center,
-                //                 children: [
-                //                   Positioned(
-                //                       width: 14,
-                //                       height: 14,
-                //                       child: Image.asset("assets/images/virtual_background.png",
-                //                           package: 'tencent_calls_uikit', fit: BoxFit.contain))
-                //                 ],
-                //               )))),
-                // ),
+                Visibility(
+                  visible: isShowVBButton,
+                  child: Positioned(
+                      right: 50,
+                      bottom: 5,
+                      width: 24,
+                      height: 24,
+                      child: InkWell(
+                          onTap: () {
+                            _handleVirtualBackgroubd();
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.black54,
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Stack(
+                                alignment: AlignmentDirectional.center,
+                                children: [
+                                  Positioned(
+                                      width: 14,
+                                      height: 14,
+                                      child: Image.asset("assets/images/virtual_background.png",
+                                          package: 'tencent_calls_uikit', fit: BoxFit.contain))
+                                ],
+                              )))),
+                ),
               ],
             )));
   }
@@ -230,30 +233,22 @@ class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
   }
 
   Tuple<double, double> _getTopLeft(Map<int, bool> blockBigger, int index, int count) {
-    // Step 1 判断自己是否最大的 、有最大的
     bool has = _hasBigger(blockBigger);
     bool selfIsBigger = blockBigger[index]!;
 
-    // Step 2 有最大的
     if (has) {
-      // Step 2.1 自己是最大的
       if (selfIsBigger) {
-        // Step 2.1.1 小于等于4个
         if (count <= 4) {
           return Tuple(0, 0);
         }
 
-        // Step 2.1.2 5~9
-        // 计算将大widget放置的起始行、列
         int i = (index - 1) ~/ 3;
         int j = (index - 1) % 3;
-        // 如果被放大的widget在被方大之前在第2列，那么放大的起始列变为第一列。 （若为第0列，则保持不变）
         j = (j > 1) ? 1 : j;
         return Tuple(
             MediaQuery.of(context).size.width * i / 3, MediaQuery.of(context).size.width * j / 3);
       }
 
-      //Step 2.2 自己不是最大的
       for (int i = 0; i < GroupCallUserWidgetData.canPlaceSquare.length; i++) {
         for (int j = 0; j < GroupCallUserWidgetData.canPlaceSquare[i].length; j++) {
           if (GroupCallUserWidgetData.canPlaceSquare[i][j] == true) {
@@ -265,15 +260,12 @@ class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
       }
     }
 
-    // Step 3 没有最大的
-    // Step 3.1 只有2个人
     if (count == 2) {
       if (index == 1) {
         return Tuple(MediaQuery.of(context).size.width / 3, 0);
       }
       return Tuple(MediaQuery.of(context).size.width / 3, MediaQuery.of(context).size.width / 2);
     }
-    // Step 3.2 有3个人
     if (count == 3) {
       if (index == 1) {
         return Tuple(0, 0);
@@ -282,7 +274,6 @@ class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
       }
       return Tuple(MediaQuery.of(context).size.width / 2, MediaQuery.of(context).size.width / 4);
     }
-    // Step 3.3 4个人
     if (count == 4) {
       if (index == 1) {
         return Tuple(0, 0);
@@ -294,7 +285,6 @@ class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
       return Tuple(MediaQuery.of(context).size.width / 2, MediaQuery.of(context).size.width / 2);
     }
 
-    // Step 3.4 大于4个人
     for (int i = 0; i < GroupCallUserWidgetData.canPlaceSquare.length; i++) {
       for (int j = 0; j < GroupCallUserWidgetData.canPlaceSquare[i].length; j++) {
         if (GroupCallUserWidgetData.canPlaceSquare[i][j] == true) {
@@ -340,5 +330,7 @@ class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
     TUICore.instance.notifyEvent(setStateEvent);
   }
 
-  _handleVirtualBackgroubd() async {}
+  _handleVirtualBackgroubd() async {
+    CallManager.instance.setBlurBackground(!CallState.instance.enableBlurBackground);
+  }
 }

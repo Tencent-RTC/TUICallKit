@@ -18,6 +18,7 @@ import com.tencent.cloud.tuikit.flutter.tuicallkit.state.TUICallState;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.User;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.Logger;
 import com.tencent.qcloud.tuicore.TUIConfig;
+import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.permission.PermissionRequester;
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
@@ -48,6 +49,32 @@ public class KitAppUtils {
     }
 
     public static void moveAppToForeground(Context context, String event) {
+        boolean hasFloatPermission = KitPermissionUtils.hasPermission(PermissionRequester.FLOAT_PERMISSION);
+
+        if (!isAppRunningForeground(context)) {
+            backgroundStart(context, event);
+        } else {
+            User caller = TUICallState.getInstance().mRemoteUserList.get(0);
+            if (caller == null) {
+                return;
+            }
+            if (hasFloatPermission) {
+                startFloatWindow(context, caller);
+            } else if (isNotificationEnabled()) {
+                IncomingNotificationView.getInstance(context).showNotification(caller, TUICallState.getInstance().mMediaType);
+            } else {
+                TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_HANDLE_CALL_RECEIVED, null);
+            }
+        }
+    }
+
+    private static void startFloatWindow(Context context, User caller) {
+        IncomingFloatView floatView = new IncomingFloatView(context);
+        TUICallState.getInstance().mIncomingFloatView = floatView;
+        floatView.showIncomingView(caller, TUICallState.getInstance().mMediaType);
+    }
+
+    public static void backgroundStart(Context context, String event) {
         if (KitAppUtils.EVENT_START_CALL_PAGE.equals(event)) {
             if (KitPermissionUtils.hasPermission(PermissionRequester.BG_START_PERMISSION)) {
                 Intent intent = new Intent(context, FloatActivity.class);
@@ -57,7 +84,11 @@ public class KitAppUtils {
             } else {
                 TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_GOTO_CALLING_PAGE, null);
             }
-        } else if (KitAppUtils.EVENT_HANDLER_RECEIVE_CALL_REQUEST.equals(event)) {
+        }
+    }
+
+    public static void runAppToNative(Context context, String event) {
+         if (KitAppUtils.EVENT_HANDLER_RECEIVE_CALL_REQUEST.equals(event)) {
             User caller = TUICallState.getInstance().mRemoteUserList.get(0);
             if (caller == null) {
                 return;
@@ -65,10 +96,8 @@ public class KitAppUtils {
             if (KitPermissionUtils.hasPermission(PermissionRequester.FLOAT_PERMISSION)) {
                 Logger.info(TUICallKitPlugin.TAG, "App in background, will open IncomingFloatView");
 
-                IncomingFloatView floatView = new IncomingFloatView(context);
-                TUICallState.getInstance().mIncomingFloatView = floatView;
-                floatView.showIncomingView(caller, TUICallState.getInstance().mMediaType);
-            } else if (isNotificationEnabled()) {
+                startFloatWindow(context, caller);
+            } else if (isNotificationEnabled() && isShowInnerNotification()) {
                 Logger.info(TUICallKitPlugin.TAG, "App in background, will open IncomingNotificationView");
 
                 IncomingNotificationView.getInstance(context).showNotification(caller, TUICallState.getInstance().mMediaType);
@@ -89,6 +118,37 @@ public class KitAppUtils {
                 TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_HANDLE_CALL_RECEIVED, null);
             }
         }
+    }
+
+    private static boolean isShowInnerNotification() {
+        if (TUICore.getService(TUIConstants.TIMPush.SERVICE_NAME) == null) {
+            return true;
+        }
+
+        int pushBrandId = (int) TUICore.callService(TUIConstants.TIMPush.SERVICE_NAME, TUIConstants.TIMPush.METHOD_GET_PUSH_BRAND_ID, null);
+
+        return pushBrandId == TUIConstants.DeviceInfo.BRAND_GOOGLE_ELSE;
+    }
+
+    public static boolean isAppRunningForeground(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        if (activityManager == null) {
+            return false;
+        }
+
+        List<ActivityManager.RunningAppProcessInfo> runningAppProcessInfos = activityManager.getRunningAppProcesses();
+        if (runningAppProcessInfos == null) {
+            return false;
+        }
+
+        String packageName = context.getPackageName();
+        for (ActivityManager.RunningAppProcessInfo appProcessInfo : runningAppProcessInfos) {
+            if (appProcessInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
+                    && appProcessInfo.processName.equals(packageName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean isNotificationEnabled() {
