@@ -8,8 +8,8 @@ class OfflinePushInfoConfig {
     pushInfo.title = CallState.instance.selfUser.nickname.isEmpty
         ? CallState.instance.selfUser.id
         : CallState.instance.selfUser.nickname;
-    pushInfo.desc = CallKit_t("您有一个新的通话");
-    // OPPO必须设置ChannelID才可以收到推送消息，如果在控制台已经配置,代码中无需调用
+    pushInfo.desc = CallKit_t("youHaveANewCall");
+    // OPPO must set ChannelID to receive push messages. If the console is configured, no call is required in the code
     // OPPO must set a ChannelID to receive push messages. If you set it on the console, you don't need set here.
     // pushInfo.setAndroidOPPOChannelID("tuikit");
     pushInfo.ignoreIOSBadge = false;

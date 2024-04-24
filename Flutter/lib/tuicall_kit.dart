@@ -86,4 +86,8 @@ class TUICallKit {
   Future<void> enableFloatWindow(bool enable) async {
     return await CallManager.instance.enableFloatWindow(enable);
   }
+
+  Future<void> enableVirtualBackground(bool enable) async {
+    return await CallManager.instance.enableVirtualBackground(enable);
+  }
 }

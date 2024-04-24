@@ -21,9 +21,9 @@ public class ForegroundService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        // 获取服务通知
+        // Get service notice
         Notification notification = createForegroundNotification();
-        //将服务置于启动状态 ,NOTIFICATION_ID指的是创建的通知的ID
+        //Place the service in the startup state, notification_id refers to the ID of the created notice
         startForeground(NOTIFICATION_ID, notification);
     }
 

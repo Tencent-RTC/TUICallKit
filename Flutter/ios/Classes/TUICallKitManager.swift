@@ -184,12 +184,12 @@ class TUICallKitManager {
     }
     
     func startFloatWindow(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        FloatWindowManger.instance.showFloatWindow()
+        WindowManger.instance.showFloatWindow()
         result(NSNumber(value: 0))
     }
     
     func stopFloatWindow(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        FloatWindowManger.instance.closeFloatWindow()
+        WindowManger.instance.closeFloatWindow()
         result(NSNumber(value: 0))
     }
     
@@ -251,5 +251,18 @@ class TUICallKitManager {
             print("Error converting dictionary to JSON: \(error.localizedDescription)")
             result(NSNumber(value: -1))
         }
+    }
+        
+    func runAppToNative(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let event = MethodUtils.getMethodParams(call: call, key: "event", resultType: String.self) else {
+            FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "runAppToNative", paramKey: "event", result: result)
+            result(NSNumber(value: -1))
+            return
+        }
+        
+        if (event == "event_handle_receive_call") {
+            WindowManger.instance.showIncomingFloatWindow();
+        }
+        result(NSNumber(value: 0))
     }
 }

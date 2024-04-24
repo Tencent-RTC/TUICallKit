@@ -17,25 +17,25 @@ enum PermissionType {
 class Permission {
   static String getPermissionRequestTitle(TUICallMediaType type) {
     if (TUICallMediaType.audio == type) {
-      return CallKit_t("申请麦克风权限");
+      return CallKit_t("applyForMicrophonePermission");
     } else {
-      return CallKit_t("申请麦克风、摄像头权限");
+      return CallKit_t("applyForMicrophoneAndCameraPermissions");
     }
   }
 
   static String getPermissionRequestDescription(TUICallMediaType type) {
     if (TUICallMediaType.audio == type) {
-      return CallKit_t("需要访问您的麦克风权限，开启后用于语音通话、多人语音通话、视频通话、多人视频通话等功能。");
+      return CallKit_t("needToAccessMicrophonePermission");
     } else {
-      return CallKit_t("需要访问您的麦克风和摄像头权限，开启后用于语音通话、多人语音通话、视频通话、多人视频通话等功能。");
+      return CallKit_t("needToAccessMicrophoneAndCameraPermissions");
     }
   }
 
   static String getPermissionRequestSettingsTip(TUICallMediaType type) {
     if (TUICallMediaType.audio == type) {
-      return "${CallKit_t("申请麦克风权限")}\n${CallKit_t("需要访问您的麦克风权限，开启后用于语音通话、多人语音通话、视频通话、多人视频通话等功能。")}";
+      return "${CallKit_t("applyForMicrophonePermission")}\n${CallKit_t("needToAccessMicrophonePermission")}";
     } else {
-      return "${CallKit_t("申请麦克风、摄像头权限")}\n${CallKit_t("需要访问您的麦克风和摄像头权限，开启后用于语音通话、多人语音通话、视频通话、多人视频通话等功能。")}";
+      return "${CallKit_t("applyForMicrophoneAndCameraPermissions")}\n${CallKit_t("needToAccessMicrophoneAndCameraPermissions")}";
     }
   }
 

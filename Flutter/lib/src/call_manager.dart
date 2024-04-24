@@ -495,6 +495,20 @@ class CallManager {
     CallState.instance.enableFloatWindow = enable;
   }
 
+  Future<void> enableVirtualBackground(bool enable) async {
+    CallState.instance.showVirtualBackgroundButton = enable;
+  }
+
+  Future<void> setBlurBackground(bool enable) async {
+    int level = enable ? Constants.blurLevelHigh : Constants.blurLevelClose;
+    CallState.instance.enableBlurBackground = enable;
+
+    TUICallEngine.instance.setBlurBackground(level, (code, message) => {
+      TRTCLogger.error("CallManager setBlurBackground() errorCode: $code, errorMessage: $message"),
+      CallState.instance.enableBlurBackground = false
+    });
+  }
+
   Future<void> enableMuteMode(bool enable) async {
     CallState.instance.enableMuteMode = enable;
     PreferenceUtils.getInstance()
@@ -530,8 +544,11 @@ class CallManager {
 
   Future<void> initResources() async {
     var resources = {};
-    resources["k_0000088"] = CallKit_t("等待接听");
-    resources["k_0000089"] = CallKit_t("请同时打开后台弹出界面和显示悬浮窗权限");
+    resources["k_0000088"] = CallKit_t("waiting");
+    resources["k_0000089"] = CallKit_t("displayPopUpWindowWhileRunningInTheBackgroundAndDisplayPopUpWindowPermissions");
+    resources["k_0000002"] = CallKit_t("invitedToAudioCall");
+    resources["k_0000002_1"] = CallKit_t("invitedToVideoCall");
+    resources["k_0000003"] = CallKit_t("invitedToGroupCall");
     TUICallKitPlatform.instance.initResources(resources);
   }
 
@@ -539,7 +556,8 @@ class CallManager {
     TRTCLogger.info('CallManager handleAppEnterForeground()');
     if (CallState.instance.selfUser.callStatus != TUICallStatus.none &&
         TUICallKitNavigatorObserver.currentPage == CallPage.none &&
-        CallState.instance.isOpenFloatWindow == false) {
+        CallState.instance.isOpenFloatWindow == false &&
+        CallState.instance.isInNativeIncomingFloatWindow == false) {
       launchCallingPage();
     }
   }

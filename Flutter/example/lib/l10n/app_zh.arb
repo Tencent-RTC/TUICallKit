@@ -54,5 +54,6 @@
   "avatar_settings": "头像设置",
   "extended_info_settings": "扩展信息设置",
   "offline_push_info_settings": "离线推送消息设置",
-  "please_enter": "请输入"
+  "please_enter": "请输入",
+  "show_blur_background_button": "显示模糊背景按钮"
 }

@@ -20,4 +20,12 @@ class User {
     let videoAvailable: Observable<Bool> = Observable(false)
     let playoutVolume: Observable<Float> = Observable(0)
     var viewID: Observable<Int> = Observable(0)
+    
+    static func getUserDisplayName(user: User) -> String {
+        if !user.nickname.value.isEmpty {
+            return user.nickname.value
+        }
+        
+        return user.id.value
+    }
 }

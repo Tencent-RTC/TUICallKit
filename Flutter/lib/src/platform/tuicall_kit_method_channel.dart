@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
@@ -22,67 +23,93 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
 
   @override
   Future<void> startForegroundService() async {
-    await methodChannel.invokeMethod('startForegroundService', {});
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      await methodChannel.invokeMethod('startForegroundService', {});
+    }
   }
 
   @override
   Future<void> stopForegroundService() async {
-    await methodChannel.invokeMethod('stopForegroundService', {});
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      await methodChannel.invokeMethod('stopForegroundService', {});
+    }
   }
 
   @override
   Future<void> startRing(String filePath) async {
-    await methodChannel.invokeMethod('startRing', {"filePath": filePath});
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      await methodChannel.invokeMethod('startRing', {"filePath": filePath});
+    }
   }
 
   @override
   Future<void> stopRing() async {
-    await methodChannel.invokeMethod('stopRing', {});
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      await methodChannel.invokeMethod('stopRing', {});
+    }
   }
 
   @override
   Future<void> updateCallStateToNative() async {
-    List remoteUserList = [];
-    for (var i = 0; i < CallState.instance.remoteUserList.length; ++i) {
-      remoteUserList.add(CallState.instance.remoteUserList[i].toJson());
-    }
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      List remoteUserList = [];
+      for (var i = 0; i < CallState.instance.remoteUserList.length; ++i) {
+        remoteUserList.add(CallState.instance.remoteUserList[i].toJson());
+      }
 
-    methodChannel.invokeMethod('updateCallStateToNative', {
-      'selfUser': CallState.instance.selfUser.toJson(),
-      'remoteUserList': remoteUserList.isNotEmpty ? remoteUserList : [],
-      'scene': CallState.instance.scene.index,
-      'mediaType': CallState.instance.mediaType.index,
-      'startTime': CallState.instance.startTime,
-      'camera': CallState.instance.camera.index,
-      'isCameraOpen': CallState.instance.isCameraOpen,
-      'isMicrophoneMute': CallState.instance.isMicrophoneMute,
-    });
+      methodChannel.invokeMethod('updateCallStateToNative', {
+        'selfUser': CallState.instance.selfUser.toJson(),
+        'remoteUserList': remoteUserList.isNotEmpty ? remoteUserList : [],
+        'scene': CallState.instance.scene.index,
+        'mediaType': CallState.instance.mediaType.index,
+        'startTime': CallState.instance.startTime,
+        'camera': CallState.instance.camera.index,
+        'isCameraOpen': CallState.instance.isCameraOpen,
+        'isMicrophoneMute': CallState.instance.isMicrophoneMute,
+      });
+    }
   }
 
   @override
   Future<void> startFloatWindow() async {
-    await methodChannel.invokeMethod('startFloatWindow', {});
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      await methodChannel.invokeMethod('startFloatWindow', {});
+    }
   }
 
   @override
   Future<void> stopFloatWindow() async {
-    await methodChannel.invokeMethod('stopFloatWindow', {});
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      await methodChannel.invokeMethod('stopFloatWindow', {});
+    }
   }
 
   @override
   Future<bool> hasFloatPermission() async {
-    return await methodChannel.invokeMethod('hasFloatPermission', {});
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      return await methodChannel.invokeMethod('hasFloatPermission', {});
+    } else {
+      return false;
+    }
   }
 
   @override
   Future<bool> isAppInForeground() async {
-    return await methodChannel.invokeMethod('isAppInForeground', {});
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      return await methodChannel.invokeMethod('isAppInForeground', {});
+    } else {
+      return false;
+    }
   }
 
   @override
-  Future<bool> moveAppToFront(String event) async {
+  Future<bool> runAppToNative(String event) async {
     try {
-      await methodChannel.invokeMethod('moveAppToFront', {"event": event});
+      if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+        await methodChannel.invokeMethod('runAppToNative', {"event": event});
+      } else {
+        return false;
+      }
     } on PlatformException catch (_) {
       return false;
     } on Exception catch (_) {
@@ -94,7 +121,11 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
   @override
   Future<bool> initResources(Map resources) async {
     try {
-      await methodChannel.invokeMethod('initResources', {"resources": resources});
+      if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+        await methodChannel.invokeMethod('initResources', {"resources": resources});
+      } else {
+        return false;
+      }
     } on PlatformException catch (_) {
       return false;
     } on Exception catch (_) {
@@ -105,28 +136,38 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
 
   @override
   Future<void> openMicrophone() async {
-    await methodChannel.invokeMethod('openMicrophone', {});
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      await methodChannel.invokeMethod('openMicrophone', {});
+    }
   }
 
   @override
   Future<void> closeMicrophone() async {
-    await methodChannel.invokeMethod('closeMicrophone', {});
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      await methodChannel.invokeMethod('closeMicrophone', {});
+    }
   }
 
   @override
   Future<void> apiLog(TRTCLoggerLevel level, String logString) async {
-    await methodChannel.invokeMethod('apiLog', {'level': level.index, 'logString': logString});
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      await methodChannel.invokeMethod('apiLog', {'level': level.index, 'logString': logString});
+    }
   }
 
   @override
   Future<bool> hasPermissions(
       {required List<PermissionType> permissions}) async {
-    List<int> permissionsList = [];
-    for (var element in permissions) {
-      permissionsList.add(element.index);
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      List<int> permissionsList = [];
+      for (var element in permissions) {
+        permissionsList.add(element.index);
+      }
+      return await methodChannel
+          .invokeMethod('hasPermissions', {'permission': permissionsList});
+    } else {
+      return false;
     }
-    return await methodChannel
-        .invokeMethod('hasPermissions', {'permission': permissionsList});
   }
 
   @override
@@ -136,22 +177,26 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
         String description = "",
         String settingsTip = ""}) async {
     try {
-      List<int> permissionsList = [];
-      for (var element in permissions) {
-        permissionsList.add(element.index);
-      }
-      int result = await methodChannel.invokeMethod('requestPermissions', {
-        'permission': permissionsList,
-        'title': title,
-        'description': description,
-        'settingsTip': settingsTip
-      });
-      if (result == PermissionResult.granted.index) {
-        return PermissionResult.granted;
-      } else if (result == PermissionResult.denied.index) {
-        return PermissionResult.denied;
+      if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+        List<int> permissionsList = [];
+        for (var element in permissions) {
+          permissionsList.add(element.index);
+        }
+        int result = await methodChannel.invokeMethod('requestPermissions', {
+          'permission': permissionsList,
+          'title': title,
+          'description': description,
+          'settingsTip': settingsTip
+        });
+        if (result == PermissionResult.granted.index) {
+          return PermissionResult.granted;
+        } else if (result == PermissionResult.denied.index) {
+          return PermissionResult.denied;
+        } else {
+          return PermissionResult.requesting;
+        }
       } else {
-        return PermissionResult.requesting;
+        return PermissionResult.denied;
       }
     } on PlatformException catch (_) {
       return PermissionResult.denied;
@@ -164,11 +209,11 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
     debugPrint(
         "CallHandler method:${call.method}, arguments:${call.arguments}");
     switch (call.method) {
-      case "backCallingPage":
-        _handleBackCallingPage();
+      case "backCallingPageFromFloatWindow":
+        _backCallingPageFromFloatWindow();
         break;
-      case "handleCallReceived":
-        _handleCallReceived();
+      case "launchCallingPageFromIncomingFloatWindow":
+        _launchCallingPageFromIncomingFloatWindow();
         break;
       case "enableFloatWindow":
         _handleEnableFloatWindow(call);
@@ -194,11 +239,12 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
     }
   }
 
-  void _handleBackCallingPage() {
+  void _backCallingPageFromFloatWindow() {
     CallManager.instance.backCallingPageFormFloatWindow();
   }
 
-  void _handleCallReceived() {
+  void _launchCallingPageFromIncomingFloatWindow() {
+    CallState.instance.isInNativeIncomingFloatWindow = false;
     CallManager.instance.launchCallingPage();
   }
 

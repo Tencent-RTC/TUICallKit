@@ -9,12 +9,13 @@ import Foundation
 import TUICallEngine
 
 protocol BackToFlutterWidgetDelegate: NSObject {
-    func backToFlutterWidget()
+    func backCallingPageFromFloatWindow()
+    func launchCallingPageFromIncomingFloatWindow()
 }
 
-class FloatWindowManger: NSObject, FloatWindowViewDelegate {
+class WindowManger: NSObject, FloatWindowViewDelegate, IncomingFloatWindowViewDelegate {
     
-    static let instance = FloatWindowManger()
+    static let instance = WindowManger()
     
     let remoteUserVideoAvailableObserver = Observer()
     let selfUserCallStatusObserver = Observer()
@@ -25,6 +26,7 @@ class FloatWindowManger: NSObject, FloatWindowViewDelegate {
     var floatWindowBeganOrigin: CGPoint?
     
     weak var backToFlutterWidgetDelegate: BackToFlutterWidgetDelegate?
+    weak var incomingFloatWindowViewDelegate: IncomingFloatWindowViewDelegate?
 
     var floatWindow = UIWindow()
     
@@ -39,9 +41,9 @@ class FloatWindowManger: NSObject, FloatWindowViewDelegate {
         initFloatWindowFrame()
         floatWindow.backgroundColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
         floatWindow.layer.shadowColor = UIColor.black.cgColor
-        floatWindow.layer.shadowOffset = CGSizeMake(10.0, 10.0);
-        floatWindow.layer.shadowOpacity = 1.0;
-        floatWindow.layer.shadowRadius = 1.0;
+        floatWindow.layer.shadowOffset = CGSizeMake(10.0, 10.0)
+        floatWindow.layer.shadowOpacity = 1.0
+        floatWindow.layer.shadowRadius = 1.0
         floatWindow.layer.cornerRadius = 10.0
         floatWindow.layer.masksToBounds = true
         floatWindow.rootViewController = floatViewController
@@ -61,7 +63,7 @@ class FloatWindowManger: NSObject, FloatWindowViewDelegate {
             self.updateFloatWindowFrame()
             
             if self.selfCallStatus.value == TUICallStatus.none {
-                FloatWindowManger.instance.closeFloatWindow()
+                WindowManger.instance.closeFloatWindow()
             }
         })
     }
@@ -101,9 +103,9 @@ class FloatWindowManger: NSObject, FloatWindowViewDelegate {
     func tapGestureAction(tapGesture: UITapGestureRecognizer) {
         closeFloatWindow()
         if self.backToFlutterWidgetDelegate != nil &&
-            ((self.backToFlutterWidgetDelegate?.responds(to: Selector(("backToFlutterWidget")))) != nil) &&
+            ((self.backToFlutterWidgetDelegate?.responds(to: Selector(("backToFlutterWidgetDelegate")))) != nil) &&
             TUICallState.instance.selfUser.value.callStatus.value != .none {
-            self.backToFlutterWidgetDelegate?.backToFlutterWidget()
+            self.backToFlutterWidgetDelegate?.backCallingPageFromFloatWindow()
         }
     }
 
@@ -152,6 +154,35 @@ class FloatWindowManger: NSObject, FloatWindowViewDelegate {
             break
         default:
             break
+        }
+    }
+    
+    // MARK: Incoming Float Window
+    func showIncomingFloatWindow() {
+        let incomingFloatView = IncomingFloatView(frame: CGRect.zero)
+        incomingFloatView.delegate = self
+        let viewController = UIViewController()
+        viewController.view.addSubview(incomingFloatView)
+        floatWindow.rootViewController = viewController
+        floatWindow.isHidden = false
+        floatWindow.backgroundColor = UIColor.clear
+        floatWindow.frame = CGRect(x: 8.scaleWidth(),
+                                  y: StatusBar_Height + 10,
+                                  width: Screen_Width - 16.scaleWidth(),
+                                  height: 92.scaleWidth())
+        floatWindow.t_makeKeyAndVisible()
+    }
+
+    func closeIncomingFloatWindow() {
+        closeFloatWindow()
+    }
+    
+    func showCallingView() {
+        closeFloatWindow()
+        if self.backToFlutterWidgetDelegate != nil &&
+            ((self.backToFlutterWidgetDelegate?.responds(to: Selector(("backToFlutterWidgetDelegate")))) != nil) &&
+            TUICallState.instance.selfUser.value.callStatus.value != .none {
+            self.backToFlutterWidgetDelegate?.launchCallingPageFromIncomingFloatWindow()
         }
     }
 }

@@ -70,7 +70,7 @@ class MockCallsUikitPlatform
   }
 
   @override
-  Future<bool> moveAppToFront(String event) {
+  Future<bool> runAppToNative(String event) {
     // TODO: implement moveAppToFront
     throw UnimplementedError();
   }

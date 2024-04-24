@@ -54,5 +54,6 @@
   "avatar_settings": "Avatar settings",
   "extended_info_settings": "Extended information settings",
   "offline_push_info_settings": "Offline push message settings",
-  "please_enter": "Please enter"
+  "please_enter": "Please enter",
+  "show_blur_background_button": "Show blur background"
 }

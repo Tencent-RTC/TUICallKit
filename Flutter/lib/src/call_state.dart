@@ -42,9 +42,13 @@ class CallState {
   TUIAudioPlaybackDevice audioDevice = TUIAudioPlaybackDevice.earpiece;
   bool enableMuteMode = false;
   bool enableFloatWindow = false;
+  bool showVirtualBackgroundButton = false;
+  bool enableBlurBackground = false;
 
   bool isChangedBigSmallVideo = false;
   bool isOpenFloatWindow = false;
+
+  bool isInNativeIncomingFloatWindow = false;
 
   final TUICallObserver observer = TUICallObserver(
       onError: (int code, String message) {
@@ -57,13 +61,8 @@ class CallState {
         await CallState.instance.handleCallReceivedData(callerId, calleeIdList, groupId, callMediaType);
         await TUICallKitPlatform.instance.updateCallStateToNative();
         CallingBellFeature.startRing();
-        if (!await TUICallKitPlatform.instance.isAppInForeground()) {
-          if (Platform.isAndroid) {
-            await TUICallKitPlatform.instance.moveAppToFront("event_handle_receive_call");
-          }
-        } else {
-          CallManager.instance.launchCallingPage();
-        }
+        CallState.instance.isInNativeIncomingFloatWindow = true;
+        await TUICallKitPlatform.instance.runAppToNative("event_handle_receive_call");
       },
       onCallCancelled: (String callerId) {
         TRTCLogger.info('TUICallObserver onCallCancelled(callerId:$callerId)');
@@ -127,9 +126,9 @@ class CallState {
         }
         TUICallKitPlatform.instance.updateCallStateToNative();
         if (TUICallScene.singleCall == CallState.instance.scene) {
-          CallManager.instance.showToast(CallKit_t('对方拒绝了通话请求'));
+          CallManager.instance.showToast(CallKit_t('otherPartyDeclinedCallRequest'));
         } else {
-          CallManager.instance.showToast('$userId ${CallKit_t('拒绝了通话请求')}');
+          CallManager.instance.showToast('$userId ${CallKit_t('callRequestDeclined')}');
         }
       },
       onUserNoResponse: (String userId) {
@@ -150,9 +149,9 @@ class CallState {
 
         TUICallKitPlatform.instance.updateCallStateToNative();
         if (TUICallScene.singleCall == CallState.instance.scene) {
-          CallManager.instance.showToast(CallKit_t('对方未响应'));
+          CallManager.instance.showToast(CallKit_t('otherPartyNoResponse'));
         } else {
-          CallManager.instance.showToast('$userId ${CallKit_t('未响应')}');
+          CallManager.instance.showToast('$userId ${CallKit_t('noResponse')}');
         }
       },
       onUserLineBusy: (String userId) {
@@ -178,9 +177,9 @@ class CallState {
         TUICallKitPlatform.instance.updateCallStateToNative();
 
         if (TUICallScene.singleCall == CallState.instance.scene) {
-          CallManager.instance.showToast(CallKit_t('对方忙线'));
+          CallManager.instance.showToast(CallKit_t('otherPartyBusy'));
         } else {
-          CallManager.instance.showToast('$userId ${CallKit_t('忙线')}');
+          CallManager.instance.showToast('$userId ${CallKit_t('busy')}');
         }
       },
       onUserJoin: (String userId) async {
@@ -231,9 +230,9 @@ class CallState {
         TUICallKitPlatform.instance.updateCallStateToNative();
 
         if (TUICallScene.singleCall == CallState.instance.scene) {
-          CallManager.instance.showToast(CallKit_t('对方已挂断，通话结束'));
+          CallManager.instance.showToast(CallKit_t('otherPartyHungUp'));
         } else {
-          CallManager.instance.showToast('$userId ${CallKit_t('结束了通话')}');
+          CallManager.instance.showToast('$userId ${CallKit_t('endedTheCall')}');
         }
       },
       onUserVideoAvailable: (String userId, bool isVideoAvailable) {
@@ -314,7 +313,7 @@ class CallState {
     }
 
     if (calleeIdList.length >= Constants.groupCallMaxUserCount) {
-      CallManager.instance.showToast(CallKit_t('超过最大人数限制'));
+      CallManager.instance.showToast(CallKit_t('exceededMaximumNumber'));
       return;
     }
 
@@ -435,5 +434,6 @@ class CallState {
     CallState.instance.audioDevice = TUIAudioPlaybackDevice.earpiece;
 
     CallState.instance.isChangedBigSmallVideo = false;
+    CallState.instance.enableBlurBackground = false;
   }
 }

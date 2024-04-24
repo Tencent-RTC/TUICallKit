@@ -6,6 +6,8 @@ class ExtendButton extends StatelessWidget {
       this.tips = "",
       this.onTap,
       this.imgHeight = 0,
+      this.imgOffsetX = 0,
+      this.imgOffsetY = 0,
       this.imgColor,
       this.textColor,
       this.duration = const Duration(milliseconds: 200),
@@ -15,11 +17,36 @@ class ExtendButton extends StatelessWidget {
   final String imgUrl;
   final double imgHeight;
   final Color? imgColor;
+  final double imgOffsetX;
+  final double imgOffsetY;
   final String tips;
   final GestureTapCallback? onTap;
   final Color? textColor;
   final bool? userAnimation;
   final Duration duration;
+
+  Widget _buildImageView() {
+    return userAnimation!
+        ? AnimatedContainer(
+          duration: duration,
+          height: imgHeight > 0 ? imgHeight : 52.0,
+          width: imgHeight > 0 ? imgHeight : 52.0,
+          child: Image.asset(
+            imgUrl,
+            package: 'tencent_calls_uikit',
+            color: imgColor,
+          ),
+        )
+        : SizedBox(
+          height: imgHeight > 0 ? imgHeight : 52.0,
+          width: imgHeight > 0 ? imgHeight : 52.0,
+          child: Image.asset(
+            imgUrl,
+            package: 'tencent_calls_uikit',
+            color: imgColor,
+          ),
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,26 +57,10 @@ class ExtendButton extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          userAnimation!
-              ? AnimatedContainer(
-                  duration: duration,
-                  height: imgHeight > 0 ? imgHeight : 52.0,
-                  width: imgHeight > 0 ? imgHeight : 52.0,
-                  child: Image.asset(
-                    imgUrl,
-                    package: 'tencent_calls_uikit',
-                    color: imgColor,
-                  ),
-                )
-              : SizedBox(
-                  height: imgHeight > 0 ? imgHeight : 52.0,
-                  width: imgHeight > 0 ? imgHeight : 52.0,
-                  child: Image.asset(
-                    imgUrl,
-                    package: 'tencent_calls_uikit',
-                    color: imgColor,
-                  ),
-                ),
+          Transform.translate(
+            offset: Offset(imgOffsetX, imgOffsetY),
+            child: _buildImageView(),
+          ),
           Container(
             width: 100,
             height: 15,

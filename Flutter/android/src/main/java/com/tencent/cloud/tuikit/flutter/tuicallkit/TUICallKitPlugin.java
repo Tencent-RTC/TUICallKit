@@ -2,12 +2,10 @@ package com.tencent.cloud.tuikit.flutter.tuicallkit;
 
 import static com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.SingleCallFloatView.KEY_TUISTATE_CHANGE;
 import static com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.SingleCallFloatView.SUBKEY_REFRESH_VIEW;
-import static com.tencent.liteav.base.ContextUtils.getApplicationContext;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -15,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.FloatWindowService;
-import com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.IncomingFloatView;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.IncomingNotificationView;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.service.CallingBellService;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.service.ForegroundService;
@@ -30,13 +27,10 @@ import com.tencent.cloud.tuikit.tuicall_engine.utils.EnumUtils;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.Logger;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.MethodCallUtils;
 import com.tencent.cloud.uikit.core.utils.MethodUtils;
-import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.qcloud.tuicore.TUICore;
-import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.tencent.qcloud.tuicore.permission.PermissionCallback;
 import com.tencent.qcloud.tuicore.permission.PermissionRequester;
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -211,9 +205,9 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         }
     }
 
-    public void moveAppToFront(MethodCall call, MethodChannel.Result result) {
+    public void runAppToNative(MethodCall call, MethodChannel.Result result) {
         String event = MethodCallUtils.getMethodParams(call, KitAppUtils.EVENT_KEY);
-        KitAppUtils.moveAppToForeground(mApplicationContext, event);
+        KitAppUtils.runAppToNative(mApplicationContext, event);
         result.success(0);
     }
 
@@ -318,27 +312,27 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         }
     }
 
-    public void backCallingPage() {
-        mChannel.invokeMethod("backCallingPage", new HashMap(), new Result() {
+    public void backCallingPageFromFloatWindow() {
+        mChannel.invokeMethod("backCallingPageFromFloatWindow", new HashMap(), new Result() {
             @Override
             public void success(@Nullable Object result) {
             }
 
             @Override
             public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
-                Logger.error(TAG, "backCallingPage error code: " + code + " message:" + message + "details:"
+                Logger.error(TAG, "backCallingPageFromFloatWindow error code: " + code + " message:" + message + "details:"
                         + details);
             }
 
             @Override
             public void notImplemented() {
-                Logger.error(TAG, "backCallingPage notImplemented");
+                Logger.error(TAG, "backCallingPageFromFloatWindow notImplemented");
             }
         });
     }
 
-    public void handleCallReceived() {
-        mChannel.invokeMethod("handleCallReceived", new HashMap(), new Result() {
+    public void launchCallingPageFromIncomingFloatWindow() {
+        mChannel.invokeMethod("launchCallingPageFromIncomingFloatWindow", new HashMap(), new Result() {
             @Override
             public void success(@Nullable Object result) {
             }
@@ -349,7 +343,7 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
 
             @Override
             public void notImplemented() {
-                Logger.error(TAG, "handleCallReceived notImplemented");
+                Logger.error(TAG, "launchCallingPageFromIncomingFloatWindow notImplemented");
             }
         });
     }
@@ -381,12 +375,12 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         }
 
         if (Constants.SUB_KEY_GOTO_CALLING_PAGE.equals(subKey)) {
-            backCallingPage();
+            backCallingPageFromFloatWindow();
             return;
         }
 
         if (Constants.SUB_KEY_HANDLE_CALL_RECEIVED.equals(subKey)) {
-            handleCallReceived();
+            launchCallingPageFromIncomingFloatWindow();
             return;
         }
 

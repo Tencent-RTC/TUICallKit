@@ -156,14 +156,14 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
               ),
             ),
             Text(
-              CallKit_t("邀请你进行多人通话"),
+              CallKit_t("invitedToGroupCall"),
               style: const TextStyle(fontSize: 18, color: Colors.white),
             ),
             const SizedBox(
               height: 50,
             ),
             Text(
-              CallKit_t("他们也在"),
+              CallKit_t("theyAreAlsoThere"),
               style: const TextStyle(color: Colors.white),
             ),
             Container(
@@ -276,7 +276,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
           children: [
             ExtendButton(
               imgUrl: "assets/images/hangup.png",
-              tips: CallKit_t("挂断"),
+              tips: CallKit_t("hangUp"),
               textColor: Colors.white,
               imgHeight: 64,
               onTap: () {
@@ -285,7 +285,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
             ),
             ExtendButton(
               imgUrl: "assets/images/dialing.png",
-              tips: CallKit_t("接听"),
+              tips: CallKit_t("accept"),
               textColor: Colors.white,
               imgHeight: 64,
               onTap: () {
@@ -334,8 +334,8 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
                           : "assets/images/mute.png",
                       tips: isFunctionExpand
                           ? (CallState.instance.isMicrophoneMute
-                          ? CallKit_t("麦克风已关闭")
-                          : CallKit_t("麦克风已开启"))
+                          ? CallKit_t("microphoneIsOff")
+                          : CallKit_t("microphoneIsOn"))
                           : '',
                       textColor: Colors.white,
                       imgHeight: isFunctionExpand ? bigBtnHeight : smallBtnHeight,
@@ -359,8 +359,8 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
                           : "assets/images/handsfree.png",
                       tips: isFunctionExpand
                           ? (CallState.instance.audioDevice == TUIAudioPlaybackDevice.speakerphone
-                          ? CallKit_t("扬声器已开启")
-                          : CallKit_t("扬声器已关闭"))
+                          ? CallKit_t("speakerIsOn")
+                          : CallKit_t("speakerIsOff"))
                           : '',
                       textColor: Colors.white,
                       imgHeight: isFunctionExpand ? bigBtnHeight : smallBtnHeight,
@@ -384,8 +384,8 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
                           : "assets/images/camera_off.png",
                       tips: isFunctionExpand
                           ? (CallState.instance.isCameraOpen
-                          ? CallKit_t("摄像头已开启")
-                          : CallKit_t("摄像头已关闭"))
+                          ? CallKit_t("cameraIsOn")
+                          : CallKit_t("cameraIsOff"))
                           : '',
                       textColor: Colors.white,
                       imgHeight: isFunctionExpand ? bigBtnHeight : smallBtnHeight,
@@ -504,7 +504,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
       await CallManager.instance.accept();
       CallState.instance.selfUser.callStatus = TUICallStatus.accept;
     } else {
-      CallManager.instance.showToast(CallKit_t("新通话呼入，但因权限不足，无法接听。请确认摄像头/麦克风权限已开启。"));
+      CallManager.instance.showToast(CallKit_t("insufficientPermissions"));
     }
     setState(() {});
   }
