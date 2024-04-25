@@ -1,6 +1,6 @@
 # Call UIKit for React QuickStart
 
-<a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/call-uikit-demos/basic-react/README.md"> English </a> | <b> 简体中文 </b> 
+<a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/basic-react/README.md"> English </a> | <b> 简体中文 </b> 
 
 <img src="https://img.shields.io/badge/Platform-React-orange.svg"><img src="https://img.shields.io/badge/Language-Typescript-orange.svg">
 
@@ -45,11 +45,11 @@ Calls SDK for Web React demo 的最低要求是：
 2. 安装依赖
 
   ```shell
-   cd ./TUICallKit/Web/call-uikit-demos/basic-react
+   cd ./TUICallKit/Web/basic-react
    npm install
   ```
 
-3. 配置 SDKAppID 和 SDKSecretKey 在 `Web/call-uikit-demos/basic-react/public/debug/GenerateTestUserSig-es.js` 文件中填写 SDKAppID 和 SecretKey。
+3. 配置 SDKAppID 和 SDKSecretKey 在 `Web/basic-react/public/debug/GenerateTestUserSig-es.js` 文件中填写 SDKAppID 和 SecretKey。
   ```javascript
    const SDKAPPID = 0;
    const SECRETKEY = '';

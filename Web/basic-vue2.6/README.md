@@ -44,12 +44,12 @@ If you would like to try the demo specifically fit to your usage, you can do so 
 2. Install dependencies
 
   ```shell
-   cd ./TUICallKit/Web/call-uikit-demos/basic-vue2.6
+   cd ./TUICallKit/Web/basic-vue2.6
    npm install # or, yarn
   ```
 
 3. Specify the SDKAppID and SDKSecretKey
-   Input the SDKAppID and SDKSecretKey into file `Web/call-uikit-demos/basic-vue2.6/public/debug/GenerateTestUserSig-es.js`
+   Input the SDKAppID and SDKSecretKey into file `Web/basic-vue2.6/public/debug/GenerateTestUserSig-es.js`
   ```javascript
    const SDKAPPID = 0;
    const SECRETKEY = '';
