@@ -44,9 +44,9 @@
 
 为方便您的使用，本组件配套多篇使用指引：
 
-- 如果您想在线体验通话效果，请访问 [React 音视频通话 demo](https://web.sdk.qcloud.com/component/TUICallKit/demos/basic-react/index.html)。 [Vue 音视频通话 demo](https://rtcube.cloud.tencent.com/prerelease/component/experience-center/index.html#/detail?scene=callkit)
+- 如果您想在线体验通话效果，请访问 [React 音视频通话 demo](https://web.sdk.qcloud.com/component/TUICallKit/demos/basic-react/index.html)、[Vue 音视频通话 demo](https://rtcube.cloud.tencent.com/prerelease/component/experience-center/index.html#/detail?scene=callkit)
 
-- 如果您想要调试通话效果，请阅读 [React Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/demos/basic-react)。 [Vue Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/call-uikit-demos/basic-vue3)。
+- 如果您想要调试通话效果，请阅读 [React Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/basic-react)、 [Vue Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/basic-vue3)。
 
 - 如果您想把我们的功能直接嵌入到您的项目中，请阅读 [快速接入 TUICallKit](https://cloud.tencent.com/document/product/647/102510)。
 
@@ -54,43 +54,29 @@
 ## 目录内容
 
 ```text
-.
-├── call-engine-demo-vue2
-├── call-engine-demo-vue3
-├── call-uikit-demos
-  ├── basic-react
-  ├── basic-vue2.6
-  ├── basic-vue2.7
-  ├── basic-vue3
+├── basic-react
+├── basic-vue2.6
+├── basic-vue2.7
+├── basic-vue3
 ├── README-zh_CN.md
 ├── README.md 
 ```
 
-**call-engine-demo-vue2/**
-- 此文件夹下是 TUICallEngine 的 vue2 demo，集成了完整的 TUICallEngine 功能.
-
-**call-engine-demo-vue3/**
-- 此文件夹下是 TUICallEngine 的 vue3 demo，集成了完整的 TUICallEngine 功能.
-
-**call-uikit-demos/basic-react/**
+**basic-react**
 - 此文件夹下是 React 基础版 demo，集成了完整的 TUICallKit 组件功能，可以直接搜索用户拨打音视频通话。
 
-**call-uikit-demos/basic-vue3/**
+**basic-vue3**
 - 此文件夹下是 Vue3 基础版 demo，集成了完整的 TUICallKit 组件功能，可以直接搜索用户拨打音视频通话。
 
-**call-uikit-demos/basic-vue2.7/**
+**basic-vue2.7**
 - 此文件夹下是 Vue2.7 基础版 demo，集成了完整的 TUICallKit 组件功能，可以直接搜索用户拨打音视频通话。
 
-**call-uikit-demos/basic-vue2.6/**
+**basic-vue2.6**
 - 此文件夹下是 Vue2.6 基础版 demo，集成了完整的 TUICallKit 组件功能，可以直接搜索用户拨打音视频通话。
 
 
 ## 联系我们
-- 如果你遇到了困难，可以先参阅 [常见问题](https://cloud.tencent.com/document/product/647/78769)；
-- 有任何问题可以在[腾讯云通讯官方社群](https://zhiliao.qq.com/)中的 TUICallKit 板块中提出；
-- 如果发现了示例代码的 bug，欢迎提交 issue；
 
-
-## License
-
-ISC License © 2022-present, [Tencent](https://www.tencent.com/)
+- 如果你遇到了困难，可以先参阅 [常见问题](https://cloud.tencent.com/document/product/647/78769)。
+- 了解更多详情，请到[腾讯云通信官方社群](https://zhiliao.qq.com) 进行咨询和反馈。
+- 如果发现了示例代码的 bug，欢迎提交 issue。

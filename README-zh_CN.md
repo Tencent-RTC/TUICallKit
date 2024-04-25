@@ -45,4 +45,5 @@ _[English](README.md) | 简体中文_
 
 ## 交流&反馈
 
-如果您在使用过程中有遇到什么问题，欢迎提交 [**issue**](https://github.com/tencentyun/TUICallKit/issues)，我们也欢迎您加入我们的开发者QQ群进行技术交流和反馈问题，QQ群 ID：605115878.
+- 如果您在使用过程中有遇到什么问题，欢迎提交 [**issue**](https://github.com/tencentyun/TUICallKit/issues)。
+- 了解更多详情，请到[腾讯云通信官方社群](https://zhiliao.qq.com) 进行咨询和反馈。

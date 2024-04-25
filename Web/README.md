@@ -48,7 +48,7 @@ Here are a few guidelines for using this component
 
 - Click [React online-demo](https://web.sdk.qcloud.com/component/TUICallKit/demos/basic-react/index.html) to try out 1v1 Voice and Video Call online. [Vue online-demo](https://rtcube.cloud.tencent.com/prerelease/internation/homepage/index.html#/detail?scene=callkit).
 
-- If you want to experience it in your dev mode, please read [Run the React Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/call-uikit-demos/basic-react); [Run the Vue Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/call-uikit-demos/basic-vue3).
+- If you want to experience it in your dev mode, please read [Run the React Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/basic-react); [Run the Vue Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/basic-vue3).
 
 - If you want to install this component into your project, please read [TUICallKit Getting Started](https://trtc.io/document/58484).
 
@@ -56,41 +56,26 @@ Here are a few guidelines for using this component
 ## Contents
 
 ```text
-.
-├── call-engine-demo-vue2
-├── call-engine-demo-vue3
-├── call-uikit-demos
-  ├── basic-react
-  ├── basic-vue2.6
-  ├── basic-vue2.7
-  ├── basic-vue3
-├── README-zh_CN.md
+├── basic-react
+├── basic-vue2.6
+├── basic-vue2.7
+├── basic-vue3
 ├── README.md 
+├── README-zh_CN.md
 ```
-**call-engine-demo-vue2/**
-- this directory contains the vue2 demo of TUICallEngine, which is integrated with all the features of the full TUICallEngine.
+**basic-react**
+- This directory contains the React basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
 
-**call-engine-demo-vue3/**
-- this directory contains the vue3 demo of TUICallEngine, which is integrated with all the features of the full TUICallEngine.
+**basic-vue3**
+- This directory contains the Vue3 basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
 
-**call-uikit-demos/basic-react/**
-- this directory contains the React basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
+**basic-vue2.7**
+- This directory contains the Vue2.7 basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
 
-**call-uikit-demos/basic-vue3/**
-- this directory contains the Vue3 basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
-
-**call-uikit-demos/basic-vue2.7/**
-- this directory contains the Vue2.7 basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
-
-**call-uikit-demos/basic-vue2.6/**
-- this directory contains the Vue2.6 basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
-
-
+**basic-vue2.6**
+- This directory contains the Vue2.6 basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
 
 ## Contact Us
-- If you have questions, see [FAQs](https://trtc.io/document/53565)
 
-
-## License
-
-ISC License © 2022-present, [Tencent](https://www.tencent.com/)
+- If you have questions, see [FAQs](https://trtc.io/document/53565).
+- Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you，Click to join https://t.me/+EPk6TMZEZMM5OGY1.
