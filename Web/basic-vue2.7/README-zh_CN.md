@@ -44,7 +44,7 @@ Calls SDK for Web Vue2.7 demo 的最低要求是：
 2. 安装依赖
 
   ```shell
-   cd ./TUICallKit/Web/call-uikit-demos/basic-vue2.7
+   cd ./TUICallKit/Web/basic-vue2.7
    npm install
   ```
 
