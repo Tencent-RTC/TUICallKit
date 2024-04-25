@@ -18,15 +18,15 @@
 
 - Desktop Web
 
-<img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/en/Background-pc-en.png" style="width: 1000px; margin: 10px;" align="center">
+<img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/en/Background-pc-en.png" style="width: 600px; margin: 10px;" align="center">
 
 - H5
 
-<img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/en/Background-en.png" style="width: 1000px; margin: 10px;" align="center">
+<img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/en/Background-en.png" style="width: 600px; margin: 10px;" align="center">
 
 - Group Call
 
-<img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/en/Background-group-mobile-en.png" style="width: 1000px; margin: 10px;" align="center">
+<img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/en/Background-group-mobile-en.png" style="width: 600px; margin: 10px;" align="center">
 
 
 ## Features

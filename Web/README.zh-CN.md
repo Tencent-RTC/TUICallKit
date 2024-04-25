@@ -18,15 +18,15 @@
 
 - 桌面端
 
-<img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/Background-pc.png" style="width: 800px; margin: 10px;" align="center">
+<img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/Background-pc.png" style="width: 600px; margin: 10px;" align="center">
 
 - 移动端
 
-<img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/en/Background-mobile.png" style="width: 1000px; margin: 10px;" align="center">
+<img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/en/Background-mobile.png" style="width: 600px; margin: 10px;" align="center">
 
 - 群通话
 
-<img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/Background-group-mobile.png" style="width: 1000px; margin: 10px;" align="center">
+<img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/Background-group-mobile.png" style="width: 600px; margin: 10px;" align="center">
 
 ## 特性
 
