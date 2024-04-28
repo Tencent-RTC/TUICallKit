@@ -110,7 +110,7 @@ class _JoinInGroupWidgetState extends State<JoinInGroupWidget> {
                                               image: NetworkImage(_userAvatars[index]),
                                               fit: BoxFit.cover,
                                               errorBuilder: (ctx, err, stackTrace) => ClipRRect(
-                                                borderRadius: BorderRadius.circular(10), // 设置圆角半径
+                                                borderRadius: BorderRadius.circular(10),
                                                 child:Image.asset(
                                                   'assets/images/user_icon.png',
                                                   package: 'tencent_calls_uikit',
