@@ -39,6 +39,8 @@ class EngineManager private constructor(context: Context) {
     companion object {
         const val TAG = "EngineManager"
         var instance: EngineManager = EngineManager(TUIConfig.getAppContext())
+        private const val BLUR_LEVEL_HIGH = 3
+        private const val BLUR_LEVEL_CLOSE = 0
     }
 
     fun call(
@@ -221,7 +223,9 @@ class EngineManager private constructor(context: Context) {
     fun accept(callback: TUICommonDefine.Callback?) {
         TUICallEngine.createInstance(context).accept(object : TUICommonDefine.Callback {
             override fun onSuccess() {
-                TUICallState.instance.selfUser.get().callStatus.set(TUICallDefine.Status.Accept)
+                if (TUICallState.instance.selfUser.get().callStatus.get() != TUICallDefine.Status.Accept) {
+                    TUICallState.instance.selfUser.get().callStatus.set(TUICallDefine.Status.Accept)
+                }
                 callback?.onSuccess()
             }
 
@@ -342,6 +346,21 @@ class EngineManager private constructor(context: Context) {
     fun enableMuteMode(enable: Boolean) {
         TUICallState.instance.enableMuteMode = enable
         SPUtils.getInstance(CallingBellFeature.PROFILE_TUICALLKIT).put(CallingBellFeature.PROFILE_MUTE_MODE, enable)
+    }
+
+    fun setBlurBackground(enable: Boolean) {
+        val level = if (enable) BLUR_LEVEL_HIGH else BLUR_LEVEL_CLOSE
+        TUICallState.instance.enableBlurBackground.set(enable)
+
+        TUICallEngine.createInstance(context).setBlurBackground(level, object : TUICommonDefine.Callback {
+            override fun onSuccess() {
+            }
+
+            override fun onError(errCode: Int, errMsg: String?) {
+                TUILog.e(TAG, "setBlurBackground failed, errCode: $errCode, errMsg: $errMsg")
+                TUICallState.instance.enableBlurBackground.set(false)
+            }
+        })
     }
 
     fun inviteUser(userIdList: List<String?>?) {

@@ -47,9 +47,9 @@ class TUICallKit {
   ///
   /// @param userId        callees
   /// @param callMediaType Call type
-  Future<void> call(String userId, TUICallMediaType callMediaType,
+  Future<TUIResult> call(String userId, TUICallMediaType callMediaType,
       [TUICallParams? params]) async {
-    CallManager.instance.call(userId, callMediaType, params);
+    return await CallManager.instance.call(userId, callMediaType, params);
   }
 
   ///Make a group call
@@ -57,10 +57,10 @@ class TUICallKit {
   ///@param groupId       GroupId
   ///@param userIdList    List of userId
   ///@param callMediaType Call type
-  Future<void> groupCall(
+  Future<TUIResult> groupCall(
       String groupId, List<String> userIdList, TUICallMediaType callMediaType,
       [TUICallParams? params]) async {
-    CallManager.instance.groupCall(groupId, userIdList, callMediaType, params);
+   return await CallManager.instance.groupCall(groupId, userIdList, callMediaType, params);
   }
 
   ///Join a current call
@@ -93,5 +93,9 @@ class TUICallKit {
   ///Enable the floating window
   Future<void> enableFloatWindow(bool enable) async {
     return await CallManager.instance.enableFloatWindow(enable);
+  }
+
+  Future<void> enableVirtualBackground(bool enable) async {
+    return await CallManager.instance.enableVirtualBackground(enable);
   }
 }

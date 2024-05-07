@@ -76,6 +76,15 @@ class VideoCallerAndCalleeAcceptedView: UIView {
         return btn
     }()
     
+    lazy var virtualBackgroundButton: UIButton = {
+        let btn = UIButton(type: .system)
+        if let image = TUICallKitCommon.getBundleImage(name: "virtual_background") {
+            btn.setBackgroundImage(image, for: .normal)
+        }
+        btn.addTarget(self, action: #selector(virtualBackgroundTouchEvent(sender: )), for: .touchUpInside)
+        return btn
+    }()
+    
     // MARK: UI Specification Processing
     private var isViewReady: Bool = false
     override func didMoveToWindow() {
@@ -92,11 +101,14 @@ class VideoCallerAndCalleeAcceptedView: UIView {
         addSubview(closeCameraBtn)
         addSubview(hangupBtn)
         addSubview(switchCameraBtn)
+        if TUICallState.instance.showVirtualBackgroundButton {
+            addSubview(virtualBackgroundButton)
+        }
     }
     
     func activateConstraints() {
         muteMicBtn.snp.makeConstraints { make in
-            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? 100.scaleWidth() : -100.scaleWidth())
+            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? 110.scaleWidth() : -110.scaleWidth())
             make.centerY.equalTo(changeSpeakerBtn)
             make.size.equalTo(kControlBtnSize)
         }
@@ -106,7 +118,7 @@ class VideoCallerAndCalleeAcceptedView: UIView {
             make.size.equalTo(kControlBtnSize)
         }
         closeCameraBtn.snp.makeConstraints { make in
-            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? -100.scaleWidth() : 100.scaleWidth())
+            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? -110.scaleWidth() : 110.scaleWidth())
             make.centerY.equalTo(self.changeSpeakerBtn)
             make.size.equalTo(kControlBtnSize)
         }
@@ -120,6 +132,13 @@ class VideoCallerAndCalleeAcceptedView: UIView {
             make.leading.equalTo(hangupBtn.snp.trailing).offset(40.scaleWidth())
             make.size.equalTo(CGSize(width: 28.scaleWidth(), height: 28.scaleWidth()))
         }
+        if TUICallState.instance.showVirtualBackgroundButton {
+            virtualBackgroundButton.snp.makeConstraints { make in
+                make.centerY.equalTo(hangupBtn)
+                make.trailing.equalTo(hangupBtn.snp.leading).offset(-40.scaleWidth())
+                make.size.equalTo(CGSize(width: 28.scaleWidth(), height: 28.scaleWidth()))
+            }
+        }
     }
     
     // MARK: Action Event
@@ -132,9 +151,13 @@ class VideoCallerAndCalleeAcceptedView: UIView {
         updateCloseCameraBtn(open: viewModel.isCameraOpen.value != true)
         if viewModel.isCameraOpen.value == true {
             viewModel.closeCamera()
+            virtualBackgroundButton.isHidden = true
+            switchCameraBtn.isHidden = true
         } else {
             guard let videoViewEntity = VideoFactory.instance.viewMap[viewModel.selfUser.value.id.value] else { return }
             viewModel.openCamera(videoView: videoViewEntity.videoView)
+            virtualBackgroundButton.isHidden = false
+            switchCameraBtn.isHidden = false
         }
     }
     
@@ -149,6 +172,10 @@ class VideoCallerAndCalleeAcceptedView: UIView {
     
     @objc func switchCameraTouchEvent(sender: UIButton) {
         viewModel.switchCamera()
+    }
+    
+    @objc func virtualBackgroundTouchEvent(sender: UIButton) {
+        viewModel.virtualBackground()
     }
     
     // MARK: Update UI

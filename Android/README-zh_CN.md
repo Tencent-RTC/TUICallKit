@@ -39,6 +39,9 @@ _简体中文 | [English](README.md)_
 2. 在主叫方进入通话界面，输入被叫方的 ID，选择媒体类型，发起通话;
 3. 被叫方收到通话的请求，点击接听后进行通话。
 
+## 实现离线推送（可选）
+TUICallKit 支持接入即时通信 IM 离线推送插件，详见：[Android离线推送](https://cloud.tencent.com/document/product/647/105230)
+
 ## 参考
 - 如果您想了解更多产品功能，请点击[链接](https://cloud.tencent.com/document/product/647/78742)。
 

@@ -34,7 +34,7 @@ dependencies:
   crypto: ^3.0.1
   url_launcher: ^6.1.11
   intl: any
-
+  tencent_cloud_chat_push: ^7.9.5668
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -3,9 +3,9 @@
  * Generated file. Do not edit.
  *
  * Locales: 3
- * Strings: 297 (99.0 per locale)
+ * Strings: 303 (101.0 per locale)
  *
- * Built on 2024-01-10 at 09:50 UTC
+ * Built on 2024-04-07 at 08:10 UTC
  */
 
 import 'package:flutter/widgets.dart';
@@ -414,6 +414,11 @@ class _StringsEn {
 	String get k_0000096 => 'Camera is off';
 	String get k_0000097 => 'Connected';
 	String get k_0000098 => 'They are also there';
+	String get k_0000099 => 'Join In';
+	String get k_0000100 => ' person is on the call';
+	String get k_0000101 => 'Switch Camera';
+	String get k_0000102 => 'Blur Background';
+	String get k_0000103 => 'Show blur background';
 }
 
 // Path: <root>
@@ -531,6 +536,11 @@ class _StringsJa implements _StringsEn {
 	@override String get k_0000096 => 'カメラオフ';
 	@override String get k_0000097 => '接続済み';
 	@override String get k_0000098 => '彼らもそこにいる';
+	@override String get k_0000099 => '参加する';
+	@override String get k_0000100 => '人が通話中です';
+	@override String get k_0000101 => 'カメラの切り替え';
+	@override String get k_0000102 => '背景をぼかす';
+	@override String get k_0000103 => '背景をぼかす';
 }
 
 // Path: <root>
@@ -648,6 +658,11 @@ class _StringsZhHans implements _StringsEn {
 	@override String get k_0000096 => '摄像头已关闭';
 	@override String get k_0000097 => '已接通';
 	@override String get k_0000098 => '他们也在';
+	@override String get k_0000099 => '加入';
+	@override String get k_0000100 => '人正在通话';
+	@override String get k_0000101 => '翻转';
+	@override String get k_0000102 => '模糊背景';
+	@override String get k_0000103 => '显示模糊背景按钮';
 }
 
 /// Flat map(s) containing all translations.
@@ -747,14 +762,19 @@ extension on _StringsEn {
 			'k_0000088': 'Waiting',
 			'k_0000089': 'Display pop-up window while running in the background and Display pop-up Window permissions',
 			'k_0000090': 'You have a new call',
-			'k_0000091': 'Microphone is on',
-			'k_0000092': 'Microphone is off',
-			'k_0000093': 'Speaker is on',
-			'k_0000094': 'Speaker is off',
-			'k_0000095': 'Camera is on',
-			'k_0000096': 'Camera is off',
+			'k_0000091': 'Unmuted',
+			'k_0000092': 'Muted',
+			'k_0000093': 'Speaker',
+			'k_0000094': 'Earpiece',
+			'k_0000095': 'Camera On',
+			'k_0000096': 'Camera Off',
 			'k_0000097': 'Connected',
 			'k_0000098': 'They are also there',
+			'k_0000099': 'Join In',
+			'k_0000100': ' person is on the call',
+			"k_0000101": "Switch Camera",
+			"k_0000102": "Blur Background",
+			"k_0000103": "Show blur background",
 		};
 	}
 }
@@ -861,6 +881,11 @@ extension on _StringsJa {
 			'k_0000096': 'カメラオフ',
 			'k_0000097': '接続済み',
 			'k_0000098': '彼らもそこにいる',
+			'k_0000099': '参加する',
+			'k_0000100': '人が通話中です',
+			"k_0000101": "カメラの切り替え",
+			"k_0000102": "背景をぼかす",
+			"k_0000103": "背景をぼかす",
 		};
 	}
 }
@@ -967,6 +992,11 @@ extension on _StringsZhHans {
 			'k_0000096': '摄像头已关闭',
 			'k_0000097': '已接通',
 			'k_0000098': '他们也在',
+			'k_0000099': '加入',
+			'k_0000100': '人正在通话',
+			"k_0000101": "翻转",
+			"k_0000102": "模糊背景",
+			"k_0000103": "显示模糊背景按钮",
 		};
 	}
 }

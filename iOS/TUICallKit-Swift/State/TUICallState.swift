@@ -28,6 +28,7 @@ class TUICallState: NSObject {
     let audioDevice: Observable<TUIAudioPlaybackDevice> = Observable(TUIAudioPlaybackDevice.earpiece)
     let isShowFullScreen: Observable<Bool> = Observable(false)
     let showLargeViewUserId: Observable<String> = Observable("")
+    let enableBlurBackground: Observable<Bool> = Observable(false)
     
     var enableMuteMode: Bool = {
         let enable = UserDefaults.standard.bool(forKey: ENABLE_MUTEMODE_USERDEFAULT)
@@ -35,6 +36,7 @@ class TUICallState: NSObject {
     }()
     
     var enableFloatWindow: Bool = false
+    var showVirtualBackgroundButton = false
     
     private var timerName: String = ""
 }
@@ -197,6 +199,10 @@ extension TUICallState: TUICallObserver {
         
         let callEvent = TUICallEvent(eventType: .TIP, event: .USER_LINE_BUSY, param: [EVENT_KEY_USER_ID: userId])
         TUICallState.instance.event.value = callEvent
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            TUITool.makeToast(TUICallKitLocalize(key: "TUICallKit.lineBusy"), duration: 0.6, idposition: TUICSToastPositionCenter)
+        }
     }
     
     func onUserNoResponse(userId: String) {
@@ -254,6 +260,8 @@ extension TUICallState: TUICallObserver {
         } else {
             CallEngineManager.instance.closeMicrophone()
         }
+        
+        showAntiFraudReminder()
     }
     
     func onCallEnd(roomId: TUIRoomId, callMediaType: TUICallMediaType, callRole: TUICallRole, totalTime: Float) {
@@ -286,6 +294,7 @@ extension TUICallState {
         TUICallState.instance.audioDevice.value = .earpiece
         TUICallState.instance.isShowFullScreen.value = false
         TUICallState.instance.showLargeViewUserId.value = ""
+        TUICallState.instance.enableBlurBackground.value = false
         
         GCDTimer.cancel(timerName: timerName) { return }
         
@@ -312,6 +321,12 @@ extension TUICallState {
             CallEngineManager.instance.hangup()
         } cancelHandler: {
             CallEngineManager.instance.hangup()
+        }
+    }
+    
+    func showAntiFraudReminder() {
+        if (TUICore.getService(TUICore_PrivacyService) != nil) {
+            TUICore.callService(TUICore_PrivacyService, method: TUICore_PrivacyService_CallKitAntifraudReminderMethod, param: nil)
         }
     }
 }

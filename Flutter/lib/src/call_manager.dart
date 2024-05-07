@@ -11,8 +11,7 @@ import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/ui/tuicall_navigator_observer.dart';
 import 'package:tencent_calls_uikit/src/call_state.dart';
-import 'package:tencent_calls_uikit/src/utils/event_bus.dart';
-import 'package:tencent_calls_uikit/src/utils/permission_request.dart';
+import 'package:tencent_calls_uikit/src/utils/permission.dart';
 import 'package:tencent_calls_uikit/src/utils/preference_utils.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
 import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
@@ -25,15 +24,15 @@ class CallManager {
   final _im = TencentImSDKPlugin.v2TIMManager;
 
   CallManager() {
-    eventBus.register(setStateEventOnCallReceived, (arg) async {
+    TUICore.instance.registerEvent(setStateEventOnCallReceived, (arg) async {
       if (Platform.isAndroid && await TUICallKitPlatform.instance.isAppInForeground()) {
         var permissionResult =
-            await PermissionRequest.checkCallingPermission(CallState.instance.mediaType);
+            await Permission.request(CallState.instance.mediaType);
         if (CallState.instance.scene != TUICallScene.singleCall) {
-          permissionResult = await PermissionRequest.checkCallingPermission(TUICallMediaType.video);
+          permissionResult = await Permission.request(TUICallMediaType.video);
         }
 
-        if (TUIPermissionResult.granted == permissionResult) {
+        if (PermissionResult.granted == permissionResult) {
           TUICallKitNavigatorObserver.getInstance().enterCallingPage();
         } else {
           CallManager.instance.reject();
@@ -47,7 +46,7 @@ class CallManager {
 
   Future<void> initEngine(int sdkAppID, String userId, String userSig) async {
     TRTCLogger.info(
-        'CallManager initEngine(sdkAppID:$sdkAppID, userId: $userId, userSig:$userSig)');
+        'CallManager initEngine(sdkAppID:$sdkAppID, userId: $userId)');
     CallManager.instance.initResources();
     final result = await TUICallEngine.instance.init(sdkAppID, userId, userSig);
 
@@ -88,8 +87,8 @@ class CallManager {
       params.offlinePushInfo = OfflinePushInfoConfig.createOfflinePushInfo();
     }
     if (Platform.isAndroid) {
-      final permissionResult = await PermissionRequest.checkCallingPermission(callMediaType);
-      if (TUIPermissionResult.granted == permissionResult) {
+      final permissionResult = await Permission.request(callMediaType);
+      if (PermissionResult.granted == permissionResult) {
         final callResult = await TUICallEngine.instance.call(userId, callMediaType, params);
         if (callResult.code.isEmpty) {
           User user = User();
@@ -180,8 +179,8 @@ class CallManager {
       params.offlinePushInfo = OfflinePushInfoConfig.createOfflinePushInfo();
     }
     if (Platform.isAndroid) {
-      final permissionResult = await PermissionRequest.checkCallingPermission(mediaType);
-      if (TUIPermissionResult.granted == permissionResult) {
+      final permissionResult = await Permission.request(mediaType);
+      if (PermissionResult.granted == permissionResult) {
         final callResult =
             await TUICallEngine.instance.groupCall(groupId, userIdList, mediaType, params);
         if (callResult.code.isEmpty) {
@@ -273,8 +272,8 @@ class CallManager {
       return;
     }
     if (Platform.isAndroid) {
-      final permissionResult = await PermissionRequest.checkCallingPermission(mediaType);
-      if (TUIPermissionResult.granted == permissionResult) {
+      final permissionResult = await Permission.request(mediaType);
+      if (PermissionResult.granted == permissionResult) {
         final result = await TUICallEngine.instance.joinInGroupCall(roomId, groupId, mediaType);
         if (result.code.isEmpty) {
           CallState.instance.groupId = groupId;
@@ -456,7 +455,7 @@ class CallManager {
                     user.callStatus = TUICallStatus.waiting;
                     CallState.instance.remoteUserList.add(user);
                   });
-                  eventBus.notify(setStateEvent);
+                  TUICore.instance.notifyEvent(setStateEvent);
                 }
               }
             },
@@ -466,7 +465,7 @@ class CallManager {
   Future<TUIResult> login(int sdkAppId, String userId, String userSig) async {
     TRTCLogger.info(
         'CallManager login(sdkAppId:$sdkAppId, userId:$userId) version:${Constants.pluginVersion}');
-    CallState.instance.registerEngineObserver();
+
     TUIResult result = TUIResult(code: '', message: 'success');
     await TUILogin.instance.login(
         sdkAppId,
@@ -482,7 +481,9 @@ class CallManager {
 
   Future<void> logout() async {
     TRTCLogger.info('CallManager logout()');
-    await TUILogin.instance.logout(TUICallback(onSuccess: () {}, onError: (code, message) {}));
+    await TUILogin.instance.logout(TUICallback(
+        onSuccess: () {},
+        onError: (code, message) {}));
   }
 
   Future<void> setCallingBell(String assetName) async {
@@ -492,6 +493,20 @@ class CallManager {
 
   Future<void> enableFloatWindow(bool enable) async {
     CallState.instance.enableFloatWindow = enable;
+  }
+
+  Future<void> enableVirtualBackground(bool enable) async {
+    CallState.instance.showVirtualBackgroundButton = enable;
+  }
+
+  Future<void> setBlurBackground(bool enable) async {
+    int level = enable ? Constants.blurLevelHigh : Constants.blurLevelClose;
+    CallState.instance.enableBlurBackground = enable;
+
+    TUICallEngine.instance.setBlurBackground(level, (code, message) => {
+      TRTCLogger.error("CallManager setBlurBackground() errorCode: $code, errorMessage: $message"),
+      CallState.instance.enableBlurBackground = false
+    });
   }
 
   Future<void> enableMuteMode(bool enable) async {
@@ -515,13 +530,13 @@ class CallManager {
   void handleLoginSuccess(int sdkAppId, String userId, String userSig) {
     TRTCLogger.info('CallManager handleLoginSuccess()');
     CallManager.instance.initEngine(sdkAppId, userId, userSig);
-    _instance._adaptiveComponentReport();
+    _adaptiveComponentReport();
+    _setExcludeFromHistoryMessage();
   }
 
   void handleLogoutSuccess() {
     TRTCLogger.info('CallManager handleLogoutSuccess()');
     TUICallEngine.instance.unInit();
-    CallState.instance.unRegisterEngineObserver();
     CallingBellFeature.stopRing();
     CallState.instance.cleanState();
     TUICallKitPlatform.instance.updateCallStateToNative();
@@ -529,8 +544,11 @@ class CallManager {
 
   Future<void> initResources() async {
     var resources = {};
-    resources["k_0000088"] = CallKit_t("等待接听");
-    resources["k_0000089"] = CallKit_t("请同时打开后台弹出界面和显示悬浮窗权限");
+    resources["k_0000088"] = CallKit_t("waiting");
+    resources["k_0000089"] = CallKit_t("displayPopUpWindowWhileRunningInTheBackgroundAndDisplayPopUpWindowPermissions");
+    resources["k_0000002"] = CallKit_t("invitedToAudioCall");
+    resources["k_0000002_1"] = CallKit_t("invitedToVideoCall");
+    resources["k_0000003"] = CallKit_t("invitedToGroupCall");
     TUICallKitPlatform.instance.initResources(resources);
   }
 
@@ -538,7 +556,8 @@ class CallManager {
     TRTCLogger.info('CallManager handleAppEnterForeground()');
     if (CallState.instance.selfUser.callStatus != TUICallStatus.none &&
         TUICallKitNavigatorObserver.currentPage == CallPage.none &&
-        CallState.instance.isOpenFloatWindow == false) {
+        CallState.instance.isOpenFloatWindow == false &&
+        CallState.instance.isInNativeIncomingFloatWindow == false) {
       launchCallingPage();
     }
   }
@@ -547,7 +566,7 @@ class CallManager {
     TRTCLogger.info('CallManager launchCallWidget()');
     _checkLocalSelfUserInfo();
     CallManager.instance.initAudioPlayDeviceAndCamera();
-    eventBus.notify(setStateEventOnCallReceived);
+    TUICore.instance.notifyEvent(setStateEventOnCallReceived);
     TUICallKitPlatform.instance.updateCallStateToNative();
     CallState.instance.isOpenFloatWindow = false;
   }
@@ -567,6 +586,15 @@ class CallManager {
     if (!CallState.instance.isOpenFloatWindow || Platform.isAndroid) {
       TUIToast.show(content: string);
     }
+  }
+
+  void _setExcludeFromHistoryMessage() async {
+    await TUICallEngine.instance.callExperimentalAPI({
+      "api": "setExcludeFromHistoryMessage",
+      "params": {
+        "excludeFromHistoryMessage": false
+      }
+    });
   }
 
   void _adaptiveComponentReport() async {

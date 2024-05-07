@@ -9,7 +9,7 @@ import com.tencent.qcloud.tuikit.tuicallkit.R
 object OfflinePushInfoConfig {
     fun createOfflinePushInfo(context: Context): OfflinePushInfo {
         val pushInfo = OfflinePushInfo()
-        pushInfo.title = TUILogin.getNickName()
+        pushInfo.title = if (TUILogin.getNickName().isNullOrEmpty()) TUILogin.getLoginUser() else TUILogin.getNickName()
         pushInfo.desc = context.getString(R.string.tuicallkit_have_a_new_call)
         //OPPO must set a ChannelID to receive push messages. If you set it on the console, you don't need set here.
         //pushInfo.androidOPPOChannelID = "tuikit"

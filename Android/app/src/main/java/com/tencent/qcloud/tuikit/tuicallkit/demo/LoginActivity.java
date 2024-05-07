@@ -38,19 +38,6 @@ public class LoginActivity extends BaseActivity {
             String userId = mEditUserId.getText().toString().trim();
             login(userId);
         });
-
-        findViewById(R.id.tv_quick_access_purchase).setOnClickListener(v -> {
-            startWebPage("https://cloud.tencent.com/document/product/1640/79968");
-        });
-        findViewById(R.id.tv_quick_access_enter).setOnClickListener(v -> {
-            startWebPage("https://cloud.tencent.com/document/product/647/78729");
-        });
-        findViewById(R.id.tv_quick_access_api).setOnClickListener(v -> {
-            startWebPage("https://cloud.tencent.com/document/product/647/78748");
-        });
-        findViewById(R.id.tv_quick_access_problem).setOnClickListener(v -> {
-            startWebPage("https://cloud.tencent.com/document/product/647/78767");
-        });
     }
 
     private void login(String userId) {

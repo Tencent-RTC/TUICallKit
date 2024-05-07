@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">音视频通话</string>
-    <string name="app_main_title">腾讯云音视频</string>
+    <string name="app_main_title">实时音视频</string>
     <string name="app_toast_login_fail">登录失败，所有功能不可用[%d]%s</string>
     <string name="app_toast_not_call_myself">不能呼叫自己</string>
     <string name="app_audio_call">语音通话</string>
@@ -39,11 +39,6 @@
     <string name="app_custom_name_12">艾斯</string>
     <string name="app_tuicallkit_describe">TUICallKit 是腾讯云推出一款音视频通话 UI 组件，通过集成该组件，您只需要编写几行代码就可以为您的 App 添加音视频通话功能。</string>
     <string name="app_tuicallkit_support">TUICallKit 支持离线唤醒能力，支持 Android、iOS、Web、小程序、Flutter、uni-app 等多个平台</string>
-    <string name="app_quick_access">快速访问</string>
-    <string name="app_quick_access_purchase">套餐购买</string>
-    <string name="app_quick_access_enter">快速接入</string>
-    <string name="app_quick_access_api">API文档</string>
-    <string name="app_quick_access_problem">常见问题</string>
     <string name="app_group_id">群组ID</string>
     <string name="app_user_id_list">用户ID列表</string>
     <string name="app_join_group_call">加入群组通话</string>
@@ -59,6 +54,7 @@
     <string name="app_mute_mode">静音模式</string>
     <string name="app_call_setting">通话设置</string>
     <string name="app_show_float_button">显示悬浮窗按钮</string>
+    <string name="app_blur_background">显示模糊背景按钮</string>
     <string name="app_call_params_setting">通话自定义参数设置</string>
     <string name="app_please_set_call_waiting_timeout">请设置呼叫等待超时时间</string>
     <string name="app_user_data">扩展信息</string>

@@ -19,6 +19,7 @@ class GroupCallVideoCellViewModel {
     let remotePlayoutVolumeObserver = Observer()
     let selfPlayoutVolumeObserver = Observer()
     let showLargeViewUserIdObserver = Observer()
+    let enableBlurBackgroundObserver = Observer()
     
     var isSelf: Bool = false
     
@@ -36,6 +37,7 @@ class GroupCallVideoCellViewModel {
     let isCameraOpen: Observable<Bool> = Observable(false)
     let isShowLargeViewUserId: Observable<Bool> = Observable(false)
     let isMicMute: Observable<Bool> = Observable(false)
+    let enableBlurBackground: Observable<Bool> = Observable(false)
     
     init(remote: User) {
         remoteUser = remote
@@ -48,6 +50,7 @@ class GroupCallVideoCellViewModel {
         isCameraOpen.value = TUICallState.instance.isCameraOpen.value
         isMicMute.value = TUICallState.instance.isMicMute.value
         isShowLargeViewUserId.value = (TUICallState.instance.showLargeViewUserId.value == remote.id.value) && (remote.id.value.count > 0)
+        enableBlurBackground.value = TUICallState.instance.enableBlurBackground.value
         registerObserve()
     }
     
@@ -58,6 +61,7 @@ class GroupCallVideoCellViewModel {
         TUICallState.instance.isCameraOpen.removeObserver(isCameraOpenObserver)
         TUICallState.instance.isMicMute.removeObserver(isMicMuteObserver)
         TUICallState.instance.selfUser.value.playoutVolume.removeObserver(selfPlayoutVolumeObserver)
+        TUICallState.instance.enableBlurBackground.removeObserver(enableBlurBackgroundObserver)
     }
     
     func registerObserve() {
@@ -90,6 +94,11 @@ class GroupCallVideoCellViewModel {
             guard let self = self else { return }
             self.selfPlayoutVolume.value = newValue
         }
+        
+        TUICallState.instance.enableBlurBackground.addObserver(enableBlurBackgroundObserver, closure: {  [weak self] newValue, _ in
+            guard let self = self else { return }
+            self.enableBlurBackground.value = newValue
+        })
         
         for index in 0..<TUICallState.instance.remoteUserList.value.count {
             guard index < TUICallState.instance.remoteUserList.value.count else {
@@ -138,4 +147,9 @@ class GroupCallVideoCellViewModel {
     func switchCamera() {
         CallEngineManager.instance.switchCamera()
     }
+    
+    func virtualBackground() {
+        CallEngineManager.instance.setBlurBackground()
+    }
+    
 }

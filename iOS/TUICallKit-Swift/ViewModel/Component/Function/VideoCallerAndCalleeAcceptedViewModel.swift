@@ -27,7 +27,7 @@ class VideoCallerAndCalleeAcceptedViewModel {
         audioDevice.value = TUICallState.instance.audioDevice.value
         selfUser.value = TUICallState.instance.selfUser.value
         mediaType.value = TUICallState.instance.mediaType.value
-
+        
         registerObserve()
     }
     
@@ -47,7 +47,7 @@ class VideoCallerAndCalleeAcceptedViewModel {
         TUICallState.instance.isMicMute.addObserver(isMicMuteObserver, closure: { [weak self] newValue, _ in
             guard let self = self else { return }
             self.isMicMute.value = newValue
-
+            
         })
         
         TUICallState.instance.audioDevice.addObserver(audioDeviceObserver, closure: { [weak self] newValue, _ in
@@ -60,12 +60,12 @@ class VideoCallerAndCalleeAcceptedViewModel {
             self.mediaType.value = newValue
         }
     }
-
+    
     // MARK: CallEngine Method
     func hangup() {
         CallEngineManager.instance.hangup()
     }
-        
+    
     func muteMic() {
         CallEngineManager.instance.muteMic()
     }
@@ -78,6 +78,10 @@ class VideoCallerAndCalleeAcceptedViewModel {
         CallEngineManager.instance.switchCamera()
     }
     
+    func virtualBackground() {
+        CallEngineManager.instance.setBlurBackground()
+    }
+    
     func closeCamera() {
         CallEngineManager.instance.closeCamera()
     }
@@ -85,4 +89,5 @@ class VideoCallerAndCalleeAcceptedViewModel {
     func openCamera(videoView: TUIVideoView) {
         CallEngineManager.instance.openCamera(videoView: videoView)
     }
+    
 }

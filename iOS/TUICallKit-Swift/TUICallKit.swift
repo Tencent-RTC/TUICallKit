@@ -25,7 +25,6 @@ public class TUICallKit: NSObject {
      * @param nickname User name, which can contain up to 500 bytes
      * @param avatar   User profile photo URL, which can contain up to 500 bytes
      * For example: https://liteav.sdk.qcloud.com/app/res/picture/voiceroom/avatar/user_avatar1.png
-     *
      */
     @objc
     public func setSelfInfo(nickname: String, avatar: String, succ:@escaping TUICallSucc, fail: @escaping TUICallFail) {
@@ -135,4 +134,11 @@ public class TUICallKit: NSObject {
         return TUICallKitImpl.instance.getCallViewController()
     }
     
+    /**
+     * Enable Virtual Background
+     */
+    @objc
+    public func enableVirtualBackground(enable: Bool) {
+        return TUICallKitImpl.instance.enableVirtualBackground(enable: enable)
+    }
 }

@@ -22,10 +22,6 @@ import com.tencent.qcloud.tuicore.TUICore;
  */
 public final class ServiceInitializer extends ContentProvider {
     public void init(Context context) {
-        TUICallingService callingService = TUICallingService.sharedInstance();
-        callingService.init(context);
-        TUICore.registerService(TUIConstants.TUICalling.SERVICE_NAME, callingService);
-
         if (context instanceof Application) {
             ((Application) context).registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
                 private int foregroundActivities = 0;

@@ -2,17 +2,17 @@ package com.tencent.cloud.tuikit.flutter.tuicallkit;
 
 import static com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.SingleCallFloatView.KEY_TUISTATE_CHANGE;
 import static com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.SingleCallFloatView.SUBKEY_REFRESH_VIEW;
-import static com.tencent.liteav.base.ContextUtils.getApplicationContext;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.FloatWindowService;
-import com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.IncomingFloatView;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.IncomingNotificationView;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.service.CallingBellService;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.service.ForegroundService;
@@ -26,11 +26,11 @@ import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitPermissionUtils;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.EnumUtils;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.Logger;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.MethodCallUtils;
+import com.tencent.cloud.uikit.core.utils.MethodUtils;
 import com.tencent.qcloud.tuicore.TUICore;
-import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
+import com.tencent.qcloud.tuicore.permission.PermissionCallback;
 import com.tencent.qcloud.tuicore.permission.PermissionRequester;
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -205,9 +205,9 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         }
     }
 
-    public void moveAppToFront(MethodCall call, MethodChannel.Result result) {
+    public void runAppToNative(MethodCall call, MethodChannel.Result result) {
         String event = MethodCallUtils.getMethodParams(call, KitAppUtils.EVENT_KEY);
-        KitAppUtils.moveAppToForeground(mApplicationContext, event);
+        KitAppUtils.runAppToNative(mApplicationContext, event);
         result.success(0);
     }
 
@@ -236,27 +236,103 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         result.success(0);
     }
 
-    public void backCallingPage() {
-        mChannel.invokeMethod("backCallingPage", new HashMap(), new Result() {
+    public void hasPermissions(MethodCall call, MethodChannel.Result result) {
+        List<Integer> permissionsList = MethodUtils.getMethodParam(call, "permission");
+        String[] strings = new String[permissionsList.size()];
+        for (int i = 0; i < permissionsList.size(); i++) {
+            strings[i] = getPermissionsByIndex(permissionsList.get(i));
+        }
+        boolean isGranted = com.tencent.qcloud.tuicore.util.PermissionRequester.isGranted(strings);
+        result.success(isGranted);
+    }
+
+    public void requestPermissions(MethodCall call, MethodChannel.Result result) {
+        List<Integer> permissionsList = MethodUtils.getMethodParam(call, "permission");
+        String[] permissions = new String[permissionsList.size()];
+        for (int i = 0; i < permissionsList.size(); i++) {
+            permissions[i] = getPermissionsByIndex(permissionsList.get(i));
+        }
+        String title = MethodUtils.getMethodParam(call, "title");
+        String description = MethodUtils.getMethodParam(call, "description");
+        String settingsTip = MethodUtils.getMethodParam(call, "settingsTip");
+        PermissionCallback callback = new PermissionCallback() {
+            @Override
+            public void onGranted() {
+                result.success(PermissionRequester.Result.Granted.ordinal());
+            }
+
+            @Override
+            public void onDenied() {
+                result.success(PermissionRequester.Result.Denied.ordinal());
+            }
+
+            @Override
+            public void onRequesting() {
+                result.success(PermissionRequester.Result.Requesting.ordinal());
+            }
+        };
+
+        PermissionRequester.newInstance(permissions)
+                .title(title)
+                .description(description)
+                .settingsTip(settingsTip)
+                .callback(callback)
+                .request();
+    }
+
+    private String getPermissionsByIndex(int index) {
+        switch (index) {
+            case 0:
+                return Manifest.permission.CAMERA;
+            case 1:
+                return Manifest.permission.RECORD_AUDIO;
+            case 2:
+                return Manifest.permission.BLUETOOTH_CONNECT;
+            default:
+                return "";
+        }
+    }
+
+    private int getGravityByIndex(int gravityIndex) {
+        switch (gravityIndex) {
+            case 0:
+                return Gravity.TOP;
+            case 2:
+                return Gravity.CENTER;
+            default:
+                return Gravity.BOTTOM;
+        }
+    }
+
+    private boolean getDurationByIndex(int durationIndex) {
+        if (durationIndex == Toast.LENGTH_LONG) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void backCallingPageFromFloatWindow() {
+        mChannel.invokeMethod("backCallingPageFromFloatWindow", new HashMap(), new Result() {
             @Override
             public void success(@Nullable Object result) {
             }
 
             @Override
             public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
-                Logger.error(TAG, "backCallingPage error code: " + code + " message:" + message + "details:"
+                Logger.error(TAG, "backCallingPageFromFloatWindow error code: " + code + " message:" + message + "details:"
                         + details);
             }
 
             @Override
             public void notImplemented() {
-                Logger.error(TAG, "backCallingPage notImplemented");
+                Logger.error(TAG, "backCallingPageFromFloatWindow notImplemented");
             }
         });
     }
 
-    public void handleCallReceived() {
-        mChannel.invokeMethod("handleCallReceived", new HashMap(), new Result() {
+    public void launchCallingPageFromIncomingFloatWindow() {
+        mChannel.invokeMethod("launchCallingPageFromIncomingFloatWindow", new HashMap(), new Result() {
             @Override
             public void success(@Nullable Object result) {
             }
@@ -267,110 +343,7 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
 
             @Override
             public void notImplemented() {
-                Logger.error(TAG, "handleCallReceived notImplemented");
-            }
-        });
-    }
-
-    public void enableFloatWindow(Map params) {
-        mChannel.invokeMethod("enableFloatWindow", params, new Result() {
-            @Override
-            public void success(@Nullable Object result) {
-            }
-
-            @Override
-            public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
-                Logger.error(TAG, "enableFloatWindow error code: " + code + " message:" + message + "details:"
-                        + details);
-            }
-
-            @Override
-            public void notImplemented() {
-                Logger.error(TAG, "enableFloatWindow notImplemented");
-            }
-        });
-    }
-
-    public void groupCall(Map params) {
-        mChannel.invokeMethod("groupCall", params, new Result() {
-            @Override
-            public void success(@Nullable Object result) {
-            }
-
-            @Override
-            public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
-                Logger.error(TAG, "groupCall error code: " + code + " message:" + message + "details:"
-                        + details);
-            }
-
-            @Override
-            public void notImplemented() {
-                Logger.error(TAG, "groupCall notImplemented");
-            }
-        });
-    }
-
-    public void call( Map params) {
-        mChannel.invokeMethod("call", params, new Result() {
-            @Override
-            public void success(@Nullable Object result) {
-            }
-
-            @Override
-            public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
-                Logger.error(TAG, "call error code: " + code + " message:" + message + "details:"
-                        + details);
-            }
-
-            @Override
-            public void notImplemented() {
-                Logger.error(TAG, "call notImplemented");
-            }
-        });
-    }
-
-    public void handleLoginSuccess() {
-        Logger.info(TAG, "handleLoginSuccess init");
-        Map paramMap = new HashMap();
-        paramMap.put("userId", TUILogin.getUserId());
-        paramMap.put("sdkAppId", TUILogin.getSdkAppId());
-        paramMap.put("userSig", TUILogin.getUserSig());
-        mChannel.invokeMethod("handleLoginSuccess", paramMap, new Result() {
-            @Override
-            public void success(@Nullable Object result) {
-                Logger.info(TAG, "handleLoginSuccess success");
-            }
-
-            @Override
-            public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
-                Logger.error(TAG, "handleLoginSuccess error code: " + code + " message:" + message + "details:"
-                        + details);
-            }
-
-            @Override
-            public void notImplemented() {
-                Logger.error(TAG, "handleLoginSuccess notImplemented");
-            }
-        });
-    }
-
-    public void handleLogoutSuccess() {
-        Map paramMap = new HashMap();
-        mChannel.invokeMethod("handleLogoutSuccess", paramMap, new Result() {
-            @Override
-            public void success(@Nullable Object result) {
-                Logger.info(TAG, "handleLogoutSuccess success");
-            }
-
-            @Override
-            public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
-                Logger.error(TAG, "handleLogoutSuccess error code: " + code + " message:" + message + "details:"
-                        + details);
-            }
-
-            @Override
-            public void notImplemented() {
-                Logger.error(TAG, "handleLogoutSuccess notImplemented");
+                Logger.error(TAG, "launchCallingPageFromIncomingFloatWindow notImplemented");
             }
         });
     }
@@ -402,38 +375,13 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         }
 
         if (Constants.SUB_KEY_GOTO_CALLING_PAGE.equals(subKey)) {
-            backCallingPage();
+            backCallingPageFromFloatWindow();
             return;
         }
 
         if (Constants.SUB_KEY_HANDLE_CALL_RECEIVED.equals(subKey)) {
-            handleCallReceived();
+            launchCallingPageFromIncomingFloatWindow();
             return;
-        }
-
-        if (Constants.SUB_KEY_ENABLE_FLOAT_WINDOW.equals(subKey) && !params.isEmpty()) {
-            enableFloatWindow(params);
-            return;
-        }
-
-        if (Constants.SUB_KEY_GROUP_CALL.equals(subKey) && !params.isEmpty()) {
-            groupCall(params);
-            return;
-        }
-
-        if (Constants.SUB_KEY_CALL.equals(subKey) && !params.isEmpty()) {
-            call(params);
-            return;
-        }
-
-        if (Constants.SUB_KEY_LOGIN_SUCCESS.equals(subKey)) {
-            handleLoginSuccess();
-            return;
-        }
-
-        if (Constants.SUB_KEY_LOGOUT_SUCCESS.equals(subKey)) {
-           handleLogoutSuccess();
-           return;
         }
 
         if (Constants.SUB_KEY_ENTER_FOREGROUND.equals(subKey)) {

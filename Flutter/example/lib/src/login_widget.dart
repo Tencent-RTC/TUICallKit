@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tencent_calls_uikit/tuicall_kit.dart';
+import 'package:tencent_cloud_chat_push/tencent_cloud_chat_push.dart';
 import 'package:tuicall_kit_example/debug/generate_test_user_sig.dart';
 import 'package:tuicall_kit_example/observer_functions.dart';
 import 'package:tuicall_kit_example/src/main_widget.dart';
@@ -9,6 +10,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tencent_cloud_chat_sdk/enum/log_level_enum.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tencent_cloud_chat_sdk/enum/V2TimSDKListener.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({Key? key}) : super(key: key);
@@ -21,6 +25,16 @@ class _LoginWidgetState extends State<LoginWidget> {
   var _userId = '';
 
   bool _isButtonEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    TencentCloudChatPush().registerOnAppWakeUpEvent(onAppWakeUpEvent: () async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      _userId = prefs.getString("userId")!;
+      _login();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -273,7 +287,15 @@ class _LoginWidgetState extends State<LoginWidget> {
     _isButtonEnabled = false;
     final result = await TUICallKit.instance.login(GenerateTestUserSig.sdkAppId,
         _userId, GenerateTestUserSig.genTestSig(_userId));
+
+    await TencentImSDKPlugin.v2TIMManager.initSDK(sdkAppID: GenerateTestUserSig.sdkAppId, loglevel: LogLevelEnum.V2TIM_LOG_INFO, listener: V2TimSDKListener());
+    await TencentImSDKPlugin.managerInstance().login(userID: _userId, userSig: GenerateTestUserSig.genTestSig(_userId));
+    TencentCloudChatPush().registerPush(onNotificationClicked: _onNotificationClicked);
+
     if (result.code.isEmpty) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString("userId", _userId);
+
       setObserverFunction(callsEnginePlugin: TUICallEngine.instance);
       SettingsConfig.userId = _userId;
       final imInfo = await TencentImSDKPlugin.v2TIMManager
@@ -312,5 +334,9 @@ class _LoginWidgetState extends State<LoginWidget> {
     );
     textPainter.layout();
     return textPainter.width;
+  }
+
+  _onNotificationClicked({required String ext, String? userID, String? groupID}) {
+    debugPrint("_onNotificationClicked: $ext, userID: $userID, groupID: $groupID");
   }
 }

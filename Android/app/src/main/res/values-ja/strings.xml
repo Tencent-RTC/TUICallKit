@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Tencent Real-Time Communication</string>
-    <string name="app_main_title">TRTC</string>
+    <string name="app_name">TUICallKit</string>
+    <string name="app_main_title">Tencent RTC</string>
     <string name="app_toast_login_fail">ログインに失敗しました。すべての機能が使用できません[%d]%s</string>
     <string name="app_toast_not_call_myself">自分に電話をかけることができません</string>
     <string name="app_audio_call">音声通話</string>
@@ -39,11 +39,6 @@
     <string name="app_custom_name_12">エース</string>
     <string name="app_tuicallkit_describe">TUICallKitはTencent Cloudがリリースした音声およびビデオ通話 UI コンポーネントです。このコンポーネントを統合することにより、数行のコードを書くだけで音声およびビデオ通話機能をアプリに追加できます。</string>
     <string name="app_tuicallkit_support">TUICallKit はオフラインウェイクアップ機能もサポートし、Android、iOS、Web、ミニプログラム、Flutter、uni-app などの複数の開発プラットフォームをサポートします。</string>
-    <string name="app_quick_access">クイックアクセス</string>
-    <string name="app_quick_access_purchase">パッケージの購入</string>
-    <string name="app_quick_access_enter">クイックアクセス</string>
-    <string name="app_quick_access_api">API ドキュメント</string>
-    <string name="app_quick_access_problem">よくある問題</string>
     <string name="app_group_id">グループID</string>
     <string name="app_user_id_list">ユーザーIDリスト</string>
     <string name="app_join_group_call">グループ通話に参加する</string>
@@ -59,6 +54,7 @@
     <string name="app_mute_mode">ミュートモード</string>
     <string name="app_call_setting">通話設定</string>
     <string name="app_show_float_button">フローティングウィンドウの表示</string>
+    <string name="app_blur_background">背景をぼかす</string>
     <string name="app_call_params_setting">通話パラメータの設定</string>
     <string name="app_please_set_call_waiting_timeout">コールウェイティングのタイムアウト時間を設定してください</string>
     <string name="app_user_data">拡張情報</string>

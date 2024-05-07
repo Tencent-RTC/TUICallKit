@@ -33,6 +33,7 @@ public class SettingsActivity extends BaseActivity {
     private TextView         mTextRingPath;
     private SwitchCompat     mSwitchMute;
     private SwitchCompat     mSwitchFloating;
+    private SwitchCompat     mSwitchBlurBackground;
     private EditText         mEditDigitalRoomId;
     private EditText         mEditStringRoomId;
     private EditText         mEditTimeout;
@@ -63,6 +64,7 @@ public class SettingsActivity extends BaseActivity {
         mTextRingPath = findViewById(R.id.tv_ring_path);
         mSwitchMute = findViewById(R.id.switch_mute);
         mSwitchFloating = findViewById(R.id.switch_floating);
+        mSwitchBlurBackground = findViewById(R.id.switch_blur_background);
 
         mEditDigitalRoomId = findViewById(R.id.et_room_id_num);
         mEditStringRoomId = findViewById(R.id.et_room_id_str);
@@ -104,6 +106,11 @@ public class SettingsActivity extends BaseActivity {
         mSwitchFloating.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SettingsConfig.isShowFloatingWindow = isChecked;
             TUICallKit.createInstance(getApplicationContext()).enableFloatWindow(isChecked);
+        });
+
+        mSwitchBlurBackground.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SettingsConfig.isShowBlurBackground = isChecked;
+            TUICallKit.createInstance(getApplicationContext()).enableVirtualBackground(isChecked);
         });
 
         mEditDigitalRoomId.setOnEditorActionListener((v, actionId, event) -> {
@@ -203,6 +210,7 @@ public class SettingsActivity extends BaseActivity {
         mTextRingPath.setText(SettingsConfig.ringPath);
         mSwitchMute.setChecked(SettingsConfig.isMute);
         mSwitchFloating.setChecked(SettingsConfig.isShowFloatingWindow);
+        mSwitchBlurBackground.setChecked(SettingsConfig.isShowBlurBackground);
 
         mEditDigitalRoomId.setText("" + SettingsConfig.intRoomId);
         mEditStringRoomId.setText("" + SettingsConfig.strRoomId);

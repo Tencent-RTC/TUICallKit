@@ -12,7 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
@@ -31,6 +31,7 @@ import com.tencent.cloud.tuikit.flutter.tuicallkit.state.User;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitAppUtils;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.Logger;
+import com.tencent.liteav.base.Log;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
 
@@ -80,9 +81,11 @@ public class IncomingNotificationView {
         if (mediaType == TUICallDefine.MediaType.Video) {
             remoteViews.setTextViewText(R.id.tv_desc,"video call");
             remoteViews.setImageViewResource(R.id.img_media_type, R.drawable.tuicallkit_ic_video_incoming);
+            remoteViews.setImageViewResource(R.id.btn_accept, R.drawable.tuicallkit_ic_dialing_video);
         } else {
             remoteViews.setTextViewText(R.id.tv_desc, "voice call");
             remoteViews.setImageViewResource(R.id.img_media_type, R.drawable.tuicallkit_ic_float);
+            remoteViews.setImageViewResource(R.id.btn_accept, R.drawable.tuicallkit_bg_dialing);
         }
 
 
@@ -95,6 +98,7 @@ public class IncomingNotificationView {
                                                 @Nullable Transition<? super Bitmap> transition) {
                         remoteViews.setImageViewBitmap(R.id.img_incoming_avatar, resource);
                         if (notificationManager != null) {
+                            remoteViews.setImageViewBitmap(R.id.img_incoming_avatar, resource);
                             notificationManager.notify(notificationId, notification);
                         }
                     }
@@ -154,16 +158,26 @@ public class IncomingNotificationView {
         builder.setSmallIcon(R.drawable.tuicallkit_ic_avatar);
         builder.setSound(null);
 
-        builder.setContentIntent(getPendingIntent());
-
         remoteViews =new RemoteViews(context.getPackageName(), R.layout.tuicallkit_incoming_notification_view);
+
+        if (KitAppUtils.isAppRunningForeground(context)) {
+            remoteViews.setOnClickPendingIntent(R.id.ll_notification, getPendingIntent());
+            remoteViews.setOnClickPendingIntent(R.id.btn_accept, getAcceptIntent());
+            remoteViews.setOnClickPendingIntent(R.id.btn_decline, getDeclineIntent());
+        } else {
+            builder.setContentIntent(getBgPendingIntent());
+            remoteViews.setViewVisibility(R.id.btn_accept, View.GONE);
+            remoteViews.setViewVisibility(R.id.btn_decline, View.GONE);
+        }
+
         builder.setCustomContentView(remoteViews);
         builder.setCustomBigContentView(remoteViews);
         return builder.build();
     }
 
-    private PendingIntent getPendingIntent() {
-        Logger.info(TUICallKitPlugin.TAG, "IncomingNotificationView  getPendingIntent");
+    private PendingIntent getBgPendingIntent() {
+        Logger.info(TUICallKitPlugin.TAG, "IncomingNotificationView  getBgPendingIntent");
+
         Intent intentLaunchMain = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
         if (intentLaunchMain != null) {
             intentLaunchMain.putExtra("show_in_foreground", true);
@@ -173,6 +187,27 @@ public class IncomingNotificationView {
             Log.e(TAG, "Failed to get launch intent for package: " + context.getPackageName());
         }
         return PendingIntent.getActivity(context, 0, intentLaunchMain, PendingIntent.FLAG_IMMUTABLE);
+    }
+
+    private PendingIntent getPendingIntent() {
+        Logger.info(TUICallKitPlugin.TAG, "IncomingNotificationView  getPendingIntent");
+        Intent intent = new Intent(context, IncomingCallReceiver.class);
+        intent.setAction(Constants.SUB_KEY_HANDLE_CALL_RECEIVED);
+        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+    }
+
+    private PendingIntent getDeclineIntent() {
+        Logger.info(TUICallKitPlugin.TAG, "IncomingNotificationView  getDeclineIntent");
+        Intent intent = new Intent(context, IncomingCallReceiver.class);
+        intent.setAction(Constants.REJECT_CALL_ACTION);
+        return PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_IMMUTABLE);
+    }
+
+    private PendingIntent getAcceptIntent() {
+        Logger.info(TUICallKitPlugin.TAG, "IncomingNotificationView  getAcceptIntent");
+        Intent intent = new Intent(context, IncomingCallReceiver.class);
+        intent.setAction(Constants.ACCEPT_CALL_ACTION);
+        return PendingIntent.getBroadcast(context, 2, intent, PendingIntent.FLAG_IMMUTABLE);
     }
 }
 

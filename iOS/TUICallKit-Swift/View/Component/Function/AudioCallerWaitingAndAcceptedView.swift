@@ -77,7 +77,7 @@ class AudioCallerWaitingAndAcceptedView : UIView {
     
     func activateConstraints() {
         muteMicBtn.snp.makeConstraints { make in
-            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? 100.scaleWidth() : -100.scaleWidth())
+            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? 110.scaleWidth() : -110.scaleWidth())
             make.centerY.equalTo(hangupBtn)
             make.size.equalTo(kControlBtnSize)
         }
@@ -87,7 +87,7 @@ class AudioCallerWaitingAndAcceptedView : UIView {
             make.size.equalTo(kControlBtnSize)
         }
         changeSpeakerBtn.snp.makeConstraints { make in
-            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? -100.scaleWidth() : 100.scaleWidth())
+            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? -110.scaleWidth() : 110.scaleWidth())
             make.centerY.equalTo(self.hangupBtn)
             make.size.equalTo(kControlBtnSize)
         }

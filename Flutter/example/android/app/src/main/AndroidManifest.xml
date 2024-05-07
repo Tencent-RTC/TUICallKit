@@ -1,11 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.tencent.cloud.tuikit.tuicall_kit_example">
+    xmlns:tools="http://schemas.android.com/tools">
 
    <application
         tools:replace="android:label"
         android:label="TUICallKit"
-        android:name="${applicationName}"
+        android:name="com.tencent.cloud.tuikit.flutter.tuicall_kit_example.MyApplication"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name="com.tencent.cloud.tuikit.flutter.tuicall_kit_example.MainActivity"

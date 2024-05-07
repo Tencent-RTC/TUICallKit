@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TRTC</string>
-    <string name="app_main_title">Tencent \n Real-Time \n Communication</string>
+    <string name="app_name">TUICallKit</string>
+    <string name="app_main_title">Tencent RTC</string>
     <string name="app_toast_login_fail">Login failed [%d]%s</string>
     <string name="app_toast_not_call_myself">You cannot call yourself.</string>
     <string name="app_audio_call">Voice Call</string>
@@ -41,11 +41,6 @@
     <string name="app_custom_name_12">virelai</string>
     <string name="app_tuicallkit_describe">TUICallKit is an audio and video calling UI component launched by Tencent Cloud. By integrating this component, you only need to write a few lines of code to add audio and video calling functions to your app.</string>
     <string name="app_tuicallkit_support">TUICallKit supports offline wake-up capability, and supports Android, iOS, Web, applets, Flutter, uni-app and other platforms</string>
-    <string name="app_quick_access">Quick Access</string>
-    <string name="app_quick_access_purchase">package purchase</string>
-    <string name="app_quick_access_enter">quick access</string>
-    <string name="app_quick_access_api">API documentation</string>
-    <string name="app_quick_access_problem">common problem</string>
     <string name="app_group_id">GroupId</string>
     <string name="app_user_id_list">UserIdList</string>
     <string name="app_join_group_call">Join group call</string>
@@ -62,6 +57,7 @@
     <string name="app_mute_mode">silent mode</string>
     <string name="app_call_setting">Call Settings</string>
     <string name="app_show_float_button">Show floating</string>
+    <string name="app_blur_background">Show blur background</string>
     <string name="app_call_params_setting">Call Parameters</string>
     <string name="app_please_set_call_waiting_timeout">Please set call waiting timeout</string>
     <string name="app_user_data">Extended</string>

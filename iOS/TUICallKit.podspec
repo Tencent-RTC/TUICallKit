@@ -1,8 +1,8 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICallKit'
-  spec.version      = '2.2.0.860'
+  spec.version      = '2.3.0.920'
   spec.platform     = :ios
-  spec.ios.deployment_target = '9.0'
+  spec.ios.deployment_target = '10.0'
   spec.license      = { :type => 'Proprietary',
     :text => <<-LICENSE
     copyright 2017 tencent Ltd. All rights reserved.
@@ -20,10 +20,6 @@ Pod::Spec.new do |spec|
   spec.requires_arc = true
   spec.static_framework = true
   spec.source = { :path => './' }
-  spec.pod_target_xcconfig = {
-    'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
-  }
-  spec.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
   spec.swift_version = '5.0'
 
   spec.ios.framework = ['AVFoundation', 'Accelerate', 'AssetsLibrary']
@@ -33,8 +29,8 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'TRTC' do |trtc|
     trtc.dependency 'TXLiteAVSDK_TRTC'
-    trtc.dependency 'TUICallEngine/TRTC', '~> 2.2.0.860'
-    trtc.source_files = 'TUICallKit/*.{h,m,mm}', 'TUICallKit/localized/**/*.{h,m,mm}', 'TUICallKit/Service/**/*.{h,m,mm}', 'TUICallKit/Config/*.{h,m,mm}', 'TUICallKit/Base/*.{h,m,mm}', 'TUICallKit/Utils/*.{h,m,mm}', 'TUICallKit/UI/**/*.{h,m,mm}', 'TUICallKit/TUICallKit_TRTC/*.{h,m,mm}', 'TUICallKit/TUICallEngine_Framework/*.{h,m,mm}'
+    trtc.dependency 'TUICallEngine/TRTC', '~> 2.3.0.910'
+    trtc.source_files = 'TUICallKit/*.{h,m,mm}', 'TUICallKit/localized/**/*.{h,m,mm}', 'TUICallKit/Service/**/*.{h,m,mm}', 'TUICallKit/Config/*.{h,m,mm}', 'TUICallKit/Base/*.{h,m,mm}', 'TUICallKit/Utils/**/*.{h,m,mm}', 'TUICallKit/UI/**/*.{h,m,mm}', 'TUICallKit/TUICallKit_TRTC/*.{h,m,mm}'
     trtc.resource_bundles = {
       'TUICallingKitBundle' => ['TUICallKit/Resources/*.gif', 'TUICallKit/Resources/Localized/**/*.strings', 'TUICallKit/Resources/AudioFile', 'TUICallKit/Resources/*.xcassets']
     }
@@ -43,12 +39,16 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'Professional' do |professional|
     professional.dependency 'TXLiteAVSDK_Professional'
-    professional.dependency 'TUICallEngine/Professional', '~> 2.2.0.860'
-    professional.source_files = 'TUICallKit/*.{h,m,mm}', 'TUICallKit/localized/**/*.{h,m,mm}', 'TUICallKit/Service/**/*.{h,m,mm}', 'TUICallKit/Config/*.{h,m,mm}', 'TUICallKit/Base/*.{h,m,mm}', 'TUICallKit/Utils/*.{h,m,mm}', 'TUICallKit/UI/**/*.{h,m,mm}', 'TUICallKit/TUICallKit_Professional/*.{h,m,mm}', 'TUICallKit/TUICallEngine_Framework/*.{h,m,mm}'
+    professional.dependency 'TUICallEngine/Professional', '~> 2.3.0.910'
+    professional.source_files = 'TUICallKit/*.{h,m,mm}', 'TUICallKit/localized/**/*.{h,m,mm}', 'TUICallKit/Service/**/*.{h,m,mm}', 'TUICallKit/Config/*.{h,m,mm}', 'TUICallKit/Base/*.{h,m,mm}', 'TUICallKit/Utils/**/*.{h,m,mm}', 'TUICallKit/UI/**/*.{h,m,mm}', 'TUICallKit/TUICallKit_Professional/*.{h,m,mm}'
     professional.resource_bundles = {
       'TUICallingKitBundle' => ['TUICallKit/Resources/*.gif', 'TUICallKit/Resources/Localized/**/*.strings', 'TUICallKit/Resources/AudioFile', 'TUICallKit/Resources/*.xcassets']
     }
     professional.resource = ['TUICallKit/Resources/*.bundle']
   end
+  
+  spec.resource_bundles = {
+    'TUICallKit_Privacy' => ['TUICallKit/Sources/PrivacyInfo.xcprivacy']
+  }
   
 end

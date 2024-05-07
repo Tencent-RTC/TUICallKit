@@ -150,7 +150,7 @@ class GroupCallerAndCalleeAcceptedView: UIView {
         containerView.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: frame.size.width, height: groupFunctionViewHeight))
         
         muteMicBtn.snp.makeConstraints { make in
-            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? 100.scaleWidth() : -100.scaleWidth())
+            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? 110.scaleWidth() : -110.scaleWidth())
             make.centerY.equalTo(changeSpeakerBtn)
             make.width.height.equalTo(60.scaleWidth())
         }
@@ -160,7 +160,7 @@ class GroupCallerAndCalleeAcceptedView: UIView {
             make.width.height.equalTo(60.scaleWidth())
         }
         closeCameraBtn.snp.makeConstraints { make in
-            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? -100.scaleWidth() : 100.scaleWidth())
+            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? -110.scaleWidth() : 110.scaleWidth())
             make.centerY.equalTo(self.changeSpeakerBtn)
             make.width.height.equalTo(60.scaleWidth())
         }

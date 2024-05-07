@@ -32,7 +32,7 @@ class TUICallKitImpl: TUICallKit {
         TUICallState.instance.selfUser.value.callStatus.removeObserver(selfUserCallStatusObserver)
     }
     
-    // MARK: TUICallKit对外接口实现
+    // MARK: Implementation of external interface for TUICallKit
     override func setSelfInfo(nickname: String, avatar: String, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
         CallEngineManager.instance.setSelfInfo(nickname: nickname, avatar: avatar) {
             succ()
@@ -214,9 +214,13 @@ class TUICallKitImpl: TUICallKit {
         
         return UIViewController()
     }
+    
+    override func enableVirtualBackground (enable: Bool) {
+        TUICallState.instance.showVirtualBackgroundButton = enable
+    }
 }
 
-// MARK: TUICallKit内部接口
+// MARK: Internal interface for TUICallKit
 private extension TUICallKitImpl {
     func registerNotifications() {
         NotificationCenter.default.addObserver(self,
@@ -250,7 +254,7 @@ private extension TUICallKitImpl {
     @objc func showViewControllerNotification(noti: Notification) {
         TUICallState.instance.audioDevice.value = .earpiece
         CallEngineManager.instance.setAudioPlaybackDevice(device: .earpiece)
-        WindowManager.instance.showCallWindow()
+        WindowManager.instance.showCallWindow(false)
     }
     
     func initEngine() {
