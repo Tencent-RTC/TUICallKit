@@ -159,6 +159,10 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
     override fun enableVirtualBackground(enable: Boolean) {
         TUILog.i(TAG, "TUICallKit enableVirtualBackground{enable:${enable}")
         TUICallState.instance.showVirtualBackgroundButton = enable
+
+        val data = HashMap<String, Any>()
+        data["enablevirtualbackground"] = enable
+        EngineManager.instance.reportOnlineLog(data)
     }
 
     fun queryOfflineCall() {

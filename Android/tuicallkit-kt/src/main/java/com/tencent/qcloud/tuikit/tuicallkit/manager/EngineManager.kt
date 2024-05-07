@@ -26,6 +26,8 @@ import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.utils.PermissionRequest
 import com.tencent.qcloud.tuikit.tuicallkit.utils.PermissionRequest.requestPermissions
 import com.tencent.qcloud.tuikit.tuicallkit.utils.UserInfoUtils
+import org.json.JSONException
+import org.json.JSONObject
 import java.util.Collections
 
 class EngineManager private constructor(context: Context) {
@@ -420,5 +422,28 @@ class EngineManager private constructor(context: Context) {
         }
 
         return ErrorMessageConverter.convertIMError(errorCode, msg)
+    }
+
+    fun reportOnlineLog(data: Map<String, Any>) {
+        try {
+            val map: JSONObject = JSONObject(data)
+            map.put("version", TUICallDefine.VERSION)
+            map.put("platform", "android")
+            map.put("framework", "native")
+            map.put("sdk_app_id", TUILogin.getSdkAppId())
+
+            val params = JSONObject()
+            params.put("level", 1)
+            params.put("msg", map.toString())
+            params.put("more_msg", "TUICallKit")
+
+            val jsonObject = JSONObject()
+            jsonObject.put("api", "reportOnlineLog")
+            jsonObject.put("params", params)
+
+            TUICallEngine.createInstance(context).trtcCloudInstance.callExperimentalAPI(jsonObject.toString())
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
     }
 }
