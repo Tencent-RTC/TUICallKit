@@ -15,6 +15,14 @@ class MainWidget extends StatefulWidget {
 }
 
 class _MainWidgetState extends State<MainWidget> {
+
+  @override
+  void initState() {
+    super.initState();
+    SettingsConfig.showBlurBackground = true;
+    TUICallKit.instance.enableVirtualBackground(SettingsConfig.showBlurBackground);
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
