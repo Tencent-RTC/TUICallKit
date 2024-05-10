@@ -22,6 +22,7 @@ class CallManager {
 
   static CallManager get instance => _instance;
   final _im = TencentImSDKPlugin.v2TIMManager;
+  int _sdkAppId = 0;
 
   CallManager() {
     TUICore.instance.registerEvent(setStateEventOnCallReceived, (arg) async {
@@ -497,6 +498,7 @@ class CallManager {
 
   Future<void> enableVirtualBackground(bool enable) async {
     CallState.instance.showVirtualBackgroundButton = enable;
+    _reportOnlineLog(enable);
   }
 
   Future<void> setBlurBackground(bool enable) async {
@@ -529,6 +531,7 @@ class CallManager {
 
   void handleLoginSuccess(int sdkAppId, String userId, String userSig) {
     TRTCLogger.info('CallManager handleLoginSuccess()');
+    _sdkAppId = sdkAppId;
     CallManager.instance.initEngine(sdkAppId, userId, userSig);
     _adaptiveComponentReport();
     _setExcludeFromHistoryMessage();
@@ -557,7 +560,7 @@ class CallManager {
     if (CallState.instance.selfUser.callStatus != TUICallStatus.none &&
         TUICallKitNavigatorObserver.currentPage == CallPage.none &&
         CallState.instance.isOpenFloatWindow == false &&
-        CallState.instance.isInNativeIncomingFloatWindow == false) {
+        CallState.instance.isInNativeIncomingBanner == false) {
       launchCallingPage();
     }
   }
@@ -588,6 +591,10 @@ class CallManager {
     }
   }
 
+  void enableIncomingBanner(bool enable) {
+    CallState.instance.enableIncomingBanner = enable;
+  }
+
   void _setExcludeFromHistoryMessage() async {
     await TUICallEngine.instance.callExperimentalAPI({
       "api": "setExcludeFromHistoryMessage",
@@ -604,6 +611,28 @@ class CallManager {
         "framework": 7,
         "component": 14,
         "language": 9,
+      }
+    });
+  }
+
+  void _reportOnlineLog(bool enableVirtualBackground) async {
+    var platform = "unknown";
+    if (Platform.isIOS) {
+      platform = "ios";
+    } else if (Platform.isAndroid) {
+      platform = "android";
+    }
+
+    await TUICallEngine.instance.callExperimentalAPI({
+      "api": "reportOnlineLog",
+      "params": {
+        "level": 1,
+        "msg": {"version": Constants.pluginVersion,
+                "platform": platform,
+                "framework": "flutter",
+                "sdk_app_id": _sdkAppId,
+                "enablevirtualbackground": enableVirtualBackground},
+        "more_msg": "TUICallKit",
       }
     });
   }

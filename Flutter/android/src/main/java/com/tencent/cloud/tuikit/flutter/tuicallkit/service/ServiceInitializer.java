@@ -1,6 +1,7 @@
-package com.tencent.cloud.tuikit.flutter.tuicallkit.internal;
+package com.tencent.cloud.tuikit.flutter.tuicallkit.service;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -15,6 +16,8 @@ import androidx.annotation.Nullable;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants;
 import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
+
+import java.util.List;
 
 /**
  * `TUICallKit` uses `ContentProvider` to be registered with `TUICore`.
@@ -105,5 +108,21 @@ public final class ServiceInitializer extends ContentProvider {
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection,
                       @Nullable String[] selectionArgs) {
         return 0;
+    }
+
+    public static boolean isAppInForeground(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> runningAppProcessInfos = activityManager.getRunningAppProcesses();
+        if (runningAppProcessInfos == null) {
+            return false;
+        }
+        String packageName = context.getPackageName();
+        for (ActivityManager.RunningAppProcessInfo appProcessInfo : runningAppProcessInfos) {
+            if (appProcessInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
+                    && appProcessInfo.processName.equals(packageName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -21,10 +21,9 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application>
-        <activity android:name="com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.FloatActivity" />
 
         <provider
-            android:name="com.tencent.cloud.tuikit.flutter.tuicallkit.internal.ServiceInitializer"
+            android:name="com.tencent.cloud.tuikit.flutter.tuicallkit.service.ServiceInitializer"
             android:authorities="${applicationId}.ServiceInitializer"
             android:enabled="true"
             android:exported="false" />
@@ -36,12 +35,12 @@
             android:foregroundServiceType="microphone" />
 
         <service
-            android:name="com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.FloatWindowService"
+            android:name="com.tencent.cloud.tuikit.flutter.tuicallkit.view.floatwindow.FloatWindowService"
             android:enabled="true"
             android:exported="false" />
 
         <receiver
-            android:name="com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.IncomingCallReceiver"
+            android:name="com.tencent.cloud.tuikit.flutter.tuicallkit.view.incomingfloatwindow.IncomingCallReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

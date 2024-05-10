@@ -1,16 +1,13 @@
-package com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow;
+package com.tencent.cloud.tuikit.flutter.tuicallkit.view.floatwindow;
 
 import android.content.Context;
 import android.content.Intent;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.TUICallState;
-import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants;
-import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitAppUtils;
-import com.tencent.qcloud.tuicore.TUICore;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.view.WindowManager;
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
 
 import java.util.Date;
@@ -38,12 +35,9 @@ public class CallFloatView extends FrameLayout {
         stopTiming();
         Intent mStartIntent = new Intent(mContext, FloatWindowService.class);
         mContext.stopService(mStartIntent);
+
         if (TUICallState.getInstance().mSelfUser.callStatus != TUICallDefine.Status.None) {
-            if (KitAppUtils.isAppInForeground(mContext)) {
-                TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_GOTO_CALLING_PAGE, null);
-            } else {
-                KitAppUtils.moveAppToForeground(mContext, KitAppUtils.EVENT_START_CALL_PAGE);
-            }
+            WindowManager.backCallingPageFromFloatWindow(mContext);
         }
     }
 

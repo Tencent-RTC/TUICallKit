@@ -1,7 +1,7 @@
 package com.tencent.cloud.tuikit.flutter.tuicallkit;
 
-import static com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.SingleCallFloatView.KEY_TUISTATE_CHANGE;
-import static com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.SingleCallFloatView.SUBKEY_REFRESH_VIEW;
+import static com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants.KEY_TUISTATE_CHANGE;
+import static com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants.SUBKEY_REFRESH_VIEW;
 
 import android.Manifest;
 import android.content.Context;
@@ -12,17 +12,18 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.FloatWindowService;
-import com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.IncomingNotificationView;
-import com.tencent.cloud.tuikit.flutter.tuicallkit.service.CallingBellService;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.service.ServiceInitializer;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.CallingBellPlayer;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.service.ForegroundService;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.TUICallState;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.User;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants;
-import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitAppUtils;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitEnumUtils;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitObjectUtils;
-import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitPermissionUtils;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Permission;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.view.WindowManager;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.view.floatwindow.FloatWindowService;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.view.incomingfloatwindow.IncomingNotificationView;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.EnumUtils;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.Logger;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.MethodCallUtils;
@@ -50,8 +51,8 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
     public static final String TAG = "TUICallKitPlugin";
 
     private MethodChannel      mChannel;
-    private Context            mApplicationContext;
-    private CallingBellService mCallingBellService;
+    private Context           mApplicationContext;
+    private CallingBellPlayer mCallingBellPlayer;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -60,7 +61,7 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         mChannel.setMethodCallHandler(this);
 
         mApplicationContext = flutterPluginBinding.getApplicationContext();
-        mCallingBellService = new CallingBellService(mApplicationContext);
+        mCallingBellPlayer = new CallingBellPlayer(mApplicationContext);
 
         registerObserver();
     }
@@ -115,12 +116,12 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
 
     public void startRing(MethodCall call, MethodChannel.Result result) {
         String filePath = MethodCallUtils.getMethodRequiredParams(call, "filePath", result);
-        mCallingBellService.startRing(filePath);
+        mCallingBellPlayer.startRing(filePath);
         result.success(0);
     }
 
     public void stopRing(MethodCall call, MethodChannel.Result result) {
-        mCallingBellService.stopRing();
+        mCallingBellPlayer.stopRing();
         IncomingNotificationView.getInstance(mApplicationContext).cancelNotification();
         if (TUICallState.getInstance().mIncomingFloatView != null) {
             TUICallState.getInstance().mIncomingFloatView.cancelIncomingView();
@@ -172,42 +173,37 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
     }
 
     public void startFloatWindow(MethodCall call, MethodChannel.Result result) {
-        if (KitPermissionUtils.hasPermission(PermissionRequester.FLOAT_PERMISSION)) {
-            Intent mStartIntent = new Intent(mApplicationContext, FloatWindowService.class);
-            mApplicationContext.startService(mStartIntent);
+        if (WindowManager.showFloatWindow(mApplicationContext)) {
             result.success(0);
         } else {
-            KitPermissionUtils.requestFloatPermission();
             result.error("-1", "No Permission", null);
         }
     }
 
     public void stopFloatWindow(MethodCall call, MethodChannel.Result result) {
-        Intent mStartIntent = new Intent(mApplicationContext, FloatWindowService.class);
-        mApplicationContext.stopService(mStartIntent);
+        WindowManager.showIncomingBanner(mApplicationContext);
         result.success(0);
     }
 
     public void hasFloatPermission(MethodCall call, MethodChannel.Result result) {
-        if (KitPermissionUtils.hasPermission(PermissionRequester.FLOAT_PERMISSION)) {
+        if (Permission.hasPermission(PermissionRequester.FLOAT_PERMISSION)) {
             result.success(true);
         } else {
             result.success(false);
         }
-        KitPermissionUtils.requestFloatPermission();
+        Permission.requestFloatPermission();
     }
 
     public void isAppInForeground(MethodCall call, MethodChannel.Result result) {
-        if (KitAppUtils.isAppInForeground(mApplicationContext)) {
+        if (ServiceInitializer.isAppInForeground(mApplicationContext)) {
             result.success(true);
         } else {
             result.success(false);
         }
     }
 
-    public void runAppToNative(MethodCall call, MethodChannel.Result result) {
-        String event = MethodCallUtils.getMethodParams(call, KitAppUtils.EVENT_KEY);
-        KitAppUtils.runAppToNative(mApplicationContext, event);
+    public void showIncomingBanner(MethodCall call, MethodChannel.Result result) {
+        WindowManager.showIncomingBanner(mApplicationContext);
         result.success(0);
     }
 
@@ -280,6 +276,11 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
                 .request();
     }
 
+    public void pullBackgroundApp(MethodCall call, MethodChannel.Result result) {
+        WindowManager.pullBackgroundApp(mApplicationContext);
+        result.success(0);
+    }
+
     private String getPermissionsByIndex(int index) {
         switch (index) {
             case 0:
@@ -331,8 +332,8 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         });
     }
 
-    public void launchCallingPageFromIncomingFloatWindow() {
-        mChannel.invokeMethod("launchCallingPageFromIncomingFloatWindow", new HashMap(), new Result() {
+    public void launchCallingPageFromIncomingBanner() {
+        mChannel.invokeMethod("launchCallingPageFromIncomingBanner", new HashMap(), new Result() {
             @Override
             public void success(@Nullable Object result) {
             }
@@ -343,7 +344,7 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
 
             @Override
             public void notImplemented() {
-                Logger.error(TAG, "launchCallingPageFromIncomingFloatWindow notImplemented");
+                Logger.error(TAG, "launchCallingPageFromIncomingBanner notImplemented");
             }
         });
     }
@@ -380,7 +381,7 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         }
 
         if (Constants.SUB_KEY_HANDLE_CALL_RECEIVED.equals(subKey)) {
-            launchCallingPageFromIncomingFloatWindow();
+            launchCallingPageFromIncomingBanner();
             return;
         }
 

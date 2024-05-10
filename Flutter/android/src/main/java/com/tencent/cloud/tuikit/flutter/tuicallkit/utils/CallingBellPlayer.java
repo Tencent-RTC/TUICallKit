@@ -1,4 +1,4 @@
-package com.tencent.cloud.tuikit.flutter.tuicallkit.service;
+package com.tencent.cloud.tuikit.flutter.tuicallkit.utils;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -11,7 +11,7 @@ import com.tencent.liteav.audio.TXAudioEffectManager;
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine;
 
-public class CallingBellService {
+public class CallingBellPlayer {
     private final Context mContext;
 
     private MediaPlayer   mMediaPlayer;
@@ -21,7 +21,7 @@ public class CallingBellService {
     private String        mRingFilePath = "";
     private int          AUDIO_DIAL_ID = 48;
 
-    public CallingBellService(Context mContext) {
+    public CallingBellPlayer(Context mContext) {
         this.mContext = mContext;
         mMediaPlayer = new MediaPlayer();
     }

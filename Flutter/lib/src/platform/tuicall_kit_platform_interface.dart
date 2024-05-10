@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_method_channel.dart';
@@ -53,8 +54,8 @@ abstract class TUICallKitPlatform extends PlatformInterface {
     return await instance.isAppInForeground();
   }
 
-  Future<bool> runAppToNative(String event) async {
-    return await instance.runAppToNative(event);
+  Future<bool> showIncomingBanner() async {
+    return await instance.showIncomingBanner();
   }
 
   Future<bool> initResources(Map resources) async {
@@ -88,5 +89,9 @@ abstract class TUICallKitPlatform extends PlatformInterface {
         title: title,
         description: description,
         settingsTip: settingsTip);
+  }
+
+  Future<void> pullBackgroundApp() async {
+    await instance.pullBackgroundApp();
   }
 }

@@ -6,7 +6,6 @@ import 'package:tencent_calls_uikit/src/call_manager.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/call_state.dart';
-import 'package:tencent_calls_uikit/tuicall_kit.dart';
 import 'package:tencent_calls_uikit/src/utils/permission.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
@@ -103,10 +102,10 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
   }
 
   @override
-  Future<bool> runAppToNative(String event) async {
+  Future<bool> showIncomingBanner() async {
     try {
       if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
-        await methodChannel.invokeMethod('runAppToNative', {"event": event});
+        await methodChannel.invokeMethod('showIncomingBanner', {});
       } else {
         return false;
       }
@@ -205,6 +204,13 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
     }
   }
 
+  @override
+  Future<void> pullBackgroundApp() async {
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      await methodChannel.invokeMethod('pullBackgroundApp', {});
+    }
+  }
+
   void _handleNativeCall(MethodCall call) {
     debugPrint(
         "CallHandler method:${call.method}, arguments:${call.arguments}");
@@ -212,18 +218,10 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
       case "backCallingPageFromFloatWindow":
         _backCallingPageFromFloatWindow();
         break;
-      case "launchCallingPageFromIncomingFloatWindow":
-        _launchCallingPageFromIncomingFloatWindow();
+      case "launchCallingPageFromIncomingBanner":
+        _launchCallingPageFromIncomingBanner();
         break;
-      case "enableFloatWindow":
-        _handleEnableFloatWindow(call);
-        break;
-      case "groupCall":
-        _handleGroupCall(call);
-        break;
-      case "call":
-        _handleCall(call);
-        break;
+
       case "appEnterForeground":
         _appEnterForeground();
         break;
@@ -243,29 +241,11 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
     CallManager.instance.backCallingPageFormFloatWindow();
   }
 
-  void _launchCallingPageFromIncomingFloatWindow() {
-    CallState.instance.isInNativeIncomingFloatWindow = false;
-    CallManager.instance.launchCallingPage();
-  }
-
-  void _handleEnableFloatWindow(MethodCall call) {
-    var enable = call.arguments['enable'];
-    TUICallKit.instance.enableFloatWindow(enable);
-  }
-
-  void _handleGroupCall(MethodCall call) {
-    var groupId = call.arguments['groupId'];
-    var userIdList = List<String>.from(call.arguments['userIdList']);
-    TUICallMediaType mediaType =
-        TUICallMediaType.values[call.arguments['mediaType']];
-    TUICallKit.instance.groupCall(groupId, userIdList, mediaType);
-  }
-
-  void _handleCall(MethodCall call) {
-    var userId = call.arguments['userId'];
-    TUICallMediaType mediaType =
-        TUICallMediaType.values[call.arguments['mediaType']];
-    TUICallKit.instance.call(userId, mediaType);
+  void _launchCallingPageFromIncomingBanner() {
+    CallState.instance.isInNativeIncomingBanner = false;
+    if(CallState.instance.selfUser.callStatus != TUICallStatus.none) {
+      CallManager.instance.launchCallingPage();
+    }
   }
 
   void _appEnterForeground() {

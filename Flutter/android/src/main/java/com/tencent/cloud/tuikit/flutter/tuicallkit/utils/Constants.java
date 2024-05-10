@@ -14,4 +14,7 @@ public class Constants {
 
     public static String ACCEPT_CALL_ACTION           = "accept_call_action";
     public static String REJECT_CALL_ACTION           = "reject_call_action";
+
+    public static String KEY_TUISTATE_CHANGE = "tuistate_change";
+    public static String SUBKEY_REFRESH_VIEW = "tuistate_change_refresh_view";
 }
