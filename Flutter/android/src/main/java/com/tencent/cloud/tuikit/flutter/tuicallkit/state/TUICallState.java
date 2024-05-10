@@ -2,7 +2,7 @@ package com.tencent.cloud.tuikit.flutter.tuicallkit.state;
 
 import androidx.annotation.NonNull;
 
-import com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.IncomingFloatView;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.view.incomingfloatwindow.IncomingFloatView;
 import com.tencent.qcloud.tuikit.TUICommonDefine;
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
 
@@ -33,7 +33,7 @@ public class TUICallState {
     public Boolean                 mIsMicrophoneMute = false;
     public Boolean                 mIsCameraOpen     = false;
 
-    public IncomingFloatView       mIncomingFloatView;
+    public IncomingFloatView mIncomingFloatView;
 
     @NonNull
     @Override

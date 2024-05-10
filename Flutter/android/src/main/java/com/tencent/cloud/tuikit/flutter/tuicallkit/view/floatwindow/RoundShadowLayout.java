@@ -1,4 +1,4 @@
-package com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow;
+package com.tencent.cloud.tuikit.flutter.tuicallkit.view.floatwindow;
 
 import android.content.Context;
 import android.graphics.Bitmap;

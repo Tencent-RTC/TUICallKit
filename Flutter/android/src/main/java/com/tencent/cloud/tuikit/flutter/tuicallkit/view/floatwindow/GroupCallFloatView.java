@@ -1,4 +1,7 @@
-package com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow;
+package com.tencent.cloud.tuikit.flutter.tuicallkit.view.floatwindow;
+
+import static com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants.KEY_TUISTATE_CHANGE;
+import static com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants.SUBKEY_REFRESH_VIEW;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -19,9 +22,6 @@ import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine;
 import java.util.Map;
 
 public class GroupCallFloatView extends CallFloatView implements ITUINotification {
-
-    public static String KEY_TUISTATE_CHANGE = "tuistate_change";
-    public static String SUBKEY_REFRESH_VIEW = "tuistate_change_refresh_view";
 
     private final Context mContext;
 

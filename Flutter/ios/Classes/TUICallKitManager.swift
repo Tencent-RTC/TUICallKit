@@ -253,16 +253,8 @@ class TUICallKitManager {
         }
     }
         
-    func runAppToNative(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard let event = MethodUtils.getMethodParams(call: call, key: "event", resultType: String.self) else {
-            FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "runAppToNative", paramKey: "event", result: result)
-            result(NSNumber(value: -1))
-            return
-        }
-        
-        if (event == "event_handle_receive_call") {
-            WindowManger.instance.showIncomingFloatWindow();
-        }
+    func showIncomingBanner(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        WindowManger.instance.showIncomingBanner();
         result(NSNumber(value: 0))
     }
 }

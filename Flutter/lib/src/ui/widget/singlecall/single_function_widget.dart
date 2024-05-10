@@ -218,7 +218,7 @@ class SingleFunctionWidget {
   static Widget _buildHangupButton(Function close) {
     return ExtendButton(
       imgUrl: "assets/images/hangup.png",
-      tips: '',
+      tips: CallKit_t("hangUp"),
       textColor: _getTextColor(),
       imgHeight: 60,
       onTap: () {

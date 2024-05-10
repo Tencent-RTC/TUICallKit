@@ -47,8 +47,8 @@ class CallState {
 
   bool isChangedBigSmallVideo = false;
   bool isOpenFloatWindow = false;
-
-  bool isInNativeIncomingFloatWindow = false;
+  bool enableIncomingBanner = false;
+  bool isInNativeIncomingBanner = false;
 
   final TUICallObserver observer = TUICallObserver(
       onError: (int code, String message) {
@@ -61,8 +61,28 @@ class CallState {
         await CallState.instance.handleCallReceivedData(callerId, calleeIdList, groupId, callMediaType);
         await TUICallKitPlatform.instance.updateCallStateToNative();
         CallingBellFeature.startRing();
-        CallState.instance.isInNativeIncomingFloatWindow = true;
-        await TUICallKitPlatform.instance.runAppToNative("event_handle_receive_call");
+
+        if (Platform.isIOS) {
+          if (CallState.instance.enableIncomingBanner) {
+            CallState.instance.isInNativeIncomingBanner = true;
+            await TUICallKitPlatform.instance.showIncomingBanner();
+          } else {
+              CallState.instance.isInNativeIncomingBanner = false;
+              CallManager.instance.launchCallingPage();
+          }
+        } else if (Platform.isAndroid) {
+          if (CallState.instance.enableIncomingBanner) {
+            CallState.instance.isInNativeIncomingBanner = true;
+            await TUICallKitPlatform.instance.showIncomingBanner();
+          } else {
+            if (await TUICallKitPlatform.instance.isAppInForeground()) {
+              CallState.instance.isInNativeIncomingBanner = false;
+              CallManager.instance.launchCallingPage();
+            } else {
+              TUICallKitPlatform.instance.pullBackgroundApp();
+            }
+          }
+        }
       },
       onCallCancelled: (String callerId) {
         TRTCLogger.info('TUICallObserver onCallCancelled(callerId:$callerId)');

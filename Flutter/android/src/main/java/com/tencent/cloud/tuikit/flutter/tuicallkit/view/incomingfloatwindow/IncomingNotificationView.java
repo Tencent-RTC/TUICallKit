@@ -1,4 +1,4 @@
-package com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow;
+package com.tencent.cloud.tuikit.flutter.tuicallkit.view.incomingfloatwindow;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -27,9 +27,9 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.R;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.TUICallKitPlugin;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.service.ServiceInitializer;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.User;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants;
-import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitAppUtils;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.Logger;
 import com.tencent.liteav.base.Log;
 import com.tencent.qcloud.tuicore.TUICore;
@@ -88,7 +88,6 @@ public class IncomingNotificationView {
             remoteViews.setImageViewResource(R.id.btn_accept, R.drawable.tuicallkit_bg_dialing);
         }
 
-
         Glide.with(context).asBitmap().load(Uri.parse(avatar)).diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.tuicallkit_ic_avatar)
                 .apply(RequestOptions.bitmapTransform(new RoundedCorners(15)))
@@ -110,7 +109,6 @@ public class IncomingNotificationView {
                             notificationManager.notify(notificationId, notification);
                         }
                     }
-
                 });
     }
 
@@ -160,7 +158,7 @@ public class IncomingNotificationView {
 
         remoteViews =new RemoteViews(context.getPackageName(), R.layout.tuicallkit_incoming_notification_view);
 
-        if (KitAppUtils.isAppRunningForeground(context)) {
+        if (ServiceInitializer.isAppInForeground(context)) {
             remoteViews.setOnClickPendingIntent(R.id.ll_notification, getPendingIntent());
             remoteViews.setOnClickPendingIntent(R.id.btn_accept, getAcceptIntent());
             remoteViews.setOnClickPendingIntent(R.id.btn_decline, getDeclineIntent());
@@ -176,38 +174,34 @@ public class IncomingNotificationView {
     }
 
     private PendingIntent getBgPendingIntent() {
-        Logger.info(TUICallKitPlugin.TAG, "IncomingNotificationView  getBgPendingIntent");
-
         Intent intentLaunchMain = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
         if (intentLaunchMain != null) {
             intentLaunchMain.putExtra("show_in_foreground", true);
             intentLaunchMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_HANDLE_CALL_RECEIVED, null);
+            return PendingIntent.getActivity(context, 0, intentLaunchMain, PendingIntent.FLAG_IMMUTABLE);
         } else {
             Log.e(TAG, "Failed to get launch intent for package: " + context.getPackageName());
+            TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_HANDLE_CALL_RECEIVED, null);
+            return PendingIntent.getActivity(context, 0, null, PendingIntent.FLAG_IMMUTABLE);
         }
-        return PendingIntent.getActivity(context, 0, intentLaunchMain, PendingIntent.FLAG_IMMUTABLE);
     }
 
     private PendingIntent getPendingIntent() {
-        Logger.info(TUICallKitPlugin.TAG, "IncomingNotificationView  getPendingIntent");
         Intent intent = new Intent(context, IncomingCallReceiver.class);
         intent.setAction(Constants.SUB_KEY_HANDLE_CALL_RECEIVED);
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
     }
 
     private PendingIntent getDeclineIntent() {
-        Logger.info(TUICallKitPlugin.TAG, "IncomingNotificationView  getDeclineIntent");
         Intent intent = new Intent(context, IncomingCallReceiver.class);
         intent.setAction(Constants.REJECT_CALL_ACTION);
         return PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_IMMUTABLE);
     }
 
     private PendingIntent getAcceptIntent() {
-        Logger.info(TUICallKitPlugin.TAG, "IncomingNotificationView  getAcceptIntent");
         Intent intent = new Intent(context, IncomingCallReceiver.class);
         intent.setAction(Constants.ACCEPT_CALL_ACTION);
         return PendingIntent.getBroadcast(context, 2, intent, PendingIntent.FLAG_IMMUTABLE);
     }
 }
-

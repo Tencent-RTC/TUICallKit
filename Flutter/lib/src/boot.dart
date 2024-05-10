@@ -19,6 +19,10 @@ class Boot {
     CallManager.instance.handleLogoutSuccess();
   };
 
+  ITUINotificationCallback imSDKInitSuccessCallBack = (arg) {
+    CallState.instance.registerEngineObserver();
+  };
+
   Boot._internal() {
     TUICallKitPlatform.instance;
     TUICore.instance.registerService(TUICALLKIT_SERVICE_NAME, CallService.instance);
@@ -27,6 +31,6 @@ class Boot {
     TUICore.instance.registerEvent(loginSuccessEvent, loginSuccessCallBack);
     TUICore.instance.registerEvent(logoutSuccessEvent, logoutSuccessCallBack);
 
-    CallState.instance.registerEngineObserver();
+    TUICore.instance.registerEvent(imSDKInitSuccessEvent, imSDKInitSuccessCallBack);
   }
 }

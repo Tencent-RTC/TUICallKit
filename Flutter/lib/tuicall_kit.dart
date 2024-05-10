@@ -90,4 +90,8 @@ class TUICallKit {
   Future<void> enableVirtualBackground(bool enable) async {
     return await CallManager.instance.enableVirtualBackground(enable);
   }
+
+  void enableIncomingBanner(bool enable) {
+    CallManager.instance.enableIncomingBanner(enable);
+  }
 }

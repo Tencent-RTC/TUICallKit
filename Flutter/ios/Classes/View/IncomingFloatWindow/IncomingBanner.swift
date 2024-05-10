@@ -10,14 +10,14 @@ import UIKit
 import SnapKit
 import TUICallEngine
 
-protocol IncomingFloatWindowViewDelegate: NSObject {
-    func closeIncomingFloatWindow()
+protocol IncomingBannerViewDelegate: NSObject {
+    func closeIncomingBannerView()
     func showCallingView()
 }
 
-class IncomingFloatView: UIView {
+class IncomingBannerView: UIView {
     
-    weak var delegate: IncomingFloatWindowViewDelegate?
+    weak var delegate: IncomingBannerViewDelegate?
 
     let userHeadImageView: UIImageView = {
         let userHeadImageView = UIImageView(frame: CGRect.zero)
@@ -160,8 +160,8 @@ class IncomingFloatView: UIView {
         } fail: { code, message in
         }
 
-        if delegate != nil && ((delegate?.responds(to: Selector(("closeIncomingFloatWindow")))) != nil) {
-            delegate?.closeIncomingFloatWindow()
+        if delegate != nil && ((delegate?.responds(to: Selector(("closeIncomingBannerView")))) != nil) {
+            delegate?.closeIncomingBannerView()
         }
     }
     

@@ -210,6 +210,32 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           ),
         ),
 
+        SizedBox(
+          height: 40,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.show_incoming_banner,
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black),
+              ),
+              Switch(
+                  value: SettingsConfig.showIncomingBanner,
+                  onChanged: (value) {
+                    setState(() {
+                      SettingsConfig.showIncomingBanner = value;
+                      TUICallKit.instance
+                          .enableIncomingBanner(SettingsConfig.showIncomingBanner);
+                    });
+                  })
+            ],
+          ),
+        ),
+
         const SizedBox(height: 10),
       ],
     );

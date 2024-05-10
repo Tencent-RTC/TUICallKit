@@ -12,6 +12,71 @@ import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
 class MockCallsUikitPlatform
     with MockPlatformInterfaceMixin
     implements TUICallKitPlatform {
+  @override
+  Future<void> apiLog(TRTCLoggerLevel level, String logString) {
+    // TODO: implement apiLog
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> closeMicrophone() {
+    // TODO: implement closeMicrophone
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> hasFloatPermission() {
+    // TODO: implement hasFloatPermission
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> hasPermissions({required List<PermissionType> permissions}) {
+    // TODO: implement hasPermissions
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> initResources(Map resources) {
+    // TODO: implement initResources
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> isAppInForeground() {
+    // TODO: implement isAppInForeground
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> openMicrophone() {
+    // TODO: implement openMicrophone
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> pullBackgroundApp() {
+    // TODO: implement pullBackgroundApp
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<PermissionResult> requestPermissions({required List<PermissionType> permissions, String title = "", String description = "", String settingsTip = ""}) {
+    // TODO: implement requestPermissions
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> showIncomingBanner() {
+    // TODO: implement showIncomingBanner
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> startFloatWindow() {
+    // TODO: implement startFloatWindow
+    throw UnimplementedError();
+  }
 
   @override
   Future<void> startForegroundService() {
@@ -19,17 +84,21 @@ class MockCallsUikitPlatform
     throw UnimplementedError();
   }
 
+  @override
+  Future<void> startRing(String filePath) {
+    // TODO: implement startRing
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> stopFloatWindow() {
+    // TODO: implement stopFloatWindow
+    throw UnimplementedError();
+  }
 
   @override
   Future<void> stopForegroundService() {
     // TODO: implement stopForegroundService
-    throw UnimplementedError();
-  }
-
-
-  @override
-  Future<void> startRing(String filePath) {
-    // TODO: implement startRing
     throw UnimplementedError();
   }
 
@@ -45,71 +114,6 @@ class MockCallsUikitPlatform
     throw UnimplementedError();
   }
 
-  @override
-  Future<void> startFloatWindow() {
-    // TODO: implement startFloatWindow
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> stopFloatWindow() {
-    // TODO: implement stopFloatWindow
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<bool> hasFloatPermission() {
-    // TODO: implement hasFloatPermission
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<bool> isAppInForeground() {
-    // TODO: implement isAppInForeground
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<bool> runAppToNative(String event) {
-    // TODO: implement moveAppToFront
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<bool> initResources(Map<dynamic, dynamic> resources) {
-    // TODO: implement initResources
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> closeMicrophone() {
-    // TODO: implement closeMicrophone
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> openMicrophone() {
-    // TODO: implement openMicrophone
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> apiLog(TRTCLoggerLevel level, String logString) {
-    // TODO: implement apiLog
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<bool> hasPermissions({required List<PermissionType> permissions}) {
-    // TODO: implement hasPermissions
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<PermissionResult> requestPermissions({required List<PermissionType> permissions, String title = "", String description = "", String settingsTip = ""}) {
-    // TODO: implement requestPermissions
-    throw UnimplementedError();
-  }
 }
 
 void main() {
