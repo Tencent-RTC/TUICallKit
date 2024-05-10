@@ -38,6 +38,7 @@ class TUICallState {
 
     public var enableMuteMode = false
     public var enableFloatWindow = false
+    public var enableIncomingBanner = false
     public var showVirtualBackgroundButton = false
     public var enableBlurBackground = LiveData<Boolean>()
     public var reverse1v1CallRenderView = false
@@ -426,6 +427,9 @@ class TUICallState {
         if (user == null) {
             user = User()
             user.id = userId
+        }
+        if (selfUser.get().callStatus.get() != TUICallDefine.Status.Accept) {
+            selfUser.get().callStatus.set(TUICallDefine.Status.Accept)
         }
         user.callStatus.set(TUICallDefine.Status.Accept)
         if (!remoteUserList.get().contains(user) && !userId.equals(selfUser.get().id)) {

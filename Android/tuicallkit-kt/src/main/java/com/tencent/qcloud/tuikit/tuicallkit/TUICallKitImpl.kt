@@ -161,8 +161,13 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
         TUICallState.instance.showVirtualBackgroundButton = enable
 
         val data = HashMap<String, Any>()
-        data["enablevirtualbackground"] = enable
+        data[Constants.KEY_VIRTUAL_BACKGROUND] = enable
         EngineManager.instance.reportOnlineLog(data)
+    }
+
+    override fun enableIncomingBanner(enable: Boolean) {
+        TUILog.i(TAG, "TUICallKit enableIncomingBanner{enable:${enable}")
+        TUICallState.instance.enableIncomingBanner = enable
     }
 
     fun queryOfflineCall() {
@@ -253,24 +258,39 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
             val hasBgPermission = PermissionRequester.newInstance(PermissionRequester.BG_START_PERMISSION).has()
             val hasNotificationPermission = PermissionRequest.isNotificationEnabled()
 
-            val innerNotification = isShowInnerNotification()
+            val isFCMData = isFCMDataNotification()
 
             TUILog.i(
                 TAG_VIEW, "handleNewCall, isAppInBackground: $isAppInBackground, floatPermission: $hasFloatPermission" +
                         ", backgroundStartPermission: $hasBgPermission, notificationPermission: $hasNotificationPermission , " +
-                        "showNotification: $innerNotification"
+                        "isFCMDataNotification: $isFCMData, enableIncomingBanner:${TUICallState.instance.enableIncomingBanner}"
             )
+
+            if (DeviceUtils.isScreenLocked(context)) {
+                TUILog.i(TAG_VIEW, "handleNewCall, screen is locked, try to pop up call full screen view")
+                startFullScreenView()
+                return@post
+            }
+
+            if (!TUICallState.instance.enableIncomingBanner) {
+                if (isAppInBackground) {
+                    when {
+                        isFCMData && hasFloatPermission -> startSmallScreenView(IncomingFloatView(context))
+                        isFCMData && hasNotificationPermission -> startSmallScreenView(IncomingNotificationView(context))
+                        else -> startFullScreenView()
+                    }
+                } else {
+                    startFullScreenView()
+                }
+
+                return@post
+            }
+
             if (isAppInBackground) {
                 when {
                     hasFloatPermission -> startSmallScreenView(IncomingFloatView(context))
-                    innerNotification && hasNotificationPermission -> startSmallScreenView(
-                        IncomingNotificationView(context)
-                    )
-
-                    hasBgPermission -> startFullScreenView()
-                    else -> {
-                        //do nothing, wait user click desktop icon
-                    }
+                    isFCMData && hasNotificationPermission -> startSmallScreenView(IncomingNotificationView(context))
+                    else -> startFullScreenView()
                 }
                 return@post
             }
@@ -283,15 +303,11 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
         }
     }
 
-    private fun isShowInnerNotification(): Boolean {
-        if (TUICore.getService(TUIConstants.TIMPush.SERVICE_NAME) == null) {
-            return true
-        }
-
+    private fun isFCMDataNotification(): Boolean {
         val pushBrandId =
             TUICore.callService(TUIConstants.TIMPush.SERVICE_NAME, TUIConstants.TIMPush.METHOD_GET_PUSH_BRAND_ID, null)
-
-        return pushBrandId == TUIConstants.DeviceInfo.BRAND_GOOGLE_ELSE
+        return TUICore.getService(TUIConstants.TIMPush.SERVICE_NAME) != null
+                && pushBrandId == TUIConstants.DeviceInfo.BRAND_GOOGLE_ELSE
     }
 
     private fun startFullScreenView() {

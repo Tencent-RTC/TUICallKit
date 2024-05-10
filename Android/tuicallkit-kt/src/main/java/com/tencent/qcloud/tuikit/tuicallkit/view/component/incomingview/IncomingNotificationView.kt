@@ -29,7 +29,7 @@ import com.tencent.qcloud.tuikit.tuicallkit.data.User
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.view.CallKitActivity
 
-class IncomingNotificationView constructor(context: Context) {
+class IncomingNotificationView(context: Context) {
     private val TAG = "IncomingViewNotification"
 
     private val channelID = "CallChannelId"
@@ -145,6 +145,7 @@ class IncomingNotificationView constructor(context: Context) {
         builder.setSound(null)
 
         builder.setContentIntent(getPendingIntent())
+        builder.setFullScreenIntent(getPendingIntent(), true)
 
         remoteViews = RemoteViews(context.packageName, R.layout.tuicallkit_incoming_notification_view)
         remoteViews?.setOnClickPendingIntent(R.id.btn_decline, getDeclineIntent())
@@ -168,8 +169,9 @@ class IncomingNotificationView constructor(context: Context) {
     }
 
     private fun getAcceptIntent(): PendingIntent {
-        val intent = Intent(context, IncomingCallReceiver::class.java)
+        val intent = Intent(context, CallKitActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.action = Constants.ACCEPT_CALL_ACTION
-        return PendingIntent.getBroadcast(context, 2, intent, PendingIntent.FLAG_IMMUTABLE)
+        return PendingIntent.getActivity(context, 2, intent, PendingIntent.FLAG_IMMUTABLE)
     }
 }

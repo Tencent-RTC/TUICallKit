@@ -52,8 +52,7 @@ class VideoCallerAndCalleeAcceptedViewModel {
 
     fun openCamera() {
         var camera: TUICommonDefine.Camera = TUICallState.instance.isFrontCamera.get()
-        val videoView =
-            VideoViewFactory.instance.videoEntityList.get(TUICallState.instance.selfUser.get().id)?.videoView
+        val videoView = VideoViewFactory.instance.findVideoView(TUICallState.instance.selfUser.get().id)
         EngineManager.instance.openCamera(camera, videoView?.getVideoView(), object :
             TUICommonDefine.Callback {
             override fun onSuccess() {}

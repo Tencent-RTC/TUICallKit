@@ -2,10 +2,12 @@ package com.tencent.qcloud.tuikit.tuicallkit.utils
 
 import android.app.ActivityManager
 import android.content.Context
+import android.os.Build
 import android.os.PowerManager
 import android.text.TextUtils
 import android.view.Window
 import android.view.WindowManager
+import com.tencent.qcloud.tuicore.util.TUIBuild
 
 object DeviceUtils {
     fun setScreenLockParams(window: Window?) {
@@ -27,6 +29,15 @@ object DeviceUtils {
                         or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                         or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
             )
+        }
+    }
+
+    fun isScreenLocked(context: Context): Boolean {
+        val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        return if (TUIBuild.getVersionInt() >= Build.VERSION_CODES.KITKAT_WATCH) {
+            !powerManager.isInteractive
+        } else {
+            false
         }
     }
 

@@ -54,7 +54,9 @@ public class LoginActivity extends BaseActivity {
                         Log.i(TAG, "login onSuccess");
                         SettingsConfig.userId = userId;
                         getUserInfo(userId);
+                        TUICallKit.createInstance(getApplication()).enableFloatWindow(SettingsConfig.isShowFloatingWindow);
                         TUICallKit.createInstance(getApplication()).enableVirtualBackground(SettingsConfig.isShowBlurBackground);
+                        TUICallKit.createInstance(getApplication()).enableIncomingBanner(SettingsConfig.isIncomingBanner);
                     }
 
                     @Override

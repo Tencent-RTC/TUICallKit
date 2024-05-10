@@ -16,8 +16,9 @@ public class SettingsConfig {
     public static String  ringPath             =
             SPUtils.getInstance(CallingBellFeature.PROFILE_TUICALLKIT).getString(CallingBellFeature.PROFILE_CALL_BELL);
     public static boolean isMute               = false;
-    public static boolean isShowFloatingWindow = false;
+    public static boolean isShowFloatingWindow = true;
     public static boolean isShowBlurBackground = true;
+    public static boolean isIncomingBanner     = true;
     public static int     intRoomId            = 0;
     public static String  strRoomId            = "";
     public static int     callTimeOut          = 30;
