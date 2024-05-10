@@ -10,13 +10,6 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
-    <View
-        android:id="@+id/view_shader"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#9522262E"
-        android:visibility="gone" />
-
     <com.tencent.qcloud.tuikit.TUIVideoView
         android:id="@+id/tx_cloud_view"
         android:layout_width="match_parent"

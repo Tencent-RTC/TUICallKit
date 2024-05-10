@@ -58,6 +58,7 @@
     <string name="app_call_setting">Call Settings</string>
     <string name="app_show_float_button">Show floating</string>
     <string name="app_blur_background">Show blur background</string>
+    <string name="app_incoming_banner">Show incoming banner</string>
     <string name="app_call_params_setting">Call Parameters</string>
     <string name="app_please_set_call_waiting_timeout">Please set call waiting timeout</string>
     <string name="app_user_data">Extended</string>

@@ -2,6 +2,7 @@ package com.tencent.qcloud.tuikit.tuicallkit.extensions
 
 import android.app.Notification
 import android.app.NotificationChannel
+import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
@@ -48,9 +49,16 @@ class TUICallService : Service() {
         val notificationChannelId = "notification_channel_id_01"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channelName = "Call Foreground Service Notification"
+            val groupID = "CallGroupId"
+            val groupName = "CallGroup"
+
+            val channelGroup = NotificationChannelGroup(groupID, groupName)
+            notificationManager.createNotificationChannelGroup(channelGroup)
+
             val notificationChannel = NotificationChannel(
                 notificationChannelId, channelName, NotificationManager.IMPORTANCE_LOW
             )
+            notificationChannel.group = groupID
             notificationChannel.description = "Channel description"
             notificationManager?.createNotificationChannel(notificationChannel)
         }

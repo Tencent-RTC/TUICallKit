@@ -9,7 +9,6 @@ import com.tencent.qcloud.tuikit.TUICommonDefine
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
 import com.tencent.qcloud.tuikit.tuicallkit.R
-import com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout.VideoViewFactory
 import com.tencent.qcloud.tuikit.tuicallkit.view.root.BaseCallView
 import com.tencent.qcloud.tuikit.tuicallkit.viewmodel.component.function.VideoCallerAndCalleeAcceptedViewModel
 
@@ -166,7 +165,7 @@ class VideoCallerAndCalleeAcceptedView(context: Context) : BaseCallView(context)
         imageOpenCamera?.setOnClickListener {
             if (viewModel.isCameraOpen.get() == true) {
                 viewModel.closeCamera()
-            } else if (VideoViewFactory.instance.videoEntityList.size > 0) {
+            } else {
                 viewModel.openCamera()
             }
         }

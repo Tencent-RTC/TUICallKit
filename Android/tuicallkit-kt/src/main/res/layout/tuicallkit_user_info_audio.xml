@@ -12,11 +12,6 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#9522262E" />
-
     <com.tencent.qcloud.tuikit.tuicallkit.view.common.RoundCornerImageView
         android:id="@+id/img_avatar"
         android:layout_width="100dp"

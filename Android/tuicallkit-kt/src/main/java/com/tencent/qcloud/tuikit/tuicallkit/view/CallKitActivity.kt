@@ -16,6 +16,7 @@ import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
 import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
 import com.tencent.qcloud.tuikit.tuicallkit.R
+import com.tencent.qcloud.tuikit.tuicallkit.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.manager.EngineManager
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.utils.DeviceUtils.setScreenLockParams
@@ -77,6 +78,7 @@ class CallKitActivity : AppCompatActivity() {
             object : PermissionCallback() {
                 override fun onGranted() {
                     initView()
+                    startActivityByAction()
                 }
 
                 override fun onDenied() {
@@ -85,6 +87,22 @@ class CallKitActivity : AppCompatActivity() {
                     }
                 }
             })
+    }
+
+    private fun startActivityByAction() {
+        if (intent.action == Constants.ACCEPT_CALL_ACTION) {
+            TUILog.i(TAG, "IncomingView -> startActivityByAction")
+            EngineManager.instance.accept(null)
+            if (TUICallState.instance.mediaType.get() == TUICallDefine.MediaType.Video) {
+                val videoView = VideoViewFactory.instance.createVideoView(
+                    TUICallState.instance.selfUser.get(), application
+                )
+
+                EngineManager.instance.openCamera(
+                    TUICallState.instance.isFrontCamera.get(), videoView?.getVideoView(), null
+                )
+            }
+        }
     }
 
     override fun onBackPressed() {}
