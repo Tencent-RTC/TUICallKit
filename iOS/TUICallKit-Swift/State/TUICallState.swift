@@ -37,6 +37,7 @@ class TUICallState: NSObject {
     
     var enableFloatWindow: Bool = false
     var showVirtualBackgroundButton = false
+    var enableIncomingBanner = false
     
     private var timerName: String = ""
 }
@@ -201,7 +202,7 @@ extension TUICallState: TUICallObserver {
         TUICallState.instance.event.value = callEvent
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            TUITool.makeToast(TUICallKitLocalize(key: "TUICallKit.lineBusy"), duration: 0.6, idposition: TUICSToastPositionCenter)
+            UIWindow.getTopFullscreenWindow()?.makeToast(TUICallKitLocalize(key: "TUICallKit.lineBusy"), duration: 0.6)
         }
     }
     

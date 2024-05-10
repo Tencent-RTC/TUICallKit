@@ -9,9 +9,9 @@ import Foundation
 import TUICore
 import TUICallEngine
 
-#if USE_TUICALLKIT_SWIFT
+#if canImport(TUICallKit_Swift)
 import TUICallKit_Swift
-#else
+#elseif canImport(TUICallKit)
 import TUICallKit
 #endif
 
@@ -32,7 +32,9 @@ class SettingsConfig {
     var ringUrl = ""
     
     var mute: Bool = false
-    var floatWindow: Bool = false
+    var floatWindow: Bool = true
+    var enableVirtualBackground: Bool = true
+    var EnableIncomingBanner: Bool = true
     var intRoomId: UInt32 = 0
     var strRoomId: String = ""
     var timeout: Int = 30

@@ -822,11 +822,19 @@ callMediaType:(TUICallMediaType)callMediaType
         deniedType = AuthorizationDeniedTypeVideo;
     }
     
-    [TUICallingCommon showAuthorizationAlert:deniedType openSettingHandler:^{
-        [[TUICallEngine createInstance] hangup:nil fail:nil];
+    UIAlertController *alertController = [TUICallingCommon getAuthorizationAlert:deniedType openSettingHandler:^{
+        [[TUICallEngine createInstance] hangup:^{
+        } fail:^(int code, NSString * _Nullable errMsg) {
+        }];
     } cancelHandler:^{
-        [[TUICallEngine createInstance] hangup:nil fail:nil];
     }];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        UIViewController *callViewController = [TUICallingCommon getViewControllerForView:[self.callingViewManager getCallingView]];
+        if (callViewController) {
+            [callViewController presentViewController:alertController animated:YES completion:nil];
+        }
+    });
 }
 
 - (void)startTimer {

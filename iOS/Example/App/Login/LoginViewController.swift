@@ -12,9 +12,9 @@ import WebKit
 import ImSDK_Plus
 import TUICore
 
-#if USE_TUICALLKIT_SWIFT
+#if canImport(TUICallKit_Swift)
 import TUICallKit_Swift
-#else
+#elseif canImport(TUICallKit)
 import TUICallKit
 #endif
 

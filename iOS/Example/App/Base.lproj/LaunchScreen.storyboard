@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,26 +16,47 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchImage.png" translatesAutoresizingMaskIntoConstraints="NO" id="k7S-KA-72b">
-                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
-                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="js7-W8-s5o">
+                                <rect key="frame" x="75" y="166" width="264" height="144"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tencent_cloud" translatesAutoresizingMaskIntoConstraints="NO" id="EVg-rH-jZs">
+                                        <rect key="frame" x="0.0" y="28" width="88" height="88"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="88" id="RAJ-iu-GX5"/>
+                                            <constraint firstAttribute="width" constant="88" id="RDY-bN-8ib"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="实时音视频" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z2h-MI-sru">
+                                        <rect key="frame" x="102.5" y="53" width="161.5" height="38.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="z2h-MI-sru" firstAttribute="centerY" secondItem="js7-W8-s5o" secondAttribute="centerY" id="07n-wj-eDc"/>
+                                    <constraint firstItem="EVg-rH-jZs" firstAttribute="leading" secondItem="js7-W8-s5o" secondAttribute="leading" id="9N5-Fw-xmJ"/>
+                                    <constraint firstItem="EVg-rH-jZs" firstAttribute="centerY" secondItem="js7-W8-s5o" secondAttribute="centerY" id="ZWw-hm-X4d"/>
+                                    <constraint firstAttribute="width" constant="264" id="j8R-jT-ZGK"/>
+                                    <constraint firstAttribute="height" constant="144" id="mA8-wl-qkq"/>
+                                    <constraint firstAttribute="trailing" secondItem="z2h-MI-sru" secondAttribute="trailing" id="xxt-Sh-gvx"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="k7S-KA-72b" secondAttribute="bottom" id="3o0-co-IvJ"/>
-                            <constraint firstItem="k7S-KA-72b" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="JNG-wR-xxS"/>
-                            <constraint firstItem="k7S-KA-72b" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="O7r-Ol-5Oc"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="k7S-KA-72b" secondAttribute="trailing" id="Pwa-ZN-87w"/>
+                            <constraint firstItem="js7-W8-s5o" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="118" id="D79-Xh-BJI"/>
+                            <constraint firstItem="js7-W8-s5o" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="cpa-QA-VJ2"/>
                         </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="375"/>
+            <point key="canvasLocation" x="52.173913043478265" y="375"/>
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchImage.png" width="375" height="667"/>
+        <image name="tencent_cloud" width="584" height="537"/>
     </resources>
 </document>

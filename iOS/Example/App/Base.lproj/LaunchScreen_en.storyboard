@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Zdc-L8-ypW">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Zdc-L8-ypW">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,26 +20,49 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="LaunchImage_en.png" translatesAutoresizingMaskIntoConstraints="NO" id="cNP-4N-ydb">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YlJ-Dc-XzB">
+                                <rect key="frame" x="59" y="184" width="296" height="144"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tencent_cloud" translatesAutoresizingMaskIntoConstraints="NO" id="hlU-AN-H83">
+                                        <rect key="frame" x="0.0" y="28" width="88" height="88"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="88" id="RXd-y9-feU"/>
+                                            <constraint firstAttribute="height" constant="88" id="qyL-uw-bsB"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tencent RTC" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TUW-yP-yZi">
+                                        <rect key="frame" x="109" y="52" width="187" height="40"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="TUW-yP-yZi" secondAttribute="trailing" id="1Hh-dT-eot"/>
+                                    <constraint firstItem="TUW-yP-yZi" firstAttribute="centerY" secondItem="hlU-AN-H83" secondAttribute="centerY" id="ACJ-dT-PTF"/>
+                                    <constraint firstItem="TUW-yP-yZi" firstAttribute="centerY" secondItem="YlJ-Dc-XzB" secondAttribute="centerY" id="AJ0-wt-20X"/>
+                                    <constraint firstAttribute="width" constant="296" id="CPt-XB-18U"/>
+                                    <constraint firstItem="TUW-yP-yZi" firstAttribute="leading" secondItem="hlU-AN-H83" secondAttribute="trailing" constant="21" id="PyH-b9-ets"/>
+                                    <constraint firstAttribute="height" constant="144" id="VPn-ZG-jWF"/>
+                                    <constraint firstItem="hlU-AN-H83" firstAttribute="leading" secondItem="YlJ-Dc-XzB" secondAttribute="leading" id="eYL-Ay-EpN"/>
+                                    <constraint firstItem="TUW-yP-yZi" firstAttribute="top" secondItem="YlJ-Dc-XzB" secondAttribute="top" constant="52" id="yKj-qe-56d"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="1DY-fr-dbf"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="cNP-4N-ydb" firstAttribute="leading" secondItem="Quv-tD-q7h" secondAttribute="leading" id="5S3-HX-0fw"/>
-                            <constraint firstAttribute="bottom" secondItem="cNP-4N-ydb" secondAttribute="bottom" id="CTo-kU-zJS"/>
-                            <constraint firstItem="cNP-4N-ydb" firstAttribute="top" secondItem="Quv-tD-q7h" secondAttribute="top" id="Rcx-H3-tKr"/>
-                            <constraint firstAttribute="trailing" secondItem="cNP-4N-ydb" secondAttribute="trailing" id="xeU-TD-OXS"/>
+                            <constraint firstItem="YlJ-Dc-XzB" firstAttribute="centerX" secondItem="Quv-tD-q7h" secondAttribute="centerX" id="3Rt-9I-iir"/>
+                            <constraint firstItem="YlJ-Dc-XzB" firstAttribute="top" secondItem="1DY-fr-dbf" secondAttribute="top" constant="136" id="Wml-5K-hM1"/>
                         </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0wp-Fa-emN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="375"/>
+            <point key="canvasLocation" x="52.173913043478265" y="375"/>
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchImage_en.png" width="375" height="667"/>
+        <image name="tencent_cloud" width="584" height="537"/>
     </resources>
 </document>

@@ -9,9 +9,9 @@ import UIKit
 import TUICore
 import TUICallEngine
 
-#if USE_TUICALLKIT_SWIFT
+#if canImport(TUICallKit_Swift)
 import TUICallKit_Swift
-#else
+#elseif canImport(TUICallKit)
 import TUICallKit
 #endif
 
@@ -93,7 +93,7 @@ public class SettingDetailViewController: UIViewController, UITextViewDelegate {
         case .entendInfo:
             textView.text = TUICallKitAppLocalize("TUICallKitApp.Setting.SetExtendTip")
         case .offlinePushInfo:
-            textView.text = TUICallKitAppLocalize("TUICallKitApp.Setting.SetOffInleInfoTip")
+            textView.text = TUICallKitAppLocalize("TUICallKitApp.Setting.SetOffLineInfoTip")
         }
     }
     

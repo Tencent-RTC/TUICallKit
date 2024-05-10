@@ -141,4 +141,12 @@ public class TUICallKit: NSObject {
     public func enableVirtualBackground(enable: Bool) {
         return TUICallKitImpl.instance.enableVirtualBackground(enable: enable)
     }
+    
+    /**
+     * Enable Incoming Banner
+     */
+    @objc
+    public func enableIncomingBanner(enable: Bool) {
+        return TUICallKitImpl.instance.enableIncomingBanner(enable: enable)
+    }
 }

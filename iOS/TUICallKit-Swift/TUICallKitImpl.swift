@@ -10,9 +10,9 @@ import TUICore
 import UIKit
 import TUICallEngine
 
-#if USE_TRTC
+#if canImport(TXLiteAVSDK_TRTC)
 import TXLiteAVSDK_TRTC
-#else
+#elseif canImport(TXLiteAVSDK_Professional)
 import TXLiteAVSDK_Professional
 #endif
 
@@ -216,8 +216,14 @@ class TUICallKitImpl: TUICallKit {
     }
     
     override func enableVirtualBackground (enable: Bool) {
+        CallEngineManager.instance.reportOnlineLog(enable)
         TUICallState.instance.showVirtualBackgroundButton = enable
     }
+    
+    override func enableIncomingBanner (enable: Bool) {
+        TUICallState.instance.enableIncomingBanner = enable
+    }
+    
 }
 
 // MARK: Internal interface for TUICallKit
@@ -293,7 +299,7 @@ private extension TUICallKitImpl {
                 TUICallState.instance.selfUser.value.callStatus.value == TUICallStatus.waiting {
                 TUICallState.instance.audioDevice.value = TUIAudioPlaybackDevice.earpiece
                 CallEngineManager.instance.setAudioPlaybackDevice(device: TUIAudioPlaybackDevice.earpiece)
-                WindowManager.instance.showCallWindow()
+                WindowManager.instance.showCallWindow(TUICallState.instance.enableIncomingBanner)
             }
             
             if TUICallState.instance.selfUser.value.callRole.value == TUICallRole.none &&

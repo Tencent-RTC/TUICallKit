@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICallKit-Swift'
-  spec.version      = '2.3.0.920'
+  spec.version      = '2.3.0.925'
   spec.platform     = :ios
   spec.ios.deployment_target = '12.0'
   spec.license      = { :type => 'Proprietary',
@@ -35,7 +35,6 @@ Pod::Spec.new do |spec|
       'TUICallKitBundle' => ['TUICallKit-Swift/Resources/*.gif', 'TUICallKit-Swift/Resources/**/*.strings', 'TUICallKit-Swift/Resources/AudioFile', 'TUICallKit-Swift/Resources/*.xcassets']
     }
     trtc.resource = ['TUICallKit-Swift/Resources/*.bundle']
-    trtc.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '$(inherited) -D USE_TRTC', 'GCC_PREPROCESSOR_DEFINITIONS' => "$(inherited) COCOAPODS=1 USE_TRTC=1" }
   end
   
   spec.subspec 'Professional' do |professional|
