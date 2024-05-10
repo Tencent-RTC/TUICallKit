@@ -36,8 +36,7 @@ class InviteUserButtonViewModel {
     func inviteUser() {
         let selectGroupMemberVC = SelectGroupMemberViewController()
         selectGroupMemberVC.modalPresentationStyle = .fullScreen
-        let keyWindow = TUICallKitCommon.getKeyWindow()
-        keyWindow?.rootViewController?.present(selectGroupMemberVC, animated: false)
+        UIWindow.getKeyWindow()?.rootViewController?.present(selectGroupMemberVC, animated: false)
     }
     
     func tui_valueCallback(param: [AnyHashable: Any]) {
