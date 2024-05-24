@@ -41,6 +41,29 @@ public final class RoundShadowLayout extends FrameLayout {
     private RectF mRoundRect;
     private Path  mRoundPath;
 
+    public RoundShadowLayout(@NotNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        radiusArray = new float[8];
+        mShadowRadius = 10.0F;
+        mRoundRadius = 40.0F;
+        mShadowColor = Color.argb(255, 187, 187, 187);
+
+        for (int i = 0; i < radiusArray.length; ++i) {
+            radiusArray[i] = mRoundRadius;
+        }
+
+        mRoundPaint = new Paint();
+        mRoundPath = new Path();
+        mRoundRect = new RectF();
+        mShadowRect = new RectF();
+        mShadowPath = new Path();
+        mShadowPaint = new Paint();
+    }
+
+    public RoundShadowLayout(@NotNull Context context) {
+        this(context, null);
+    }
+
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = 0;
         int height = 0;
@@ -155,28 +178,5 @@ public final class RoundShadowLayout extends FrameLayout {
         mShadowPath.addRoundRect(mShadowRect, radiusArray, Direction.CW);
         canvas.drawPath(mShadowPath, mShadowPaint);
         return output;
-    }
-
-    public RoundShadowLayout(@NotNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        radiusArray = new float[8];
-        mShadowRadius = 10.0F;
-        mRoundRadius = 40.0F;
-        mShadowColor = Color.argb(255, 187, 187, 187);
-
-        for (int i = 0; i < radiusArray.length; ++i) {
-            radiusArray[i] = mRoundRadius;
-        }
-
-        mRoundPaint = new Paint();
-        mRoundPath = new Path();
-        mRoundRect = new RectF();
-        mShadowRect = new RectF();
-        mShadowPath = new Path();
-        mShadowPaint = new Paint();
-    }
-
-    public RoundShadowLayout(@NotNull Context context) {
-        this(context, null);
     }
 }

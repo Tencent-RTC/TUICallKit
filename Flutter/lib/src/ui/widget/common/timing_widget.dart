@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tencent_calls_uikit/src/call_state.dart';
-import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
+import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 
 class TimingWidget extends StatefulWidget {
   const TimingWidget({Key? key}) : super(key: key);

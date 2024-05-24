@@ -94,7 +94,6 @@ class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
                     _onPlatformViewCreated(widget.user, viewId);
                   },
                 ),
-
                 Visibility(
                   visible: isAvatarImage,
                   child: Positioned.fill(
@@ -110,14 +109,12 @@ class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
                     ),
                   ),
                 ),
-
                 Visibility(
                   visible: isShowLoadingImage,
                   child: Center(
                     child: LoadingAnimation(),
                   ),
                 ),
-
                 Visibility(
                   visible: isShowSpeaking,
                   child: Positioned(

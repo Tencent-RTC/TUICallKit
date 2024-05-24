@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:tencent_calls_uikit/src/data/constants.dart';
-import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_calls_uikit/src/call_manager.dart';
-import 'package:tencent_calls_uikit/src/ui/tuicall_navigator_observer.dart';
 import 'package:tencent_calls_uikit/src/call_state.dart';
+import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/data/user.dart';
+import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
+import 'package:tencent_calls_uikit/src/ui/tuicall_navigator_observer.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
-import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
 import 'package:tencent_cloud_chat_sdk/enum/group_member_filter_enum.dart';
+import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
 
 class InviteUserWidget extends StatefulWidget {
   const InviteUserWidget({Key? key}) : super(key: key);
@@ -55,8 +55,7 @@ class _InviteUserWidgetState extends State<InviteUserWidget> {
                 },
                 child: Row(
                   children: [
-                    const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10)),
+                    const Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
                     Image.asset(
                       _groupMemberList[index].isSelected
                           ? 'assets/images/check_box_group_selected.png'
@@ -65,8 +64,7 @@ class _InviteUserWidgetState extends State<InviteUserWidget> {
                       width: 18,
                       height: 18,
                     ),
-                    const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10)),
+                    const Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
                     Container(
                       width: 40,
                       height: 40,
@@ -83,8 +81,7 @@ class _InviteUserWidgetState extends State<InviteUserWidget> {
                         ),
                       ),
                     ),
-                    const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5)),
+                    const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
                     Text(
                       _getMemberDisPlayName(_groupMemberList[index]),
                       style: const TextStyle(color: Colors.black, fontSize: 18),
@@ -103,8 +100,7 @@ class _InviteUserWidgetState extends State<InviteUserWidget> {
             filter: GroupMemberFilterTypeEnum.V2TIM_GROUP_MEMBER_FILTER_ALL,
             nextSeq: '0');
     _groupMemberList.clear();
-    if (imuserInfoBack.data == null ||
-        imuserInfoBack.data!.memberInfoList == null) {
+    if (imuserInfoBack.data == null || imuserInfoBack.data!.memberInfoList == null) {
       return;
     }
     _defaultSelectList.add(CallState.instance.selfUser.id);

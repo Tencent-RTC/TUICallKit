@@ -12,17 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 public class TUICallState {
-    private TUICallState() {
-    }
-
-    private static class TUICallStateHolder {
-        private static TUICallState instance = new TUICallState();
-    }
-
-    public static TUICallState getInstance() {
-        return TUICallStateHolder.instance;
-    }
-
     public User                    mSelfUser         = new User();
     public ArrayList<User>         mRemoteUserList   = new ArrayList<User>();
     public TUICallDefine.Scene     mScene            = TUICallDefine.Scene.SINGLE_CALL;
@@ -32,8 +21,13 @@ public class TUICallState {
     public Map                     mResourceMap      = new HashMap();
     public Boolean                 mIsMicrophoneMute = false;
     public Boolean                 mIsCameraOpen     = false;
-
     public IncomingFloatView mIncomingFloatView;
+    private TUICallState() {
+    }
+
+    public static TUICallState getInstance() {
+        return TUICallStateHolder.instance;
+    }
 
     @NonNull
     @Override
@@ -48,5 +42,9 @@ public class TUICallState {
                 ", mIsMicrophoneMute" + mIsMicrophoneMute +
                 ", mIsCameraOpen" + mIsCameraOpen +
                 "}";
+    }
+
+    private static class TUICallStateHolder {
+        private static TUICallState instance = new TUICallState();
     }
 }

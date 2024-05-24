@@ -24,7 +24,7 @@ public class IncomingCallReceiver extends BroadcastReceiver {
             return;
         }
 
-        TUILog.i(TAG, "onReceive: action: "+ intent.getAction());
+        TUILog.i(TAG, "onReceive: action: " + intent.getAction());
 
         if (Objects.equals(intent.getAction(), Constants.SUB_KEY_HANDLE_CALL_RECEIVED)) {
             IncomingNotificationView.getInstance(context).cancelNotification();

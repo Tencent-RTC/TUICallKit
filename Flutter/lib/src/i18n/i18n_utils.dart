@@ -2,6 +2,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:tencent_calls_uikit/src/i18n/strings.g.dart';
 
@@ -20,18 +21,21 @@ class CallKitI18nUtils {
 
   static setLanguage(Locale currentLocale) {
     switch (currentLocale.languageCode) {
-      case 'zh': {
-        CallKitI18nUtils(null, 'zh');
-        break;
-      }
-      case 'en': {
-        CallKitI18nUtils(null, 'en');
-        break;
-      }
-      case 'ja': {
-        CallKitI18nUtils(null, 'ja');
-        break;
-      }
+      case 'zh':
+        {
+          CallKitI18nUtils(null, 'zh');
+          break;
+        }
+      case 'en':
+        {
+          CallKitI18nUtils(null, 'en');
+          break;
+        }
+      case 'ja':
+        {
+          CallKitI18nUtils(null, 'ja');
+          break;
+        }
     }
   }
 
@@ -79,11 +83,9 @@ class CallKitI18nUtils {
   // Usage update: using `TIM_t_para` directly instead of `ttBuild.imt_para`
   Function imt_para_origin(String template, String value) {
     // Usage：TIM_t_para("selected:{{addType}}",'selected:$addType')(addType: addType)
-    final originTemplate = template.replaceAllMapped(
-        expForParameterOut, (Match m) => replaceParameterForTemplate(m));
-    final originKey = zhMapRevert[originTemplate] ??
-        getKeyFromMap(zhMap, originTemplate) ??
-        "";
+    final originTemplate =
+        template.replaceAllMapped(expForParameterOut, (Match m) => replaceParameterForTemplate(m));
+    final originKey = zhMapRevert[originTemplate] ?? getKeyFromMap(zhMap, originTemplate) ?? "";
     final Function translatedValueFunction = t[originKey] ??
         ({
           Object? option1,
@@ -141,8 +143,7 @@ class CallKitI18nUtils {
   }
 
   static AppLocale findDeviceLocale([String? locale]) {
-    final String deviceLocale =
-        locale ?? WidgetsBinding.instance.window.locale.toLanguageTag();
+    final String deviceLocale = locale ?? WidgetsBinding.instance.window.locale.toLanguageTag();
 
     final typedLocale = _selectLocale(deviceLocale);
     if (typedLocale != null) {
@@ -164,8 +165,7 @@ class CallKitI18nUtils {
       final script = match.group(3);
       // match exactly
       selected = AppLocale.values.cast<AppLocale?>().firstWhere(
-          (supported) =>
-              supported?.languageTag == localeRaw.replaceAll('_', '-'),
+          (supported) => supported?.languageTag == localeRaw.replaceAll('_', '-'),
           orElse: () => null);
 
       if (selected == null && script != null) {

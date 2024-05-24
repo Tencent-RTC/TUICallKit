@@ -19,7 +19,7 @@ public class CallingBellPlayer {
     private HandlerThread mHandlerThread;
     private Runnable      mPlayRunnable;
     private String        mRingFilePath = "";
-    private int          AUDIO_DIAL_ID = 48;
+    private int           AUDIO_DIAL_ID = 48;
 
     public CallingBellPlayer(Context mContext) {
         this.mContext = mContext;

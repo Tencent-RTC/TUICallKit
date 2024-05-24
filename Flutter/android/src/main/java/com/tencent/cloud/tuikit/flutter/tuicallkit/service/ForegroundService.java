@@ -18,15 +18,6 @@ import java.util.List;
 public class ForegroundService extends Service {
     private static final int NOTIFICATION_ID = 1001;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        // Get service notice
-        Notification notification = createForegroundNotification();
-        //Place the service in the startup state, notification_id refers to the ID of the created notice
-        startForeground(NOTIFICATION_ID, notification);
-    }
-
     public static void start(Context context) {
         if (isServiceRunning(context, ForegroundService.class.getName())) {
             return;
@@ -42,6 +33,32 @@ public class ForegroundService extends Service {
     public static void stop(Context context) {
         Intent intent = new Intent(context, ForegroundService.class);
         context.stopService(intent);
+    }
+
+    private static boolean isServiceRunning(Context context, String className) {
+        if (context == null || TextUtils.isEmpty(className)) {
+            return false;
+        }
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> info = am.getRunningServices(0x7FFFFFFF);
+        if (info == null || info.size() == 0) {
+            return false;
+        }
+        for (ActivityManager.RunningServiceInfo aInfo : info) {
+            if (className.equals(aInfo.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // Get service notice
+        Notification notification = createForegroundNotification();
+        //Place the service in the startup state, notification_id refers to the ID of the created notice
+        startForeground(NOTIFICATION_ID, notification);
     }
 
     private Notification createForegroundNotification() {
@@ -74,22 +91,5 @@ public class ForegroundService extends Service {
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
         stopSelf();
-    }
-
-    private static boolean isServiceRunning(Context context, String className) {
-        if (context == null || TextUtils.isEmpty(className)) {
-            return false;
-        }
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningServiceInfo> info = am.getRunningServices(0x7FFFFFFF);
-        if (info == null || info.size() == 0) {
-            return false;
-        }
-        for (ActivityManager.RunningServiceInfo aInfo : info) {
-            if (className.equals(aInfo.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
     }
 }

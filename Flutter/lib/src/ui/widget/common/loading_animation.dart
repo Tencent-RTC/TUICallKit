@@ -5,8 +5,7 @@ class LoadingAnimation extends StatefulWidget {
   _LoadingAnimationState createState() => _LoadingAnimationState();
 }
 
-class _LoadingAnimationState extends State<LoadingAnimation>
-    with SingleTickerProviderStateMixin {
+class _LoadingAnimationState extends State<LoadingAnimation> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
   @override
