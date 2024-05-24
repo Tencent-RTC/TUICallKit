@@ -42,17 +42,17 @@ public class WindowManager {
         TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_GOTO_CALLING_PAGE, null);
     }
 
-     public static void showIncomingBanner(Context context) {
-         User caller = TUICallState.getInstance().mRemoteUserList.get(0);
-         if (caller == null) {
-             return;
-         }
+    public static void showIncomingBanner(Context context) {
+        User caller = TUICallState.getInstance().mRemoteUserList.get(0);
+        if (caller == null) {
+            return;
+        }
 
-         if (ServiceInitializer.isAppInForeground(context)) {
-             incomingBannerInForeground(context, caller);
-         }  else {
-             incomingBannerInBackground(context, caller);
-         }
+        if (ServiceInitializer.isAppInForeground(context)) {
+            incomingBannerInForeground(context, caller);
+        } else {
+            incomingBannerInBackground(context, caller);
+        }
     }
 
     public static void pullBackgroundApp(Context context) {
@@ -61,17 +61,18 @@ public class WindowManager {
             return;
         }
 
-         if (isFCMDataNotification()) {
-             if (Permission.hasPermission(PermissionRequester.FLOAT_PERMISSION)) {
-                 Logger.info(TUICallKitPlugin.TAG, "App in background, will open IncomingFloatView");
-                 startIncomingFloatWindow(context, caller);
-                 return;
-             } else if (Permission.isNotificationEnabled()) {
-                 Logger.info(TUICallKitPlugin.TAG, "App in background, will open IncomingNotificationView");
-                 IncomingNotificationView.getInstance(context).showNotification(caller, TUICallState.getInstance().mMediaType);
-                 return;
-             }
-         }
+        if (isFCMDataNotification()) {
+            if (Permission.hasPermission(PermissionRequester.FLOAT_PERMISSION)) {
+                Logger.info(TUICallKitPlugin.TAG, "App in background, will open IncomingFloatView");
+                startIncomingFloatWindow(context, caller);
+                return;
+            } else if (Permission.isNotificationEnabled()) {
+                Logger.info(TUICallKitPlugin.TAG, "App in background, will open IncomingNotificationView");
+                IncomingNotificationView.getInstance(context).showNotification(caller,
+                        TUICallState.getInstance().mMediaType);
+                return;
+            }
+        }
 
         Logger.info(TUICallKitPlugin.TAG, "App in background, try to launch");
         launchMainActivity(context);
@@ -82,7 +83,8 @@ public class WindowManager {
         if (Permission.hasPermission(PermissionRequester.FLOAT_PERMISSION)) {
             startIncomingFloatWindow(context, caller);
         } else if (Permission.isNotificationEnabled()) {
-            IncomingNotificationView.getInstance(context).showNotification(caller, TUICallState.getInstance().mMediaType);
+            IncomingNotificationView.getInstance(context).showNotification(caller,
+                    TUICallState.getInstance().mMediaType);
         } else {
             TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_HANDLE_CALL_RECEIVED, null);
         }
@@ -94,7 +96,8 @@ public class WindowManager {
             startIncomingFloatWindow(context, caller);
         } else if (Permission.isNotificationEnabled() && isFCMDataNotification()) {
             Logger.info(TUICallKitPlugin.TAG, "App in background, will open IncomingNotificationView");
-            IncomingNotificationView.getInstance(context).showNotification(caller, TUICallState.getInstance().mMediaType);
+            IncomingNotificationView.getInstance(context).showNotification(caller,
+                    TUICallState.getInstance().mMediaType);
         } else {
             Logger.info(TUICallKitPlugin.TAG, "App in background, try to launch intent");
             launchMainActivity(context);
@@ -124,7 +127,8 @@ public class WindowManager {
             return false;
         }
 
-        int pushBrandId = (int) TUICore.callService(TUIConstants.TIMPush.SERVICE_NAME, TUIConstants.TIMPush.METHOD_GET_PUSH_BRAND_ID, null);
+        int pushBrandId = (int) TUICore.callService(TUIConstants.TIMPush.SERVICE_NAME,
+                TUIConstants.TIMPush.METHOD_GET_PUSH_BRAND_ID, null);
 
         return pushBrandId == TUIConstants.DeviceInfo.BRAND_GOOGLE_ELSE;
     }

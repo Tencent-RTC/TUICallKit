@@ -1,5 +1,5 @@
-
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/joiningroup/join_in_group_widget.dart';
@@ -7,13 +7,12 @@ import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
 import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 
 class CallUIExtension extends AbstractTUIExtension {
-
   static final CallUIExtension _instance = CallUIExtension();
+
   static CallUIExtension get instance => _instance;
 
   @override
   Future<Widget> onRaiseExtension(TUIExtensionID extensionID, Map<String, dynamic> param) {
-
     if (extensionID == TUIExtensionID.joinInGroup) {
       return _getGroupAttributes(param);
     }
@@ -27,7 +26,8 @@ class CallUIExtension extends AbstractTUIExtension {
       return Future<Widget>.value(const SizedBox());
     }
 
-    final resultMap = await TencentImSDKPlugin.v2TIMManager.v2TIMGroupManager.getGroupAttributes(groupID: groupId);
+    final resultMap = await TencentImSDKPlugin.v2TIMManager.v2TIMGroupManager
+        .getGroupAttributes(groupID: groupId);
     final groupAttAryString = resultMap.data!['inner_attr_kit_info'];
     final groupAttAryMap = jsonDecode(groupAttAryString!);
 
@@ -35,7 +35,7 @@ class CallUIExtension extends AbstractTUIExtension {
     final roomIDValue = groupAttAryMap['room_id'];
     final roomIDType = groupAttAryMap['room_id_type'];
     final mediaTypeString = groupAttAryMap['call_media_type'];
-    final userListMap = List<Map<String, dynamic>>.from(groupAttAryMap['user_list']) ;
+    final userListMap = List<Map<String, dynamic>>.from(groupAttAryMap['user_list']);
 
     TUIRoomId roomId;
     if (roomIDType == 1 || roomIDType == 0) {
@@ -56,10 +56,14 @@ class CallUIExtension extends AbstractTUIExtension {
       userIds.add(user['userid'] as String);
     }
 
-    if (businessType != 'callkit' || userIds.isEmpty || roomIDValue.isEmpty || mediaTypeString.isEmpty) {
+    if (businessType != 'callkit' ||
+        userIds.isEmpty ||
+        roomIDValue.isEmpty ||
+        mediaTypeString.isEmpty) {
       return Future<Widget>.value(const SizedBox());
     }
 
-    return JoinInGroupWidget(userIDs: userIds, roomId: roomId, mediaType: mediaType, groupId: groupId);
+    return JoinInGroupWidget(
+        userIDs: userIds, roomId: roomId, mediaType: mediaType, groupId: groupId);
   }
 }

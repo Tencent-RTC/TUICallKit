@@ -23,8 +23,7 @@ class PreferenceUtils {
       SharedPreferences.getInstance().then((sp) => sp.setDouble(key, value));
 
   saveStringList(String key, List<String> value) =>
-      SharedPreferences.getInstance()
-          .then((sp) => sp.setStringList(key, value));
+      SharedPreferences.getInstance().then((sp) => sp.setStringList(key, value));
 
   Future<int> getInteger(String key, [int defaultValue = 0]) async {
     var sp = await SharedPreferences.getInstance();

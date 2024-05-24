@@ -33,6 +33,7 @@ public class SingleCallFloatView extends CallFloatView implements ITUINotificati
     private ImageView      mImageAvatar;
     private ImageView      mImageAudio;
     private boolean        mIsCameraOpen = false;
+
     public SingleCallFloatView(Context context) {
         super(context);
         mContext = context;

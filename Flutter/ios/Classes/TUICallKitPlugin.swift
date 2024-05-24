@@ -43,6 +43,7 @@ public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, TUICallKit
         case isAppInForeground
         case apiLog
         case showIncomingBanner
+        case enableWakeLock
     }
     
     @objc func applicationWillResignActive() {
@@ -115,6 +116,8 @@ extension TUICallKitPlugin: FlutterPlugin {
             TUICallKitManager.shared.apiLog(call: call, result: result)
         case .showIncomingBanner:
             TUICallKitManager.shared.showIncomingBanner(call: call, result: result)
+        case .enableWakeLock:
+            TUICallKitManager.shared.enableWakeLock(call: call, result: result)
         default:
             break
         }

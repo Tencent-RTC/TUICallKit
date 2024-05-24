@@ -16,10 +16,10 @@ import java.util.TimerTask;
 
 public class CallFloatView extends FrameLayout {
 
-    private   Context   mContext;
     protected TextView  mTextStatus;
     protected Timer     mTimer = new Timer();
     protected TimerTask mTimerTask;
+    private   Context   mContext;
 
     public CallFloatView(Context context) {
         super(context);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.RoundShadowLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tencent.cloud.tuikit.flutter.tuicallkit.view.floatwindow.RoundShadowLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
@@ -77,6 +77,6 @@
                 android:src="@drawable/tuicallkit_ic_float_audio_off" />
         </LinearLayout>
     </RelativeLayout>
-</com.tencent.cloud.tuikit.flutter.tuicallkit.floatwindow.RoundShadowLayout>
+</com.tencent.cloud.tuikit.flutter.tuicallkit.view.floatwindow.RoundShadowLayout>
 
 

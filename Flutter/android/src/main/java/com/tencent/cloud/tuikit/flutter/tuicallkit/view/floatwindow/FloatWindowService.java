@@ -100,6 +100,44 @@ public class FloatWindowService extends Service {
         return mWindowLayoutParams;
     }
 
+    private void startScroll(int start, int end, boolean isLeft) {
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(start, end).setDuration(300);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                if (mWindowLayoutParams == null || mCallView == null) {
+                    return;
+                }
+                mWidth = mCallView.getWidth();
+                if (isLeft) {
+                    mWindowLayoutParams.x = (int) (start * (1 - animation.getAnimatedFraction()) + mLeftRightEdge);
+                } else {
+                    float end = (mScreenWidth - start - mWidth) * animation.getAnimatedFraction();
+                    mWindowLayoutParams.x = (int) (start + end - mLeftRightEdge);
+                }
+                calculateHeight();
+                mWindowManager.updateViewLayout(mCallView, mWindowLayoutParams);
+            }
+        });
+        valueAnimator.start();
+    }
+
+    private void calculateHeight() {
+        if (mWindowLayoutParams == null) {
+            return;
+        }
+        int height = mCallView.getHeight();
+        int screenHeight = mWindowManager.getDefaultDisplay().getHeight();
+        int resourceId = mContext.getResources().getIdentifier("status_bar_height",
+                "dimen", "android");
+        int statusBarHeight = mContext.getResources().getDimensionPixelSize(resourceId);
+        if (mWindowLayoutParams.y < 0) {
+            mWindowLayoutParams.y = 0;
+        } else if (mWindowLayoutParams.y > (screenHeight - height - statusBarHeight)) {
+            mWindowLayoutParams.y = screenHeight - height - statusBarHeight;
+        }
+    }
+
     public class FloatBinder extends Binder {
         public FloatWindowService getService() {
             return FloatWindowService.this;
@@ -149,44 +187,6 @@ public class FloatWindowService extends Service {
                     break;
             }
             return mIsMove;
-        }
-    }
-
-    private void startScroll(int start, int end, boolean isLeft) {
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(start, end).setDuration(300);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                if (mWindowLayoutParams == null || mCallView == null) {
-                    return;
-                }
-                mWidth = mCallView.getWidth();
-                if (isLeft) {
-                    mWindowLayoutParams.x = (int) (start * (1 - animation.getAnimatedFraction()) + mLeftRightEdge);
-                } else {
-                    float end = (mScreenWidth - start - mWidth) * animation.getAnimatedFraction();
-                    mWindowLayoutParams.x = (int) (start + end - mLeftRightEdge);
-                }
-                calculateHeight();
-                mWindowManager.updateViewLayout(mCallView, mWindowLayoutParams);
-            }
-        });
-        valueAnimator.start();
-    }
-
-    private void calculateHeight() {
-        if (mWindowLayoutParams == null) {
-            return;
-        }
-        int height = mCallView.getHeight();
-        int screenHeight = mWindowManager.getDefaultDisplay().getHeight();
-        int resourceId = mContext.getResources().getIdentifier("status_bar_height",
-                "dimen", "android");
-        int statusBarHeight = mContext.getResources().getDimensionPixelSize(resourceId);
-        if (mWindowLayoutParams.y < 0) {
-            mWindowLayoutParams.y = 0;
-        } else if (mWindowLayoutParams.y > (screenHeight - height - statusBarHeight)) {
-            mWindowLayoutParams.y = screenHeight - height - statusBarHeight;
         }
     }
 }

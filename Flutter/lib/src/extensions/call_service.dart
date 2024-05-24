@@ -1,10 +1,9 @@
-
 import 'package:tencent_calls_uikit/tencent_calls_uikit.dart';
 import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 
 class CallService extends AbstractTUIService {
-
   static final CallService _instance = CallService();
+
   static CallService get instance => _instance;
 
   @override

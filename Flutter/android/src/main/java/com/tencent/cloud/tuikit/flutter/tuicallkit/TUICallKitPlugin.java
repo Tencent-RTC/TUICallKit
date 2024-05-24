@@ -5,9 +5,6 @@ import static com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants.SUBKEY
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
-import android.view.Gravity;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,8 +18,8 @@ import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitEnumUtils;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitObjectUtils;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Permission;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.WakeLock;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.view.WindowManager;
-import com.tencent.cloud.tuikit.flutter.tuicallkit.view.floatwindow.FloatWindowService;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.view.incomingfloatwindow.IncomingNotificationView;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.EnumUtils;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.Logger;
@@ -37,8 +34,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -47,10 +45,10 @@ import io.flutter.plugin.common.MethodChannel.Result;
 /**
  * TUICallKitPlugin
  */
-public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUINotification {
+public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUINotification, ActivityAware {
     public static final String TAG = "TUICallKitPlugin";
 
-    private MethodChannel      mChannel;
+    private MethodChannel     mChannel;
     private Context           mApplicationContext;
     private CallingBellPlayer mCallingBellPlayer;
 
@@ -69,7 +67,8 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         try {
-            Method method = TUICallKitPlugin.class.getDeclaredMethod(call.method, MethodCall.class, MethodChannel.Result.class);
+            Method method = TUICallKitPlugin.class.getDeclaredMethod(call.method, MethodCall.class,
+                    MethodChannel.Result.class);
             method.invoke(this, call, result);
         } catch (NoSuchMethodException e) {
             Logger.error(TAG, "onMethodCall |method=" + call.method + "|arguments=" + call.arguments + "|error=" + e);
@@ -281,6 +280,17 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         result.success(0);
     }
 
+    public void enableWakeLock(MethodCall call, MethodChannel.Result result) {
+        boolean enable = MethodCallUtils.getMethodParams(call, "enable");
+        if (enable) {
+            WakeLock.getInstance().enable();
+        } else {
+            WakeLock.getInstance().disable();
+        }
+        result.success(0);
+    }
+
+
     private String getPermissionsByIndex(int index) {
         switch (index) {
             case 0:
@@ -294,25 +304,6 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         }
     }
 
-    private int getGravityByIndex(int gravityIndex) {
-        switch (gravityIndex) {
-            case 0:
-                return Gravity.TOP;
-            case 2:
-                return Gravity.CENTER;
-            default:
-                return Gravity.BOTTOM;
-        }
-    }
-
-    private boolean getDurationByIndex(int durationIndex) {
-        if (durationIndex == Toast.LENGTH_LONG) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public void backCallingPageFromFloatWindow() {
         mChannel.invokeMethod("backCallingPageFromFloatWindow", new HashMap(), new Result() {
             @Override
@@ -321,7 +312,8 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
 
             @Override
             public void error(@NonNull String code, @Nullable String message, @Nullable Object details) {
-                Logger.error(TAG, "backCallingPageFromFloatWindow error code: " + code + " message:" + message + "details:"
+                Logger.error(TAG, "backCallingPageFromFloatWindow error code: " + code + " message:" + message +
+                        "details:"
                         + details);
             }
 
@@ -388,5 +380,25 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         if (Constants.SUB_KEY_ENTER_FOREGROUND.equals(subKey)) {
             appEnterForeground();
         }
+    }
+
+    @Override
+    public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
+        WakeLock.getInstance().setActivity(binding.getActivity());
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        WakeLock.getInstance().setActivity(null);
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
+        WakeLock.getInstance().setActivity(binding.getActivity());
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+        WakeLock.getInstance().setActivity(null);
     }
 }

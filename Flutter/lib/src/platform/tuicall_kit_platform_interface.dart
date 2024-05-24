@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_method_channel.dart';
@@ -74,24 +73,24 @@ abstract class TUICallKitPlatform extends PlatformInterface {
     await instance.apiLog(level, logString);
   }
 
-  Future<bool> hasPermissions(
-      {required List<PermissionType> permissions}) async {
+  Future<bool> hasPermissions({required List<PermissionType> permissions}) async {
     return await instance.hasPermissions(permissions: permissions);
   }
 
   Future<PermissionResult> requestPermissions(
       {required List<PermissionType> permissions,
-        String title = "",
-        String description = "",
-        String settingsTip = ""}) async {
+      String title = "",
+      String description = "",
+      String settingsTip = ""}) async {
     return await instance.requestPermissions(
-        permissions: permissions,
-        title: title,
-        description: description,
-        settingsTip: settingsTip);
+        permissions: permissions, title: title, description: description, settingsTip: settingsTip);
   }
 
   Future<void> pullBackgroundApp() async {
     await instance.pullBackgroundApp();
+  }
+
+  Future<void> enableWakeLock(bool enable) async {
+    await instance.enableWakeLock(enable);
   }
 }

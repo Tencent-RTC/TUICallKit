@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
+import 'package:tencent_calls_uikit/src/call_manager.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
+import 'package:tencent_calls_uikit/src/data/user.dart';
 import 'package:tencent_calls_uikit/src/extensions/calling_bell_feature.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
-import 'package:tencent_calls_uikit/src/data/user.dart';
-import 'package:tencent_calls_uikit/src/call_manager.dart';
 import 'package:tencent_calls_uikit/src/utils/preference_utils.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
 import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
@@ -55,10 +56,12 @@ class CallState {
         TRTCLogger.info('TUICallObserver onError(code:$code, message:$message)');
         CallManager.instance.showToast('Error: $code, $message');
       },
-      onCallReceived: (String callerId, List<String> calleeIdList,
-          String groupId, TUICallMediaType callMediaType, String? userData) async {
-        TRTCLogger.info('TUICallObserver onCallReceived(callerId:$callerId, calleeIdList:$calleeIdList, groupId:$groupId, callMediaType:$callMediaType, userData:$userData), version:${Constants.pluginVersion}');
-        await CallState.instance.handleCallReceivedData(callerId, calleeIdList, groupId, callMediaType);
+      onCallReceived: (String callerId, List<String> calleeIdList, String groupId,
+          TUICallMediaType callMediaType, String? userData) async {
+        TRTCLogger.info(
+            'TUICallObserver onCallReceived(callerId:$callerId, calleeIdList:$calleeIdList, groupId:$groupId, callMediaType:$callMediaType, userData:$userData), version:${Constants.pluginVersion}');
+        await CallState.instance
+            .handleCallReceivedData(callerId, calleeIdList, groupId, callMediaType);
         await TUICallKitPlatform.instance.updateCallStateToNative();
         CallingBellFeature.startRing();
 
@@ -67,8 +70,8 @@ class CallState {
             CallState.instance.isInNativeIncomingBanner = true;
             await TUICallKitPlatform.instance.showIncomingBanner();
           } else {
-              CallState.instance.isInNativeIncomingBanner = false;
-              CallManager.instance.launchCallingPage();
+            CallState.instance.isInNativeIncomingBanner = false;
+            CallManager.instance.launchCallingPage();
           }
         } else if (Platform.isAndroid) {
           if (CallState.instance.enableIncomingBanner) {
@@ -91,12 +94,11 @@ class CallState {
         TUICore.instance.notifyEvent(setStateEventOnCallEnd);
         TUICallKitPlatform.instance.updateCallStateToNative();
       },
-      onCallBegin: (TUIRoomId roomId, TUICallMediaType callMediaType,
-          TUICallRole callRole) {
-        TRTCLogger.info('TUICallObserver onCallBegin(roomId:$roomId, callMediaType:$callMediaType, callRole:$callRole)');
+      onCallBegin: (TUIRoomId roomId, TUICallMediaType callMediaType, TUICallRole callRole) {
+        TRTCLogger.info(
+            'TUICallObserver onCallBegin(roomId:$roomId, callMediaType:$callMediaType, callRole:$callRole)');
         TUICallKitPlatform.instance.startForegroundService();
-        CallState.instance.startTime =
-            DateTime.now().millisecondsSinceEpoch ~/ 1000;
+        CallState.instance.startTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
         CallingBellFeature.stopRing();
         CallState.instance.roomId = roomId;
         CallState.instance.mediaType = callMediaType;
@@ -107,24 +109,24 @@ class CallState {
         } else {
           CallManager.instance.openMicrophone();
         }
-        CallManager.instance
-            .selectAudioPlaybackDevice(CallState.instance.audioDevice);
+        CallManager.instance.selectAudioPlaybackDevice(CallState.instance.audioDevice);
         CallState.instance.startTimer();
         CallState.instance.isChangedBigSmallVideo = true;
         TUICore.instance.notifyEvent(setStateEvent);
         TUICore.instance.notifyEvent(setStateEventOnCallBegin);
         TUICallKitPlatform.instance.updateCallStateToNative();
       },
-      onCallEnd: (TUIRoomId roomId, TUICallMediaType callMediaType,
-          TUICallRole callRole, double totalTime) {
-        TRTCLogger.info('TUICallObserver onCallEnd(roomId:$roomId, callMediaType:$callMediaType, callRole:$callRole, totalTime:$totalTime)');
+      onCallEnd: (TUIRoomId roomId, TUICallMediaType callMediaType, TUICallRole callRole,
+          double totalTime) {
+        TRTCLogger.info(
+            'TUICallObserver onCallEnd(roomId:$roomId, callMediaType:$callMediaType, callRole:$callRole, totalTime:$totalTime)');
         CallState.instance.stopTimer();
         CallState.instance.cleanState();
         TUICore.instance.notifyEvent(setStateEventOnCallEnd);
         TUICallKitPlatform.instance.updateCallStateToNative();
       },
-      onCallMediaTypeChanged: (TUICallMediaType oldCallMediaType,
-          TUICallMediaType newCallMediaType) {
+      onCallMediaTypeChanged:
+          (TUICallMediaType oldCallMediaType, TUICallMediaType newCallMediaType) {
         CallState.instance.mediaType = newCallMediaType;
         TUICore.instance.notifyEvent(setStateEvent);
         TUICallKitPlatform.instance.updateCallStateToNative();
@@ -256,7 +258,8 @@ class CallState {
         }
       },
       onUserVideoAvailable: (String userId, bool isVideoAvailable) {
-        TRTCLogger.info('TUICallObserver onUserVideoAvailable(userId:$userId, isVideoAvailable:$isVideoAvailable)');
+        TRTCLogger.info(
+            'TUICallObserver onUserVideoAvailable(userId:$userId, isVideoAvailable:$isVideoAvailable)');
         for (var remoteUser in CallState.instance.remoteUserList) {
           if (remoteUser.id == userId) {
             remoteUser.videoAvailable = isVideoAvailable;
@@ -268,7 +271,8 @@ class CallState {
         }
       },
       onUserAudioAvailable: (String userId, bool isAudioAvailable) {
-        TRTCLogger.info('TUICallObserver onUserAudioAvailable(userId:$userId, isVideoAvailable:$isAudioAvailable)');
+        TRTCLogger.info(
+            'TUICallObserver onUserAudioAvailable(userId:$userId, isVideoAvailable:$isAudioAvailable)');
         for (var remoteUser in CallState.instance.remoteUserList) {
           if (remoteUser.id == userId) {
             remoteUser.audioAvailable = isAudioAvailable;
@@ -277,8 +281,7 @@ class CallState {
           }
         }
       },
-      onUserNetworkQualityChanged:
-          (List<TUINetworkQualityInfo> networkQualityList) {},
+      onUserNetworkQualityChanged: (List<TUINetworkQualityInfo> networkQualityList) {},
       onUserVoiceVolumeChanged: (Map<String, int> volumeMap) {
         for (var remoteUser in CallState.instance.remoteUserList) {
           remoteUser.playOutVolume = volumeMap[remoteUser.id] ?? 0;
@@ -319,8 +322,8 @@ class CallState {
     TUICallEngine.instance.removeObserver(observer);
   }
 
-  Future<void> handleCallReceivedData(String callerId, List<String> calleeIdList,
-      String groupId, TUICallMediaType callMediaType) async {
+  Future<void> handleCallReceivedData(String callerId, List<String> calleeIdList, String groupId,
+      TUICallMediaType callMediaType) async {
     CallState.instance.caller.id = callerId;
     CallState.instance.calleeIdList.clear();
     CallState.instance.calleeIdList.addAll(calleeIdList);
@@ -419,8 +422,7 @@ class CallState {
 
   void startTimer() {
     CallState.instance.timeCount = 0;
-    CallState.instance._timer =
-        Timer.periodic(const Duration(seconds: 1), (timer) {
+    CallState.instance._timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (TUICallStatus.accept != CallState.instance.selfUser.callStatus) {
         stopTimer();
         return;

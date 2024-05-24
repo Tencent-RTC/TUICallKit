@@ -1,13 +1,14 @@
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_calls_uikit/src/call_manager.dart';
+import 'package:tencent_calls_uikit/src/call_state.dart';
+import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
-import 'package:tencent_calls_uikit/src/call_state.dart';
 import 'package:tencent_calls_uikit/src/utils/permission.dart';
-import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 
 class MethodChannelTUICallKit extends TUICallKitPlatform {
@@ -155,15 +156,13 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
   }
 
   @override
-  Future<bool> hasPermissions(
-      {required List<PermissionType> permissions}) async {
+  Future<bool> hasPermissions({required List<PermissionType> permissions}) async {
     if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
       List<int> permissionsList = [];
       for (var element in permissions) {
         permissionsList.add(element.index);
       }
-      return await methodChannel
-          .invokeMethod('hasPermissions', {'permission': permissionsList});
+      return await methodChannel.invokeMethod('hasPermissions', {'permission': permissionsList});
     } else {
       return false;
     }
@@ -172,9 +171,9 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
   @override
   Future<PermissionResult> requestPermissions(
       {required List<PermissionType> permissions,
-        String title = "",
-        String description = "",
-        String settingsTip = ""}) async {
+      String title = "",
+      String description = "",
+      String settingsTip = ""}) async {
     try {
       if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
         List<int> permissionsList = [];
@@ -211,9 +210,15 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
     }
   }
 
+  @override
+  Future<void> enableWakeLock(bool enable) async {
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      await methodChannel.invokeMethod('enableWakeLock', {'enable': enable});
+    }
+  }
+
   void _handleNativeCall(MethodCall call) {
-    debugPrint(
-        "CallHandler method:${call.method}, arguments:${call.arguments}");
+    debugPrint("CallHandler method:${call.method}, arguments:${call.arguments}");
     switch (call.method) {
       case "backCallingPageFromFloatWindow":
         _backCallingPageFromFloatWindow();
@@ -243,7 +248,7 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
 
   void _launchCallingPageFromIncomingBanner() {
     CallState.instance.isInNativeIncomingBanner = false;
-    if(CallState.instance.selfUser.callStatus != TUICallStatus.none) {
+    if (CallState.instance.selfUser.callStatus != TUICallStatus.none) {
       CallManager.instance.launchCallingPage();
     }
   }

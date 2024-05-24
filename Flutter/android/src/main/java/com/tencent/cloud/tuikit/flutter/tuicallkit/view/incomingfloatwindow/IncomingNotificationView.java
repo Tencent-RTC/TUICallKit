@@ -37,9 +37,9 @@ import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
 
 public class IncomingNotificationView {
     private static IncomingNotificationView sInstance;
-    private String TAG = "IncomingNotificationView";
-    private String channelID      = "CallChannelId";
-    private int    notificationId = 9909;
+    private        String                   TAG            = "IncomingNotificationView";
+    private        String                   channelID      = "CallChannelId";
+    private        int                      notificationId = 9909;
 
     private Context             context;
     private RemoteViews         remoteViews;
@@ -79,7 +79,7 @@ public class IncomingNotificationView {
         }
 
         if (mediaType == TUICallDefine.MediaType.Video) {
-            remoteViews.setTextViewText(R.id.tv_desc,"video call");
+            remoteViews.setTextViewText(R.id.tv_desc, "video call");
             remoteViews.setImageViewResource(R.id.img_media_type, R.drawable.tuicallkit_ic_video_incoming);
             remoteViews.setImageViewResource(R.id.btn_accept, R.drawable.tuicallkit_ic_dialing_video);
         } else {
@@ -113,7 +113,8 @@ public class IncomingNotificationView {
     }
 
     public void cancelNotification() {
-        Logger.info(TUICallKitPlugin.TAG, "IncomingNotificationView  cancelNotification | notificationManager is exist:" + (notificationManager != null));
+        Logger.info(TUICallKitPlugin.TAG, "IncomingNotificationView  cancelNotification | notificationManager is " +
+                "exist:" + (notificationManager != null));
         if (notificationManager != null) {
             notificationManager.cancel(notificationId);
         }
@@ -156,7 +157,7 @@ public class IncomingNotificationView {
         builder.setSmallIcon(R.drawable.tuicallkit_ic_avatar);
         builder.setSound(null);
 
-        remoteViews =new RemoteViews(context.getPackageName(), R.layout.tuicallkit_incoming_notification_view);
+        remoteViews = new RemoteViews(context.getPackageName(), R.layout.tuicallkit_incoming_notification_view);
 
         if (ServiceInitializer.isAppInForeground(context)) {
             remoteViews.setOnClickPendingIntent(R.id.ll_notification, getPendingIntent());

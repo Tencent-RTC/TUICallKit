@@ -114,6 +114,12 @@ class MockCallsUikitPlatform
     throw UnimplementedError();
   }
 
+  @override
+  Future<void> enableWakeLock(bool enable) {
+    // TODO: implement enableWakeLock
+    throw UnimplementedError();
+  }
+
 }
 
 void main() {

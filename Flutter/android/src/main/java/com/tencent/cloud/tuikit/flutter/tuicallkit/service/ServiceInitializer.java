@@ -24,6 +24,22 @@ import java.util.List;
  * (`TUICore` is the connection and communication class of each component)
  */
 public final class ServiceInitializer extends ContentProvider {
+    public static boolean isAppInForeground(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> runningAppProcessInfos = activityManager.getRunningAppProcesses();
+        if (runningAppProcessInfos == null) {
+            return false;
+        }
+        String packageName = context.getPackageName();
+        for (ActivityManager.RunningAppProcessInfo appProcessInfo : runningAppProcessInfos) {
+            if (appProcessInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
+                    && appProcessInfo.processName.equals(packageName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void init(Context context) {
         if (context instanceof Application) {
             ((Application) context).registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
@@ -108,21 +124,5 @@ public final class ServiceInitializer extends ContentProvider {
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection,
                       @Nullable String[] selectionArgs) {
         return 0;
-    }
-
-    public static boolean isAppInForeground(Context context) {
-        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningAppProcessInfo> runningAppProcessInfos = activityManager.getRunningAppProcesses();
-        if (runningAppProcessInfos == null) {
-            return false;
-        }
-        String packageName = context.getPackageName();
-        for (ActivityManager.RunningAppProcessInfo appProcessInfo : runningAppProcessInfos) {
-            if (appProcessInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
-                    && appProcessInfo.processName.equals(packageName)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

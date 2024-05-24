@@ -37,7 +37,7 @@ public class IncomingFloatView {
     private ImageView imageReject;
     private ImageView imageAccept;
 
-    private  User user;
+    private User                    user;
     private TUICallDefine.MediaType mediaType;
 
     private Context context;
@@ -48,7 +48,7 @@ public class IncomingFloatView {
         this.context = context;
     }
 
-    public void showIncomingView( User caller, TUICallDefine.MediaType mediaType) {
+    public void showIncomingView(User caller, TUICallDefine.MediaType mediaType) {
         Logger.info(TUICallKitPlugin.TAG, "IncomingFloatView  showIncomingView | UserId:" + caller.id);
 
         this.user = caller;
@@ -77,12 +77,14 @@ public class IncomingFloatView {
 
         textFloatTitle.setText(user.nickname);
         if (mediaType == TUICallDefine.MediaType.Video) {
-            String str = (String) TUICallState.getInstance().mResourceMap.get(TUICallState.getInstance().mScene == TUICallDefine.Scene.SINGLE_CALL ? "k_0000002_1" : "k_0000003");
+            String str =
+                    (String) TUICallState.getInstance().mResourceMap.get(TUICallState.getInstance().mScene == TUICallDefine.Scene.SINGLE_CALL ? "k_0000002_1" : "k_0000003");
             textFloatDescription.setText(str);
 
             imageAccept.setImageResource(R.drawable.tuicallkit_ic_dialing_video);
         } else {
-            String str = (String) TUICallState.getInstance().mResourceMap.get(TUICallState.getInstance().mScene == TUICallDefine.Scene.SINGLE_CALL ? "k_0000002" : "k_0000003");
+            String str =
+                    (String) TUICallState.getInstance().mResourceMap.get(TUICallState.getInstance().mScene == TUICallDefine.Scene.SINGLE_CALL ? "k_0000002" : "k_0000003");
             textFloatDescription.setText(str);
 
             imageAccept.setImageResource(R.drawable.tuicallkit_ic_dialing);
