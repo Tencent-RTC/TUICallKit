@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@tencentcloud/call-uikit-react": "latest",
-    "@tencentcloud/tui-core": "^0.1.6",
+    "@tencentcloud/tui-core": "latest",
     "@vitejs/plugin-basic-ssl": "^1.0.2",
     "i18next": "^23.7.9",
     "qrcode": "^1.5.3",
