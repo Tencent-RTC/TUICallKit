@@ -24,11 +24,12 @@ import com.tencent.qcloud.tuikit.tuicallkit.view.common.CustomLoadingView
 import com.tencent.qcloud.tuikit.tuicallkit.view.root.BaseCallView
 import com.tencent.qcloud.tuikit.tuicallkit.viewmodel.component.videolayout.VideoViewModel
 
-class VideoView constructor(context: Context) : BaseCallView(context) {
+class VideoView(context: Context) : BaseCallView(context) {
     private var tuiVideoView: TUIVideoView? = null
     private var imageAvatar: ImageFilterView? = null
     private var imageSwitchCamera: ImageView? = null
     private var imageUserBlurBackground: ImageView? = null
+    private var imageNetworkBad: ImageView? = null
     private var textUserName: TextView? = null
     private var imageAudioInput: ImageView? = null
     private var imageLoading: CustomLoadingView? = null
@@ -121,6 +122,14 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
         refreshUserNameView()
     }
 
+    private var networkQualityObserver = Observer<Boolean> {
+        if (it && viewModel?.scene?.get() == TUICallDefine.Scene.GROUP_CALL) {
+            imageNetworkBad?.visibility = VISIBLE
+        } else {
+            imageNetworkBad?.visibility = GONE
+        }
+    }
+
     init {
         initView()
     }
@@ -130,7 +139,6 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
     }
 
     override fun clear() {
-        viewModel?.removeObserver()
         removeObserver()
     }
 
@@ -172,6 +180,7 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
         viewModel?.user?.callStatus?.observe(callStatusObserver)
         viewModel?.user?.avatar?.observe(avatarObserver)
         viewModel?.user?.nickname?.observe(nicknameObserver)
+        viewModel?.user?.networkQualityReminder?.observe(networkQualityObserver)
 
         viewModel?.showLargeViewUserId?.observe(showLargeViewUserIdObserver)
     }
@@ -183,9 +192,9 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
         viewModel?.user?.callStatus?.removeObserver(callStatusObserver)
         viewModel?.user?.avatar?.removeObserver(avatarObserver)
         viewModel?.user?.nickname?.removeObserver(nicknameObserver)
+        viewModel?.user?.networkQualityReminder?.removeObserver(networkQualityObserver)
 
         viewModel?.showLargeViewUserId?.removeObserver(showLargeViewUserIdObserver)
-        viewModel?.removeObserver()
     }
 
     private fun refreshView() {
@@ -229,12 +238,13 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
         imageAudioInput = findViewById(R.id.iv_audio_input)
         imageLoading = findViewById(R.id.img_loading)
         imageBackground = findViewById(R.id.img_video_background)
+        imageNetworkBad = findViewById(R.id.iv_network)
 
         refreshUserAvatarView()
         refreshUserNameView()
 
         imageSwitchCamera?.setOnClickListener() {
-            val camera = if (viewModel?.isFrontCamera == Camera.Front) Camera.Back else Camera.Front
+            val camera = if (viewModel?.isFrontCamera?.get() == Camera.Front) Camera.Back else Camera.Front
             EngineManager.instance.switchCamera(camera)
         }
         imageUserBlurBackground?.setOnClickListener {
