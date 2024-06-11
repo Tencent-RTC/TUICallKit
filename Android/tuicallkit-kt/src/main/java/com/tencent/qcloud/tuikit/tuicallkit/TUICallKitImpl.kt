@@ -23,6 +23,7 @@ import com.tencent.qcloud.tuikit.tuicallkit.data.OfflinePushInfoConfig
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
 import com.tencent.qcloud.tuikit.tuicallkit.extensions.CallingBellFeature
 import com.tencent.qcloud.tuikit.tuicallkit.extensions.CallingKeepAliveFeature
+import com.tencent.qcloud.tuikit.tuicallkit.extensions.NotificationFeature
 import com.tencent.qcloud.tuikit.tuicallkit.manager.EngineManager
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.utils.DeviceUtils
@@ -31,7 +32,6 @@ import com.tencent.qcloud.tuikit.tuicallkit.utils.UserInfoUtils
 import com.tencent.qcloud.tuikit.tuicallkit.view.CallKitActivity
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.incomingview.IncomingFloatView
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.incomingview.IncomingNotificationView
-
 
 class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUINotification {
     private val context: Context
@@ -43,6 +43,10 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
         this.context = context.applicationContext
         TUICallEngine.createInstance(this.context).addObserver(TUICallState.instance.mTUICallObserver)
         registerCallingEvent()
+
+        val notificationFeature = NotificationFeature()
+        notificationFeature.createCallNotificationChannel(context)
+        notificationFeature.createForegroundNotificationChannel(context)
     }
 
     companion object {
@@ -268,7 +272,11 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
 
             if (DeviceUtils.isScreenLocked(context)) {
                 TUILog.i(TAG_VIEW, "handleNewCall, screen is locked, try to pop up call full screen view")
-                startFullScreenView()
+                if (isAppInBackground && isFCMData && hasNotificationPermission) {
+                    startSmallScreenView(IncomingNotificationView(context))
+                } else {
+                    startFullScreenView()
+                }
                 return@post
             }
 

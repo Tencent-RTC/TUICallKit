@@ -19,7 +19,7 @@ import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.manager.EngineManager
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
-import com.tencent.qcloud.tuikit.tuicallkit.utils.DeviceUtils.setScreenLockParams
+import com.tencent.qcloud.tuikit.tuicallkit.utils.DeviceUtils
 import com.tencent.qcloud.tuikit.tuicallkit.utils.PermissionRequest
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.floatview.FloatWindowService
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout.VideoViewFactory
@@ -53,7 +53,11 @@ class CallKitActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         TUILog.i(TAG, "onCreate")
-        setScreenLockParams(window)
+        DeviceUtils.setScreenLockParams(window)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+        }
         activity = this
         setContentView(R.layout.tuicallkit_activity_call_kit)
         initStatusBar()
