@@ -40,9 +40,18 @@ public class GenerateTestUserSig: NSObject {
                 stringToSign += "\(key):\(value)\n"
             }
         }
-        guard let sig = hmac(plainText: stringToSign, secretKey: secretKey) else {return ""}
+        print("string to sign: \(stringToSign)")
+        guard var sig = hmac(plainText: stringToSign, secretKey: secretKey) else {
+            print("hmac error: \(stringToSign)")
+            return ""
+        }
         obj["TLS.sig"] = sig
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: obj, options: .sortedKeys) else { return "" }
+        print("sig: \(String(describing: sig))")
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: obj, options: .sortedKeys) else {
+            print("jsonData error: \(obj)")
+            return ""
+        }
+        
         let bytes = jsonData.withUnsafeBytes { (result) -> UnsafePointer<Bytef>? in
             return result.bindMemory(to: Bytef.self).baseAddress
         }
@@ -53,6 +62,7 @@ public class GenerateTestUserSig: NSObject {
         var destLen = upperBound
         let ret = compress2(dest, &destLen, bytes, srcLen, Z_BEST_SPEED)
         if ret != Z_OK {
+            print("[Error] Compress Error \(ret), upper bound: \(upperBound)")
             dest.deallocate()
             return ""
         }
@@ -62,24 +72,35 @@ public class GenerateTestUserSig: NSObject {
     }
     
     class func hmac(plainText: String, secretKey: String) -> String? {
-        let cKey = secretKey.cString(using: String.Encoding.ascii)
-        let cData = plainText.cString(using: String.Encoding.ascii)
-        
+        guard let cKey = secretKey.cString(using: String.Encoding.ascii) else {
+            print("hmac secretKey error: \(secretKey)")
+            return nil
+        }
+        print("hmac secretKey: \(secretKey)")
+        print("hmac cKey: \(cKey)")
+        guard let cData = plainText.cString(using: String.Encoding.ascii) else{
+            print("hmac plainText error: \(plainText)")
+            return nil
+        }
+        print("hmac plainText: \(plainText)")
+        print("hmac cData: \(cData)")
         let cKeyLen = secretKey.lengthOfBytes(using: .ascii)
         let cDataLen = plainText.lengthOfBytes(using: .ascii)
         
-        var cHMAC = [CUnsignedChar](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
+        var cHMAC = [CUnsignedChar].init(repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
         let pointer = cHMAC.withUnsafeMutableBufferPointer { (unsafeBufferPointer) in
             return unsafeBufferPointer
         }
-        
-        guard let baseAddress = pointer.baseAddress else {
+        CCHmac(CCHmacAlgorithm(kCCHmacAlgSHA256), cKey, cKeyLen, cData, cDataLen, pointer.baseAddress)
+        guard let adress = pointer.baseAddress else {
+            print("adress error: \(String(describing: pointer))")
             return nil
         }
-        
-        CCHmac(CCHmacAlgorithm(kCCHmacAlgSHA256), cKey, cKeyLen, cData, cDataLen, baseAddress)
-        let data = Data(bytes: baseAddress, count: cHMAC.count)
-        return data.base64EncodedString(options: [])
+        let data = Data(bytes: adress, count: cHMAC.count)
+        print("cHMAC.count: \(String(describing: cHMAC.count))")
+        print("data: \(String(describing: data))")
+        let result = data.base64EncodedString(options: [])
+        return result
     }
     
     class func base64URL(data: Data) -> String {

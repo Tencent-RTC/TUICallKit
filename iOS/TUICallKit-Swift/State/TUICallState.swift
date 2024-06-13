@@ -29,6 +29,7 @@ class TUICallState: NSObject {
     let isShowFullScreen: Observable<Bool> = Observable(false)
     let showLargeViewUserId: Observable<String> = Observable("")
     let enableBlurBackground: Observable<Bool> = Observable(false)
+    let networkQualityReminder: Observable<NetworkQualityHint> = Observable(NetworkQualityHint.None)
     
     var enableMuteMode: Bool = {
         let enable = UserDefaults.standard.bool(forKey: ENABLE_MUTEMODE_USERDEFAULT)
@@ -230,7 +231,59 @@ extension TUICallState: TUICallObserver {
     }
     
     func onUserNetworkQualityChanged(networkQualityList: [TUINetworkQualityInfo]) {
+        if networkQualityList.isEmpty {
+            return
+        }
         
+        if TUICallState.instance.scene.value == .single {
+            singleSceneNetworkQualityChanged(networkQualityList: networkQualityList)
+        } else {
+            groupSceneNetworkQualityChanged(networkQualityList: networkQualityList)
+        }
+    }
+    
+    func singleSceneNetworkQualityChanged(networkQualityList: [TUINetworkQualityInfo]) {
+        var localQuality: TUINetworkQuality = .unknown
+        var remoteQuality: TUINetworkQuality = .unknown
+        
+        for networkQualityInfo in networkQualityList {
+            if networkQualityInfo.userId == TUICallState.instance.selfUser.value.id.value {
+                localQuality = networkQualityInfo.quality
+            }
+            remoteQuality = networkQualityInfo.quality
+        }
+        
+        let localIsBadNetwork = checkIsBadNetwork(quality: localQuality)
+        let remoteIsBadNetwork = checkIsBadNetwork(quality: remoteQuality)
+        var networkQualityHint: NetworkQualityHint
+        
+        if localIsBadNetwork {
+            networkQualityHint = .Local
+        } else if !localIsBadNetwork && remoteIsBadNetwork {
+            networkQualityHint = .Remote
+        } else {
+            networkQualityHint = .None
+        }
+        
+        TUICallState.instance.networkQualityReminder.value = networkQualityHint
+    }
+    
+    func groupSceneNetworkQualityChanged(networkQualityList: [TUINetworkQualityInfo]) {
+        for networkQualityInfo in networkQualityList {
+            let isBadNetwork = checkIsBadNetwork(quality: networkQualityInfo.quality)
+            
+            for user in TUICallState.instance.remoteUserList.value where user.id.value == networkQualityInfo.userId {
+                user.networkQualityReminder.value = isBadNetwork
+            }
+            
+            if networkQualityInfo.userId == TUICallState.instance.selfUser.value.id.value {
+                TUICallState.instance.selfUser.value.networkQualityReminder.value = isBadNetwork
+            }
+        }
+    }
+    
+    func checkIsBadNetwork(quality: TUINetworkQuality) -> Bool {
+        return quality == .bad || quality == .vbad || quality == .down
     }
     
     func onUserAudioAvailable(userId: String, isAudioAvailable: Bool) {
@@ -296,6 +349,7 @@ extension TUICallState {
         TUICallState.instance.isShowFullScreen.value = false
         TUICallState.instance.showLargeViewUserId.value = ""
         TUICallState.instance.enableBlurBackground.value = false
+        TUICallState.instance.networkQualityReminder.value = .None
         
         GCDTimer.cancel(timerName: timerName) { return }
         

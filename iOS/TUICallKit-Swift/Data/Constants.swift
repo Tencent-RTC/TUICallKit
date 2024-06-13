@@ -38,11 +38,11 @@ let kMicroVideoViewHeight = 196.scaleHeight()
 let kMicroGroupViewWidth = 88.scaleWidth()
 let kMicroGroupViewHeight = 106.scaleWidth()
 
-let kMicroAudioViewRect = CGRect(x: Screen_Width - kMicroAudioViewWidth, 
+let kMicroAudioViewRect = CGRect(x: Screen_Width - kMicroAudioViewWidth,
                                  y: 150.scaleHeight(),
                                  width: kMicroAudioViewWidth,
                                  height: kMicroAudioViewHeight)
-let kMicroVideoViewRect = CGRect(x: Screen_Width - kMicroVideoViewWidth, 
+let kMicroVideoViewRect = CGRect(x: Screen_Width - kMicroVideoViewWidth,
                                  y: 150.scaleHeight(),
                                  width: kMicroVideoViewWidth,
                                  height: kMicroVideoViewHeight)
@@ -69,4 +69,10 @@ let kBtnSmallSize = CGSize(width: 60.scaleWidth(), height: 60.scaleWidth())
 
 class Constants {
     static let EVENT_SHOW_TUICALLKIT_VIEWCONTROLLER = "eventShowTUICallKitViewController"
+}
+
+enum NetworkQualityHint {
+    case None
+    case Local
+    case Remote
 }

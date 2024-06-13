@@ -71,3 +71,6 @@
 "TUICallKit.JoinGroupView.join" = "Join";
 "TUICallKit.JoinGroupView.audioCall" = "Voice Call";
 "TUICallKit.JoinGroupView.videoCall" = "Video Call";
+
+"TUICallKit.OtherParty.NetworkLowQuality" = "Other party's network poor";
+"TUICallKit.Self.NetworkLowQuality" = "Your network poor";

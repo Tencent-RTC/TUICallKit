@@ -21,6 +21,8 @@ class GroupCallVideoCell: UICollectionViewCell {
     let selfPlayoutVolumeObserver = Observer()
     let isShowLargeViewUserIdObserver = Observer()
     let enableBlurBackgroundObserver = Observer()
+    let selfNetworkQualityObserver = Observer()
+    let remoteNetworkQualityObserver = Observer()
     
     private var viewModel = GroupCallVideoCellViewModel(remote: User())
     private var user: User = User()
@@ -61,6 +63,15 @@ class GroupCallVideoCell: UICollectionViewCell {
         let imageView = UIImageView(frame: CGRect.zero)
         imageView.contentMode = .scaleAspectFill
         if let image = TUICallKitCommon.getBundleImage(name: "icon_volume") {
+            imageView.image = image
+        }
+        return imageView
+    }()
+    
+    private let networkQualityView = {
+        let imageView = UIImageView(frame: CGRect.zero)
+        imageView.contentMode = .scaleAspectFill
+        if let image = TUICallKitCommon.getBundleImage(name: "group_network_low_quality") {
             imageView.image = image
         }
         return imageView
@@ -112,9 +123,11 @@ class GroupCallVideoCell: UICollectionViewCell {
             viewModel.selfPlayoutVolume.removeObserver(selfPlayoutVolumeObserver)
             viewModel.isShowLargeViewUserId.removeObserver(isMicMuteObserver)
             viewModel.enableBlurBackground.removeObserver(enableBlurBackgroundObserver)
+            viewModel.selfIsShowLowNetworkQuality.removeObserver(selfNetworkQualityObserver)
         } else {
             viewModel.remoteUserStatus.removeObserver(remoteUserStatusObserver)
             viewModel.remoteUserVideoAvailable.removeObserver(remoteUserVideoAvailableObserver)
+            viewModel.remoteIsShowLowNetworkQuality.removeObserver(remoteNetworkQualityObserver)
             if TUICallState.instance.showVirtualBackgroundButton {
                 viewModel.remoteUserVolume.removeObserver(remotePlayoutVolumeObserver)
             }
@@ -147,6 +160,7 @@ class GroupCallVideoCell: UICollectionViewCell {
         contentView.addSubview(titleLabel)
         contentView.addSubview(micImageView)
         contentView.addSubview(volumeImageView)
+        contentView.addSubview(networkQualityView)
         contentView.addSubview(switchCameraBtn)
         if TUICallState.instance.showVirtualBackgroundButton {
             contentView.addSubview(virtualBackgroundBtn)
@@ -154,7 +168,7 @@ class GroupCallVideoCell: UICollectionViewCell {
     }
     
     func activateConstraints() {
-        renderView.snp.remakeConstraints { make in
+        renderView.snp.makeConstraints { make in
             make.edges.equalTo(self.contentView)
         }
         avatarImageView.snp.makeConstraints { make in
@@ -189,20 +203,25 @@ class GroupCallVideoCell: UICollectionViewCell {
             make.bottom.equalTo(self.contentView).offset(-8.scaleWidth())
         }
         if TUICallState.instance.showVirtualBackgroundButton {
-            virtualBackgroundBtn.snp.makeConstraints { make in
+            virtualBackgroundBtn.snp.remakeConstraints { make in
                 make.width.height.equalTo(24.scaleWidth())
                 make.bottom.trailing.equalTo(self.contentView).offset(-8.scaleWidth())
             }
-            switchCameraBtn.snp.makeConstraints { make in
+            switchCameraBtn.snp.remakeConstraints { make in
                 make.width.height.equalTo(24.scaleWidth())
                 make.centerY.equalTo(virtualBackgroundBtn)
                 make.trailing.equalTo(virtualBackgroundBtn.snp.leading).offset(-10.scaleWidth())
             }
         } else {
-            switchCameraBtn.snp.makeConstraints { make in
+            switchCameraBtn.snp.remakeConstraints { make in
                 make.width.height.equalTo(24.scaleWidth())
                 make.bottom.trailing.equalTo(self.contentView).offset(-8.scaleWidth())
             }
+        }
+        networkQualityView.snp.remakeConstraints { make in
+            make.width.height.equalTo(24.scaleWidth())
+            make.centerY.equalTo(switchCameraBtn)
+            make.trailing.equalTo(switchCameraBtn.snp.leading).offset(-10.scaleWidth())
         }
     }
     
@@ -210,6 +229,15 @@ class GroupCallVideoCell: UICollectionViewCell {
         volumeImageView.snp.remakeConstraints { make in
             make.width.height.equalTo(24.scaleWidth())
             make.leading.equalTo(self.contentView).offset(8.scaleWidth())
+            make.bottom.equalTo(self.contentView).offset(-8.scaleWidth())
+        }
+        networkQualityView.snp.remakeConstraints { make in
+            make.width.height.equalTo(24.scaleWidth())
+            if self.micImageView.isHidden {
+                make.trailing.equalTo(self.contentView).offset(-8.scaleWidth())
+            } else {
+                make.trailing.equalTo(self.micImageView.snp.leading).offset(-8.scaleWidth())
+            }
             make.bottom.equalTo(self.contentView).offset(-8.scaleWidth())
         }
         micImageView.snp.remakeConstraints { make in
@@ -244,6 +272,7 @@ class GroupCallVideoCell: UICollectionViewCell {
         isShowLargeViewUserIdChanged()
         isMicMuteChanged()
         enableBlurBackgroundChanged()
+        networkQualityChanged()
     }
     
     func callStatusChanged() {
@@ -330,9 +359,21 @@ class GroupCallVideoCell: UICollectionViewCell {
         }
     }
     
+    func networkQualityChanged () {
+        if viewModel.isSelf {
+            viewModel.selfIsShowLowNetworkQuality.addObserver(selfNetworkQualityObserver, closure: { [weak self] newValue, _ in
+                guard let self = self else { return }
+                self.networkQualityView.isHidden = !newValue
+            })
+        } else {
+            viewModel.remoteIsShowLowNetworkQuality.addObserver(remoteNetworkQualityObserver, closure: { [weak self] newValue, _ in
+                guard let self = self else { return }
+                self.networkQualityView.isHidden = !newValue
+            })
+        }
+    }
+    
     func updateLargeViewUI() {
-        activateLargeViewConstraints()
-        
         if viewModel.isSelf {
             switchCameraBtn.isHidden = !viewModel.isCameraOpen.value
             virtualBackgroundBtn.isHidden = !viewModel.isCameraOpen.value || !TUICallState.instance.showVirtualBackgroundButton
@@ -344,10 +385,10 @@ class GroupCallVideoCell: UICollectionViewCell {
             titleLabel.isHidden = false
             micImageView.isHidden = true
         }
+        activateLargeViewConstraints()
     }
     
     func updateSmallViewUI() {
-        activateSmallViewConstraints()
         switchCameraBtn.isHidden = true
         virtualBackgroundBtn.isHidden = true
         titleLabel.isHidden = true
@@ -357,6 +398,7 @@ class GroupCallVideoCell: UICollectionViewCell {
         } else {
             micImageView.isHidden = true
         }
+        activateSmallViewConstraints()
     }
     
     
@@ -374,6 +416,7 @@ class GroupCallVideoCell: UICollectionViewCell {
     
     func initSelfUserUI() {
         hiddenAllSubView()
+        micImageView.isHidden = !viewModel.isMicMute.value
         
         if !VideoFactory.instance.isExistVideoView(videoView: renderView) {
             renderView = VideoFactory.instance.createVideoView(userId: viewModel.selfUser.value.id.value, frame: CGRect.zero)
@@ -382,28 +425,26 @@ class GroupCallVideoCell: UICollectionViewCell {
         
         if viewModel.isCameraOpen.value == true {
             renderView.isHidden = false
+            switchCameraBtn.isHidden = false
             viewModel.openCamera(videoView: renderView)
         } else {
             renderView.isHidden = true
             avatarImageView.isHidden = false
         }
-        
-        micImageView.isHidden = !viewModel.isMicMute.value
     }
     
     func updateSelfUserUI() {
         hiddenAllSubView()
+        micImageView.isHidden = !viewModel.isMicMute.value
         
         if viewModel.isCameraOpen.value == true {
             renderView.isHidden = false
-            micImageView.isHidden = true
             switchCameraBtn.isHidden = false
             virtualBackgroundBtn.isHidden = !TUICallState.instance.showVirtualBackgroundButton
             viewModel.openCamera(videoView: renderView)
         } else {
             switchCameraBtn.isHidden = true
             virtualBackgroundBtn.isHidden = true
-            micImageView.isHidden = false
             avatarImageView.isHidden = false
         }
     }
@@ -436,6 +477,7 @@ class GroupCallVideoCell: UICollectionViewCell {
         volumeImageView.isHidden = true
         switchCameraBtn.isHidden = true
         virtualBackgroundBtn.isHidden = true
+        networkQualityView.isHidden = true
     }
     
     // MARK: Private Method

@@ -29,6 +29,7 @@ class User {
     let audioAvailable: Observable<Bool> = Observable(false)
     let videoAvailable: Observable<Bool> = Observable(false)
     let playoutVolume: Observable<Float> = Observable(0)
+    let networkQualityReminder: Observable<Bool> = Observable(false)
     
     var index: Int = -1
     
