@@ -72,3 +72,6 @@
 "TUICallKit.JoinGroupView.join" = "加入";
 "TUICallKit.JoinGroupView.audioCall" = "语音通话";
 "TUICallKit.JoinGroupView.videoCall" = "视频通话";
+
+"TUICallKit.OtherParty.NetworkLowQuality" = "当前通话对方网络不佳";
+"TUICallKit.Self.NetworkLowQuality" = "当前通话你的网络不佳";

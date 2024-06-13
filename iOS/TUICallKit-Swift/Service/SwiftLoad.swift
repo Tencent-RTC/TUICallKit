@@ -8,10 +8,12 @@
 
 import Foundation
 import TUICore
+import TUICallEngine
 
 extension NSObject {
     @objc class func swiftLoad() {
         let _ = TUICallKit.createInstance()
+        let _ = TUICallEngine.createInstance()
         
         TUICore.registerService(TUICore_TUICallingService, object: TUICallKitService.instance)
         

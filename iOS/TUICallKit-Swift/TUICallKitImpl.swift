@@ -51,13 +51,13 @@ class TUICallKitImpl: TUICallKit {
     
     override func call(userId: String, callMediaType: TUICallMediaType, params: TUICallParams,
                        succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
-        if  userId.count <= 0 {
-            fail(ERROR_PARAM_INVALID, "call failed, invalid params 'userId'")
+        if TUILogin.getUserID() == nil {
+            fail(ERROR_INIT_FAIL, "call failed, please login")
             return
         }
         
-        if TUILogin.getUserID() == nil {
-            fail(ERROR_INIT_FAIL, "call failed, please login")
+        if  userId.count <= 0 || userId == TUILogin.getUserID() {
+            fail(ERROR_PARAM_INVALID, "call failed, invalid params 'userId'")
             return
         }
         
@@ -97,7 +97,14 @@ class TUICallKitImpl: TUICallKit {
     
     override func groupCall(groupId: String, userIdList: [String], callMediaType: TUICallMediaType, params: TUICallParams,
                             succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
-        if  userIdList.isEmpty {
+        if TUILogin.getUserID() == nil {
+            fail(ERROR_INIT_FAIL, "call failed, please login")
+            return
+        }
+        
+        let userIdList = userIdList.filter { $0 != TUILogin.getUserID() }
+        
+        if userIdList.isEmpty {
             fail(ERROR_PARAM_INVALID, "call failed, invalid params 'userIdList'")
             return
         }
@@ -105,11 +112,6 @@ class TUICallKitImpl: TUICallKit {
         if userIdList.count >= MAX_USER {
             fail(ERROR_PARAM_INVALID, "groupCall failed, currently supports call with up to 9 people")
             TUITool.makeToast(TUICallKitLocalize(key: "TUICallKit.User.Exceed.Limit"))
-            return
-        }
-        
-        if TUILogin.getUserID() == nil {
-            fail(ERROR_INIT_FAIL, "call failed, please login")
             return
         }
         
@@ -258,8 +260,7 @@ private extension TUICallKitImpl {
     }
     
     @objc func showViewControllerNotification(noti: Notification) {
-        TUICallState.instance.audioDevice.value = .earpiece
-        CallEngineManager.instance.setAudioPlaybackDevice(device: .earpiece)
+        CallEngineManager.instance.setAudioPlaybackDevice(device: TUICallState.instance.audioDevice.value)
         WindowManager.instance.showCallWindow(false)
     }
     

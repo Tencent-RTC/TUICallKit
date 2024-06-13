@@ -544,7 +544,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
             make.top.equalTo(virtualBackgroundContentView.snp.bottom).offset(20)
             make.height.equalTo(20)
         }
-        incomingBannerLabel .snp.makeConstraints { make in
+        incomingBannerLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(20)
         }

@@ -20,6 +20,8 @@ class GroupCallVideoCellViewModel {
     let selfPlayoutVolumeObserver = Observer()
     let showLargeViewUserIdObserver = Observer()
     let enableBlurBackgroundObserver = Observer()
+    let selfNetworkQualityObserver = Observer()
+    let remoteNetworkQualityObserver = Observer()
     
     var isSelf: Bool = false
     
@@ -27,11 +29,13 @@ class GroupCallVideoCellViewModel {
     let selfUserStatus: Observable<TUICallStatus> = Observable(.none)
     let selfUserVideoAvailable: Observable<Bool> = Observable(false)
     let selfPlayoutVolume: Observable<Float> = Observable(0)
+    let selfIsShowLowNetworkQuality: Observable<Bool> = Observable(false)
     
     var remoteUser = User()
     let remoteUserStatus: Observable<TUICallStatus> = Observable(.none)
     let remoteUserVideoAvailable: Observable<Bool> = Observable(false)
     let remoteUserVolume: Observable<Float> = Observable(0)
+    let remoteIsShowLowNetworkQuality: Observable<Bool> = Observable(false)
     
     let mediaType: Observable<TUICallMediaType> = Observable(.unknown)
     let isCameraOpen: Observable<Bool> = Observable(false)
@@ -62,6 +66,7 @@ class GroupCallVideoCellViewModel {
         TUICallState.instance.isMicMute.removeObserver(isMicMuteObserver)
         TUICallState.instance.selfUser.value.playoutVolume.removeObserver(selfPlayoutVolumeObserver)
         TUICallState.instance.enableBlurBackground.removeObserver(enableBlurBackgroundObserver)
+        TUICallState.instance.selfUser.value.networkQualityReminder.removeObserver(selfNetworkQualityObserver)
     }
     
     func registerObserve() {
@@ -95,6 +100,11 @@ class GroupCallVideoCellViewModel {
             self.selfPlayoutVolume.value = newValue
         }
         
+        TUICallState.instance.selfUser.value.networkQualityReminder.addObserver(selfNetworkQualityObserver) { [weak self] newValue, _ in
+            guard let self = self else { return }
+            self.selfIsShowLowNetworkQuality.value = newValue
+        }
+        
         TUICallState.instance.enableBlurBackground.addObserver(enableBlurBackgroundObserver, closure: {  [weak self] newValue, _ in
             guard let self = self else { return }
             self.enableBlurBackground.value = newValue
@@ -121,6 +131,12 @@ class GroupCallVideoCellViewModel {
                     guard let self = self else { return }
                     self.remoteUserVideoAvailable.value = newValue
                 })
+                
+                TUICallState.instance.remoteUserList.value[index].networkQualityReminder.addObserver(remoteNetworkQualityObserver)
+                { [weak self] newValue, _ in
+                    guard let self = self else { return }
+                    self.remoteIsShowLowNetworkQuality.value = newValue
+                }
                 
                 TUICallState.instance.remoteUserList.value[index].playoutVolume.addObserver(remotePlayoutVolumeObserver)
                 { [weak self] newValue, _ in
