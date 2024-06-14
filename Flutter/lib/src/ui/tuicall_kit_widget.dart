@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
+import 'package:tencent_calls_uikit/src/call_manager.dart';
 import 'package:tencent_calls_uikit/src/call_state.dart';
+import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
+import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/groupcall/group_call_widget.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/singlecall/single_call_widget.dart';
-import 'package:wakelock_plus/wakelock_plus.dart';
-import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
-import 'package:tencent_calls_uikit/src/data/constants.dart';
 
 class TUICallKitWidget extends StatefulWidget {
   final Function close;
@@ -37,7 +37,7 @@ class _TUICallKitWidgetState extends State<TUICallKitWidget> {
       }
     };
     TUICore.instance.registerEvent(setStateEventOnCallEnd, onCallEndCallBack);
-    WakelockPlus.enable();
+    CallManager.instance.enableWakeLock(true);
   }
 
   @override
@@ -49,10 +49,8 @@ class _TUICallKitWidgetState extends State<TUICallKitWidget> {
       DeviceOrientation.portraitDown,
     ]);
 
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
+    return PopScope(
+      canPop: false,
       child: Scaffold(
           resizeToAvoidBottomInset: false,
           body: (CallState.instance.scene == TUICallScene.singleCall)
@@ -70,6 +68,6 @@ class _TUICallKitWidgetState extends State<TUICallKitWidget> {
     super.dispose();
     TRTCLogger.info('TUICallKitWidget dispose');
     TUICore.instance.unregisterEvent(setStateEventOnCallEnd, onCallEndCallBack);
-    WakelockPlus.disable();
+    CallManager.instance.enableWakeLock(false);
   }
 }

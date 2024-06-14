@@ -1,19 +1,21 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_calls_uikit/src/call_manager.dart';
+import 'package:tencent_calls_uikit/src/call_state.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
+import 'package:tencent_calls_uikit/src/data/user.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
-import 'package:tencent_calls_uikit/src/data/user.dart';
 import 'package:tencent_calls_uikit/src/ui/tuicall_navigator_observer.dart';
-import 'package:tencent_calls_uikit/src/call_state.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/common/extent_button.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/common/timing_widget.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/groupcall/group_call_user_widget_data.dart';
 import 'package:tencent_calls_uikit/src/utils/permission.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
 import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
+
 import 'group_call_user_widget.dart';
 
 class GroupCallWidget extends StatefulWidget {
@@ -77,7 +79,8 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
     };
 
     TUICore.instance.registerEvent(setStateEvent, setSateCallBack);
-    TUICore.instance.registerEvent(setStateEventGroupCallUserWidgetRefresh, groupCallUserWidgetRefreshCallback);
+    TUICore.instance
+        .registerEvent(setStateEventGroupCallUserWidgetRefresh, groupCallUserWidgetRefreshCallback);
 
     GroupCallUserWidgetData.initBlockBigger();
     _initUsersViewWidget();
@@ -94,11 +97,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: WillPopScope(
-        onWillPop: () async {
-          return true;
-        },
-        child: Container(
+      body: Container(
           padding: const EdgeInsets.only(top: 40),
           color: const Color.fromRGBO(45, 45, 45, 1.0),
           child: Stack(
@@ -111,7 +110,6 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
             ],
           ),
         ),
-      ),
     );
   }
 
@@ -315,132 +313,132 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
         child: GestureDetector(
             onVerticalDragUpdate: (details) => _functionWidgetVerticalDragUpdate(details),
             child: AnimatedContainer(
-              curve: curve,
-              height: isFunctionExpand ? 200 : 90,
-              duration: Duration(milliseconds: duration),
-              color: const Color.fromRGBO(52, 56, 66, 1.0),
-              child: Stack(
-                children: [
-                  AnimatedPositioned(
-                    curve: curve,
-                    duration: Duration(milliseconds: duration),
-                    left: isFunctionExpand
-                        ? ((MediaQuery.of(context).size.width / 4) - (btnWidth / 2))
-                        : (MediaQuery.of(context).size.width * 2 / 6 - btnWidth / 2),
-                    bottom: isFunctionExpand ? bottomEdge + bigBtnHeight + edge : bottomEdge,
-                    child: ExtendButton(
-                      imgUrl: CallState.instance.isMicrophoneMute
-                          ? "assets/images/mute_on.png"
-                          : "assets/images/mute.png",
-                      tips: isFunctionExpand
-                          ? (CallState.instance.isMicrophoneMute
-                          ? CallKit_t("microphoneIsOff")
-                          : CallKit_t("microphoneIsOn"))
-                          : '',
-                      textColor: Colors.white,
-                      imgHeight: isFunctionExpand ? bigBtnHeight : smallBtnHeight,
-                      onTap: () {
-                        _handleSwitchMic();
-                      },
-                      userAnimation: true,
-                      duration: Duration(milliseconds: duration),
-                    ),
-                  ),
-                  AnimatedPositioned(
-                    curve: curve,
-                    duration: Duration(milliseconds: duration),
-                    left: isFunctionExpand
-                        ? (MediaQuery.of(context).size.width / 2 - btnWidth / 2)
-                        : (MediaQuery.of(context).size.width * 3 / 6 - btnWidth / 2),
-                    bottom: isFunctionExpand ? bottomEdge + bigBtnHeight + edge : bottomEdge,
-                    child: ExtendButton(
-                      imgUrl: CallState.instance.audioDevice == TUIAudioPlaybackDevice.speakerphone
-                          ? "assets/images/handsfree_on.png"
-                          : "assets/images/handsfree.png",
-                      tips: isFunctionExpand
-                          ? (CallState.instance.audioDevice == TUIAudioPlaybackDevice.speakerphone
-                          ? CallKit_t("speakerIsOn")
-                          : CallKit_t("speakerIsOff"))
-                          : '',
-                      textColor: Colors.white,
-                      imgHeight: isFunctionExpand ? bigBtnHeight : smallBtnHeight,
-                      onTap: () {
-                        _handleSwitchAudioDevice();
-                      },
-                      userAnimation: true,
-                      duration: Duration(milliseconds: duration),
-                    ),
-                  ),
-                  AnimatedPositioned(
-                    curve: curve,
-                    duration: Duration(milliseconds: duration),
-                    left: isFunctionExpand
-                        ? (MediaQuery.of(context).size.width * 3 / 4 - btnWidth / 2)
-                        : (MediaQuery.of(context).size.width * 4 / 6 - btnWidth / 2),
-                    bottom: isFunctionExpand ? bottomEdge + bigBtnHeight + edge : bottomEdge,
-                    child: ExtendButton(
-                      imgUrl: CallState.instance.isCameraOpen
-                          ? "assets/images/camera_on.png"
-                          : "assets/images/camera_off.png",
-                      tips: isFunctionExpand
-                          ? (CallState.instance.isCameraOpen
-                          ? CallKit_t("cameraIsOn")
-                          : CallKit_t("cameraIsOff"))
-                          : '',
-                      textColor: Colors.white,
-                      imgHeight: isFunctionExpand ? bigBtnHeight : smallBtnHeight,
-                      onTap: () {
-                        _handleOpenCloseCamera();
-                      },
-                      userAnimation: true,
-                      duration: Duration(milliseconds: duration),
-                    ),
-                  ),
-                  AnimatedPositioned(
-                    curve: curve,
-                    duration: Duration(milliseconds: duration),
-                    left: isFunctionExpand
-                        ? (MediaQuery.of(context).size.width / 2 - btnWidth / 2)
-                        : (MediaQuery.of(context).size.width * 5 / 6 - btnWidth / 2),
-                    bottom: bottomEdge,
-                    child: ExtendButton(
-                      imgUrl: "assets/images/hangup.png",
-                      textColor: Colors.white,
-                      imgHeight: isFunctionExpand ? bigBtnHeight : smallBtnHeight,
-                      onTap: () {
-                        _handleHangUp(widget.close);
-                      },
-                      userAnimation: true,
-                      duration: Duration(milliseconds: duration),
-                    ),
-                  ),
-                  AnimatedPositioned(
+                curve: curve,
+                height: isFunctionExpand ? 200 : 90,
+                duration: Duration(milliseconds: duration),
+                color: const Color.fromRGBO(52, 56, 66, 1.0),
+                child: Stack(
+                  children: [
+                    AnimatedPositioned(
                       curve: curve,
                       duration: Duration(milliseconds: duration),
-                      left: (MediaQuery.of(context).size.width / 6 - smallBtnHeight / 2),
-                      bottom: isFunctionExpand ? bottomEdge + smallBtnHeight / 4 + 22 :
-                      bottomEdge + 22,
-                      child: InkWell(
+                      left: isFunctionExpand
+                          ? ((MediaQuery.of(context).size.width / 4) - (btnWidth / 2))
+                          : (MediaQuery.of(context).size.width * 2 / 6 - btnWidth / 2),
+                      bottom: isFunctionExpand ? bottomEdge + bigBtnHeight + edge : bottomEdge,
+                      child: ExtendButton(
+                        imgUrl: CallState.instance.isMicrophoneMute
+                            ? "assets/images/mute_on.png"
+                            : "assets/images/mute.png",
+                        tips: isFunctionExpand
+                            ? (CallState.instance.isMicrophoneMute
+                                ? CallKit_t("microphoneIsOff")
+                                : CallKit_t("microphoneIsOn"))
+                            : '',
+                        textColor: Colors.white,
+                        imgHeight: isFunctionExpand ? bigBtnHeight : smallBtnHeight,
                         onTap: () {
-                          setState(() {
-                            isFunctionExpand = !isFunctionExpand;
-                          });
+                          _handleSwitchMic();
                         },
-                        child: Transform(
-                          alignment: Alignment.center,
-                          transform: Matrix4.identity()
-                            ..scale(1.0, isFunctionExpand ? 1.0 : -1.0, 1.0),
-                          child: Image.asset(
-                            'assets/images/arrow.png',
-                            package: 'tencent_calls_uikit',
-                            width: smallBtnHeight,
+                        userAnimation: true,
+                        duration: Duration(milliseconds: duration),
+                      ),
+                    ),
+                    AnimatedPositioned(
+                      curve: curve,
+                      duration: Duration(milliseconds: duration),
+                      left: isFunctionExpand
+                          ? (MediaQuery.of(context).size.width / 2 - btnWidth / 2)
+                          : (MediaQuery.of(context).size.width * 3 / 6 - btnWidth / 2),
+                      bottom: isFunctionExpand ? bottomEdge + bigBtnHeight + edge : bottomEdge,
+                      child: ExtendButton(
+                        imgUrl:
+                            CallState.instance.audioDevice == TUIAudioPlaybackDevice.speakerphone
+                                ? "assets/images/handsfree_on.png"
+                                : "assets/images/handsfree.png",
+                        tips: isFunctionExpand
+                            ? (CallState.instance.audioDevice == TUIAudioPlaybackDevice.speakerphone
+                                ? CallKit_t("speakerIsOn")
+                                : CallKit_t("speakerIsOff"))
+                            : '',
+                        textColor: Colors.white,
+                        imgHeight: isFunctionExpand ? bigBtnHeight : smallBtnHeight,
+                        onTap: () {
+                          _handleSwitchAudioDevice();
+                        },
+                        userAnimation: true,
+                        duration: Duration(milliseconds: duration),
+                      ),
+                    ),
+                    AnimatedPositioned(
+                      curve: curve,
+                      duration: Duration(milliseconds: duration),
+                      left: isFunctionExpand
+                          ? (MediaQuery.of(context).size.width * 3 / 4 - btnWidth / 2)
+                          : (MediaQuery.of(context).size.width * 4 / 6 - btnWidth / 2),
+                      bottom: isFunctionExpand ? bottomEdge + bigBtnHeight + edge : bottomEdge,
+                      child: ExtendButton(
+                        imgUrl: CallState.instance.isCameraOpen
+                            ? "assets/images/camera_on.png"
+                            : "assets/images/camera_off.png",
+                        tips: isFunctionExpand
+                            ? (CallState.instance.isCameraOpen
+                                ? CallKit_t("cameraIsOn")
+                                : CallKit_t("cameraIsOff"))
+                            : '',
+                        textColor: Colors.white,
+                        imgHeight: isFunctionExpand ? bigBtnHeight : smallBtnHeight,
+                        onTap: () {
+                          _handleOpenCloseCamera();
+                        },
+                        userAnimation: true,
+                        duration: Duration(milliseconds: duration),
+                      ),
+                    ),
+                    AnimatedPositioned(
+                      curve: curve,
+                      duration: Duration(milliseconds: duration),
+                      left: isFunctionExpand
+                          ? (MediaQuery.of(context).size.width / 2 - btnWidth / 2)
+                          : (MediaQuery.of(context).size.width * 5 / 6 - btnWidth / 2),
+                      bottom: bottomEdge,
+                      child: ExtendButton(
+                        imgUrl: "assets/images/hangup.png",
+                        textColor: Colors.white,
+                        imgHeight: isFunctionExpand ? bigBtnHeight : smallBtnHeight,
+                        onTap: () {
+                          _handleHangUp(widget.close);
+                        },
+                        userAnimation: true,
+                        duration: Duration(milliseconds: duration),
+                      ),
+                    ),
+                    AnimatedPositioned(
+                        curve: curve,
+                        duration: Duration(milliseconds: duration),
+                        left: (MediaQuery.of(context).size.width / 6 - smallBtnHeight / 2),
+                        bottom: isFunctionExpand
+                            ? bottomEdge + smallBtnHeight / 4 + 22
+                            : bottomEdge + 22,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              isFunctionExpand = !isFunctionExpand;
+                            });
+                          },
+                          child: Transform(
+                            alignment: Alignment.center,
+                            transform: Matrix4.identity()
+                              ..scale(1.0, isFunctionExpand ? 1.0 : -1.0, 1.0),
+                            child: Image.asset(
+                              'assets/images/arrow.png',
+                              package: 'tencent_calls_uikit',
+                              width: smallBtnHeight,
+                            ),
                           ),
-                        ),
-                      ))
-                ],
-              ))
-        )
-    );
+                        ))
+                  ],
+                ))));
   }
 
   _functionWidgetVerticalDragUpdate(DragUpdateDetails details) {
@@ -497,8 +495,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
   _handleAccept() async {
     PermissionResult permissionRequestResult = PermissionResult.requesting;
     if (Platform.isAndroid) {
-      permissionRequestResult =
-          await Permission.request(CallState.instance.mediaType);
+      permissionRequestResult = await Permission.request(CallState.instance.mediaType);
     }
     if (permissionRequestResult == PermissionResult.granted || Platform.isIOS) {
       await CallManager.instance.accept();

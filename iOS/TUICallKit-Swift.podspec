@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICallKit-Swift'
-  spec.version      = '2.3.0.920'
+  spec.version      = '2.4.0.970'
   spec.platform     = :ios
   spec.ios.deployment_target = '12.0'
   spec.license      = { :type => 'Proprietary',
@@ -29,21 +29,20 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'TRTC' do |trtc|
     trtc.dependency 'TXLiteAVSDK_TRTC'
-    trtc.dependency 'TUICallEngine/TRTC', '~> 2.3.0.915'
+    trtc.dependency 'TUICallEngine/TRTC', '~> 2.4.0.970'
     trtc.source_files = 'TUICallKit-Swift/**/*.{h,m,mm,swift}'
     trtc.resource_bundles = {
-      'TUICallKitBundle' => ['TUICallKit-Swift/Resources/*.gif', 'TUICallKit-Swift/Resources/**/*.strings', 'TUICallKit-Swift/Resources/AudioFile', 'TUICallKit-Swift/Resources/*.xcassets']
+      'TUICallKitBundle' => ['TUICallKit-Swift/Resources/**/*.strings', 'TUICallKit-Swift/Resources/AudioFile', 'TUICallKit-Swift/Resources/*.xcassets']
     }
     trtc.resource = ['TUICallKit-Swift/Resources/*.bundle']
-    trtc.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '$(inherited) -D USE_TRTC', 'GCC_PREPROCESSOR_DEFINITIONS' => "$(inherited) COCOAPODS=1 USE_TRTC=1" }
   end
   
   spec.subspec 'Professional' do |professional|
     professional.dependency 'TXLiteAVSDK_Professional'
-    professional.dependency 'TUICallEngine/Professional', '~> 2.3.0.915'
+    professional.dependency 'TUICallEngine/Professional', '~> 2.4.0.970'
     professional.source_files = 'TUICallKit-Swift/**/*.{h,m,mm,swift}'
     professional.resource_bundles = {
-      'TUICallKitBundle' => ['TUICallKit-Swift/Resources/*.gif', 'TUICallKit-Swift/Resources/**/*.strings', 'TUICallKit-Swift/Resources/AudioFile', 'TUICallKit-Swift/Resources/*.xcassets']
+      'TUICallKitBundle' => ['TUICallKit-Swift/Resources/**/*.strings', 'TUICallKit-Swift/Resources/AudioFile', 'TUICallKit-Swift/Resources/*.xcassets']
     }
     professional.resource = ['TUICallKit-Swift/Resources/*.bundle']
   end

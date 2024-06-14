@@ -1,12 +1,13 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
-import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_calls_uikit/src/call_manager.dart';
 import 'package:tencent_calls_uikit/src/call_state.dart';
+import 'package:tencent_calls_uikit/src/data/constants.dart';
+import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/common/extent_button.dart';
 import 'package:tencent_calls_uikit/src/utils/permission.dart';
-import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 
 class SingleFunctionWidget {
@@ -108,16 +109,16 @@ class SingleFunctionWidget {
         ),
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           CallState.instance.showVirtualBackgroundButton
-          ? _buildVirtualBackgroundSmallButton()
-          : const SizedBox(
-            width: 100,
-          ),
+              ? _buildVirtualBackgroundSmallButton()
+              : const SizedBox(
+                  width: 100,
+                ),
           _buildHangupButton(close),
           CallState.instance.isCameraOpen
-          ? _buildSwitchCameraSmallButton()
-          : const SizedBox(
-            width: 100,
-          ),
+              ? _buildSwitchCameraSmallButton()
+              : const SizedBox(
+                  width: 100,
+                ),
         ]),
       ],
     );
@@ -193,7 +194,9 @@ class SingleFunctionWidget {
 
   static Widget _buildCameraControlButton() {
     return ExtendButton(
-      imgUrl: CallState.instance.isCameraOpen ? "assets/images/camera_on.png" : "assets/images/camera_off.png",
+      imgUrl: CallState.instance.isCameraOpen
+          ? "assets/images/camera_on.png"
+          : "assets/images/camera_off.png",
       tips: CallState.instance.isCameraOpen ? CallKit_t("cameraIsOn") : CallKit_t("cameraIsOff"),
       textColor: _getTextColor(),
       imgHeight: 60,
@@ -205,8 +208,12 @@ class SingleFunctionWidget {
 
   static Widget _buildMicControlButton() {
     return ExtendButton(
-      imgUrl: CallState.instance.isMicrophoneMute ? "assets/images/mute_on.png" : "assets/images/mute.png",
-      tips: CallState.instance.isMicrophoneMute ? CallKit_t("microphoneIsOff") : CallKit_t("microphoneIsOn"),
+      imgUrl: CallState.instance.isMicrophoneMute
+          ? "assets/images/mute_on.png"
+          : "assets/images/mute.png",
+      tips: CallState.instance.isMicrophoneMute
+          ? CallKit_t("microphoneIsOff")
+          : CallKit_t("microphoneIsOn"),
       textColor: _getTextColor(),
       imgHeight: 60,
       onTap: () {
@@ -218,7 +225,7 @@ class SingleFunctionWidget {
   static Widget _buildHangupButton(Function close) {
     return ExtendButton(
       imgUrl: "assets/images/hangup.png",
-      tips: '',
+      tips: CallKit_t("hangUp"),
       textColor: _getTextColor(),
       imgHeight: 60,
       onTap: () {
@@ -306,7 +313,8 @@ class SingleFunctionWidget {
   static void _handleOpenCloseCamera() async {
     CallState.instance.isCameraOpen = !CallState.instance.isCameraOpen;
     if (CallState.instance.isCameraOpen) {
-      await CallManager.instance.openCamera(CallState.instance.camera, CallState.instance.selfUser.viewID);
+      await CallManager.instance
+          .openCamera(CallState.instance.camera, CallState.instance.selfUser.viewID);
     } else {
       await CallManager.instance.closeCamera();
     }
@@ -330,6 +338,6 @@ class SingleFunctionWidget {
   }
 
   static Color _getTextColor() {
-    return  Colors.white;
+    return Colors.white;
   }
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -25,34 +24,33 @@ import com.tencent.qcloud.tuikit.tuicallkit.view.common.CustomLoadingView
 import com.tencent.qcloud.tuikit.tuicallkit.view.root.BaseCallView
 import com.tencent.qcloud.tuikit.tuicallkit.viewmodel.component.videolayout.VideoViewModel
 
-class VideoView constructor(context: Context) : BaseCallView(context) {
+class VideoView(context: Context) : BaseCallView(context) {
     private var tuiVideoView: TUIVideoView? = null
     private var imageAvatar: ImageFilterView? = null
     private var imageSwitchCamera: ImageView? = null
     private var imageUserBlurBackground: ImageView? = null
+    private var imageNetworkBad: ImageView? = null
     private var textUserName: TextView? = null
     private var imageAudioInput: ImageView? = null
     private var imageLoading: CustomLoadingView? = null
     private var imageBackground: ImageView? = null
-    private var viewShader: View? = null
     private var viewModel: VideoViewModel? = null
 
     private var videoAvailableObserver = Observer<Boolean> {
         if (it) {
             tuiVideoView?.visibility = VISIBLE
             imageBackground?.visibility = GONE
-            viewShader?.visibility = GONE
             imageAvatar?.visibility = GONE
             if (viewModel?.user?.id != viewModel?.selfUser?.id) {
                 EngineManager.instance.startRemoteView(viewModel?.user?.id, tuiVideoView, null)
             }
         } else {
             tuiVideoView?.visibility = GONE
-            viewShader?.visibility = VISIBLE
             imageBackground?.visibility = VISIBLE
             ImageLoader.loadBlurImage(context, imageBackground, viewModel?.user?.avatar?.get())
 
             if (viewModel?.user?.id == viewModel?.selfUser?.id
+                && TUICallState.instance.scene.get() == TUICallDefine.Scene.SINGLE_CALL
                 && viewModel?.selfUser?.callStatus?.get() == TUICallDefine.Status.Waiting
             ) {
                 imageAvatar?.visibility = GONE
@@ -98,6 +96,10 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
             imageLoading?.visibility = GONE
             imageLoading?.stopLoading()
         }
+        if (viewModel?.user?.id == viewModel?.selfUser?.id && viewModel?.user?.videoAvailable?.get() == false) {
+            imageAvatar?.visibility = VISIBLE
+            ImageLoader.loadImage(context, imageAvatar, viewModel?.user?.avatar?.get())
+        }
     }
 
     private var avatarObserver = Observer<String> {
@@ -120,6 +122,14 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
         refreshUserNameView()
     }
 
+    private var networkQualityObserver = Observer<Boolean> {
+        if (it && viewModel?.scene?.get() == TUICallDefine.Scene.GROUP_CALL) {
+            imageNetworkBad?.visibility = VISIBLE
+        } else {
+            imageNetworkBad?.visibility = GONE
+        }
+    }
+
     init {
         initView()
     }
@@ -129,7 +139,6 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
     }
 
     override fun clear() {
-        viewModel?.removeObserver()
         removeObserver()
     }
 
@@ -147,11 +156,11 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
     fun setImageAvatarVisibility(isShow: Boolean) {
         if (isShow) {
             imageAvatar?.visibility = VISIBLE
-            viewShader?.visibility = VISIBLE
             imageBackground?.visibility = VISIBLE
+            ImageLoader.loadImage(context, imageAvatar, viewModel?.user?.avatar?.get())
+            ImageLoader.loadBlurImage(context, imageBackground, viewModel?.user?.avatar?.get())
         } else {
             imageAvatar?.visibility = GONE
-            viewShader?.visibility = GONE
             imageBackground?.visibility = GONE
         }
     }
@@ -171,6 +180,7 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
         viewModel?.user?.callStatus?.observe(callStatusObserver)
         viewModel?.user?.avatar?.observe(avatarObserver)
         viewModel?.user?.nickname?.observe(nicknameObserver)
+        viewModel?.user?.networkQualityReminder?.observe(networkQualityObserver)
 
         viewModel?.showLargeViewUserId?.observe(showLargeViewUserIdObserver)
     }
@@ -182,9 +192,9 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
         viewModel?.user?.callStatus?.removeObserver(callStatusObserver)
         viewModel?.user?.avatar?.removeObserver(avatarObserver)
         viewModel?.user?.nickname?.removeObserver(nicknameObserver)
+        viewModel?.user?.networkQualityReminder?.removeObserver(networkQualityObserver)
 
         viewModel?.showLargeViewUserId?.removeObserver(showLargeViewUserIdObserver)
-        viewModel?.removeObserver()
     }
 
     private fun refreshView() {
@@ -228,13 +238,13 @@ class VideoView constructor(context: Context) : BaseCallView(context) {
         imageAudioInput = findViewById(R.id.iv_audio_input)
         imageLoading = findViewById(R.id.img_loading)
         imageBackground = findViewById(R.id.img_video_background)
-        viewShader = findViewById(R.id.view_shader)
+        imageNetworkBad = findViewById(R.id.iv_network)
 
         refreshUserAvatarView()
         refreshUserNameView()
 
         imageSwitchCamera?.setOnClickListener() {
-            val camera = if (viewModel?.isFrontCamera == Camera.Front) Camera.Back else Camera.Front
+            val camera = if (viewModel?.isFrontCamera?.get() == Camera.Front) Camera.Back else Camera.Front
             EngineManager.instance.switchCamera(camera)
         }
         imageUserBlurBackground?.setOnClickListener {

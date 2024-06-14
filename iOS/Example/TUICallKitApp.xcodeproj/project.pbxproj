@@ -18,6 +18,7 @@
 		47D9D37026521A7A0007EE1F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D9D36726521A7A0007EE1F /* AppDelegate.swift */; };
 		47D9D37226521A7A0007EE1F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D9D36926521A7A0007EE1F /* SceneDelegate.swift */; };
 		4F0CA2492BA9307D00994340 /* CommonUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0CA2462BA9307D00994340 /* CommonUtils.swift */; };
+		4F2BE05D2BEDCDF700728E3D /* LiteavSegmentModel.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4F2BE05C2BEDCDF700728E3D /* LiteavSegmentModel.bundle */; };
 		4F3F7CA926D65D38002912DE /* LoginRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7C9B26D65D38002912DE /* LoginRootView.swift */; };
 		4F3F7CAD26D65D38002912DE /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA226D65D38002912DE /* LoginViewController.swift */; };
 		4F3F7CB226D65D38002912DE /* LayoutDefine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CA726D65D38002912DE /* LayoutDefine.swift */; };
@@ -51,6 +52,7 @@
 		47D9D36826521A7A0007EE1F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		47D9D36926521A7A0007EE1F /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		4F0CA2462BA9307D00994340 /* CommonUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonUtils.swift; sourceTree = "<group>"; };
+		4F2BE05C2BEDCDF700728E3D /* LiteavSegmentModel.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = LiteavSegmentModel.bundle; sourceTree = "<group>"; };
 		4F3F7C9B26D65D38002912DE /* LoginRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginRootView.swift; sourceTree = "<group>"; };
 		4F3F7CA226D65D38002912DE /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		4F3F7CA726D65D38002912DE /* LayoutDefine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutDefine.swift; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 				4739C7D32657507800CA7C45 /* Resource */,
 				4F0CA23E2BA92FE200994340 /* Utils */,
 				47D9D36226521A7A0007EE1F /* Assets.xcassets */,
+				4F2BE05C2BEDCDF700728E3D /* LiteavSegmentModel.bundle */,
 				47D9D36326521A7A0007EE1F /* LaunchScreen.storyboard */,
 				470EB6F9266A49200072071F /* LaunchScreen_en.storyboard */,
 				47D9D36526521A7A0007EE1F /* Main.storyboard */,
@@ -297,6 +300,7 @@
 			files = (
 				470EB6FE266A49380072071F /* InfoPlist.strings in Resources */,
 				47D9D36F26521A7A0007EE1F /* Main.storyboard in Resources */,
+				4F2BE05D2BEDCDF700728E3D /* LiteavSegmentModel.bundle in Resources */,
 				47D9D36E26521A7A0007EE1F /* LaunchScreen.storyboard in Resources */,
 				470EB6FB266A49200072071F /* LaunchScreen_en.storyboard in Resources */,
 				4739C7DB2657507900CA7C45 /* TUICallKitAppLocalized.strings in Resources */,
@@ -625,7 +629,7 @@
 					"-weak_framework",
 					"\"SwiftUI\"",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D USE_TUICALLKIT_SWIFT";
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tencent.TRTCScene;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -712,7 +716,7 @@
 					"-weak_framework",
 					"\"SwiftUI\"",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D USE_TUICALLKIT_SWIFT";
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tencent.TRTCScene;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = abyWildcardDev;

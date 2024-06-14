@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICallKit'
-  spec.version      = '2.3.0.920'
+  spec.version      = '2.4.0.970'
   spec.platform     = :ios
   spec.ios.deployment_target = '10.0'
   spec.license      = { :type => 'Proprietary',
@@ -29,7 +29,7 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'TRTC' do |trtc|
     trtc.dependency 'TXLiteAVSDK_TRTC'
-    trtc.dependency 'TUICallEngine/TRTC', '~> 2.3.0.910'
+    trtc.dependency 'TUICallEngine/TRTC', '~> 2.4.0.970'
     trtc.source_files = 'TUICallKit/*.{h,m,mm}', 'TUICallKit/localized/**/*.{h,m,mm}', 'TUICallKit/Service/**/*.{h,m,mm}', 'TUICallKit/Config/*.{h,m,mm}', 'TUICallKit/Base/*.{h,m,mm}', 'TUICallKit/Utils/**/*.{h,m,mm}', 'TUICallKit/UI/**/*.{h,m,mm}', 'TUICallKit/TUICallKit_TRTC/*.{h,m,mm}'
     trtc.resource_bundles = {
       'TUICallingKitBundle' => ['TUICallKit/Resources/*.gif', 'TUICallKit/Resources/Localized/**/*.strings', 'TUICallKit/Resources/AudioFile', 'TUICallKit/Resources/*.xcassets']
@@ -39,7 +39,7 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'Professional' do |professional|
     professional.dependency 'TXLiteAVSDK_Professional'
-    professional.dependency 'TUICallEngine/Professional', '~> 2.3.0.910'
+    professional.dependency 'TUICallEngine/Professional', '~> 2.4.0.970'
     professional.source_files = 'TUICallKit/*.{h,m,mm}', 'TUICallKit/localized/**/*.{h,m,mm}', 'TUICallKit/Service/**/*.{h,m,mm}', 'TUICallKit/Config/*.{h,m,mm}', 'TUICallKit/Base/*.{h,m,mm}', 'TUICallKit/Utils/**/*.{h,m,mm}', 'TUICallKit/UI/**/*.{h,m,mm}', 'TUICallKit/TUICallKit_Professional/*.{h,m,mm}'
     professional.resource_bundles = {
       'TUICallingKitBundle' => ['TUICallKit/Resources/*.gif', 'TUICallKit/Resources/Localized/**/*.strings', 'TUICallKit/Resources/AudioFile', 'TUICallKit/Resources/*.xcassets']

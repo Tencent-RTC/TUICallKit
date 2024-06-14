@@ -14,6 +14,7 @@ import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.interfaces.TUICallback;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.tencent.qcloud.tuikit.debug.GenerateTestUserSig;
+import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.setting.SettingsConfig;
 
 import java.util.ArrayList;
@@ -53,6 +54,9 @@ public class LoginActivity extends BaseActivity {
                         Log.i(TAG, "login onSuccess");
                         SettingsConfig.userId = userId;
                         getUserInfo(userId);
+                        TUICallKit.createInstance(getApplication()).enableFloatWindow(SettingsConfig.isShowFloatingWindow);
+                        TUICallKit.createInstance(getApplication()).enableVirtualBackground(SettingsConfig.isShowBlurBackground);
+                        TUICallKit.createInstance(getApplication()).enableIncomingBanner(SettingsConfig.isIncomingBanner);
                     }
 
                     @Override

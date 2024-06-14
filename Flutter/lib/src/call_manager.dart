@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/widgets.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
+import 'package:tencent_calls_uikit/src/call_state.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/data/offline_push_info.dart';
 import 'package:tencent_calls_uikit/src/data/user.dart';
@@ -10,7 +12,6 @@ import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/ui/tuicall_navigator_observer.dart';
-import 'package:tencent_calls_uikit/src/call_state.dart';
 import 'package:tencent_calls_uikit/src/utils/permission.dart';
 import 'package:tencent_calls_uikit/src/utils/preference_utils.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
@@ -22,12 +23,12 @@ class CallManager {
 
   static CallManager get instance => _instance;
   final _im = TencentImSDKPlugin.v2TIMManager;
+  int _sdkAppId = 0;
 
   CallManager() {
     TUICore.instance.registerEvent(setStateEventOnCallReceived, (arg) async {
       if (Platform.isAndroid && await TUICallKitPlatform.instance.isAppInForeground()) {
-        var permissionResult =
-            await Permission.request(CallState.instance.mediaType);
+        var permissionResult = await Permission.request(CallState.instance.mediaType);
         if (CallState.instance.scene != TUICallScene.singleCall) {
           permissionResult = await Permission.request(TUICallMediaType.video);
         }
@@ -45,8 +46,7 @@ class CallManager {
   }
 
   Future<void> initEngine(int sdkAppID, String userId, String userSig) async {
-    TRTCLogger.info(
-        'CallManager initEngine(sdkAppID:$sdkAppID, userId: $userId)');
+    TRTCLogger.info('CallManager initEngine(sdkAppID:$sdkAppID, userId: $userId)');
     CallManager.instance.initResources();
     final result = await TUICallEngine.instance.init(sdkAppID, userId, userSig);
 
@@ -481,9 +481,7 @@ class CallManager {
 
   Future<void> logout() async {
     TRTCLogger.info('CallManager logout()');
-    await TUILogin.instance.logout(TUICallback(
-        onSuccess: () {},
-        onError: (code, message) {}));
+    await TUILogin.instance.logout(TUICallback(onSuccess: () {}, onError: (code, message) {}));
   }
 
   Future<void> setCallingBell(String assetName) async {
@@ -497,16 +495,20 @@ class CallManager {
 
   Future<void> enableVirtualBackground(bool enable) async {
     CallState.instance.showVirtualBackgroundButton = enable;
+    _reportOnlineLog(enable);
   }
 
   Future<void> setBlurBackground(bool enable) async {
     int level = enable ? Constants.blurLevelHigh : Constants.blurLevelClose;
     CallState.instance.enableBlurBackground = enable;
 
-    TUICallEngine.instance.setBlurBackground(level, (code, message) => {
-      TRTCLogger.error("CallManager setBlurBackground() errorCode: $code, errorMessage: $message"),
-      CallState.instance.enableBlurBackground = false
-    });
+    TUICallEngine.instance.setBlurBackground(
+        level,
+        (code, message) => {
+              TRTCLogger.error(
+                  "CallManager setBlurBackground() errorCode: $code, errorMessage: $message"),
+              CallState.instance.enableBlurBackground = false
+            });
   }
 
   Future<void> enableMuteMode(bool enable) async {
@@ -529,6 +531,7 @@ class CallManager {
 
   void handleLoginSuccess(int sdkAppId, String userId, String userSig) {
     TRTCLogger.info('CallManager handleLoginSuccess()');
+    _sdkAppId = sdkAppId;
     CallManager.instance.initEngine(sdkAppId, userId, userSig);
     _adaptiveComponentReport();
     _setExcludeFromHistoryMessage();
@@ -545,7 +548,8 @@ class CallManager {
   Future<void> initResources() async {
     var resources = {};
     resources["k_0000088"] = CallKit_t("waiting");
-    resources["k_0000089"] = CallKit_t("displayPopUpWindowWhileRunningInTheBackgroundAndDisplayPopUpWindowPermissions");
+    resources["k_0000089"] =
+        CallKit_t("displayPopUpWindowWhileRunningInTheBackgroundAndDisplayPopUpWindowPermissions");
     resources["k_0000002"] = CallKit_t("invitedToAudioCall");
     resources["k_0000002_1"] = CallKit_t("invitedToVideoCall");
     resources["k_0000003"] = CallKit_t("invitedToGroupCall");
@@ -557,7 +561,7 @@ class CallManager {
     if (CallState.instance.selfUser.callStatus != TUICallStatus.none &&
         TUICallKitNavigatorObserver.currentPage == CallPage.none &&
         CallState.instance.isOpenFloatWindow == false &&
-        CallState.instance.isInNativeIncomingFloatWindow == false) {
+        CallState.instance.isInNativeIncomingBanner == false) {
       launchCallingPage();
     }
   }
@@ -588,12 +592,19 @@ class CallManager {
     }
   }
 
+  void enableIncomingBanner(bool enable) {
+    CallState.instance.enableIncomingBanner = enable;
+  }
+
+  void enableWakeLock(bool enable) {
+    TRTCLogger.info('CallManager enableWakeLock($enable)');
+    TUICallKitPlatform.instance.enableWakeLock(enable);
+  }
+
   void _setExcludeFromHistoryMessage() async {
     await TUICallEngine.instance.callExperimentalAPI({
       "api": "setExcludeFromHistoryMessage",
-      "params": {
-        "excludeFromHistoryMessage": false
-      }
+      "params": {"excludeFromHistoryMessage": false}
     });
   }
 
@@ -604,6 +615,30 @@ class CallManager {
         "framework": 7,
         "component": 14,
         "language": 9,
+      }
+    });
+  }
+
+  void _reportOnlineLog(bool enableVirtualBackground) async {
+    var platform = "unknown";
+    if (Platform.isIOS) {
+      platform = "ios";
+    } else if (Platform.isAndroid) {
+      platform = "android";
+    }
+
+    await TUICallEngine.instance.callExperimentalAPI({
+      "api": "reportOnlineLog",
+      "params": {
+        "level": 1,
+        "msg": {
+          "version": Constants.pluginVersion,
+          "platform": platform,
+          "framework": "flutter",
+          "sdk_app_id": _sdkAppId,
+          "enablevirtualbackground": enableVirtualBackground
+        },
+        "more_msg": "TUICallKit",
       }
     });
   }

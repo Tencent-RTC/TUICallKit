@@ -9,8 +9,7 @@ class TUICallKit {
 
   static TUICallKit get instance => _instance;
 
-  static TUICallKitNavigatorObserver navigatorObserver =
-      TUICallKitNavigatorObserver.getInstance();
+  static TUICallKitNavigatorObserver navigatorObserver = TUICallKitNavigatorObserver.getInstance();
 
   // 新增 nickName 回调
 
@@ -60,7 +59,7 @@ class TUICallKit {
   Future<TUIResult> groupCall(
       String groupId, List<String> userIdList, TUICallMediaType callMediaType,
       [TUICallParams? params]) async {
-   return await CallManager.instance.groupCall(groupId, userIdList, callMediaType, params);
+    return await CallManager.instance.groupCall(groupId, userIdList, callMediaType, params);
   }
 
   ///Join a current call
@@ -69,10 +68,8 @@ class TUICallKit {
   ///@param callMediaType call type
   Future<void> joinInGroupCall(
       TUIRoomId roomId, String groupId, TUICallMediaType callMediaType) async {
-    return await CallManager.instance
-        .joinInGroupCall(roomId, groupId, callMediaType);
+    return await CallManager.instance.joinInGroupCall(roomId, groupId, callMediaType);
   }
-
 
   /// Set the ringtone (preferably shorter than 30s)
   ///
@@ -83,7 +80,6 @@ class TUICallKit {
   Future<void> setCallingBell(String assetName) async {
     return await CallManager.instance.setCallingBell(assetName);
   }
-
 
   ///Enable the mute mode (the callee doesn't ring)
   Future<void> enableMuteMode(bool enable) async {
@@ -97,5 +93,9 @@ class TUICallKit {
 
   Future<void> enableVirtualBackground(bool enable) async {
     return await CallManager.instance.enableVirtualBackground(enable);
+  }
+
+  void enableIncomingBanner(bool enable) {
+    CallManager.instance.enableIncomingBanner(enable);
   }
 }

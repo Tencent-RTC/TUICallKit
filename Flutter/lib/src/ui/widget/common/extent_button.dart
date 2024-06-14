@@ -28,24 +28,24 @@ class ExtendButton extends StatelessWidget {
   Widget _buildImageView() {
     return userAnimation!
         ? AnimatedContainer(
-          duration: duration,
-          height: imgHeight > 0 ? imgHeight : 52.0,
-          width: imgHeight > 0 ? imgHeight : 52.0,
-          child: Image.asset(
-            imgUrl,
-            package: 'tencent_calls_uikit',
-            color: imgColor,
-          ),
-        )
+            duration: duration,
+            height: imgHeight > 0 ? imgHeight : 52.0,
+            width: imgHeight > 0 ? imgHeight : 52.0,
+            child: Image.asset(
+              imgUrl,
+              package: 'tencent_calls_uikit',
+              color: imgColor,
+            ),
+          )
         : SizedBox(
-          height: imgHeight > 0 ? imgHeight : 52.0,
-          width: imgHeight > 0 ? imgHeight : 52.0,
-          child: Image.asset(
-            imgUrl,
-            package: 'tencent_calls_uikit',
-            color: imgColor,
-          ),
-        );
+            height: imgHeight > 0 ? imgHeight : 52.0,
+            width: imgHeight > 0 ? imgHeight : 52.0,
+            child: Image.asset(
+              imgUrl,
+              package: 'tencent_calls_uikit',
+              color: imgColor,
+            ),
+          );
   }
 
   @override

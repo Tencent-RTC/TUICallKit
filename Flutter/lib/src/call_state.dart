@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_calls_uikit/src/call_manager.dart';
@@ -60,6 +61,8 @@ class CallState {
   //////////////// 显示 nickName 而不是 userId ////////////////
 
   bool isInNativeIncomingFloatWindow = false;
+  bool enableIncomingBanner = false;
+  bool isInNativeIncomingBanner = false;
 
   final TUICallObserver observer = TUICallObserver(
       onError: (int code, String message) {
@@ -67,20 +70,36 @@ class CallState {
             'TUICallObserver onError(code:$code, message:$message)');
         CallManager.instance.showToast('Error: $code, $message');
       },
-      onCallReceived: (String callerId,
-          List<String> calleeIdList,
-          String groupId,
-          TUICallMediaType callMediaType,
-          String? userData) async {
+      onCallReceived: (String callerId, List<String> calleeIdList, String groupId,
+          TUICallMediaType callMediaType, String? userData) async {
         TRTCLogger.info(
             'TUICallObserver onCallReceived(callerId:$callerId, calleeIdList:$calleeIdList, groupId:$groupId, callMediaType:$callMediaType, userData:$userData), version:${Constants.pluginVersion}');
-        await CallState.instance.handleCallReceivedData(
-            callerId, calleeIdList, groupId, callMediaType);
+        await CallState.instance
+            .handleCallReceivedData(callerId, calleeIdList, groupId, callMediaType);
         await TUICallKitPlatform.instance.updateCallStateToNative();
         CallingBellFeature.startRing();
-        CallState.instance.isInNativeIncomingFloatWindow = true;
-        await TUICallKitPlatform.instance
-            .runAppToNative("event_handle_receive_call");
+
+        if (Platform.isIOS) {
+          if (CallState.instance.enableIncomingBanner) {
+            CallState.instance.isInNativeIncomingBanner = true;
+            await TUICallKitPlatform.instance.showIncomingBanner();
+          } else {
+            CallState.instance.isInNativeIncomingBanner = false;
+            CallManager.instance.launchCallingPage();
+          }
+        } else if (Platform.isAndroid) {
+          if (CallState.instance.enableIncomingBanner) {
+            CallState.instance.isInNativeIncomingBanner = true;
+            await TUICallKitPlatform.instance.showIncomingBanner();
+          } else {
+            if (await TUICallKitPlatform.instance.isAppInForeground()) {
+              CallState.instance.isInNativeIncomingBanner = false;
+              CallManager.instance.launchCallingPage();
+            } else {
+              TUICallKitPlatform.instance.pullBackgroundApp();
+            }
+          }
+        }
       },
       onCallCancelled: (String callerId) {
         TRTCLogger.info('TUICallObserver onCallCancelled(callerId:$callerId)');
@@ -89,13 +108,11 @@ class CallState {
         TUICore.instance.notifyEvent(setStateEventOnCallEnd);
         TUICallKitPlatform.instance.updateCallStateToNative();
       },
-      onCallBegin: (TUIRoomId roomId, TUICallMediaType callMediaType,
-          TUICallRole callRole) {
+      onCallBegin: (TUIRoomId roomId, TUICallMediaType callMediaType, TUICallRole callRole) {
         TRTCLogger.info(
             'TUICallObserver onCallBegin(roomId:$roomId, callMediaType:$callMediaType, callRole:$callRole)');
         TUICallKitPlatform.instance.startForegroundService();
-        CallState.instance.startTime =
-            DateTime.now().millisecondsSinceEpoch ~/ 1000;
+        CallState.instance.startTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
         CallingBellFeature.stopRing();
         CallState.instance.roomId = roomId;
         CallState.instance.mediaType = callMediaType;
@@ -106,16 +123,15 @@ class CallState {
         } else {
           CallManager.instance.openMicrophone();
         }
-        CallManager.instance
-            .selectAudioPlaybackDevice(CallState.instance.audioDevice);
+        CallManager.instance.selectAudioPlaybackDevice(CallState.instance.audioDevice);
         CallState.instance.startTimer();
         CallState.instance.isChangedBigSmallVideo = true;
         TUICore.instance.notifyEvent(setStateEvent);
         TUICore.instance.notifyEvent(setStateEventOnCallBegin);
         TUICallKitPlatform.instance.updateCallStateToNative();
       },
-      onCallEnd: (TUIRoomId roomId, TUICallMediaType callMediaType,
-          TUICallRole callRole, double totalTime) {
+      onCallEnd: (TUIRoomId roomId, TUICallMediaType callMediaType, TUICallRole callRole,
+          double totalTime) {
         TRTCLogger.info(
             'TUICallObserver onCallEnd(roomId:$roomId, callMediaType:$callMediaType, callRole:$callRole, totalTime:$totalTime)');
         CallState.instance.stopTimer();
@@ -123,8 +139,8 @@ class CallState {
         TUICore.instance.notifyEvent(setStateEventOnCallEnd);
         TUICallKitPlatform.instance.updateCallStateToNative();
       },
-      onCallMediaTypeChanged: (TUICallMediaType oldCallMediaType,
-          TUICallMediaType newCallMediaType) {
+      onCallMediaTypeChanged:
+          (TUICallMediaType oldCallMediaType, TUICallMediaType newCallMediaType) {
         CallState.instance.mediaType = newCallMediaType;
         TUICore.instance.notifyEvent(setStateEvent);
         TUICallKitPlatform.instance.updateCallStateToNative();
@@ -301,8 +317,7 @@ class CallState {
           }
         }
       },
-      onUserNetworkQualityChanged:
-          (List<TUINetworkQualityInfo> networkQualityList) {},
+      onUserNetworkQualityChanged: (List<TUINetworkQualityInfo> networkQualityList) {},
       onUserVoiceVolumeChanged: (Map<String, int> volumeMap) {
         for (var remoteUser in CallState.instance.remoteUserList) {
           remoteUser.playOutVolume = volumeMap[remoteUser.id] ?? 0;
@@ -344,10 +359,7 @@ class CallState {
     TUICallEngine.instance.removeObserver(observer);
   }
 
-  Future<void> handleCallReceivedData(
-      String callerId,
-      List<String> calleeIdList,
-      String groupId,
+  Future<void> handleCallReceivedData(String callerId, List<String> calleeIdList, String groupId,
       TUICallMediaType callMediaType) async {
     CallState.instance.caller.id = callerId;
     CallState.instance.calleeIdList.clear();
@@ -450,8 +462,7 @@ class CallState {
 
   void startTimer() {
     CallState.instance.timeCount = 0;
-    CallState.instance._timer =
-        Timer.periodic(const Duration(seconds: 1), (timer) {
+    CallState.instance._timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (TUICallStatus.accept != CallState.instance.selfUser.callStatus) {
         stopTimer();
         return;

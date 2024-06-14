@@ -12,9 +12,9 @@ import WebKit
 import ImSDK_Plus
 import TUICore
 
-#if USE_TUICALLKIT_SWIFT
+#if canImport(TUICallKit_Swift)
 import TUICallKit_Swift
-#else
+#elseif canImport(TUICallKit)
 import TUICallKit
 #endif
 
@@ -41,7 +41,12 @@ class LoginViewController: UIViewController {
     
     func login(userId: String) {
         loading.startAnimating()
-        TUILogin.login(Int32(SDKAPPID), userID: userId, userSig: GenerateTestUserSig.genTestUserSig(identifier: userId)) { [weak self] in
+#if canImport(TUICallKit_Swift)
+        let userSig = TUICallKit_Swift.GenerateTestUserSig.genTestUserSig(userID: userId, sdkAppID: SDKAPPID, secretKey: SECRETKEY)
+#elseif canImport(TUICallKit)
+        let userSig = GenerateTestUserSig.genTestUserSig(identifier: userId)
+#endif
+        TUILogin.login(Int32(SDKAPPID), userID: userId, userSig: userSig) { [weak self] in
             guard let self = self else { return }
             self.loading.stopAnimating()
             SettingsConfig.share.userId = userId

@@ -58,6 +58,8 @@
 "TUICallKitApp.Setting.RingSetting" = "Ring";
 "TUICallKitApp.Setting.MuteMode" = "Mute";
 "TUICallKitApp.Setting.EnableFloating" = "Floating";
+"TUICallKitApp.Setting.EnableVirtualBackground" = "Virtual Background";
+"TUICallKitApp.Setting.EnableIncomingBanner" = "Incoming Banner";
 "TUICallKitApp.Setting.IntRoomId" = "Int RoomId";
 "TUICallKitApp.Setting.StrRoomId" = "String RoomId";
 "TUICallKitApp.Setting.Timeout" = "Timeout";
@@ -77,15 +79,11 @@
 "TUICallKitApp.Setting.SetAvatar" = "Set Avatar";
 "TUICallKitApp.Setting.SetRing" = "Set Ring";
 "TUICallKitApp.Setting.SetExtend" = "Set Extended Information";
-"TUICallKitApp.Setting.SetOffInleInfo" = "Set up offline push notifications";
+"TUICallKitApp.Setting.SetOffLineInfo" = "Set up offline push notifications";
 "TUICallKitApp.Setting.SetAvatarTip" = "Please enter the URL address of the avatar.";
 "TUICallKitApp.Setting.SetRingTip" = "Please enter the ringtone address.";
 "TUICallKitApp.Setting.SetExtendTip" = "Please enter extended information.";
-"TUICallKitApp.Setting.SetOffInleInfoTip" = "Please enter the json string of the offline push message.";
-
-
-"TUICallKitApp.GroupCall.Intrduce" = "Before using group calls, you need to create an IM group. For details on group creation, see：";
-"TUICallKitApp.GroupCall.GroupManage" = "Group Management";
+"TUICallKitApp.Setting.SetOffLineInfoTip" = "Please enter the json string of the offline push message.";
 
 "TUICallKitApp.QuickAccess" = "Quick Access";
 "TUICallKitApp.Version" = "Version";

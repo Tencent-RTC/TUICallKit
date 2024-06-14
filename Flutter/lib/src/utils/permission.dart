@@ -39,8 +39,7 @@ class Permission {
     }
   }
 
-  static Future<PermissionResult> request(
-      TUICallMediaType type) async {
+  static Future<PermissionResult> request(TUICallMediaType type) async {
     PermissionResult result = PermissionResult.denied;
     if (TUICallMediaType.video == type) {
       result = await TUICallKitPlatform.instance.requestPermissions(
@@ -59,7 +58,6 @@ class Permission {
   }
 
   static Future<bool> has({required List<PermissionType> permissions}) async {
-    return await TUICallKitPlatform.instance
-        .hasPermissions(permissions: permissions);
+    return await TUICallKitPlatform.instance.hasPermissions(permissions: permissions);
   }
 }

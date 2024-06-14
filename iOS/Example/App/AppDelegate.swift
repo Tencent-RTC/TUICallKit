@@ -10,22 +10,16 @@ import UIKit
 import UserNotifications
 import ImSDK_Plus
 
-/// If using TUICallKit_Swift, you need to set a preprocessor macro. The method is as follows:
-///   1. Select target ---> Build Settings ---> Search for Swift Compiler - Custom Flags
-///   2. Expand "Other Swift Flags" and set "USE_TUICALLKIT_SWIFT". It should be written as "-D" and "USE_TUICALLKIT_SWIFT" on separate lines.
-#if USE_TUICALLKIT_SWIFT
+#if canImport(TUICallKit_Swift)
 import TUICallKit_Swift
-#else
+#elseif canImport(TUICallKit)
 import TUICallKit
 #endif
 
-/// If using TXLiteAVSDK_Professional, you need to set a preprocessor macro. The method is as follows:
-///   1. Select target ---> Build Settings ---> Search for Swift Compiler - Custom Flags
-///   2. Expand "Other Swift Flags" and set "USE_PRODESSIONAL". It should be written as "-D" and "USE_PRODESSIONAL" on separate lines.
-#if USE_PRODESSIONAL
-import TXLiteAVSDK_Professional
-#else
+#if canImport(TXLiteAVSDK_TRTC)
 import TXLiteAVSDK_TRTC
+#elseif canImport(TXLiteAVSDK_Professional)
+import TXLiteAVSDK_Professional
 #endif
 
 /// You need to register a developer certificate with Apple, download and generate the certificate (P12 file) in their developer accounts, and upload the generated P12 file to the Tencent certificate console.
@@ -50,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         V2TIMManager.sharedInstance().setAPNSListener(self)
         V2TIMManager.sharedInstance().addConversationListener(listener: self)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(pushRegisterIfLoggedIn(_:)),
+        NotificationCenter.default.addObserver(self, selector: #selector(registerIfLoggedIn(_:)),
                                                name: Notification.Name("TUILoginSuccessNotification"),
                                                object: nil)
         
@@ -85,7 +79,15 @@ extension AppDelegate: V2TIMConversationListener, V2TIMAPNSListener {
         debugPrint("Failed to register for remote notifications: \(error.localizedDescription)")
     }
     
-    @objc func pushRegisterIfLoggedIn(_ notification: Notification) {
+    @objc func registerIfLoggedIn(_ notification: Notification) {
+        DispatchQueue.main.async {
+            TUICallKit.createInstance().enableFloatWindow(enable: true)
+#if canImport(TUICallKit_Swift)
+            TUICallKit.createInstance().enableVirtualBackground(enable: true)
+            TUICallKit.createInstance().enableIncomingBanner(enable: true)
+#endif
+        }
+        
         let config = V2TIMAPNSConfig()
         config.token = deviceToken
         config.businessID = businessID

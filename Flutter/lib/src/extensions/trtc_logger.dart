@@ -3,7 +3,6 @@ import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.
 enum TRTCLoggerLevel { info, warning, error }
 
 class TRTCLogger {
-
   static void info(String message) async {
     await TUICallKitPlatform.instance.apiLog(TRTCLoggerLevel.info, message);
   }

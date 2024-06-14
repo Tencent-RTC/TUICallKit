@@ -71,3 +71,6 @@
 "TUICallKit.JoinGroupView.join" = "الانضمام";
 "TUICallKit.JoinGroupView.audioCall" = "مكالمة صوتية";
 "TUICallKit.JoinGroupView.videoCall" = "مكالمة فيديو";
+
+"TUICallKit.OtherParty.NetworkLowQuality" = "شبكة الطرف الآخر ضعيفة";
+"TUICallKit.Self.NetworkLowQuality" = "شبكتك ضعيفة في المكالمة";

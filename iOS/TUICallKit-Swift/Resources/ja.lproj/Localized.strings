@@ -71,3 +71,6 @@
 "TUICallKit.JoinGroupView.join" = "参加する";
 "TUICallKit.JoinGroupView.audioCall" = "音声通話";
 "TUICallKit.JoinGroupView.videoCall" = "ビデオ通話";
+
+"TUICallKit.OtherParty.NetworkLowQuality" = "相手のネットワークが悪い";
+"TUICallKit.Self.NetworkLowQuality" = "あなたのネットワークが悪い";

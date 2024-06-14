@@ -10,11 +10,11 @@ import TUICallEngine
 
 protocol BackToFlutterWidgetDelegate: NSObject {
     func backCallingPageFromFloatWindow()
-    func launchCallingPageFromIncomingFloatWindow()
+    func launchCallingPageFromIncomingBanner()
 }
 
-class WindowManger: NSObject, FloatWindowViewDelegate, IncomingFloatWindowViewDelegate {
-    
+class WindowManger: NSObject, FloatWindowViewDelegate, IncomingBannerViewDelegate {
+        
     static let instance = WindowManger()
     
     let remoteUserVideoAvailableObserver = Observer()
@@ -26,7 +26,7 @@ class WindowManger: NSObject, FloatWindowViewDelegate, IncomingFloatWindowViewDe
     var floatWindowBeganOrigin: CGPoint?
     
     weak var backToFlutterWidgetDelegate: BackToFlutterWidgetDelegate?
-    weak var incomingFloatWindowViewDelegate: IncomingFloatWindowViewDelegate?
+    weak var incomingBannerViewDelegate: IncomingBannerViewDelegate?
 
     var floatWindow = UIWindow()
     
@@ -157,9 +157,9 @@ class WindowManger: NSObject, FloatWindowViewDelegate, IncomingFloatWindowViewDe
         }
     }
     
-    // MARK: Incoming Float Window
-    func showIncomingFloatWindow() {
-        let incomingFloatView = IncomingFloatView(frame: CGRect.zero)
+    // MARK: Incoming Banner
+    func showIncomingBanner() {
+        let incomingFloatView = IncomingBannerView(frame: CGRect.zero)
         incomingFloatView.delegate = self
         let viewController = UIViewController()
         viewController.view.addSubview(incomingFloatView)
@@ -173,7 +173,7 @@ class WindowManger: NSObject, FloatWindowViewDelegate, IncomingFloatWindowViewDe
         floatWindow.t_makeKeyAndVisible()
     }
 
-    func closeIncomingFloatWindow() {
+    func closeIncomingBannerView() {
         closeFloatWindow()
     }
     
@@ -182,7 +182,7 @@ class WindowManger: NSObject, FloatWindowViewDelegate, IncomingFloatWindowViewDe
         if self.backToFlutterWidgetDelegate != nil &&
             ((self.backToFlutterWidgetDelegate?.responds(to: Selector(("backToFlutterWidgetDelegate")))) != nil) &&
             TUICallState.instance.selfUser.value.callStatus.value != .none {
-            self.backToFlutterWidgetDelegate?.launchCallingPageFromIncomingFloatWindow()
+            self.backToFlutterWidgetDelegate?.launchCallingPageFromIncomingBanner()
         }
     }
 }

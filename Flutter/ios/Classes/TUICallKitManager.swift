@@ -253,16 +253,25 @@ class TUICallKitManager {
         }
     }
         
-    func runAppToNative(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard let event = MethodUtils.getMethodParams(call: call, key: "event", resultType: String.self) else {
-            FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "runAppToNative", paramKey: "event", result: result)
+    func showIncomingBanner(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        WindowManger.instance.showIncomingBanner();
+        result(NSNumber(value: 0))
+    }
+    
+    func enableWakeLock(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enable = MethodUtils.getMethodParams(call: call, key: "enable", resultType: Bool.self) else {
+            FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "enableWakeLock", paramKey: "enable", result: result)
             result(NSNumber(value: -1))
             return
         }
-        
-        if (event == "event_handle_receive_call") {
-            WindowManger.instance.showIncomingFloatWindow();
+
+        if enable {
+            WakeLock.shareInstance().enable()
+        } else {
+            WakeLock.shareInstance().disable()
         }
+
         result(NSNumber(value: 0))
     }
+
 }

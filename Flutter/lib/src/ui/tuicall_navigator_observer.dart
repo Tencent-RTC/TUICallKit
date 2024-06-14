@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:tencent_calls_uikit/src/boot.dart';
 import 'package:tencent_calls_uikit/src/extensions/calling_bell_feature.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
-import 'package:tencent_calls_uikit/src/ui/widget/inviteuser/invite_user_widget.dart';
 import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/ui/tuicall_kit_widget.dart';
+import 'package:tencent_calls_uikit/src/ui/widget/inviteuser/invite_user_widget.dart';
 
 class TUICallKitNavigatorObserver extends NavigatorObserver {
-  static final TUICallKitNavigatorObserver _instance =
-      TUICallKitNavigatorObserver();
+  static final TUICallKitNavigatorObserver _instance = TUICallKitNavigatorObserver();
   static bool isClose = true;
   static CallPage currentPage = CallPage.none;
 
@@ -26,9 +25,7 @@ class TUICallKitNavigatorObserver extends NavigatorObserver {
       return;
     }
     currentPage = CallPage.callingPage;
-    TUICallKitNavigatorObserver.getInstance()
-        .navigator
-        ?.push(MaterialPageRoute(builder: (widget) {
+    TUICallKitNavigatorObserver.getInstance().navigator?.push(MaterialPageRoute(builder: (widget) {
       return TUICallKitWidget(close: () {
         if (!isClose) {
           isClose = true;

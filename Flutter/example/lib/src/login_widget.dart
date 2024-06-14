@@ -288,14 +288,19 @@ class _LoginWidgetState extends State<LoginWidget> {
     final result = await TUICallKit.instance.login(GenerateTestUserSig.sdkAppId,
         _userId, GenerateTestUserSig.genTestSig(_userId));
 
-    await TencentImSDKPlugin.v2TIMManager.initSDK(sdkAppID: GenerateTestUserSig.sdkAppId, loglevel: LogLevelEnum.V2TIM_LOG_INFO, listener: V2TimSDKListener());
-    await TencentImSDKPlugin.managerInstance().login(userID: _userId, userSig: GenerateTestUserSig.genTestSig(_userId));
     TencentCloudChatPush().registerPush(onNotificationClicked: _onNotificationClicked);
 
     if (result.code.isEmpty) {
+
+      SettingsConfig.showBlurBackground = true;
+      SettingsConfig.enableFloatWindow = true;
+      SettingsConfig.showIncomingBanner = true;
+      TUICallKit.instance.enableVirtualBackground(true);
+      TUICallKit.instance.enableFloatWindow(true);
+      TUICallKit.instance.enableIncomingBanner(true);
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString("userId", _userId);
-
       setObserverFunction(callsEnginePlugin: TUICallEngine.instance);
       SettingsConfig.userId = _userId;
       final imInfo = await TencentImSDKPlugin.v2TIMManager

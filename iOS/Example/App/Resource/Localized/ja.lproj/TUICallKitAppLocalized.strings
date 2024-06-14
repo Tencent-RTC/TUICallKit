@@ -58,6 +58,8 @@
 "TUICallKitApp.Setting.RingSetting" = "着信音を設定します";
 "TUICallKitApp.Setting.MuteMode" = "ミュートモード";
 "TUICallKitApp.Setting.EnableFloating" = "フローティングウィンドウの表示";
+"TUICallKitApp.Setting.EnableVirtualBackground" = "バーチャル背景";
+"TUICallKitApp.Setting.EnableIncomingBanner" = "着信表示バナー";
 "TUICallKitApp.Setting.IntRoomId" = "ルームID（番号）";
 "TUICallKitApp.Setting.StrRoomId" = "ルームID（文字列）";
 "TUICallKitApp.Setting.Timeout" = "タイムアウト時間";
@@ -77,14 +79,11 @@
 "TUICallKitApp.Setting.SetAvatar" = "アバターを設定";
 "TUICallKitApp.Setting.SetRing" = "着信音を設定します";
 "TUICallKitApp.Setting.SetExtend" = "拡張情報を設定";
-"TUICallKitApp.Setting.SetOffInleInfo" = "オフラインプッシュメッセージを設定";
+"TUICallKitApp.Setting.SetOffLineInfo" = "オフラインプッシュメッセージを設定";
 "TUICallKitApp.Setting.SetAvatarTip" = "アバターのURLアドレスを入力してください。";
 "TUICallKitApp.Setting.SetRingTip" = "着信音のパスを設定します";
 "TUICallKitApp.Setting.SetExtendTip" = "招待シグナリングの拡張情報を入力してください";
-"TUICallKitApp.Setting.SetOffInleInfoTip" = "オフラインプッシュメッセージのjson文字列を入力してください。";
-
-"TUICallKitApp.GroupCall.Intrduce" = "グループ通話を使用する前にIMグループを作成する必要があります。グループ作成の詳細は以下を参照してください：";
-"TUICallKitApp.GroupCall.GroupManage" = "グループ管理";
+"TUICallKitApp.Setting.SetOffLineInfoTip" = "オフラインプッシュメッセージのjson文字列を入力してください。";
 
 "TUICallKitApp.QuickAccess" = "クイックアクセス";
 "TUICallKitApp.Version" = "バージョン";

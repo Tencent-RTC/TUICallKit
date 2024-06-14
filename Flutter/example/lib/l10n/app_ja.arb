@@ -55,5 +55,6 @@
   "extended_info_settings": "拡張情報設定",
   "offline_push_info_settings": "オフラインプッシュメッセージ設定",
   "please_enter": "入力してください",
-  "show_blur_background_button": "背景をぼかす"
+  "show_blur_background_button": "背景をぼかす",
+  "show_incoming_banner": "着信表示バナー"
 }

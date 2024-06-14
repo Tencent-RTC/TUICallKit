@@ -57,7 +57,9 @@
 "TUICallKitApp.UserInfo.NickName" = "昵称";
 "TUICallKitApp.Setting.RingSetting" = "铃声设置";
 "TUICallKitApp.Setting.MuteMode" = "静音模式";
-"TUICallKitApp.Setting.EnableFloating" = "开启悬浮窗";
+"TUICallKitApp.Setting.EnableFloating" = "显示悬浮窗按钮";
+"TUICallKitApp.Setting.EnableVirtualBackground" = "显示虚拟背景按钮";
+"TUICallKitApp.Setting.EnableIncomingBanner" = "横幅显示来电";
 "TUICallKitApp.Setting.IntRoomId" = "整型房间号";
 "TUICallKitApp.Setting.StrRoomId" = "字符串房间号";
 "TUICallKitApp.Setting.Timeout" = "呼叫超时时长";
@@ -77,14 +79,11 @@
 "TUICallKitApp.Setting.SetAvatar" = "设置头像";
 "TUICallKitApp.Setting.SetRing" = "设置铃声";
 "TUICallKitApp.Setting.SetExtend" = "设置扩展信息";
-"TUICallKitApp.Setting.SetOffInleInfo" = "设置离线推送消息";
+"TUICallKitApp.Setting.SetOffLineInfo" = "设置离线推送消息";
 "TUICallKitApp.Setting.SetAvatarTip" = "请输入头像的URL地址。";
 "TUICallKitApp.Setting.SetRingTip" = "请输入铃声地址。";
 "TUICallKitApp.Setting.SetExtendTip" = "请输入扩展信息。";
-"TUICallKitApp.Setting.SetOffInleInfoTip" = "请输入离线推送消息的json串。";
-
-"TUICallKitApp.GroupCall.Intrduce" = "使用群组通话前需要创建IM群组，群组创建详见：";
-"TUICallKitApp.GroupCall.GroupManage" = "群组管理";
+"TUICallKitApp.Setting.SetOffLineInfoTip" = "请输入离线推送消息的json串。";
 
 "TUICallKitApp.QuickAccess" = "快速访问";
 "TUICallKitApp.Version" = "版本";

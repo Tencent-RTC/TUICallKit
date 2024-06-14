@@ -1,6 +1,6 @@
 name: tencent_calls_uikit
 description: TUICallKit is a UIKit about audio&video calls launched by Tencent Cloud.
-version: 2.3.2
+version: 2.3.5
 repository: https://github.com/tencentyun/TUICallKit
 homepage: https://trtc.io/
 
@@ -15,10 +15,10 @@ dependencies:
   path_provider: ^2.0.12
   plugin_platform_interface: ^2.0.2
   shared_preferences: ^2.2.0
-  wakelock_plus: ^1.1.4
+  crypto: ^3.0.1
 
   tencent_calls_engine: ">=2.3.2 <2.4.0"
-  tencent_cloud_uikit_core: ^1.6.2
+  tencent_cloud_uikit_core: ^1.6.3
   tencent_cloud_chat_sdk: any
 
 dev_dependencies:

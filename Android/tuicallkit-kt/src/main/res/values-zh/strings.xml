@@ -5,8 +5,8 @@
     <string name="tuicallkit_toast_speaker">扬声器已开</string>
     <string name="tuicallkit_toast_use_earpiece">扬声器已关</string>
     <string name="tuicallkit_toast_user_end">%s 结束通话</string>
-    <string name="tuicallkit_other_party_network_low_quality">对方网络不佳</string>
-    <string name="tuicallkit_self_network_low_quality">己方网络不佳</string>
+    <string name="tuicallkit_other_party_network_low_quality">当前通话对方网络不佳</string>
+    <string name="tuicallkit_self_network_low_quality">当前通话你的网络不佳</string>
     <string name="tuicallkit_toast_switch_camera">翻转</string>
     <string name="tuicallkit_toast_enable_camera">摄像头已开</string>
     <string name="tuicallkit_toast_disable_camera">摄像头已关</string>

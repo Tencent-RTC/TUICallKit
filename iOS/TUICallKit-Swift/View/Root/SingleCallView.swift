@@ -245,10 +245,6 @@ class SingleCallView: UIView {
     func createCallStatusTipView() {
         if viewModel.selfCallRole.value == .call {
             callStatusTipView.isHidden = false
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                self.callStatusTipView.isHidden = true
-            }
         }
     }
     

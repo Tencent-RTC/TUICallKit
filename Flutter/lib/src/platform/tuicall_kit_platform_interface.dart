@@ -53,8 +53,8 @@ abstract class TUICallKitPlatform extends PlatformInterface {
     return await instance.isAppInForeground();
   }
 
-  Future<bool> runAppToNative(String event) async {
-    return await instance.runAppToNative(event);
+  Future<bool> showIncomingBanner() async {
+    return await instance.showIncomingBanner();
   }
 
   Future<bool> initResources(Map resources) async {
@@ -73,20 +73,24 @@ abstract class TUICallKitPlatform extends PlatformInterface {
     await instance.apiLog(level, logString);
   }
 
-  Future<bool> hasPermissions(
-      {required List<PermissionType> permissions}) async {
+  Future<bool> hasPermissions({required List<PermissionType> permissions}) async {
     return await instance.hasPermissions(permissions: permissions);
   }
 
   Future<PermissionResult> requestPermissions(
       {required List<PermissionType> permissions,
-        String title = "",
-        String description = "",
-        String settingsTip = ""}) async {
+      String title = "",
+      String description = "",
+      String settingsTip = ""}) async {
     return await instance.requestPermissions(
-        permissions: permissions,
-        title: title,
-        description: description,
-        settingsTip: settingsTip);
+        permissions: permissions, title: title, description: description, settingsTip: settingsTip);
+  }
+
+  Future<void> pullBackgroundApp() async {
+    await instance.pullBackgroundApp();
+  }
+
+  Future<void> enableWakeLock(bool enable) async {
+    await instance.enableWakeLock(enable);
   }
 }
