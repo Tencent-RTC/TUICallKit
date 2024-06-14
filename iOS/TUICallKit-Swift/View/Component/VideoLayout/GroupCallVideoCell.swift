@@ -441,7 +441,6 @@ class GroupCallVideoCell: UICollectionViewCell {
             renderView.isHidden = false
             switchCameraBtn.isHidden = false
             virtualBackgroundBtn.isHidden = !TUICallState.instance.showVirtualBackgroundButton
-            viewModel.openCamera(videoView: renderView)
         } else {
             switchCameraBtn.isHidden = true
             virtualBackgroundBtn.isHidden = true
