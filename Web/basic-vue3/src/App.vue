@@ -35,7 +35,6 @@ const isLoadCalling = ref<boolean>(false);
 
 const typeString = ref<string>("video");
 const isCalling = ref<boolean>(false);
-const isPictureVirtualBackground = ref<boolean>(false);
 const groupID = ref<string>("");
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let tim: any = null;
@@ -81,7 +80,6 @@ async function login() {
       SDKAppID: SDKAppID.value,
       tim
     });
-    TUICallKitServer.enableVirtualBackground(true);
     currentUserID.value = loginUserID.value;
     isLogin.value = true;
     if (finishedRTCDetectStatus.value !== "finished" && finishedRTCDetectStatus.value !== "skiped") initNetWorkInfo();
@@ -89,6 +87,10 @@ async function login() {
   } catch (error: any) {
     if (error.message) ElMessage.error(`${t("login-failed-message")} ${error.message}`);
   }
+}
+function handleDestroy() {
+  TUICallKitServer.destroyed();
+  isLogin.value = false;
 }
 
 function switchCallType(type: string) {
@@ -268,14 +270,6 @@ function switchLanguage() {
       break;
   }
 }
-function isUsePictureVirtualChange() {
-  if (!isPictureVirtualBackground.value) {
-    TUICallKitServer.getTUICallEngineInstance().setVirtualBackground('https://web.sdk.qcloud.com/trtc/call/rg-test/360p-image.jpeg');
-  } else {
-    TUICallKitServer.getTUICallEngineInstance().setVirtualBackground('');
-  }
-  isPictureVirtualBackground.value = !isPictureVirtualBackground.value;
-}
 
 async function logout() {
   await TUICallKitServer.destroyed();
@@ -287,55 +281,91 @@ function handleKickedOut() {
   console.log("The user has been kicked out");
   isLogin.value = false;
 }
+
+let TUICallKitStatus: string = STATUS.IDLE;
+function handleStatusChanged(args: { oldStatus: string; newStatus: string; }) {
+  const { oldStatus, newStatus } = args;
+  console.log("Call status changes: " + oldStatus + " -> " + newStatus);
+  TUICallKitStatus = newStatus;
+}
+
+async function accept() {
+  try {
+    if (TUICallKitStatus === STATUS.BE_INVITED) {
+      await TUICallKitServer.accept();
+      ElMessage.warning("Answered automatically");
+    }
+  } catch (error: any) {
+    alert(`Automatic answering failed, reason: ${error}`);
+  }
+}
+
+async function reject() {
+  try {
+    if (TUICallKitStatus === STATUS.BE_INVITED) {
+      await TUICallKitServer.reject();
+      ElMessage.warning("Automatically rejected");
+    }
+  } catch (error: any) {
+    alert(`Automatic rejection failed due to: ${error}`);
+  }
+}
+
+async function hangup() {
+  try {
+    if (TUICallKitStatus === STATUS.CALLING_C2C_AUDIO || TUICallKitStatus === STATUS.CALLING_C2C_VIDEO || TUICallKitStatus === STATUS.CALLING_GROUP_AUDIO || TUICallKitStatus === STATUS.CALLING_GROUP_VIDEO) {
+      await TUICallKitServer.hangup();
+      ElMessage.warning("Automatically hung up");
+    }
+  } catch (error: any) {
+    alert(`Automatic hang-up failed, reason: ${error}`);
+  }
+}
+
 </script>
 
 <template>
   <div class="wrapper">
-    <DeviceDetector
+    <div v-show="isLogin">
+      <DeviceDetector
       :visible="showDeviceDetector"
       :onClose="handleClose"
       :onFinish="handleFinishDetect"
       :networkDetectInfo="networkDetectInfo"
     >
     </DeviceDetector>
-    <div style="display: flex; height: 100px; width: 100%; justify-content: space-around;">
-      <div v-if="!isCalling" style="display: flex; align-items: center">
-        <div class="switch">
-          <div
-            class="switch-btn"
-            :class="typeString === 'video' ? 'switch-select' : ''"
-            :style="isCalling ? 'cursor: not-allowed' : 'cursor: pointer'"
-            @click="switchCallType('video')"
-          >
-            <img
-              :src="typeString === 'video' ? videoWhiteSVG : videoBlackSVG"
-              class="icon"
-            />
-            <span class="switch-name"> {{ t("video-call") }} </span>
-          </div>
-          <div
-            class="switch-btn"
-            :class="typeString === 'audio' ? 'switch-select' : ''"
-            :style="isCalling ? 'cursor: not-allowed' : 'cursor: pointer'"
-            @click="switchCallType('audio')"
-          >
-            <img
-              :src="typeString === 'audio' ? audioWhiteSVG : audioBlackSVG"
-              class="icon"
-            />
-            <span class="switch-name"> {{ t("voice-call") }} </span>
-          </div>
+    <div v-if="!isCalling" style="display: flex; align-items: center; justify-content: center;">
+      <div class="switch">
+        <div
+          class="switch-btn"
+          :class="typeString === 'video' ? 'switch-select' : ''"
+          :style="isCalling ? 'cursor: not-allowed' : 'cursor: pointer'"
+          @click="switchCallType('video')"
+        >
+          <img
+            :src="typeString === 'video' ? videoWhiteSVG : videoBlackSVG"
+            class="icon"
+          />
+          <span class="switch-name"> {{ t("video-call") }} </span>
+        </div>
+        <div
+          class="switch-btn"
+          :class="typeString === 'audio' ? 'switch-select' : ''"
+          :style="isCalling ? 'cursor: not-allowed' : 'cursor: pointer'"
+          @click="switchCallType('audio')"
+        >
+          <img
+            :src="typeString === 'audio' ? audioWhiteSVG : audioBlackSVG"
+            class="icon"
+          />
+          <span class="switch-name"> {{ t("voice-call") }} </span>
         </div>
       </div>
-      <div style="width: 200px; display: flex; align-items: center;" v-if="!isMobile && isCalling">
-        <span style="font-size: 18px;">是否使用图片背景</span>
-        <input class="" :checked="isPictureVirtualBackground" type="checkbox" bindchange="" style="height: 18px; width: 18px;" @click="isUsePictureVirtualChange()" />
-      </div>
-      <div :class="isMobile?'switch-language-H5':'switch-language'" @click="switchLanguage()">
-        <img :src="languageSVG" class="icon" />
-        <div class="language-name">
-          {{ locale == "en" ? "简体中文" : "English" }}
-        </div>
+    </div>
+    <div :class="isMobile?'switch-language-H5':'switch-language'" @click="switchLanguage()">
+      <img :src="languageSVG" class="icon" />
+      <div class="language-name">
+        {{ locale == "en" ? "English" : "简体中文" }}
       </div>
     </div>
     <div :class="isMobile?'call-kit-container-H5':'call-kit-container'">
@@ -403,14 +433,20 @@ function handleKickedOut() {
         :statusChanged="handleStatusChanged"
       />
     </div>
+    </div>
     <div id="debug" v-show="!isLogin">
-      <div>
-        <b>Debug Panel</b>
+      <h2>Login Panel</h2>
+      <div class="panel-form">
+        <input class="panel-input" v-model="loginUserID" placeholder="Please input userID" />
+        <button class="panel-btn" @click="login()">{{ t("login") }}</button>
       </div>
-      <span>UserID: </span>
-      <input v-model="loginUserID" placeholder="UserID" />
-      <br />
-      <button @click="login()">{{ t("login") }}</button>
+      <div class="panel-link">
+        <h5> 
+          Link: 
+          <a href="https://trtc.io/document/50993?platform=web&product=call"> Integration | </a>
+          <a href="https://trtc.io/demo/homepage/#/detail?scene=callkit"> More Products </a>
+        </h5>
+      </div>
     </div>
   </div>
 </template>
