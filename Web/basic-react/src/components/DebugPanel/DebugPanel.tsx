@@ -62,20 +62,30 @@ export default function BaseForm() {
 
   return (
     <>
-      <div style={{ width: 350 }}>
-        <h4> {t("Debug Panel")}</h4>
-        <Input
-          value={userId}
-          prefixIcon={<LockOnIcon />}
-          clearable={true}
-          onChange={(value) => {
-            setUserId(value);
-          }}
-          placeholder={t("Please enter userId")}
-        />
-        <Button onClick={onSubmit} theme="primary" type="submit" block>
-          {t("login")}
-        </Button>
+      <div>
+        <h2> {t("Login Panel")}</h2>
+        <div className="panel-form">
+          <Input
+            className="panel-input"
+            value={userId}
+            prefixIcon={<LockOnIcon />}
+            clearable={true}
+            onChange={(value) => {
+              setUserId(value);
+            }}
+            placeholder={t("Please input userID")}
+          />
+          <Button className="panel-btn" onClick={onSubmit} theme="primary" type="submit" block>
+            {t("login")}
+          </Button>
+        </div>
+        <div className="panel-link">
+          <h5> 
+            Link: 
+            <a href="https://trtc.io/document/58484?platform=web&product=call"> Integration | </a>
+            <a href="https://trtc.io/demo/homepage/#/detail?scene=callkit"> More Products </a>
+          </h5>
+        </div>
       </div>
     </>
   );

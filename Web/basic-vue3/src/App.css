@@ -259,19 +259,19 @@ body,
   display: flex;
   flex-wrap: nowrap;
 
-  /* margin-top: 36px; */
-  /* margin-bottom: 3rem; */
+  margin-top: 36px;
+  margin-bottom: 3rem;
 }
 
 .switch-language {
   cursor: pointer;
-  /* width: 200px; */
+  width: 100px;
   user-select: none;
   display: flex;
   align-items: center;
-  /* position: absolute;
-  top: 40px;
-  right: 36px; */
+  position: absolute;
+  top: 36px;
+  right: 36px;
 }
 
 .switch-language-H5 {
@@ -280,9 +280,9 @@ body,
   user-select: none;
   display: flex;
   align-items: center;
-  /* position: absolute;
+  position: absolute;
   top: 6px;
-  right: 6px; */
+  right: 6px;
 }
 
 .language-name {
@@ -317,7 +317,6 @@ body,
   max-width: 100%;
   max-height: 100vh;
   border-radius: 16px;
-  /* top: 80px; */
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
   font-family: "PingFang SC";
   overflow: hidden;
@@ -353,14 +352,55 @@ body,
 }
 
 #debug {
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.16);
-  border: 1px solid #666;
+  background-color: white;
+  padding: 50px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+  margin-top: 150px;
+  width: 350px;
+}
+
+#debug h2 {
+  text-align: center;
+  margin-bottom: 55px;
+}
+
+#debug .panel-form {
+  display: flex;
+  flex-direction: column;
+}
+
+#debug h5 {
+  display: inline;
+}
+.panel-link {
+  margin-top: 15px;
+}
+
+#debug .panel-input {
+  margin-bottom: 20px;
+  border-radius: 5px;
+  height: 30px;
+  border: 1px solid #ccc;
+}
+
+#debug .panel-btn {
+  margin: 10px 0;
   padding: 10px;
-  z-index: 10;
-  box-sizing: border-box;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#debug .panel-btn:hover {
+  background-color: #0056b3;
+}
+
+.panel-link a {
+  text-decoration:none;
+  color:#0849ee;
 }
 
 input::-webkit-outer-spin-button,

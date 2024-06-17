@@ -63,13 +63,13 @@ function App() {
 
   return (
     <>
-      <TUICallKit className='TUICallKit-body' 
-      style={callkitStyle} 
-      beforeCalling={handleBeforeCalling} 
-      afterCalling={handleAfterCalling} 
-      allowedMinimized={true}
-      allowedFullScree={true}
-      ></TUICallKit>
+      <TUICallKit 
+        className='TUICallKit-body' 
+        style={callkitStyle} 
+        beforeCalling={handleBeforeCalling} 
+        afterCalling={handleAfterCalling} 
+        allowedMinimized={true}
+      />
       {
         <StoreContext.Provider
           value={{
@@ -85,18 +85,21 @@ function App() {
           }}
         >
           <div className="wrapper">
-            <div className="switch">
-              <SwitchMode></SwitchMode>
-            </div>
-            {(useId && !isCalling && TUIGlobal.isPC) && <QRCodeContainer></QRCodeContainer>}
-            <div className="call-kit-container">
-              <div className="search-window">
-                <SearchBox></SearchBox>
+            { useId && ( <>
+              <div className="switch">
+                <SwitchMode></SwitchMode>
               </div>
-              <div className="result-list">
-                <ResultList></ResultList>
-              </div>
-            </div>
+              {(useId && !isCalling && TUIGlobal.isPC) && <QRCodeContainer></QRCodeContainer>}
+              <div className="call-kit-container">
+                <div className="search-window">
+                  <SearchBox></SearchBox>
+                </div>
+                <div className="result-list">
+                  <ResultList></ResultList>
+                </div>
+              </div> 
+            </> ) }
+          
             {!useId && (
               <div id="debug">
                 <DebugPanel></DebugPanel>
