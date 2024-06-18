@@ -8,7 +8,7 @@
 <img src="https://img.shields.io/badge/support-docs%20%26%20demos-yellow">
 <img src="https://img.shields.io/npm/l/@tencentcloud/call-uikit-react">
 
-[Demo](https://web.sdk.qcloud.com/component/TUICallKit/demos/basic-react/index.html) · [Report Bug](https://github.com/tencentyun/TUICallKit/issues) · English · [中文](https://github.com/tencentyun/TUICallKit/blob/main/Web/README-zh_CN.md)
+[Demo](https://trtc.io/demo/homepage/#/detail?scene=callkit) · [Docs](https://trtc.io/document/58484?platform=web&product=call) · English · [中文](https://github.com/tencentyun/TUICallKit/blob/main/Web/README-zh_CN.md)
 </div>
 
 ![](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
@@ -48,7 +48,7 @@ Here are a few guidelines for using this component
 
 - Click [React online-demo](https://web.sdk.qcloud.com/component/TUICallKit/demos/basic-react/index.html) to try out 1v1 Voice and Video Call online. [Vue online-demo](https://rtcube.cloud.tencent.com/prerelease/internation/homepage/index.html#/detail?scene=callkit).
 
-- If you want to experience it in your dev mode, please read [Run the React Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/basic-react); [Run the Vue Demo](https://github.com/tencentyun/TUICallKit/blob/main/Web/basic-vue3).
+- If you want to experience it in your dev mode, please read [Run Sample Demo](https://trtc.io/document/60415?platform=web&product=call).
 
 - If you want to install this component into your project, please read [TUICallKit Getting Started](https://trtc.io/document/58484).
 

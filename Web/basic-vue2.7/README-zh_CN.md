@@ -1,6 +1,6 @@
 # Call UIKit for Vue QuickStart
 
-<a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/call-uikit-demos/basic-vue2.7/README.md"> English </a> | <b> 简体中文 </b> 
+<a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/basic-vue2.7/README.md"> English </a> | <b> 简体中文 </b> 
 
 <img src="https://img.shields.io/badge/Platform-Vue2.7-orange.svg"><img src="https://img.shields.io/badge/Language-Typescript-orange.svg">
 
@@ -48,7 +48,7 @@ Calls SDK for Web Vue2.7 demo 的最低要求是：
    npm install
   ```
 
-3. 配置 SDKAppID 和 SDKSecretKey 在 `Web/call-uikit-demos/basic-vue2.7/public/debug/GenerateTestUserSig-es.js` 文件中填写 SDKAppID 和 SecretKey。
+3. 配置 SDKAppID 和 SDKSecretKey 在 `Web/basic-vue2.7/public/debug/GenerateTestUserSig-es.js` 文件中填写 SDKAppID 和 SecretKey。
   ```javascript
    const SDKAPPID = 0;
    const SECRETKEY = '';

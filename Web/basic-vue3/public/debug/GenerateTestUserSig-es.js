@@ -4,7 +4,7 @@ import LibGenerateTestUserSig from './lib-generate-test-usersig-es.min.js';
 /**
  * Tencent Cloud `SDKAppID`. Set it to the `SDKAppID` of your account.
  *
- * You can view your `SDKAppID` after creating an application in the [TRTC console](https://console.cloud.tencent.com/trtc).
+ * You can view your `SDKAppID` after creating an application in the [TRTC console](https://console.trtc.io/).
  * `SDKAppID` uniquely identifies a Tencent Cloud account.
 */
 const SDKAPPID = 0;
@@ -22,7 +22,7 @@ const EXPIRETIME = 604800;
 /**
  * Follow the steps below to obtain the key required for UserSig calculation.
  *
- * Step 1. Log in to the [TRTC console](https://console.cloud.tencent.com/trtc), and create an application if you don’t have one.
+ * Step 1. Log in to the [TRTC console](https://console.trtc.io/), and create an application if you don’t have one.
  * Step 2. Find your application, click “Application Info”, and click the “Quick Start” tab.
  * Step 3. Copy and paste the key to the code, as shown below.
  *
@@ -45,7 +45,7 @@ const SECRETKEY = '';
 ///            The correct method is to deploy the `UserSig` calculation code and encryption key on your project server so that your app can request from your server a `UserSig` that is calculated whenever one is needed.
 ///           Given that it is more difficult to hack a server than a client app, server-end calculation can better protect your key.
 ///
-/// Reference: https://cloud.tencent.com/document/product/647/17275#Server
+/// Reference: https://trtc.io/document/35166?platform=web&product=rtcengine
 
 /**
  * Generate a temporary UserSig. Please do not publish or submit the following code to your code repository.

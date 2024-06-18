@@ -48,7 +48,7 @@ Calls SDK for Web Vue2.6 demo 的最低要求是：
    npm install
   ```
 
-3. 配置 SDKAppID 和 SDKSecretKey 在 `Web/call-uikit-demos/public/debug/GenerateTestUserSig-es.js` 文件中填写 SDKAppID 和 SecretKey。
+3. 配置 SDKAppID 和 SDKSecretKey 在 `Web/public/debug/GenerateTestUserSig-es.js` 文件中填写 SDKAppID 和 SecretKey。
   ```javascript
    const SDKAPPID = 0;
    const SECRETKEY = '';
