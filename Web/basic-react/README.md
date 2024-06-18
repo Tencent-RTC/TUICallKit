@@ -1,6 +1,6 @@
 # Call UIKit for React QuickStart
 
-<b> English </b> | <a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/call-uikit-demos/basic-react/README-zh_CN.md"> 简体中文 </a>
+<b> English </b> | <a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/basic-react/README-zh_CN.md"> 简体中文 </a>
 
 <img src="https://img.shields.io/badge/Platform-React-orange.svg"><img src="https://img.shields.io/badge/Language-Typescript-orange.svg">
 
@@ -45,12 +45,12 @@ If you would like to try the demo specifically fit to your usage, you can do so 
 2. Install dependencies
 
   ```shell
-   cd ./TUICallKit/Web/call-uikit-demos/basic-react
+   cd ./TUICallKit/Web/basic-react
    npm install # or, yarn
   ```
 
 3. Specify the SDKAppID and SDKSecretKey
-   Input the SDKAppID and SDKSecretKey into file `Web/call-uikit-demos/basic-react/public/debug/GenerateTestUserSig-es.js`
+   Input the SDKAppID and SDKSecretKey into file `Web/basic-react/public/debug/GenerateTestUserSig-es.js`
   ```javascript
    const SDKAPPID = 0;
    const SECRETKEY = '';

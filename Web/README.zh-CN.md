@@ -8,7 +8,7 @@
 <img src="https://img.shields.io/badge/support-docs%20%26%20demos-yellow">
 <img src="https://img.shields.io/npm/l/@tencentcloud/call-uikit-react">
 
-[Demo](https://web.sdk.qcloud.com/component/TUICallKit/demos/basic-react/index.html) · [Report Bug](https://github.com/tencentyun/TUICallKit/issues) · [English](https://github.com/tencentyun/TUICallKit/blob/main/Web/README.md) · 中文
+[Demo](https://trtc.io/demo/homepage/#/detail?scene=callkit) · [Docs](https://cloud.tencent.com/document/product/647/102510) · [English](https://github.com/tencentyun/TUICallKit/blob/main/Web/README.md) · 中文
 </div>
 
 ![](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
@@ -46,7 +46,7 @@
 
 - 如果您想在线体验通话效果，请访问 [React 音视频通话 demo](https://web.sdk.qcloud.com/component/TUICallKit/demos/basic-react/index.html)、[Vue 音视频通话 demo](https://rtcube.cloud.tencent.com/prerelease/component/experience-center/index.html#/detail?scene=callkit)
 
-- 如果您想要调试通话效果，请阅读 [React Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/basic-react)、 [Vue Demo 快速跑通](https://github.com/tencentyun/TUICallKit/blob/main/Web/basic-vue3)。
+- 如果您想要调试通话效果，请阅读 [跑通 Demo](https://cloud.tencent.com/document/product/647/106905)。
 
 - 如果您想把我们的功能直接嵌入到您的项目中，请阅读 [快速接入 TUICallKit](https://cloud.tencent.com/document/product/647/102510)。
 
