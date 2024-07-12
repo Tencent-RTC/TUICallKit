@@ -1,0 +1,66 @@
+.group-call-input {
+  width: 520px;
+  height: 48px;
+  margin-top: 8px;
+  background: #F0F4FA;
+  border-radius: 28px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  color: #8F9AB2;
+  padding: 0 12px;
+}
+
+.group-call-add {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 24px;
+  color: #1C66E5;
+}
+
+.group-call-text {
+  margin: 24px 0 13px 0;
+}
+
+.group-call-list {
+  width: 140px;
+  height: 30px;
+  box-sizing: content-box;
+  padding: 0 10px;
+  margin: 6px 5px;
+  background: #F2F5FC;
+  border-radius: 8px;
+  line-height: 30px;
+  color: #0F1014;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.group-call-list-text {
+  line-height: 30px;
+  width: 110px;
+  margin-right: 10px;
+}
+
+.group-call-btn {
+  margin-top: 45px;
+  margin-bottom: 30px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 24px;
+  text-align: center;
+  color: #FFFFFF;
+  width: 120px;
+  height: 40px;
+  background: #1C66E5;
+  border-radius: 26px;
+}
+
+.modify-container{
+  justify-content: flex-start;
+  padding-top: 20px;
+  padding-left: 80px;
+  padding-right: 80px;
+}

@@ -1,0 +1,20 @@
+.layout-middle {
+  height: 75vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.layout-card {
+  margin-top: 36px;
+  margin-bottom: 20px;
+}
+.layout-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

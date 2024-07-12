@@ -1,0 +1,18 @@
+.instruction-card {
+  padding: 8px 24px;
+  background: #FFFFFF;
+  box-shadow: 0px 3px 8px #E9F0FB;
+  border-radius: 24px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 24px;
+  color: #4F658A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.instruction-text {
+  margin-left: 4px;
+  margin-right: 77px;
+}

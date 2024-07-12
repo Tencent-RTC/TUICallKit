@@ -1,0 +1,36 @@
+.login-title {
+  font-weight: 500;
+  font-size: 16px;
+  color: #4F586B;
+  line-height: 22px;
+  display: flex;
+  align-items: center;
+}
+
+.login-input {
+  width: 400px;
+  height: 48px;
+}
+
+.login-tip {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 24px;
+  color: #99A2B2;
+}
+
+.login-btn {
+  width: 200px;
+  height: 40px;
+  margin-top: 11px;
+  background: #1C66E5;
+  border-radius: 27px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #FFFFFF;
+}
+
+.login-btn:hover {
+  cursor: pointer;
+}
