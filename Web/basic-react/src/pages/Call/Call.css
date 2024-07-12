@@ -1,0 +1,45 @@
+.call-card {
+  margin-top: 65px;
+  width: 520px;
+}
+
+.call-input {
+  height: 48px;
+  padding: 0 4px 0 20px;
+  margin-top: 12px;
+  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #F0F4FA;
+  font-weight: 400;
+  font-size: 14px;
+  color: #8F9AB2;
+}
+.call-btn {
+  width: 89px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1C66E5;
+  border-radius: 26px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 24px;
+  color: #FFFFFF;
+}
+.call-btn:hover {
+  cursor: pointer;
+}
+.call-qr {
+  margin-top: 173px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.qr-code {
+  position: absolute;
+  right: 43px;
+  bottom: 23px;
+}

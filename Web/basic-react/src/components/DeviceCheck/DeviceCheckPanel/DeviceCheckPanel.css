@@ -1,0 +1,53 @@
+/* ========= Device Check Card =========== */
+.device-check-card {
+  width: 532px;
+  padding: 30px;
+  padding-bottom: 40px;
+  position: absolute;
+  top: 70px;
+  right: 10px;
+  z-index: 10;
+  box-shadow: 0 4px 12px #b1c4e299;
+  background: rgb(255, 255, 255);
+  border-radius: 12px;
+}
+.device-check-title {
+  height: 24px;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 24px;
+  color: #000000;
+}
+.device-sub-title {
+  margin-right: 32px;
+  font-weight: 500;
+  font-size: 16px;
+  color: #000000;
+}
+.device-check-card-margin {
+  margin-top: 20px;
+}
+
+/* ========= Camera =========== */
+.video-bg {
+  width: 360px;
+  height: 202px;
+  background: #D9D9D9;
+  border-radius: 4px;
+  margin: 16px 0;
+}
+.device-tip {
+  height: 17px;
+  margin: 10px 0 10px 0 !important;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 17px;
+  color: #888888;
+}
+/* ========= Speaker =========== */
+.audio-play {
+  height: 34px;
+  background: #F0F0F0;
+  border-radius: 46px;
+  margin-left: 3px;
+}

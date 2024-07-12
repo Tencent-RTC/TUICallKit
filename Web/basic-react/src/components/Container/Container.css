@@ -1,0 +1,27 @@
+.card {
+  width: 680px;
+  height: 450px;
+  background: #FFFFFF;
+  box-shadow: 0px 2px 3px rgba(197, 210, 230, 0.3), 0px 8px 30px rgba(197, 210, 229, 0.3);
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  height: 64px;
+  padding: 0 30px;
+  border-radius: 24px 24px 0 0;
+  background: rgba(197, 210, 229, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}

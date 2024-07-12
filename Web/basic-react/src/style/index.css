@@ -1,0 +1,7 @@
+@import './normalize.css';
+@import './reset-antd.css';
+
+body {
+  background: url('../assets/bg.png');
+  background-size: cover;
+}
