@@ -2,12 +2,20 @@ import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_calls_uikit/src/call_manager.dart';
 import 'package:tencent_calls_uikit/src/ui/tuicall_navigator_observer.dart';
 
+import 'src/call_state.dart';
+
 class TUICallKit {
   static final TUICallKit _instance = TUICallKit();
 
   static TUICallKit get instance => _instance;
 
   static TUICallKitNavigatorObserver navigatorObserver = TUICallKitNavigatorObserver.getInstance();
+
+  // 新增 nickName 回调
+
+  void setNameCallback({NickNameCallback? nameCallback}) {
+    CallState.instance.setNameCallback(nameCallback: nameCallback);
+  }
 
   /// login TUICallKit
   ///
