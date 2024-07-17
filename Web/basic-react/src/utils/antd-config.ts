@@ -20,12 +20,14 @@ const theme = {
       "itemSelectedBg": "rgba(255, 255, 255, 1)",
       "borderRadius": 22,
       "borderRadiusSM": 22,
-      "controlHeight": 36
+      "controlHeight": 36,
+      "trackPadding": 4,
     },
     "Input": {
-      "colorBorder": "rgba(240, 244, 250, 1)",
-      "colorBgContainer": "rgba(240, 244, 250, 1)",
-      "borderRadius": 24
+      "colorBorder": "#E7ECF6",
+      "borderRadius": 8,
+      "activeBorderColor": "F0F4FA",
+      "hoverBorderColor": "F0F4FA",
     }
   }
 }

@@ -49,7 +49,7 @@ Calls SDK for Web React demo 的最低要求是：
    npm install
   ```
 
-3. 配置 SDKAppID 和 SDKSecretKey 在 `Web/basic-react/public/src/GenerateTestUserSig-es.js` 文件中填写 SDKAppID 和 SecretKey。
+3. 配置 SDKAppID 和 SDKSecretKey 在 `Web/basic-react/src/debug/GenerateTestUserSig-es.js` 文件中填写 SDKAppID 和 SecretKey。
   ```javascript
    const SDKAPPID = 0;
    const SECRETKEY = '';

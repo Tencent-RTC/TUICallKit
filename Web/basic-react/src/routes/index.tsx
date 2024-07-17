@@ -3,7 +3,7 @@ import Login from '../pages/Login/Login';
 import Home from '../pages/Home/Home';
 import Call from '../pages/Call/Call';
 import GroupCall from '../pages/GroupCall/GroupCall';
-import Error from '../pages/Error/Error'
+import Error from '../pages/Error/Error';
 
 const router = createHashRouter([
   {

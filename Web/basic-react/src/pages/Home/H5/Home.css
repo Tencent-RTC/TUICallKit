@@ -1,0 +1,24 @@
+.h5-home-title {
+  height: 36px;
+  margin: 25px 0 250px 0px;
+}
+
+.h5-home-panel {
+  margin: 0 auto;
+}
+.h5-home-btn {  
+  width: 320px;
+  height: 60px;
+  background: linear-gradient(315deg, #006EFF 0%, #0C59F2 98.81%);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  margin-bottom: 20px;
+
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+  color: #FFFFFF;
+}
+.h5-home-btn-text {
+  margin-left: 5px;
+}

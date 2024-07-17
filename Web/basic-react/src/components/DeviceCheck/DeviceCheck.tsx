@@ -21,9 +21,12 @@ export default function DeviceCheck() {
 
   return (
     <>
-      <Button onClick={openDeviceCheckPanel}>
+      <Button
+        className='header-card-pc'
+        onClick={openDeviceCheckPanel} 
+      >
         <Image src={DeviceCheckIcon} preview={false} />
-        <Text> {t('Device Detection')} </Text>
+        <Text className='header-card-text'> {t('Device Detection')} </Text>
       </Button>
       {
         isShowPanel && <DeviceCheckPanel operateDevicePanel={operateDevicePanel} />

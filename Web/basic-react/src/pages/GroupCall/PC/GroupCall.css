@@ -1,14 +1,20 @@
+.pc-group-call {
+  height: 100%;
+  margin: 20px 80px auto 80px;
+  position: relative;
+}
+
 .group-call-input {
   width: 520px;
   height: 48px;
   margin-top: 8px;
+  padding: 0 12px;
   background: #F0F4FA;
   border-radius: 28px;
   font-weight: 400;
   font-size: 14px;
   line-height: 22px;
   color: #8F9AB2;
-  padding: 0 12px;
 }
 
 .group-call-add {
@@ -17,6 +23,9 @@
   font-size: 14px;
   line-height: 24px;
   color: #1C66E5;
+}
+.group-call-add:hover {
+  cursor: pointer;
 }
 
 .group-call-text {
@@ -44,7 +53,9 @@
   margin-right: 10px;
 }
 
-.group-call-btn {
+.pc-group-call-init-btn {
+  position: absolute;
+  bottom: 30px;
   margin-top: 45px;
   margin-bottom: 30px;
   font-weight: 600;
@@ -58,9 +69,3 @@
   border-radius: 26px;
 }
 
-.modify-container{
-  justify-content: flex-start;
-  padding-top: 20px;
-  padding-left: 80px;
-  padding-right: 80px;
-}

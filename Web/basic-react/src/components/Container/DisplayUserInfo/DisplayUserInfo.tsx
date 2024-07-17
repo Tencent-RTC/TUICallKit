@@ -14,7 +14,7 @@ export default function DisplayUserInfo() {
         <Flex align='center' className='user-id-text'>
           userID: 
           <Paragraph
-            style={{ maxWidth: 80 }}
+            className='user-id'
             ellipsis={true}
             copyable
           >

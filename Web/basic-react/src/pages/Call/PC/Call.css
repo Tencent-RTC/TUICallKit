@@ -1,22 +1,29 @@
-.call-card {
-  margin-top: 65px;
+.pc-call-card {
+  margin: 85px auto 24px auto;
   width: 520px;
 }
 
-.call-input {
+.pc-call-input-box {
+  width: 520px;
   height: 48px;
   padding: 0 4px 0 20px;
   margin-top: 12px;
   border-radius: 28px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   background: #F0F4FA;
   font-weight: 400;
   font-size: 14px;
   color: #8F9AB2;
 }
-.call-btn {
+.pc-call-input {
+  height: 40px;
+  border: none;
+  margin-right: 5px;
+  border-radius: 28px;
+  background: transparent;
+}
+.pc-call-btn {
   width: 89px;
   height: 40px;
   display: flex;
@@ -29,10 +36,11 @@
   line-height: 24px;
   color: #FFFFFF;
 }
-.call-btn:hover {
+.pc-call-btn:hover {
   cursor: pointer;
 }
-.call-qr {
+/* ========= qr ========= */
+.qr-code-box {
   margin-top: 173px;
   display: flex;
   align-items: center;
@@ -42,4 +50,11 @@
   position: absolute;
   right: 43px;
   bottom: 23px;
+}
+.qr-code-text {
+  margin-right: 4px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  color: #8F9AB2;
 }

@@ -1,10 +1,10 @@
 const ja = {
   // layout
   "Onboard Guide": "実行ガイド",
-  "Free Trial": "無料トライアル",
-  "Integration": "統合ドキュメント",
-  "FAQs": "よくある質問",
-  "Web Demo": "Web 体験ラボ",
+  "Free Trial": "無料トライアル", 
+  "Integration": "統合ドキュメント", 
+  "FAQs": "質問",
+  "Web Demo": "Web 体験",
   "Sensitive links/QR": "機密リンク/QR、ローカル開発のみ。共有しないでください。",
   "Get tech support": "技術サポートの取得",
   "Any problems in running": "実行中に問題が発生しています",
@@ -18,6 +18,12 @@ const ja = {
   "Please input the correct userID": "正しいユーザーIDを入力してください",
   "Login failed":	"ログインに失敗しました",
   "The userID is empty": "userID が空です",
+  "Please fill SDKAppID and SecretKey:": "SDKAppID と SDKSecretKey を入力してください: ",
+  "Please enter the userID you want to create/login": "ユーザーIDを入力してください ",
+  "Copy the link of this page to create a new user, or use your phone to scan the QR code": "このページのリンクをコピーして新しいユーザーを作成するか、携帯電話でQRコードをスキャンしてください",
+  "input the userID and initiate a one-on-one call": "ユーザーIDを入力し、1対1の通話を開始します",
+  "Copy the link of this page to create multiple users": "このページのリンクをコピーして、複数のユーザーを作成します",
+  "Enter the userID and add up to 9 group members": "ユーザーIDを入力し、9人以下のグループメンバーを追加します",
   // home
   "Video Call": "ビデオ通話",
   "Voice Call": "音声通話",
@@ -26,7 +32,7 @@ const ja = {
   "the call": "通話には2つの userID でのログインまたは2台のデバイスが必要です",
   "the groupCall": "複数の userID を通話リストに追加する必要があります",
   // run guide
-  "Run Demo Guide": "CallKit サンプル デモ ガイドを実行する",
+  "Run Demo Guide": "CallKit ガイドを実行する",
   "Complete Device Detection": "デバイスのテストを完了する",
   "Choose Video Call/Voice Call": "ビデオ通話/音声通話を選択",
   "Initiate One-on-One Call": "単一の通話を開始する",
@@ -42,13 +48,14 @@ const ja = {
   "The userID you dialed does not exist, please create one": "あなたがダイヤルした userID は存在しません、作成してください",
   // groupCall
   "input userID to Add": "追加するユーザーIDを入力してください",
-  "Group Members": "グループの人(仲間)たち",
+  "Group Members": "通話ユーザー",
   "1 person / 9 people": "1名様 / 9名様",
-  "You": "あなた",
+  "You": "You",
   "Add": "に追加",
   "The user already exists": "そのユーザーは既に存在します",
   "You can't add yourself":	"自分自身を追加することはできません",
   "Please add at least one member": "少なくとも一人のメンバーを追加してください",
+  "The group is full": "グループのメンバーは満員です",
   // device detection
   "Device Detection": "デバイスの検出",
   "Camera": "カメラ",
