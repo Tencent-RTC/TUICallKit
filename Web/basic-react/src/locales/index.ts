@@ -10,13 +10,13 @@ i18n
   .use(LanguageDetector)
   .init({
     resources: {
-      en: {
+      "en": {
         translation: en,
       },
-      zh: {
+      "zh-CN": {
         translation: zh_CN,
       },
-      ja: {
+      "ja": {
         translation: ja,
       }
     },

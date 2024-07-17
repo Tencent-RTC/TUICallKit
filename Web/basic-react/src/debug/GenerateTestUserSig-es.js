@@ -1,7 +1,10 @@
 import LibGenerateTestUserSig from './lib-generate-test-usersig-es.min.js';
 
-let SDKAPPID = 0;
-let SECRETKEY = '';
+/**
+ * Refer to the READEME.md for the SDKAppID、SecretKey
+ */
+let SDKAppID = 0;
+let SecretKey = '';
 
 /**
  * Expiration time for the signature, it is recommended not to set it too short.
@@ -10,15 +13,15 @@ let SECRETKEY = '';
  */
 const EXPIRETIME = 604800;
 
-export function genTestUserSig({ userID, SDKAppID, SecretKey }) {
-  if (SDKAppID) SDKAPPID = SDKAppID;
-  if (SecretKey) SECRETKEY = SecretKey;
-  const generator = new LibGenerateTestUserSig(SDKAPPID, SECRETKEY, EXPIRETIME);
-  const userSig = generator.genTestUserSig(userID);
+export function genTestUserSig(params) {
+  if (params.SDKAppID) SDKAppID = params.SDKAppID;
+  if (params.SecretKey) SecretKey = params.SecretKey;
+  const generator = new LibGenerateTestUserSig(SDKAppID, SecretKey, EXPIRETIME);
+  const userSig = generator.genTestUserSig(params.userID);
 
   return {
-    SDKAppID: SDKAPPID,
-    SecretKey: SECRETKEY,
+    SDKAppID,
+    SecretKey,
     userSig,
   };
 }

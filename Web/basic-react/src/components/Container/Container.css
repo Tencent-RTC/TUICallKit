@@ -10,18 +10,15 @@
 
 .card-title {
   height: 64px;
-  padding: 0 30px;
-  border-radius: 24px 24px 0 0;
-  background: rgba(197, 210, 229, 0.2);
+  padding: 0 36px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: rgba(240, 244, 250, 0.3);
+  border-radius: 24px 24px 0 0;
 }
 
 .card-content {
+  height: 386px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
 }

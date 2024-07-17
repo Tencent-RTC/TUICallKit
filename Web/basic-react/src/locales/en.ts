@@ -18,6 +18,8 @@ const en = {
   "Please input the correct userID": "Please input the correct userID",
   "Login failed":	"Login failed",
   "The userID is empty": "The userID is empty",
+  "Please fill SDKAppID and SecretKey:": "Please fill SDKAppID and SDKSecretKey: ",
+  "Please enter the userID you want to create/login": "Please input the userID you want to create/login",
   // home
   "Video Call": "Video Call",
   "Voice Call": "Voice Call",
@@ -31,6 +33,10 @@ const en = {
   "Choose Video Call/Voice Call": "Choose Video Call/Voice Call",
   "Initiate One-on-One Call": "Initiate One-on-One Call",
   "Initiate Group Call": "Initiate Group Call",
+  "Copy the link of this page to create a new user, or use your phone to scan the QR code": "Copy the link of this page to create a new user, or use your phone to scan the QR code",
+  "input the userID and initiate a one-on-one call": "input the userID and initiate a one-on-one call",
+  "Copy the link of this page to create multiple users": "Copy the link of this page to create multiple users",
+  "Enter the userID and add up to 9 group members": "Input the userID and add up to 9 group members",
   // call
   "Call Back": "Call Back",
   "Scanning QR Code": "Or initiate a call by scanning the QR code",
@@ -49,6 +55,7 @@ const en = {
   "The user already exists": "The user already exists",
   "You can't add yourself":	"You can't add yourself",
   "Please add at least one member": "Please add at least one member",
+  "The group is full": "The group members are full",
   // device detection
   "Device Detection": "Device Detection",
   "Camera": "Camera",

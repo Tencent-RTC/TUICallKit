@@ -1,8 +1,9 @@
 import  { useEffect, useState } from "react";
 import TRTC from "trtc-sdk-v5";
-import { IDeviceInfo, DEVICE_TYPE } from "../interface";
+import { IDeviceInfo, DEVICE_TYPE, IAudioVolumeEvent } from "../interface";
 
 const trtc = TRTC.create();
+
 export function useDevice() {
   const [cameraList, setCameraList] = useState<IDeviceInfo[]>([]);
   const [micList, setMicList] = useState<IDeviceInfo[]>([]);
@@ -46,17 +47,21 @@ export function useDevice() {
       }
     });
   }
+
+  
+  const handleAudioVolumeEvent = (event: IAudioVolumeEvent) => {
+    setVolume(Math.ceil(event?.result[0].volume / 5));
+  }
+  const handleDeviceChangedEvent = () => {
+    getDeviceList();
+  }
   const addTRTCEventListener = () => {
-    trtc.on(TRTC.EVENT.AUDIO_VOLUME, event => { 
-      setVolume(Math.ceil(event.result[0].volume / 5));
-    });
-    trtc.on(TRTC.EVENT.DEVICE_CHANGED, () => {
-      getDeviceList();
-    });
+    trtc.on(TRTC.EVENT.AUDIO_VOLUME, handleAudioVolumeEvent);
+    trtc.on(TRTC.EVENT.DEVICE_CHANGED, handleDeviceChangedEvent);
   }
   const removeTRTCEventListener = () => {
-    trtc.off(TRTC.EVENT.AUDIO_VOLUME, () => {});
-    trtc.off(TRTC.EVENT.DEVICE_CHANGED, () => {});
+    trtc.off(TRTC.EVENT.AUDIO_VOLUME, handleAudioVolumeEvent);
+    trtc.off(TRTC.EVENT.DEVICE_CHANGED, handleDeviceChangedEvent);
   }
 
   useEffect(() => {

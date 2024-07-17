@@ -1,3 +1,6 @@
+.pc-home {
+  margin: 0 auto;
+}
 .home-card {
   width: 294px;
   height: 314px;
@@ -18,6 +21,9 @@
 }
 .home-title {
   height: 36px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
 }
 
 .home-card-title {

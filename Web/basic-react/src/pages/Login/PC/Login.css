@@ -1,3 +1,9 @@
+.pc-login-panel {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .login-title {
   font-weight: 500;
   font-size: 16px;
@@ -10,14 +16,18 @@
 .login-input {
   width: 400px;
   height: 48px;
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  font-size: 16px;
 }
 
 .login-tip {
-  font-style: normal;
   font-weight: 400;
   font-size: 12px;
   line-height: 24px;
   color: #99A2B2;
+  margin: 5px 0 10px 0;
 }
 
 .login-btn {

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { Flex, Image, Select, Checkbox, Typography } from "antd";
 import { DEVICE_TYPE, IDeviceCheckPanelProps } from '../../../interface/index.ts';
 import { useDevice, useLanguage } from '../../../hooks/index.ts';
@@ -13,17 +13,10 @@ const { Text } = Typography;
 export default function DeviceCheckPanel(props: IDeviceCheckPanelProps) {
   const { cameraList, micList, speakerList, volume, startLocalPreview, updateLocalPreview, updateCurrentDevice } = useDevice();
   const { t, language } = useLanguage();
-  const renderRef = useRef(true);
   const { setIsShowPanel } = props.operateDevicePanel;
 
   useEffect(() => {
-    if (renderRef.current) {
-      renderRef.current = false;
-      return;
-    }
     startLocalPreview('video-bg');
-    return () => {
-    }
   }, []);
 
   const updateCameraDevice = async (value: string) => {

@@ -1,7 +1,12 @@
-.call-uikit {
+.call-uikit-pc {
   position: absolute;
   z-index: 100;
   transform: translate(-50%, -50%);
   top: 50%;
   left: 50%;
+}
+
+.call-uikit-mobile {
+  width: 100vw !important;
+  height: 100vh !important;
 }

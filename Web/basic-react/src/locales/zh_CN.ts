@@ -18,6 +18,8 @@ const zh_CN = {
   "Please input the correct userID": "请输入正确的 userID",
   "Login failed":	"登录失败",
   "The userID is empty": "当前输入的 userID 为空",
+  "Please fill SDKAppID and SecretKey:": "请填写 SDKAppID 和 SecretKey:",
+  "Please enter the userID you want to create/login": "请输入要创建/登录的 userID",
   // home
   "Video Call": "视频通话",
   "Voice Call": "语音通话",
@@ -31,6 +33,10 @@ const zh_CN = {
   "Choose Video Call/Voice Call": "选择视频通话/语音通话",
   "Initiate One-on-One Call": "发起单人通话",
   "Initiate Group Call": "发起群组通话",
+  "Copy the link of this page to create a new user, or use your phone to scan the QR code": "复制本页面链接创建一名新用户，或使用手机扫二维码",
+  "input the userID and initiate a one-on-one call": "输入 userID，发起单人通话",
+  "Copy the link of this page to create multiple users": "复制本页链接，创建多名用户",
+  "Enter the userID and add up to 9 group members": "输入 userID，添加9名以下群组成员",
   // call
   "Call Back": "返回",
   "Scanning QR Code": "或者手机扫描二维码发起通话",
@@ -49,6 +55,7 @@ const zh_CN = {
   "The user already exists": "该用户已存在",
   "You can't add yourself":	"不能添加自己",
   "Please add at least one member": "请添加至少一个成员",
+  "The group is full": "群成员已满",
   // device detection
   "Device Detection": "设备检测",
   "Camera": "摄像头",
