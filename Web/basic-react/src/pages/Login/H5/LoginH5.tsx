@@ -23,8 +23,6 @@ export default function LoginH5() {
   const handleLogin = async () => {
     reportEvent({
       apiName: 'login.start',
-      userID: userID,
-      SDKAppID: userInfo.SDKAppID,
       content: JSON.stringify(userInfo),
     })
     if (!userID) {
@@ -59,8 +57,6 @@ export default function LoginH5() {
       });
       reportEvent({
         apiName: 'login.success',
-        userID: userID,
-        SDKAppID: userInfo.SDKAppID,
         content: JSON.stringify(userInfo),
       })
       navigate('/home');
@@ -69,8 +65,6 @@ export default function LoginH5() {
       console.error(error);
       reportError({
         apiName: 'login.error',
-        userID: userID,
-        SDKAppID: userInfo.SDKAppID,
         content: JSON.stringify(error),
       })
     }

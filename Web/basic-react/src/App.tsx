@@ -25,6 +25,7 @@ export default function App() {
     setUserInfo,
   }), [userInfo, setUserInfo]);
   const { reportEvent } = useAegis();
+  
   useEffect(() => {
     reportEvent({ apiName: 'download' });
     isH5 && initViewport();
