@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Typography, Flex } from 'antd';
-import { UserInfoContext } from '../../../context';
+import { UserInfoContext } from '../../context';
 import './DisplayUserInfo.css';
 
 const { Paragraph } = Typography;

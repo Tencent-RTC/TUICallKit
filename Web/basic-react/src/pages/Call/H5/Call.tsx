@@ -43,9 +43,7 @@ export default function Call() {
         userID: calleeUserID,
         type: state.callType === 'video' ? TUICallType.VIDEO_CALL : TUICallType.AUDIO_CALL,
       })
-      reportEvent({
-        apiName: 'call.success',
-      })
+      reportEvent({ apiName: 'call.success' });
       setCalleeUserID('');
     } catch (error: any) {
       setUserInfo({

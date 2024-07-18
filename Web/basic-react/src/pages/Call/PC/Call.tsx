@@ -21,9 +21,7 @@ export default function Call() {
   const { reportEvent, reportError } = useAegis();
 
   const handleCall = async () => {
-    reportEvent({
-      apiName: 'call.start',
-    })
+    reportEvent({ apiName: 'call.start' });
     if (!checkUserID(calleeUserID)) {
       messageApi.info(t('Please input the correct userID'));
       setCalleeUserID('');
@@ -44,9 +42,7 @@ export default function Call() {
         userID: calleeUserID,
         type: state.callType === 'video' ? TUICallType.VIDEO_CALL : TUICallType.AUDIO_CALL,
       })
-      reportEvent({
-        apiName: 'call.success',
-      })
+      reportEvent({ apiName: 'call.success' });
       setCalleeUserID('');
     } catch (error: any) {
       setUserInfo({

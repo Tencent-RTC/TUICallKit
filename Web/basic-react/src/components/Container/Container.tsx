@@ -1,5 +1,5 @@
 import { ICardProps } from '../../interface/index';
-import DisplayUserInfo from './DisplayUserInfo/DisplayUserInfo';
+import DisplayUserInfo from '../DisplayUserInfo/DisplayUserInfo';
 import Return from './Return/Return';
 import './Container.css';
 

@@ -1,4 +1,4 @@
-.layout-h5 {
+.h5-layout {
   box-sizing: border-box;
   width: 100vw;
   height: 100vh;
@@ -6,11 +6,11 @@
   background: #fff;
 }
 
-.layout-bg {
+.h5-layout-bg {
   background: #fff url('../../../assets/layout//h5-bg.png') no-repeat;
 }
 
-.layout-content {
+.h5-layout-content {
   height: 483px;
 }
 

@@ -29,6 +29,7 @@ export default function GroupCall() {
   }
 
   const createGroupID = async () => {
+    reportEvent({ apiName: 'createGroupID.start' });
     const chat = Chat.create({ SDKAppID: userInfo?.SDKAppID });
     const memberList: IMemberList[] = groupCallMember.map(userID => ({ userID }));
     
