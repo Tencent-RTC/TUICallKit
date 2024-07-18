@@ -55,10 +55,7 @@ export default function LoginH5() {
         isLogin: true,
         SecretKey,
       });
-      reportEvent({
-        apiName: 'login.success',
-        content: JSON.stringify(userInfo),
-      })
+      reportEvent({ apiName: 'login.success' });
       navigate('/home');
     } catch (error) {
       messageApi.info(`${t('Login failed')} ${error}`);

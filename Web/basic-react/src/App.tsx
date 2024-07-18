@@ -27,7 +27,7 @@ export default function App() {
   const { reportEvent } = useAegis();
   
   useEffect(() => {
-    reportEvent({ apiName: 'download' });
+    reportEvent({ apiName: 'run.call.start' });
     isH5 && initViewport();
     if (!checkLocation()) {
       alert(t('localhost protocol / HTTPS protocol'));

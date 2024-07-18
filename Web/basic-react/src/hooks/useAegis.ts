@@ -2,7 +2,7 @@
 import Aegis from 'aegis-web-sdk';
 import { useContext } from 'react';
 import { UserInfoContext } from '../context';
-import { getLocalStorage, setLocalStorage } from '../utils/index';
+import { getLocalStorage, setLocalStorage, } from '../utils/index';
 
 interface IAegisReportParams {
   apiName?: string;
@@ -11,47 +11,56 @@ interface IAegisReportParams {
 
 export default function useAegis() {
   const { userInfo } = useContext(UserInfoContext);
-
   const aegis = new Aegis({
-    id: 'iHWefAYqhifClbANcI',
-    uin: getUIN(),
-    reportApiSpeed: false,
-    reportAssetSpeed: false,
-    spa: false,
-    websocketHack: false,
-    pagePerformance: false,
-    webVitals: false,
-    onError: false,
-    aid: false,
-    speedSample: false,
-    repeat: 1,
-    pvUrl: '',
-    whiteListUrl: '',
-    offlineUrl: '',
-    speedUrl: '',
-    webVitalsUrl: '',
-    api: {
-      apiDetail: false,
-    },
-  });
+      id: 'Dv4zOHEZ7eJ122mloQ',
+      hostUrl: 'https://rumt-sg.com',
+      uin: getUIN(),
+      reportApiSpeed: false,
+      reportAssetSpeed: false,
+      spa: false,
+      websocketHack: false,
+      pagePerformance: false,
+      webVitals: false,
+      onError: false,
+      speedSample: false,
+      repeat: 1,
+      pvUrl: '',
+      whiteListUrl: '',
+      offlineUrl: '',
+      speedUrl: '',
+      webVitalsUrl: '',
+      api: {
+        apiDetail: false,
+      },
+    });
   
-  const reportEvent = (params: IAegisReportParams) => {
-    const { apiName, content } = params;
-    aegis.report({ 
-      msg: apiName, 
-      level: Aegis.logType.REPORT, 
-      ext1: userInfo?.SDKAppID,
-      ext2: content,
-     });
-  }
-  const reportError = (params: IAegisReportParams) => {
+  const reportEvent = (params: IAegisReportParams): void => {
     const { apiName, content, } = params;
-    aegis.report({ 
-      msg: apiName, 
-      level: Aegis.logType.ERROR, 
-      ext1: userInfo?.SDKAppID,
-      ext2: content,
-     });
+    try {
+      aegis?.report({ 
+        msg: apiName, 
+        level: Aegis.logType.REPORT, 
+        ext1: String(userInfo?.SDKAppID),
+        ext2: content,
+        ext3: `@tencentcloud/call-uikit-react, ${JSON.stringify(userInfo)}`,
+      });
+    } catch (error) {
+      console.log('aegis', error);
+    }
+  }
+  const reportError = (params: IAegisReportParams): void => {
+    const { apiName, content, } = params;
+    try {
+      aegis?.report({ 
+        msg: apiName, 
+        level: Aegis.logType.ERROR, 
+        ext1: userInfo?.SDKAppID,
+        ext2: content,
+        ext3: `@tencentcloud/call-uikit-react, ${JSON.stringify(userInfo)}`,
+      });
+    } catch (error) {
+      console.log('aegis', error);
+    }
   }
   
   function getUIN() {

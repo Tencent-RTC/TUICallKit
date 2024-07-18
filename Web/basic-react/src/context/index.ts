@@ -1,4 +1,4 @@
-import UserInfoContext from "./userInfo";
+import UserInfoContext from "./userInfoContext";
 
 export {
   UserInfoContext,
