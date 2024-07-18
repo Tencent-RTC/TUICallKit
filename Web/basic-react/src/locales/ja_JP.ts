@@ -1,8 +1,8 @@
 const ja = {
   // layout
   "Onboard Guide": "実行ガイド",
-  "Free Trial": "無料トライアル", 
-  "Integration": "統合ドキュメント", 
+  "Free Trial": "無料体験", 
+  "Integration": "ドキュメント",
   "FAQs": "質問",
   "Web Demo": "Web 体験",
   "Sensitive links/QR": "機密リンク/QR、ローカル開発のみ。共有しないでください。",
