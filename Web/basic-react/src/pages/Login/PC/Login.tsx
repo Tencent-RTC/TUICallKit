@@ -18,12 +18,9 @@ export default function Login() {
   const { userInfo, setUserInfo } = useContext(UserInfoContext);
   const { t } = useLanguage();
   const [userID, setUserID] = useState('');
-  const { reportEvent, reportError } = useAegis();
+  const { reportEvent } = useAegis();
   const handleLogin = async () => {
-    reportEvent({ 
-      apiName: 'login.start',
-      content: JSON.stringify(userInfo),
-    });
+    reportEvent({ apiName: 'login.start' });
     if (!userID) {
       messageApi.info(t('The userID is empty'));
       setUserID('');
@@ -54,14 +51,14 @@ export default function Login() {
         SecretKey,
       });
       navigate('/home');
-      reportEvent({ apiName: 'login.success' });
+      reportEvent({ 
+        apiName: 'login.success',
+        content: JSON.stringify(userInfo),
+      });
     } catch (error) {
       messageApi.info(`${t('Login failed')} ${error}`);
       console.error(error);
-      reportError({
-        apiName: 'login.error',
-        content: JSON.stringify(error),
-      })
+      reportEvent({ apiName: 'login.fail' });
     }
   }
 

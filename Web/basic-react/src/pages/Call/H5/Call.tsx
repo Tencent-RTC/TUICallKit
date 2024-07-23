@@ -15,7 +15,7 @@ export default function Call() {
   const { t } = useLanguage();
   const [calleeUserID, setCalleeUserID] = useState('');
   const [messageApi, contextHolder] = message.useMessage();
-  const { reportEvent, reportError } = useAegis();
+  const { reportEvent } = useAegis();
 
   const goHome = () => {
     navigate('/home');
@@ -53,10 +53,7 @@ export default function Call() {
       if (String(error)?.includes('Invalid')) {
         messageApi.warning(`${t('The userID you dialed does not exist, please create one')}: ${getUrl()}`);
       }
-      reportError({
-        apiName: 'call.fail',
-        content: JSON.stringify(error),
-      });
+      reportEvent({ apiName: 'call.fail' });
       console.error('call uikit', error);
     }
   }

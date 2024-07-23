@@ -35,28 +35,14 @@ export default function useAegis() {
     });
   
   const reportEvent = (params: IAegisReportParams): void => {
-    const { apiName, content, } = params;
+    const { apiName, content } = params;
     try {
       aegis?.report({ 
         msg: apiName, 
         level: Aegis.logType.REPORT, 
         ext1: String(userInfo?.SDKAppID),
         ext2: content,
-        ext3: `@tencentcloud/call-uikit-react, ${JSON.stringify(userInfo)}`,
-      });
-    } catch (error) {
-      console.log('aegis', error);
-    }
-  }
-  const reportError = (params: IAegisReportParams): void => {
-    const { apiName, content, } = params;
-    try {
-      aegis?.report({ 
-        msg: apiName, 
-        level: Aegis.logType.ERROR, 
-        ext1: userInfo?.SDKAppID,
-        ext2: content,
-        ext3: `@tencentcloud/call-uikit-react, ${JSON.stringify(userInfo)}`,
+        ext3: `@tencentcloud/call-uikit-react`,
       });
     } catch (error) {
       console.log('aegis', error);
@@ -72,6 +58,5 @@ export default function useAegis() {
 
   return {
     reportEvent,
-    reportError,
   }
 }

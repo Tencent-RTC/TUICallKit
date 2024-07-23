@@ -18,7 +18,7 @@ export default function Call() {
   const [calleeUserID, setCalleeUserID] = useState('');
   const [messageApi, contextHolder] = message.useMessage();
   const [isShowQr, setIsShowQr] = useState(false);
-  const { reportEvent, reportError } = useAegis();
+  const { reportEvent } = useAegis();
 
   const handleCall = async () => {
     reportEvent({ apiName: 'call.start' });
@@ -52,10 +52,7 @@ export default function Call() {
       if (String(error)?.includes('Invalid')) {
         messageApi.warning(`${t('The userID you dialed does not exist, please create one')}: ${getUrl()}`);
       }
-      reportError({
-        apiName: 'call.fail',
-        content: JSON.stringify(error),
-      });
+      reportEvent({ apiName: 'call.fail' });
       console.error('call uikit', error);
     }
   }
@@ -71,6 +68,7 @@ export default function Call() {
   }
   function renderCallPanel() {
     const openNewWindow = () => {
+      reportEvent({ apiName: 'openNewWindow.start' });
       window.open(getUrl());
     }
     const handleCallUserID = (event: any) => {
