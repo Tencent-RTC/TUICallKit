@@ -10,8 +10,6 @@ import TUICallEngine
 
 class AudioAndVideoCalleeWaitingView: UIView {
     
-    let viewModel = AudioAndVideoCalleeWaitingViewModel()
-    
     lazy var acceptBtn: BaseControlButton = {
         weak var weakSelf = self
         let acceptBtn = BaseControlButton.create(frame: CGRect.zero,
@@ -70,11 +68,11 @@ class AudioAndVideoCalleeWaitingView: UIView {
     
     // MARK: Event Action
     func rejectTouchEvent(sender: UIButton) {
-        viewModel.reject()
+        CallEngineManager.instance.reject()
     }
     
     func acceptTouchEvent(sender: UIButton) {
-        viewModel.accept()
+        CallEngineManager.instance.accept()
     }
     
 }

@@ -140,7 +140,6 @@ class IncomingFloatView: UIView {
     @objc func acceptTouchEvent(sender: UIButton) {
         self.removeFromSuperview()
         CallEngineManager.instance.accept()
-        WindowManager.instance.showCallWindow(false)
     }
     
     // MARK: Register TUICallState Observer && Update UI

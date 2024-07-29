@@ -12,6 +12,7 @@ import TUICore
 
 class JoinInGroupCallViewModel: NSObject, V2TIMGroupListener, JoinInGroupCallViewDelegate {
     
+    private let callStatusObserver = Observer()
     private var joinGroupCallView = JoinInGroupCallView()
     private var roomId = TUIRoomId()
     private var groupId: String = ""
@@ -21,6 +22,11 @@ class JoinInGroupCallViewModel: NSObject, V2TIMGroupListener, JoinInGroupCallVie
     override init() {
         super.init()
         V2TIMManager.sharedInstance().addGroupListener(listener: self)
+        registerCallStatusObserver()
+    }
+    
+    deinit {
+        TUICallState.instance.selfUser.value.callStatus.removeObserver(callStatusObserver)
     }
     
     func getGroupAttributes(_ groupID: String) {
@@ -42,6 +48,15 @@ class JoinInGroupCallViewModel: NSObject, V2TIMGroupListener, JoinInGroupCallVie
         joinGroupCallView = joinGroupView
         joinGroupCallView.delegate = self
         joinGroupCallView.isHidden = true
+    }
+    
+    func registerCallStatusObserver() {
+        TUICallState.instance.selfUser.value.callStatus.addObserver(callStatusObserver, closure: { [weak self] newValue, _ in
+            guard let self = self else { return }
+            if newValue == .none && !self.groupId.isEmpty && self.groupId.count > 0 {
+                self.getGroupAttributes(self.groupId)
+            }
+        })
     }
     
     // MARK: - Private Method
