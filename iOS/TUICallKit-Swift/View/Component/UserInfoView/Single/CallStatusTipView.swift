@@ -9,9 +9,9 @@ import Foundation
 
 class CallStatusTipView: UIView {
     
-    let viewModel = UserInfoViewModel()
     let selfCallStatusObserver = Observer()
     let networkQualityObserver = Observer()
+    private var isFirstShowAccept: Bool = true
     
     let callStatusLabel: UILabel = {
         let callStatusLabel = UILabel(frame: CGRect.zero)
@@ -24,6 +24,7 @@ class CallStatusTipView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        isFirstShowAccept = (TUICallState.instance.selfUser.value.callStatus.value == .accept) ? false : true
         updateStatusText()
         registerObserveState()
     }
@@ -33,8 +34,8 @@ class CallStatusTipView: UIView {
     }
     
     deinit {
-        viewModel.selfCallStatus.removeObserver(selfCallStatusObserver)
-        viewModel.selfCallStatus.removeObserver(networkQualityObserver)
+        TUICallState.instance.selfUser.value.callStatus.removeObserver(selfCallStatusObserver)
+        TUICallState.instance.networkQualityReminder.removeObserver(networkQualityObserver)
     }
     
     // MARK: UI Specification Processing
@@ -64,7 +65,7 @@ class CallStatusTipView: UIView {
     }
     
     func callStatusChange() {
-        viewModel.selfCallStatus.addObserver(selfCallStatusObserver, closure: { [weak self] newValue, _ in
+        TUICallState.instance.selfUser.value.callStatus.addObserver(selfCallStatusObserver, closure: { [weak self] newValue, _ in
             guard let self = self else { return }
             self.updateStatusText()
         })
@@ -91,11 +92,10 @@ class CallStatusTipView: UIView {
         }
     }
     
-    private var isFirstShowAccept: Bool = true
     func updateStatusText() {
-        switch viewModel.selfCallStatus.value {
+        switch TUICallState.instance.selfUser.value.callStatus.value {
         case .waiting:
-            self.callStatusLabel.text = viewModel.getCurrentWaitingText()
+            self.callStatusLabel.text = self.getCurrentWaitingText()
             break
         case .accept:
             if isFirstShowAccept {
@@ -112,5 +112,28 @@ class CallStatusTipView: UIView {
         default:
             break
         }
+    }
+    
+    func getCurrentWaitingText() -> String {
+        var waitingText = String()
+        switch TUICallState.instance.mediaType.value {
+        case .audio:
+            if TUICallState.instance.selfUser.value.callRole.value == .call {
+                waitingText = TUICallKitLocalize(key: "TUICallKit.waitAccept") ?? ""
+            } else {
+                waitingText = TUICallKitLocalize(key: "TUICallKit.inviteToAudioCall") ?? ""
+            }
+        case .video:
+            if TUICallState.instance.selfUser.value.callRole.value == .call {
+                waitingText = TUICallKitLocalize(key: "TUICallKit.waitAccept") ?? ""
+            } else {
+                waitingText = TUICallKitLocalize(key: "TUICallKit.inviteToVideoCall") ?? ""
+            }
+        case .unknown:
+            break
+        default:
+            break
+        }
+        return waitingText
     }
 }

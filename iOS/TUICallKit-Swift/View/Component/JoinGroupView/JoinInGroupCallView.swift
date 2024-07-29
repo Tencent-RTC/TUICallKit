@@ -189,6 +189,7 @@ class JoinInGroupCallView: UIView, UICollectionViewDelegate, UICollectionViewDat
     }
     
     @objc func joinButtonClick(sender: UIButton) {
+        expandButton.isSelected = false;
         delegate?.joinInGroupCall()
     }
     

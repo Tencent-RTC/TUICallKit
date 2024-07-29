@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICallKit-Swift'
-  spec.version      = '2.4.0.970'
+  spec.version      = '2.5.0.1020'
   spec.platform     = :ios
   spec.ios.deployment_target = '12.0'
   spec.license      = { :type => 'Proprietary',
@@ -29,7 +29,7 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'TRTC' do |trtc|
     trtc.dependency 'TXLiteAVSDK_TRTC'
-    trtc.dependency 'TUICallEngine/TRTC', '~> 2.4.0.970'
+    trtc.dependency 'TUICallEngine/TRTC', '~> 2.5.0.1020'
     trtc.source_files = 'TUICallKit-Swift/**/*.{h,m,mm,swift}'
     trtc.resource_bundles = {
       'TUICallKitBundle' => ['TUICallKit-Swift/Resources/**/*.strings', 'TUICallKit-Swift/Resources/AudioFile', 'TUICallKit-Swift/Resources/*.xcassets']
@@ -39,7 +39,7 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'Professional' do |professional|
     professional.dependency 'TXLiteAVSDK_Professional'
-    professional.dependency 'TUICallEngine/Professional', '~> 2.4.0.970'
+    professional.dependency 'TUICallEngine/Professional', '~> 2.5.0.1020'
     professional.source_files = 'TUICallKit-Swift/**/*.{h,m,mm,swift}'
     professional.resource_bundles = {
       'TUICallKitBundle' => ['TUICallKit-Swift/Resources/**/*.strings', 'TUICallKit-Swift/Resources/AudioFile', 'TUICallKit-Swift/Resources/*.xcassets']
