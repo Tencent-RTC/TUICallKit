@@ -21,7 +21,7 @@ export default function GroupCall() {
   const [groupCallMember, setGroupCallMember] = useState<string[]>([]);
   const [inputUserID, setInputUserID] = useState('');
   const [messageApi, contextHolder] = message.useMessage();
-  const { reportEvent, reportError } = useAegis();
+  const { reportEvent } = useAegis();
 
   const createGroupID = async () => {
     reportEvent({ apiName: 'createGroupID.start' });
@@ -60,16 +60,14 @@ export default function GroupCall() {
         ...userInfo,
         isCall: true,
       });
-      reportError({
-        apiName: 'groupCall.error',
-        content: JSON.stringify(error),
-      });
+      reportEvent({ apiName: 'groupCall.fail' });
     }
   }
 
   function renderGroupCallPanel() {
 
     const openNewWindow = () => {
+      reportEvent({ apiName: 'openNewWindow.start' });
       window.open(getUrl());
     }
 
