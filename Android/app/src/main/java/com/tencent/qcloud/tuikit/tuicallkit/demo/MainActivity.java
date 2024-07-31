@@ -35,6 +35,16 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_activity_main);
         initView();
+
+        if (!isTaskRoot()
+                && getIntent().hasCategory(Intent.CATEGORY_LAUNCHER)
+                && getIntent().getAction() != null
+                && getIntent().getAction().equals(Intent.ACTION_MAIN)) {
+
+            finish();
+            return;
+        }
+
         if (!TUILogin.isUserLogined()) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);

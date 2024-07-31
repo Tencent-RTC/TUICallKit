@@ -35,7 +35,7 @@ public class BaseApplication extends Application {
 
     private void configFCMPrivateRing() {
         String channelId = "fcm_push_channel";
-        TIMPushManager.getInstance().configFCMPrivateRing(channelId, "phone_ring", true);
+        TIMPushManager.getInstance().setCustomFCMRing(channelId, "phone_ring", true);
 
         TUICore.registerEvent(TUIConstants.TIMPush.EVENT_IM_LOGIN_AFTER_APP_WAKEUP_KEY,
                 TUIConstants.TIMPush.EVENT_IM_LOGIN_AFTER_APP_WAKEUP_SUB_KEY, new ITUINotification() {
