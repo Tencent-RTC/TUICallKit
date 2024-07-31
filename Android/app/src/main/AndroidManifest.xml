@@ -15,6 +15,7 @@
         <activity
             android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.MainActivity"
             android:exported="true"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,8 +28,7 @@
 
         <activity
             android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.LoginActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
             android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.CallActivity"
