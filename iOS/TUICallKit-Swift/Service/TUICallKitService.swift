@@ -80,16 +80,26 @@ extension TUICallKitService {
             }
         } else if method == TUICore_TUICallingService_SetAudioPlaybackDeviceMethod {
             let key = TUICore_TUICallingService_SetAudioPlaybackDevice_AudioPlaybackDevice
-            guard let audioPlaybackDevice = param[key] as? TUIAudioPlaybackDevice else {
+            guard let value = param[key] as? UInt else {
                 return nil
             }
-            
-            TUICallState.instance.audioDevice.value = audioPlaybackDevice
+            var audioPlaybackDevice: TUIAudioPlaybackDevice
+            switch value {
+            case TUIAudioPlaybackDevice.earpiece.rawValue:
+                audioPlaybackDevice = .earpiece
+            default:
+                audioPlaybackDevice = .speakerphone
+            }
+            DispatchQueue.main.async {
+                TUICallState.instance.audioDevice.value = audioPlaybackDevice
+            }
         } else if method == TUICore_TUICallingService_SetIsMicMuteMethod {
             guard let isMicMute = param[TUICore_TUICallingService_SetIsMicMuteMethod_IsMicMute] as? Bool else {
                 return nil
             }
-            TUICallState.instance.isMicMute.value = !isMicMute
+            DispatchQueue.main.async {
+                TUICallState.instance.isMicMute.value = !isMicMute
+            }
         }
         
         return nil

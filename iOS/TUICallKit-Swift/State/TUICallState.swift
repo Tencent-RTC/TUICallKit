@@ -119,7 +119,9 @@ extension TUICallState: TUICallObserver {
             }
         }
         
-        let _ = CallingBellFeature.instance.startPlayMusic(type: .CallingBellTypeCalled)
+        if UIApplication.shared.applicationState != .background {
+            let _ = CallingBellFeature.instance.startPlayMusic(type: .CallingBellTypeCalled)
+        }
     }
     
     func onCallCancelled(callerId: String) {
