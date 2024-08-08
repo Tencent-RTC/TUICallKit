@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { Button, Dropdown, Image, Typography } from 'antd';
+import { TUICallKitServer } from '@tencentcloud/call-uikit-react';
 import type { MenuProps } from 'antd';
+import { LanguageType } from '../../interface/index';
 import LanguageSwitchSrc from '../../assets/languageSwitch/language-switch.png';
 import { useLanguage } from '../../hooks';
 import { ClassNames, isH5 } from '../../utils';
@@ -25,6 +27,8 @@ export default function LanguageSwitch() {
 
   const onClick: MenuProps['onClick'] = ({ key }) => {
     changeLanguage(key);
+    // @ts-ignore
+    TUICallKitServer.setLanguage(LanguageType[key]);
   };
   
   return (

@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import { TUICallKit, TUICallKitServer, STATUS, TUIGlobal } from "@tencentcloud/call-uikit-vue2";
 import DeviceDetector from "./components/DeviceDetector/index.vue";
-import * as GenerateTestUserSig from "../public/debug/GenerateTestUserSig-es.js";
+import * as GenerateTestUserSig from "./debug/GenerateTestUserSig-es.js";
 import TIM from "@tencentcloud/chat";
 import copy from "copy-to-clipboard";
 import videoBlackSVG from "./assets/videoBlack.svg";

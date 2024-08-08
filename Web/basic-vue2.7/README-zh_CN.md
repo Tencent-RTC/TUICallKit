@@ -28,7 +28,7 @@ Calls SDK for Web Vue2.7 demo 的最低要求是：
 
 #### 创建应用
 
-1. 登录到 [即时通信 IM 控制台](https://console.cloud.tencent.com/im)，单击创建新应用，在弹出的对话框中输入您的应用名称，并单击确定。
+1. 登录到 [实时音视频 TRTC 控制台](https://console.cloud.tencent.com/trtc/app)，单击创建新应用，在弹出的对话框中输入您的应用名称，并单击确定。
 2. 单击刚刚创建出的应用，进入**应用详情**页面，并在页面的右下角找到含 UI 低代码场景方案功能区，单击免费体验即可开通 TUICallKit 的 7 天免费试用服务。
 3. 在同一页面找到 ***SDKAppID*** 和 ***密钥(SecretKey)*** 并保存，在后续步骤中使用。
 
@@ -48,7 +48,7 @@ Calls SDK for Web Vue2.7 demo 的最低要求是：
    npm install
   ```
 
-3. 配置 SDKAppID 和 SDKSecretKey 在 `Web/basic-vue2.7/public/debug/GenerateTestUserSig-es.js` 文件中填写 SDKAppID 和 SecretKey。
+3. 配置 SDKAppID 和 SDKSecretKey 在 `Web/basic-vue2.7/src/debug/GenerateTestUserSig-es.js` 文件中填写 SDKAppID 和 SecretKey。
   ```javascript
    const SDKAPPID = 0;
    const SECRETKEY = '';
