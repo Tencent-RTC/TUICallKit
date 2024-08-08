@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'TUICallKit-Swift'
-  spec.version      = '2.5.0.1020'
+  spec.version      = '2.5.0.1025'
   spec.platform     = :ios
   spec.ios.deployment_target = '12.0'
   spec.license      = { :type => 'Proprietary',
