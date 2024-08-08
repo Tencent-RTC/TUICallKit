@@ -1,11 +1,11 @@
 import { useContext, useState } from 'react';
-import { Flex, Input, Typography, message } from 'antd';
+import { Flex, Input, Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { TUICallKitServer } from '@tencentcloud/call-uikit-react';
 // @ts-ignore
 import * as GenerateTestUserSig from "../../../debug/GenerateTestUserSig-es";
 import { UserInfoContext } from '../../../context/index';
-import { useLanguage, useAegis } from '../../../hooks';
+import { useLanguage, useAegis, useMessage } from '../../../hooks';
 import { checkUserID, trim } from '../../../utils/index';
 import Layout from '../../../components/Layout/Layout';
 import './LoginH5.css';
@@ -13,7 +13,7 @@ import './LoginH5.css';
 const { Text } = Typography;
 
 export default function LoginH5() {
-  const [messageApi, contextHolder] = message.useMessage();
+  const { messageApi, contextHolder, handleCallError } = useMessage();
   const navigate = useNavigate();
   const { userInfo, setUserInfo } = useContext(UserInfoContext);
   const { t } = useLanguage();
@@ -25,12 +25,12 @@ export default function LoginH5() {
     if (!userID) {
       messageApi.info(t('The userID is empty'));
       setUserID('');
-      return ;
+      return;
     }
     if (!checkUserID(userID)) {
       messageApi.info(t('Please input the correct userID'));
       setUserID('');
-      return ;
+      return;
     }
     
     const { SDKAppID, userSig, SecretKey } = GenerateTestUserSig.genTestUserSig({
@@ -40,7 +40,7 @@ export default function LoginH5() {
     });
     if (!SDKAppID || !SecretKey) {
       messageApi.info(`${t('Please fill SDKAppID and SecretKey:')} 'src/debug/GenerateTestUserSig-es.js'`);
-      return ;
+      return;
     }
     try {
       await TUICallKitServer.init({ userID, SDKAppID, userSig });
@@ -59,9 +59,9 @@ export default function LoginH5() {
       navigate('/home');
     } catch (error) {
       messageApi.info(`${t('Login failed')} ${error}`);
-      console.error(error);
-      reportEvent({ apiName: 'login.fail' });
+      handleCallError('login', error);
     }
+    TUICallKitServer.enableVirtualBackground(true);
   }
 
   const handleInputUserID = (e: any) => {

@@ -1,12 +1,10 @@
 import { useContext, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Typography, Image, Flex, Button, Input, message } from 'antd';
+import { Typography, Image, Flex, Button, Input } from 'antd';
 import { TUICallKitServer, TUICallType } from '@tencentcloud/call-uikit-react';
-import Chat from "@tencentcloud/chat";
 import { UserInfoContext } from '../../../context';
-import { useLanguage, useAegis } from '../../../hooks';
+import { useLanguage, useAegis, useMessage, useChat } from '../../../hooks';
 import { getUrl, checkUserID } from '../../../utils';
-import { IMemberList } from '../../../interface/index';
 import Container from '../../../components/Container/Container';
 import ShareSvg from '../../../assets/pages/share.svg';
 import ChaSvg from '../../../assets/pages/cha.svg';
@@ -20,22 +18,10 @@ export default function GroupCall() {
   const { t } = useLanguage();
   const [groupCallMember, setGroupCallMember] = useState<string[]>([]);
   const [inputUserID, setInputUserID] = useState('');
-  const [messageApi, contextHolder] = message.useMessage();
+  const { messageApi, contextHolder, handleCallError } = useMessage();
   const { reportEvent } = useAegis();
+  const { createGroupID } = useChat();
 
-  const createGroupID = async () => {
-    reportEvent({ apiName: 'createGroupID.start' });
-    const chat = Chat.create({ SDKAppID: userInfo?.SDKAppID });
-    const memberList: IMemberList[] = groupCallMember.map(userID => ({ userID }));
-    
-    const res = await chat.createGroup({
-      type: Chat.TYPES.GRP_PUBLIC,
-      name: 'WebSDK',
-      memberList
-    });
-    return res.data.group.groupID;
-  }
-  
   const handleGroupCall = async () => {
     reportEvent({ apiName: 'groupCall.start' });
     if (groupCallMember.length < 1) {
@@ -47,7 +33,7 @@ export default function GroupCall() {
       isCall: true,
     });
     try {
-      const groupID = await createGroupID();
+      const groupID = await createGroupID(groupCallMember);
       await TUICallKitServer.groupCall({
         userIDList: groupCallMember, 
         groupID,
@@ -55,12 +41,11 @@ export default function GroupCall() {
       })
       reportEvent({ apiName: 'groupCall.success'});
     } catch (error) {
-      console.error('groupCall error', error);
       setUserInfo({
         ...userInfo,
         isCall: true,
       });
-      reportEvent({ apiName: 'groupCall.fail' });
+      handleCallError('groupCall', error);
     }
   }
 

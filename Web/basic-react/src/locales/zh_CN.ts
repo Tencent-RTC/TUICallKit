@@ -66,6 +66,11 @@ const zh_CN = {
   "Please adjust the device volume and click to play the audio below to test it~": "请调整设备音量，点击播放下面的音频试试~",
   "Audio": "音频",
   "Mirror": "镜像",
+  // error
+  "Please open the browser console to see the failure reason.": "请打开浏览器控制台，看失败原因。",
+  "The current Call uikit package you purchased does not support this feature. We recommend going to the TRTC console to enable it.": "您当前购买的 Call uikit 能力套餐不支持该功能，建议前往 TRTC 控制台开通。",
+  "You have disabled camera/microphone access permission. Please allow the current application to use the camera/microphone.": "您已禁用摄像头/麦克风访问权限，请允许当前应用程序使用摄像头/麦克风。",
+  "You have not purchased the Call UIKit package. Please go to the Tencent RTC console to subscribe.": "您当前未购买 Call UIKit 套餐，请前往 Tencent RTC 控制台开通。",
 }
 
 export default zh_CN;

@@ -66,6 +66,11 @@ const en = {
   "Please adjust the device volume and click to play the audio below to test it~": "Please click to play the audio below to test it~",
   "Audio": "Audio",
   "Mirror": "Mirror",
+  // error
+  "Please open the browser console to see the failure reason.": "Please open the browser console to see the failure reason.",
+  "The current Call uikit package you purchased does not support this feature. We recommend going to the TRTC console to enable it.": "The current Call uikit package you purchased does not support this feature. We recommend going to the TRTC console to enable it.",
+  "You have disabled camera/microphone access permission. Please allow the current application to use the camera/microphone.": "You have disabled camera/microphone access permission. Please allow the current application to use the camera/microphone.",
+  "You have not purchased the Call UIKit package. Please go to the Tencent RTC console to subscribe.": "You have not purchased the Call UIKit package. Please go to the Tencent RTC console to subscribe.",
 }
 
 export  default en;

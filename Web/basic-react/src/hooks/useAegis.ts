@@ -12,27 +12,27 @@ interface IAegisReportParams {
 export default function useAegis() {
   const { userInfo } = useContext(UserInfoContext);
   const aegis = new Aegis({
-      id: 'Dv4zOHEZ7eJ122mloQ',
-      hostUrl: 'https://rumt-sg.com',
-      uin: getUIN(),
-      reportApiSpeed: false,
-      reportAssetSpeed: false,
-      spa: false,
-      websocketHack: false,
-      pagePerformance: false,
-      webVitals: false,
-      onError: false,
-      speedSample: false,
-      repeat: 1,
-      pvUrl: '',
-      whiteListUrl: '',
-      offlineUrl: '',
-      speedUrl: '',
-      webVitalsUrl: '',
-      api: {
-        apiDetail: false,
-      },
-    });
+    id: 'Dv4zOHEZ7eJ122mloQ',
+    hostUrl: 'https://rumt-sg.com',
+    uin: getUIN(),
+    reportApiSpeed: false,
+    reportAssetSpeed: false,
+    spa: false,
+    websocketHack: false,
+    pagePerformance: false,
+    webVitals: false,
+    onError: false,
+    speedSample: false,
+    repeat: 1,
+    pvUrl: '',
+    whiteListUrl: '',
+    offlineUrl: '',
+    speedUrl: '',
+    webVitalsUrl: '',
+    api: {
+      apiDetail: false,
+    },
+  });
   
   const reportEvent = (params: IAegisReportParams): void => {
     const { apiName, content } = params;
@@ -47,7 +47,7 @@ export default function useAegis() {
     } catch (error) {
       console.log('aegis', error);
     }
-  }
+  };
   
   function getUIN() {
     if (!getLocalStorage('call-uikit')) {
