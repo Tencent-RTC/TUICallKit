@@ -1,5 +1,5 @@
 .call-uikit-pc {
-  position: absolute;
+  position: absolute !important;
   z-index: 100;
   transform: translate(-50%, -50%);
   top: 50%;
