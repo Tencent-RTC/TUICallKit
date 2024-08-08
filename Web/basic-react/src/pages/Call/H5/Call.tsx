@@ -1,10 +1,10 @@
 import { useContext, useState } from "react"
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Image, Flex, Input, message } from 'antd';
+import { Image, Flex, Input } from 'antd';
 import { TUICallKitServer, TUICallType } from '@tencentcloud/call-uikit-react';
-import { getUrl, checkUserID, trim } from '../../../utils';
+import { checkUserID, trim } from '../../../utils';
 import { UserInfoContext } from "../../../context";
-import { useLanguage, useAegis } from '../../../hooks';
+import { useLanguage, useAegis, useMessage } from '../../../hooks';
 import ReturnH5Svg from '../../../assets/pages/h5-return.svg';
 import './Call.css';
 
@@ -14,8 +14,8 @@ export default function Call() {
   const { state } = useLocation();
   const { t } = useLanguage();
   const [calleeUserID, setCalleeUserID] = useState('');
-  const [messageApi, contextHolder] = message.useMessage();
-  const { reportEvent, reportError } = useAegis();
+  const { messageApi, contextHolder, handleCallError } = useMessage();
+  const { reportEvent } = useAegis();
 
   const goHome = () => {
     navigate('/home');
@@ -26,12 +26,12 @@ export default function Call() {
     if (!checkUserID(calleeUserID)) {
       messageApi.info(t('Please input the correct userID'));
       setCalleeUserID('');
-      return ;
+      return;
     }
     if (calleeUserID === userInfo.userID) {
       messageApi.info(t('You cannot make a call to yourself'));
       setCalleeUserID('');
-      return ;
+      return;
     }
     setUserInfo({
       ...userInfo,
@@ -50,14 +50,7 @@ export default function Call() {
         ...userInfo,
         isCall: false,
       });
-      if (String(error)?.includes('Invalid')) {
-        messageApi.warning(`${t('The userID you dialed does not exist, please create one')}: ${getUrl()}`);
-      }
-      reportError({
-        apiName: 'call.fail',
-        content: JSON.stringify(error),
-      });
-      console.error('call uikit', error);
+      handleCallError('call', error);
     }
   }
 

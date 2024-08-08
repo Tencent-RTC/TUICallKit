@@ -1,10 +1,10 @@
 import { useContext, useState } from 'react';
 import {  useLocation } from 'react-router-dom';
-import { Typography, Image, Flex, QRCode, Input, message } from 'antd';
+import { Typography, Image, Flex, QRCode, Input } from 'antd';
 import { TUICallKitServer, TUICallType } from '@tencentcloud/call-uikit-react';
 import { getUrl, BASE_URL, checkUserID, trim } from '../../../utils';
 import { UserInfoContext } from '../../../context';
-import { useLanguage, useAegis } from '../../../hooks';
+import { useLanguage, useAegis, useMessage } from '../../../hooks';
 import Container from '../../../components/Container/Container';
 import ShareSvg from '../../../assets/pages/share.svg';
 import QRCodeSvg from '../../../assets/pages/qr.svg';
@@ -16,21 +16,21 @@ export default function Call() {
   const { userInfo, setUserInfo } = useContext(UserInfoContext);
   const { t } = useLanguage();
   const [calleeUserID, setCalleeUserID] = useState('');
-  const [messageApi, contextHolder] = message.useMessage();
+  const { messageApi, contextHolder, handleCallError } = useMessage();
   const [isShowQr, setIsShowQr] = useState(false);
-  const { reportEvent, reportError } = useAegis();
+  const { reportEvent } = useAegis();
 
   const handleCall = async () => {
     reportEvent({ apiName: 'call.start' });
     if (!checkUserID(calleeUserID)) {
       messageApi.info(t('Please input the correct userID'));
       setCalleeUserID('');
-      return ;
+      return;
     }
     if (calleeUserID === userInfo.userID) {
       messageApi.info(t('You cannot make a call to yourself'));
       setCalleeUserID('');
-      return ;
+      return;
     }
     setUserInfo({
       ...userInfo,
@@ -49,14 +49,7 @@ export default function Call() {
         ...userInfo,
         isCall: false,
       });
-      if (String(error)?.includes('Invalid')) {
-        messageApi.warning(`${t('The userID you dialed does not exist, please create one')}: ${getUrl()}`);
-      }
-      reportError({
-        apiName: 'call.fail',
-        content: JSON.stringify(error),
-      });
-      console.error('call uikit', error);
+      handleCallError('call', error);
     }
   }
   function renderQRCode() {
@@ -71,6 +64,7 @@ export default function Call() {
   }
   function renderCallPanel() {
     const openNewWindow = () => {
+      reportEvent({ apiName: 'openNewWindow.start' });
       window.open(getUrl());
     }
     const handleCallUserID = (event: any) => {

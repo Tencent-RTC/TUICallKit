@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import { TUICallKit, TUICallKitServer, STATUS, TUIGlobal } from "@tencentcloud/call-uikit-vue";
 import DeviceDetector from "./components/DeviceDetector/index.vue";
-import * as GenerateTestUserSig from "../public/debug/GenerateTestUserSig-es.js";
+import * as GenerateTestUserSig from "./debug/GenerateTestUserSig-es.js";
 import TIM from "@tencentcloud/chat";
 import copy from "copy-to-clipboard";
 import videoBlackSVG from "./assets/videoBlack.svg";
@@ -326,15 +326,17 @@ async function hangup() {
 
 <template>
   <div class="wrapper">
-    <div v-show="isLogin">
-      <DeviceDetector
+    <DeviceDetector
       :visible="showDeviceDetector"
       :onClose="handleClose"
       :onFinish="handleFinishDetect"
       :networkDetectInfo="networkDetectInfo"
     >
     </DeviceDetector>
-    <div v-if="!isCalling" style="display: flex; align-items: center; justify-content: center;">
+    <div v-if="!isCalling" style="display: flex; align-items: center">
+      <!-- <button @click="accept"> accept </button>
+      <button @click="reject"> reject </button>
+      <button @click="hangup"> hangup </button> -->
       <div class="switch">
         <div
           class="switch-btn"
@@ -365,7 +367,7 @@ async function hangup() {
     <div :class="isMobile?'switch-language-H5':'switch-language'" @click="switchLanguage()">
       <img :src="languageSVG" class="icon" />
       <div class="language-name">
-        {{ locale == "en" ? "English" : "简体中文" }}
+        {{ locale == "en" ? "简体中文" : "English" }}
       </div>
     </div>
     <div :class="isMobile?'call-kit-container-H5':'call-kit-container'">
@@ -433,20 +435,14 @@ async function hangup() {
         :statusChanged="handleStatusChanged"
       />
     </div>
-    </div>
     <div id="debug" v-show="!isLogin">
-      <h2>Login Panel</h2>
-      <div class="panel-form">
-        <input class="panel-input" v-model="loginUserID" placeholder="Please input userID" />
-        <button class="panel-btn" @click="login()">{{ t("login") }}</button>
+      <div>
+        <b>Debug Panel</b>
       </div>
-      <div class="panel-link">
-        <h5> 
-          Link: 
-          <a href="https://trtc.io/document/50993?platform=web&product=call"> Integration | </a>
-          <a href="https://trtc.io/demo/homepage/#/detail?scene=callkit"> More Products </a>
-        </h5>
-      </div>
+      <span>UserID: </span>
+      <input v-model="loginUserID" placeholder="UserID" />
+      <br />
+      <button @click="login()">{{ t("login") }}</button>
     </div>
   </div>
 </template>

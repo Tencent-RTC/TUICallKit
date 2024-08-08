@@ -49,7 +49,7 @@ If you would like to try the demo specifically fit to your usage, you can do so 
   ```
 
 3. Specify the SDKAppID and SDKSecretKey
-   Input the SDKAppID and SDKSecretKey into file `Web/basic-vue2.7/public/debug/GenerateTestUserSig-es.js`
+   Input the SDKAppID and SDKSecretKey into file `Web/basic-vue2.7/src/debug/GenerateTestUserSig-es.js`
   ```javascript
    const SDKAPPID = 0;
    const SECRETKEY = '';

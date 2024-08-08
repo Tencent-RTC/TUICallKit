@@ -352,55 +352,14 @@ body,
 }
 
 #debug {
-  background-color: white;
-  padding: 50px;
-  border-radius: 5px;
-  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-  margin-top: 150px;
-  width: 350px;
-}
-
-#debug h2 {
-  text-align: center;
-  margin-bottom: 55px;
-}
-
-#debug .panel-form {
-  display: flex;
-  flex-direction: column;
-}
-
-#debug h5 {
-  display: inline;
-}
-.panel-link {
-  margin-top: 15px;
-}
-
-#debug .panel-input {
-  margin-bottom: 20px;
-  border-radius: 5px;
-  height: 30px;
-  border: 1px solid #ccc;
-}
-
-#debug .panel-btn {
-  margin: 10px 0;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.16);
+  border: 1px solid #666;
   padding: 10px;
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#debug .panel-btn:hover {
-  background-color: #0056b3;
-}
-
-.panel-link a {
-  text-decoration:none;
-  color:#0849ee;
+  z-index: 10;
+  box-sizing: border-box;
 }
 
 input::-webkit-outer-spin-button,

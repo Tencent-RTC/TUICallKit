@@ -62,6 +62,12 @@ export interface ICardProps {
 export interface IContentProps {
   children?: JSX.Element;
 }
+export enum LanguageType {
+  en = 'en',
+  'zh-CN' = 'zh-cn',
+  ja = "ja_JP",
+}
+
 // ============== component/groupCall ==============
 export interface IMemberList {
   userID: string;
@@ -73,4 +79,3 @@ export interface IUrlPrams {
   SecretKey: string;
   [index: string]: string | number;
 }
-

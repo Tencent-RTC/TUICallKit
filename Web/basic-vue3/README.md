@@ -45,11 +45,11 @@ If you would like to try the demo specifically fit to your usage, you can do so 
 
   ```shell
    cd ./TUICallKit/Web/basic-vue3
-   npm install # or, yarn
+   npm install
   ```
 
 3. Specify the SDKAppID and SDKSecretKey
-   Input the SDKAppID and SDKSecretKey into file `Web/basic-vue3/public/debug/GenerateTestUserSig-es.js`
+   Input the SDKAppID and SDKSecretKey into file `Web/basic-vue3/src/debug/GenerateTestUserSig-es.js`
   ```javascript
    const SDKAPPID = 0;
    const SECRETKEY = '';
