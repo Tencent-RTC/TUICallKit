@@ -237,10 +237,9 @@ class GroupCallFloatWindowView: FloatWindowView {
             self.updateUI()
         })
         
-                
         viewModel.timeCount.addObserver(timeCountObserver) {[weak self] newValue, _ in
             guard let self = self else { return }
-            self.updateUI()
+            self.updateTimerCountUI()
         }
         
         viewModel.isMicMute.addObserver(isMicMuteObserver) {[weak self] newValue, _ in
@@ -277,17 +276,27 @@ class GroupCallFloatWindowView: FloatWindowView {
         }
     }
     
+    func updateTimerCountUI() {
+        if viewModel.selfCallStatus.value == .waiting {
+            describeAndTimerLabel.text = TUICallState.instance.mResourceDic["k_0000088"] as? String
+            return
+        }
+        
+        if viewModel.selfCallStatus.value == .accept {
+            describeAndTimerLabel.text = viewModel.getCallTimeString()
+            return
+        }
+    }
+    
     func setWaitingUI() {
         userContainerView.isHidden = true
         callingIconContainerView.isHidden = false
-        describeAndTimerLabel.text = TUICallState.instance.mResourceDic["k_0000088"] as? String
     }
     
     func setAcceptUI() {
         if viewModel.currentSpeakUser.value.id.value == "" {
             userContainerView.isHidden = true
             callingIconContainerView.isHidden = false
-            describeAndTimerLabel.text = viewModel.getCallTimeString()
             return
         }
         
@@ -297,7 +306,6 @@ class GroupCallFloatWindowView: FloatWindowView {
             userRenderView.isHidden = true
             userAvatarImageView.isHidden = false
             userAvatarImageView.sd_setImage(with: URL(string: viewModel.currentSpeakUser.value.avatar.value), placeholderImage: BundleUtils.getBundleImage(name: "userIcon"))
-            describeAndTimerLabel.text = viewModel.getCallTimeString()
             return
         }
         
@@ -305,7 +313,7 @@ class GroupCallFloatWindowView: FloatWindowView {
         callingIconContainerView.isHidden = true
         userRenderView.isHidden = false
         userAvatarImageView.isHidden = true
-        describeAndTimerLabel.text = viewModel.getCallTimeString()
+        
         if viewModel.currentSpeakUser.value.id.value == TUICallState.instance.selfUser.value.id.value {
             viewModel.openCamera(videoView: userRenderView)
         } else {

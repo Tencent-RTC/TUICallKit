@@ -37,7 +37,6 @@ class _TUICallKitWidgetState extends State<TUICallKitWidget> {
       }
     };
     TUICore.instance.registerEvent(setStateEventOnCallEnd, onCallEndCallBack);
-    CallManager.instance.enableWakeLock(true);
   }
 
   @override

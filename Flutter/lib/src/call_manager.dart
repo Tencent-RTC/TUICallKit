@@ -109,10 +109,9 @@ class CallManager {
           CallState.instance.selfUser.callStatus = TUICallStatus.waiting;
           CallingBellFeature.startRing();
           launchCallingPage();
-          return callResult;
-        } else {
-          return TUIResult(code: "-1", message: "Call Fail, engine call fail");
+          CallManager.instance.enableWakeLock(true);
         }
+        return callResult;
       } else {
         return TUIResult(code: "-1", message: "Permission result fail");
       }
@@ -136,10 +135,9 @@ class CallManager {
         CallState.instance.selfUser.callStatus = TUICallStatus.waiting;
         CallingBellFeature.startRing();
         launchCallingPage();
-        return callResult;
-      } else {
-        return TUIResult(code: "-1", message: "Call Fail, engine call fail");
+        CallManager.instance.enableWakeLock(true);
       }
+      return callResult;
     }
   }
 
@@ -212,10 +210,9 @@ class CallManager {
 
           CallingBellFeature.startRing();
           launchCallingPage();
-          return callResult;
-        } else {
-          return TUIResult(code: "-1", message: "Call Fail, engine call fail");
+          CallManager.instance.enableWakeLock(true);
         }
+        return callResult;
       } else {
         return TUIResult(code: "-1", message: "Permission result fail");
       }
@@ -249,10 +246,9 @@ class CallManager {
 
         CallingBellFeature.startRing();
         launchCallingPage();
-        return callResult;
-      } else {
-        return TUIResult(code: "-1", message: "Call Fail, engine call fail");
+        CallManager.instance.enableWakeLock(true);
       }
+      return callResult;
     }
   }
 
@@ -284,6 +280,7 @@ class CallManager {
           CallState.instance.selfUser.callStatus = TUICallStatus.accept;
 
           launchCallingPage();
+          CallManager.instance.enableWakeLock(true);
           return;
         } else {
           CallManager.instance.showToast("joinInGroupCall Fail, engine call "
@@ -305,6 +302,7 @@ class CallManager {
         CallState.instance.selfUser.callStatus = TUICallStatus.accept;
 
         launchCallingPage();
+        CallManager.instance.enableWakeLock(true);
         return;
       } else {
         CallManager.instance.showToast("joinInGroupCall Fail,engine call fail");
@@ -556,12 +554,13 @@ class CallManager {
     TUICallKitPlatform.instance.initResources(resources);
   }
 
-  void handleAppEnterForeground() {
+  void handleAppEnterForeground() async {
     TRTCLogger.info('CallManager handleAppEnterForeground()');
     if (CallState.instance.selfUser.callStatus != TUICallStatus.none &&
         TUICallKitNavigatorObserver.currentPage == CallPage.none &&
         CallState.instance.isOpenFloatWindow == false &&
-        CallState.instance.isInNativeIncomingBanner == false) {
+        CallState.instance.isInNativeIncomingBanner == false &&
+        !(await CallManager.instance.isScreenLocked())) {
       launchCallingPage();
     }
   }
@@ -596,9 +595,23 @@ class CallManager {
     CallState.instance.enableIncomingBanner = enable;
   }
 
-  void enableWakeLock(bool enable) {
+  Future<void> enableWakeLock(bool enable) async {
     TRTCLogger.info('CallManager enableWakeLock($enable)');
-    TUICallKitPlatform.instance.enableWakeLock(enable);
+    await TUICallKitPlatform.instance.enableWakeLock(enable);
+  }
+
+  void showIncomingBanner() {
+    TRTCLogger.info('CallManager showIncomingBanner');
+    TUICallKitPlatform.instance.showIncomingBanner();
+  }
+
+  void pullBackgroundApp() {
+    TRTCLogger.info('CallManager pullBackgroundApp');
+    TUICallKitPlatform.instance.pullBackgroundApp();
+  }
+
+  Future<bool> isScreenLocked() async {
+    return await TUICallKitPlatform.instance.isScreenLocked();
   }
 
   void _setExcludeFromHistoryMessage() async {

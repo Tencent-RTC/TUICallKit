@@ -63,6 +63,7 @@ class CallState {
         await CallState.instance
             .handleCallReceivedData(callerId, calleeIdList, groupId, callMediaType);
         await TUICallKitPlatform.instance.updateCallStateToNative();
+        await CallManager.instance.enableWakeLock(true);
         CallingBellFeature.startRing();
 
         if (Platform.isIOS) {
@@ -74,15 +75,20 @@ class CallState {
             CallManager.instance.launchCallingPage();
           }
         } else if (Platform.isAndroid) {
+          if (await CallManager.instance.isScreenLocked()) {
+            CallManager.instance.pullBackgroundApp();
+            return;
+          }
+
           if (CallState.instance.enableIncomingBanner) {
             CallState.instance.isInNativeIncomingBanner = true;
-            await TUICallKitPlatform.instance.showIncomingBanner();
+            CallManager.instance.showIncomingBanner();
           } else {
             if (await TUICallKitPlatform.instance.isAppInForeground()) {
               CallState.instance.isInNativeIncomingBanner = false;
               CallManager.instance.launchCallingPage();
             } else {
-              TUICallKitPlatform.instance.pullBackgroundApp();
+              CallManager.instance.pullBackgroundApp();
             }
           }
         }
@@ -93,6 +99,7 @@ class CallState {
         CallState.instance.cleanState();
         TUICore.instance.notifyEvent(setStateEventOnCallEnd);
         TUICallKitPlatform.instance.updateCallStateToNative();
+        CallManager.instance.enableWakeLock(false);
       },
       onCallBegin: (TUIRoomId roomId, TUICallMediaType callMediaType, TUICallRole callRole) {
         TRTCLogger.info(
@@ -124,6 +131,7 @@ class CallState {
         CallState.instance.cleanState();
         TUICore.instance.notifyEvent(setStateEventOnCallEnd);
         TUICallKitPlatform.instance.updateCallStateToNative();
+        CallManager.instance.enableWakeLock(false);
       },
       onCallMediaTypeChanged:
           (TUICallMediaType oldCallMediaType, TUICallMediaType newCallMediaType) {
@@ -283,12 +291,25 @@ class CallState {
       },
       onUserNetworkQualityChanged: (List<TUINetworkQualityInfo> networkQualityList) {},
       onUserVoiceVolumeChanged: (Map<String, int> volumeMap) {
+        bool needUpdate2Native = false;
         for (var remoteUser in CallState.instance.remoteUserList) {
-          remoteUser.playOutVolume = volumeMap[remoteUser.id] ?? 0;
+          var volume = volumeMap[remoteUser.id] ?? 0;
+          remoteUser.playOutVolume = volume;
+          if (volume > 10) {
+            needUpdate2Native = true;
+          }
         }
-        CallState.instance.selfUser.playOutVolume = volumeMap[CallState.instance.selfUser.id] ?? 0;
-        TUICallKitPlatform.instance.updateCallStateToNative();
-        TUICore.instance.notifyEvent(setStateEvent);
+
+        var selfVolume =  volumeMap[CallState.instance.selfUser.id] ?? 0;
+        CallState.instance.selfUser.playOutVolume = selfVolume;
+        if (selfVolume > 10) {
+          needUpdate2Native = true;
+        }
+
+        if (needUpdate2Native) {
+          TUICallKitPlatform.instance.updateCallStateToNative();
+          TUICore.instance.notifyEvent(setStateEvent);
+        }
       },
       onKickedOffline: () {
         TRTCLogger.info('TUICallObserver onKickedOffline()');

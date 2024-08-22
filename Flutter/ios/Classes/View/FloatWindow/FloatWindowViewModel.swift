@@ -106,7 +106,7 @@ class FloatWindowViewModel {
         
         TUICallState.instance.selfUser.value.playoutVolume.addObserver(selfPlayoutVolumeObserver) { [weak self] newValue, _ in
             guard let self = self else { return }
-            if newValue > 30 {
+            if newValue > 10 {
                 self.updateCurrentSpeakUser(user: TUICallState.instance.selfUser.value)
             }
         }
@@ -118,7 +118,7 @@ class FloatWindowViewModel {
             let user = TUICallState.instance.remoteUserList.value[index]
             TUICallState.instance.remoteUserList.value[index].playoutVolume.addObserver(remotePlayoutVolumeObserver) { [weak self] newValue, _ in
                 guard let self = self else { return }
-                if newValue > 30 {
+                if newValue > 10 {
                     self.updateCurrentSpeakUser(user: user)
                 }
             }
