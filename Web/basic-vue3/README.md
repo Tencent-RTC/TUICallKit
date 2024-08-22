@@ -51,13 +51,13 @@ If you would like to try the demo specifically fit to your usage, you can do so 
 3. Specify the SDKAppID and SDKSecretKey
    Input the SDKAppID and SDKSecretKey into file `Web/basic-vue3/src/debug/GenerateTestUserSig-es.js`
   ```javascript
-   const SDKAPPID = 0;
-   const SECRETKEY = '';
+    let SDKAppID = 0;
+    let SecretKey = '';
   ```
 
 4. Run the demo
   ```shell
-   npm run serve
+   npm run dev
   ```
 
 
@@ -74,3 +74,8 @@ If you would like to try the demo specifically fit to your usage, you can do so 
 - If you want to learn more about the product features, you can click on the following [link](https://trtc.io/products).
 - If you encounter difficulties, you can refer to [FAQs](https://trtc.io/document/53565), here are the most frequently encountered problems of developers, covering various platforms, I hope you can Help you solve problems quickly.
 - For complete API documentation, see [Audio Video Call SDK API Example](https://trtc.io/document/51014): including TUICallKit (with UIKit), TUICallEngine (without UIKit), and call events Callbacks, etc.
+
+## FAQs
+
+### What is Aegis used for in the project?
+Aegis is used for performance analysis purposes only. If you don't need it, you can simply remove the Aegis-related code from the project without affecting its normal functionality.

@@ -40,13 +40,13 @@ const groupID = ref<string>("");
 let tim: any = null;
 
 onMounted(() => {
-  const sdkAppID = GenerateTestUserSig.SDKAPPID || getUrlParam("SDKAppID");
+  const sdkAppID = getUrlParam("SDKAppID");
   if (!sdkAppID) SDKAppID.value = 0;
   else {
     SDKAppID.value = parseInt(sdkAppID as string);
     isNewTab.value = true;
   }
-  SecretKey.value = GenerateTestUserSig.SECRETKEY || getUrlParam("SecretKey") || "";
+  SecretKey.value = getUrlParam("SecretKey") || "";
   TUICallKitServer.setLanguage(locale.value);
   finishedRTCDetectStatus.value = localStorage.getItem("callkit-basic-demo-finish-rtc-detect") || "";
 });
