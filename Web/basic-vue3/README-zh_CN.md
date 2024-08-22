@@ -50,13 +50,12 @@ Calls SDK for Web Vue3 demo 的最低要求是：
 
 3. 配置 SDKAppID 和 SDKSecretKey 在 `Web/basic-vue3/src/debug/GenerateTestUserSig-es.js` 文件中填写 SDKAppID 和 SecretKey。
   ```javascript
-   const SDKAPPID = 0;
-   const SECRETKEY = '';
+c
   ```
 
 4. 运行
   ```shell
-   npm run serve
+   npm run dev
   ```
 
 ## 开始您的第一次通话
@@ -73,3 +72,7 @@ Calls SDK for Web Vue3 demo 的最低要求是：
 - 如果您遇到困难，可以参考：[FAQs](https://trtc.io/document/53565)。这里是开发者最常遇到的问题，涵盖各个平台，希望可以帮助您快速解决问题。
 - 有关完整的 API 文档，请参阅 [Audio Video Call SDK API Example](https://trtc.io/document/51014)。包括 TUICallKit（带 UIKit）、TUICallEngine（不带 UIKit）、以及通话事件回调等。
 
+## 常见问题
+
+### 项目中的 Aegis 是用来做什么的？
+Aegis 只是用来做一些性能分析；如果您不需要，可以直接删掉项目中 Aegis 的相关代码，不会影响该项目的正常功能。

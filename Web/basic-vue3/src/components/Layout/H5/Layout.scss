@@ -1,0 +1,27 @@
+.layout-h5 {
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+  padding: 20px;
+  background: #fff url('../../../assets/h5-bg.png') no-repeat;
+
+  display: flex;
+  flex-direction: column;
+
+  .header {
+    width: calc(100vw - 40px);
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+  }
+
+  .logo {
+    margin: 70px auto 0px auto;
+  }
+  .content {
+    height: 483px;
+  }
+  .quick-link {
+    margin: 0 auto;
+  }
+}

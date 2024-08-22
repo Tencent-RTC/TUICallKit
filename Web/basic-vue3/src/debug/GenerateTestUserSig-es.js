@@ -1,7 +1,7 @@
 import LibGenerateTestUserSig from './lib-generate-test-usersig-es.min.js';
 
 /**
- * Refer to the READEME.md for the SDKAppID、SecretKey
+ * Refer to the READEME.md for the SDKAppID、SecretKey/SDKSecretKey
  */
 let SDKAppID = 0;
 let SecretKey = '';
