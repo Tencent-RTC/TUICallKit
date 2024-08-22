@@ -8,6 +8,7 @@ import com.tencent.cloud.tuikit.flutter.tuicallkit.service.ServiceInitializer;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.TUICallState;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.User;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Devices;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Permission;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.view.floatwindow.FloatWindowService;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.view.incomingfloatwindow.IncomingFloatView;
@@ -61,7 +62,7 @@ public class WindowManager {
             return;
         }
 
-        if (isFCMDataNotification()) {
+        if (!ServiceInitializer.isAppInForeground(context) && isFCMDataNotification()) {
             if (Permission.hasPermission(PermissionRequester.FLOAT_PERMISSION)) {
                 Logger.info(TUICallKitPlugin.TAG, "App in background, will open IncomingFloatView");
                 startIncomingFloatWindow(context, caller);
@@ -74,7 +75,6 @@ public class WindowManager {
             }
         }
 
-        Logger.info(TUICallKitPlugin.TAG, "App in background, try to launch");
         launchMainActivity(context);
         TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_HANDLE_CALL_RECEIVED, null);
     }
@@ -106,6 +106,7 @@ public class WindowManager {
     }
 
     public static void launchMainActivity(Context context) {
+        Logger.info(TUICallKitPlugin.TAG, "Try to launch main activity");
         Intent intentLaunchMain = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
         if (intentLaunchMain != null) {
             intentLaunchMain.putExtra("show_in_foreground", true);

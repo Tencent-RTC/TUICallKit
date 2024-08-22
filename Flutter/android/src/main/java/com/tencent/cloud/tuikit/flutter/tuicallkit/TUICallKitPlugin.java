@@ -5,6 +5,8 @@ import static com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants.SUBKEY
 
 import android.Manifest;
 import android.content.Context;
+import android.os.Build;
+import android.os.PowerManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +17,7 @@ import com.tencent.cloud.tuikit.flutter.tuicallkit.service.ForegroundService;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.TUICallState;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.User;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Devices;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitEnumUtils;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitObjectUtils;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Permission;
@@ -29,6 +32,7 @@ import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.tencent.qcloud.tuicore.permission.PermissionCallback;
 import com.tencent.qcloud.tuicore.permission.PermissionRequester;
+import com.tencent.qcloud.tuicore.util.TUIBuild;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -290,6 +294,13 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         result.success(0);
     }
 
+    public void isScreenLocked(MethodCall call, MethodChannel.Result result) {
+        if (Devices.isScreenLocked(mApplicationContext)) {
+            result.success(true);
+        } else {
+            result.success(false);
+        }
+    }
 
     private String getPermissionsByIndex(int index) {
         switch (index) {

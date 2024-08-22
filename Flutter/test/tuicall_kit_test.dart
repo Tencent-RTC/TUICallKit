@@ -120,6 +120,12 @@ class MockCallsUikitPlatform
     throw UnimplementedError();
   }
 
+  @override
+  Future<bool> isScreenLocked() {
+    // TODO: implement isScreenLocked
+    throw UnimplementedError();
+  }
+
 }
 
 void main() {

@@ -33,6 +33,7 @@ public class SingleCallFloatView extends CallFloatView implements ITUINotificati
     private ImageView      mImageAvatar;
     private ImageView      mImageAudio;
     private boolean        mIsCameraOpen = false;
+    private Boolean         mHadAccepted = false;
 
     public SingleCallFloatView(Context context) {
         super(context);
@@ -98,7 +99,10 @@ public class SingleCallFloatView extends CallFloatView implements ITUINotificati
             if (TUICallState.getInstance().mSelfUser.callStatus == TUICallDefine.Status.Waiting) {
                 mTextStatus.setText((String) TUICallState.getInstance().mResourceMap.get("k_0000088"));
             } else if (TUICallState.getInstance().mSelfUser.callStatus == TUICallDefine.Status.Accept) {
-                startTiming();
+                if (!mHadAccepted) {
+                    startTiming();
+                }
+                mHadAccepted = true;
             } else {
                 destory();
             }

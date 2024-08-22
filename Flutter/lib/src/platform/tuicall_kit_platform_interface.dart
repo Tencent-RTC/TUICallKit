@@ -93,4 +93,8 @@ abstract class TUICallKitPlatform extends PlatformInterface {
   Future<void> enableWakeLock(bool enable) async {
     await instance.enableWakeLock(enable);
   }
+
+  Future<bool> isScreenLocked() async {
+    return await instance.isScreenLocked();
+  }
 }

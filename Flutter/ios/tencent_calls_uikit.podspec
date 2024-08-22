@@ -16,7 +16,7 @@ A new Flutter plugin project.
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
   s.dependency 'TUICallEngine/Professional'
-  s.dependency 'TUICore', '>= 7.9.5666'
+  s.dependency 'TUICore', '>= 8.1.6103'
   s.dependency 'SnapKit'
   s.platform = :ios, '9.0'
   s.static_framework = true

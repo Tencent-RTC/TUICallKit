@@ -20,6 +20,7 @@ import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
 import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class GroupCallFloatView extends CallFloatView implements ITUINotification {
 
@@ -30,7 +31,9 @@ public class GroupCallFloatView extends CallFloatView implements ITUINotificatio
     private TUIVideoView mTUIVideoView;
     private ImageView    mImageAvatar;
     private ImageView    mImageAudio;
-    private TextView     mTextUserName;
+    private TextView    mTextUserName;
+    private Boolean mHadAccepted   = false;
+    private String  mShowingUserId = "";
 
     public GroupCallFloatView(Context context) {
         super(context);
@@ -94,30 +97,35 @@ public class GroupCallFloatView extends CallFloatView implements ITUINotificatio
         }
 
         if (TUICallState.getInstance().mSelfUser.callStatus == TUICallDefine.Status.Accept) {
+            if (!mHadAccepted) {
+                startTiming();
+            }
+            mHadAccepted = true;
 
             User speakingUser = getSpeakingUser();
-
             if (speakingUser == null) {
                 mImageAudio.setVisibility(VISIBLE);
                 mTextStatus.setVisibility(VISIBLE);
                 mTUIVideoView.setVisibility(GONE);
                 mImageAvatar.setVisibility(GONE);
                 mTextUserName.setVisibility(GONE);
-                startTiming();
+                return;
+            } else if (Objects.equals(mShowingUserId, speakingUser.id)) {
                 return;
             }
 
+            mShowingUserId = speakingUser.id;
             mTextUserName.setVisibility(VISIBLE);
             mTextUserName.setText(speakingUser.nickname);
             if (speakingUser.videoAvailable ||
-                    (speakingUser.id == TUICallState.getInstance().mSelfUser.id &&
+                    (Objects.equals(speakingUser.id, TUICallState.getInstance().mSelfUser.id) &&
                             TUICallState.getInstance().mIsCameraOpen)) {
                 mImageAudio.setVisibility(GONE);
                 mTextStatus.setVisibility(GONE);
                 mTUIVideoView.setVisibility(VISIBLE);
                 mImageAvatar.setVisibility(GONE);
 
-                if (speakingUser.id == TUICallState.getInstance().mSelfUser.id) {
+                if (Objects.equals(speakingUser.id, TUICallState.getInstance().mSelfUser.id)) {
                     TUICallEngine.createInstance(mContext).openCamera(TUICallState.getInstance().mCamera,
                             mTUIVideoView,
                             null);
@@ -145,19 +153,15 @@ public class GroupCallFloatView extends CallFloatView implements ITUINotificatio
     }
 
     private User getSpeakingUser() {
-        User user = null;
         for (User remoterUser : TUICallState.getInstance().mRemoteUserList) {
-            if (remoterUser.playoutVolume > 30 &&
-                    !(user != null && user.playoutVolume > remoterUser.playoutVolume)) {
-                user = remoterUser;
+            if (remoterUser.playoutVolume > 10) {
+                return remoterUser;
             }
         }
-
-        if (TUICallState.getInstance().mSelfUser.playoutVolume > 30 &&
-                !(user != null && user.playoutVolume > TUICallState.getInstance().mSelfUser.playoutVolume)) {
-            user = TUICallState.getInstance().mSelfUser;
+        if (TUICallState.getInstance().mSelfUser.playoutVolume > 10) {
+            return TUICallState.getInstance().mSelfUser;
         }
-        return user;
+        return null;
     }
 }
 
