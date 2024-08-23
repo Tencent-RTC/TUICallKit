@@ -1,0 +1,40 @@
+.el-input__wrapper {
+  box-shadow: none;
+  background-color: inherit;
+}
+
+.el-input-group__append {
+  box-shadow: none;
+}
+
+.el-input__wrapper:hover {
+  box-shadow: 0 0 0 1px #409eff inset;
+}
+
+.el-checkbox {
+  height: inherit;
+}
+
+.el-tree-node {
+  width: 280px;
+  white-space: wrap;
+}
+
+.el-tree-node__content {
+  height: inherit;
+  margin: 3px 0;
+}
+
+.el-button+.el-button {
+  margin-left: 0;
+}
+
+// call-h5
+.el-input-group__append, .el-input-group__prepend {
+  background-color: #FFFFFF !important;
+  border-bottom-right-radius: 0;
+  border-right: 0;
+  border-top-right-radius: 0;
+  box-shadow: none;
+  color: inherit;
+}

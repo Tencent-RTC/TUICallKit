@@ -1,0 +1,18 @@
+.run-guide-panel {
+  width: 310px;
+  position: absolute;
+  top: 80px;
+  right: 30px;
+  z-index: 10;
+  padding: 20px;
+  box-shadow: 0 4px 12px #b1c4e299;
+  background: rgb(255, 255, 255);
+  border-radius: 12px;
+}
+
+.header-subCard-title {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  color: #000000;
+}

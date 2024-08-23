@@ -1,0 +1,46 @@
+.pc-home {
+  margin: 0 auto;
+}
+.home-card {
+  width: 294px;
+  height: 314px;
+  padding: 25px;
+  background: #F0F4FA;
+  border-radius: 12px;
+}
+.home-card:hover {
+  cursor: pointer;
+}
+.home-card-tip {
+  margin: 16px 0 27px 0;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: center;
+  color: #747F99;
+}
+.home-title {
+  height: 36px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.home-card-title {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 20px;
+  font-weight: 600;
+}
+.home-arrow {
+  width: 40px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #1C66E5;
+  border-radius: 12px;
+  margin-left: 8px;
+}
