@@ -1,0 +1,11 @@
+.return-link {
+  display: flex;
+  align-items: center;
+}
+.return-text {
+  margin-left: 8px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #4F586B;
+}

@@ -1,0 +1,456 @@
+@media screen and (max-width: 520px) {
+  .root {    
+    min-width: 520px;
+  }
+}
+
+.device-detector-backdrop {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1300;
+  opacity: 1;
+  transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  .root {
+    position: relative;
+    // min-width: 500px;
+    // max-width: 600px;
+    // min-height: 480px;
+    // max-height: 480px;
+    width: 600px;
+    height: 480px;
+    font-size: 16px;
+    box-shadow: 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
+    background-color: #ffffff;
+    border-radius: 4px;
+    .stepper {
+      border-radius: 5px 5px 0 0;
+      font-size: 36px;
+    }
+  
+    .close {
+      color: #eeeeee;
+      border-radius: 20px;
+      border-color: #eeeeee;;
+      position: absolute;
+      cursor: pointer;
+      top: -50px;
+      right: 2px;
+    }
+  
+    .device-connect {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .testing-title {
+        display: flex;
+        font-size: 32px;
+        justify-content: center;
+        margin-top: 55px;
+        color: #201e1ee5;
+      }
+      .testing-prepare-info {
+        max-width: 500px;
+        text-align: center;
+        display: flex;
+        font-size: 16px;
+        justify-content: center;
+        margin-top: 30px;
+        color: #585656e5;
+      }
+      .device-display{
+        width: 420px;
+        margin: 40px auto 20px;
+        display: flex;
+        justify-content: space-around;
+        position: relative;
+        .connect-success{
+          position: relative;
+          &::before{
+            content: '';
+            width: 28px;
+            height: 28px;
+            position: absolute;
+            bottom: -34px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACAElEQVRYR+2Vv2sUQRTH3/eOYO+f EWzmzUaSTv8CYxIUAooWAYsQJEkRRDRikUJMiiMIQRSVCNql0sqkCIFwO7NLCGm00kpEEBtzhsyT Pe5kWG9zu8p5zU658958Pnznx4L6PNBnPpUCZQJlAj1PgOu8SBW6C0HNBGYmfe17KqBCdRvA/TbU OXc+Hoq3fImeCahQLQBY8mDGahv8lwR0qOcF8sCDfSCicavtXs8F2PBNIlrxQB9dxU3EKq53evY7 boGyahDHuCRVWY04+pL3f8GGp4mo1q4H8JkcTZjAbGet0VGADUurYd8dubF4OH7fTUJZdQOCR17d t1bs707q/UNgZH/kdKPR+Oofnupx9WL9bP1T1kJseIqI1rz5HwIZjzh60008awvuQXDndzNoR0hG O20HG75ORE+8WldBZSxU4UY3eDKfeQ211UsisuAtsjlwNDC6O7z7vf1NWXUFgucp0GWr7es88BMF kklt9UMRmfUWe3t46vDCwZmDnzrUkwJZ90ECuRpx9CIvvKtAUsCWaySUnO7mEJENAC+J6JUPgmDK BOZxEXgugaZEyGsESg5a1pi22q4WhecWaEoYfkpE19IQEZmLgmj5b+CFBJJiZdU6BJNtGAS3TGD8 976wR+GfUSuJc+TomR2yi4WJqYbCAv8KTPeXAmUCZQJ9T+AXo7StIY0IqrkAAAAASUVORK5CYII=') no-repeat;
+            background-size: 100% 100%;
+          }
+        }
+        .connect-fail{
+          position: relative;
+          &::before{
+            content: '';
+            width: 28px;
+            height: 28px;
+            position: absolute;
+            bottom: -34px;
+            left: 50%;
+            transform: translateX(-50%);
+            // background: url('/fail.png') no-repeat;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB3ElEQVRYR+2Wr08cQRTHP+8ESZOq GlKBaKhpUwWmCnG7d4giwDS5NGlVMWDAtIZfrQEDpjVF0ZC0wH/QWxr+gNrKJigSBA4J98hN7pbl 9mZnZklz5tasmPfm+5nve/t2hAE/MmB9hgBDB5wOaJVx+c2/Ms2qEc+BCznm3JZvBdBpHnPNmUlU VuWYzyEQGrGC8KmdI4m92e0AbXrhbyoqfJQmWz4QWuMDymYa2+KpzcXCEmjMOrCWEV2WhJ0iCI1Z ArbTGId77h7ohRAWpcnXfhBaYwHlS4hrTgDTAnkn5iVhNwuhMe+BbyFumf7wqakF4p0kfO+svQX2 Mie3utSr5w3QF6JCw2zY4kdm45w7RYcMArA4kd0/dcXX2WAAK0SFhvzip69wN64cQJ0XtDgEnmXq /lqaHP13AK0yQcWIj+fEhGCIIAc05iUY8bGO+EbnfTusAiG8AbTOVMf20a64JGZS5udEAIQXgEbE CAfAo17xbhlyw8oTwgmgMa/AdPdDm/h9IIp/RjXmUCM+4hIvC2H/HdeZpMWfTKdvdGvu+tRy5bji iZxw2i+v6D7wBmHf9+S9m9+BKH0fiJilwgNp3pn1LgPSdY2YQbiUhBNbkrMJvdVKBg4Bhg4M3IEb uI2UIfOyj40AAAAASUVORK5CYII=') no-repeat;
+            background-size: 100% 100%;
+          }
+        }
+        .device{
+          width: 46px;
+          height: 46px;
+          position: relative;
+          justify-content: center;
+          font-size: 38px;
+          svg {
+            width: 36px;
+            height: 36px;
+            fill: #47494D;
+          }
+        }
+        .outer-progress {
+          width: 360px;
+          height: 4px;
+          border-radius: 5px;
+          position: absolute;
+          top: 70px;
+          background-color: #eeeeee;
+          overflow: hidden;
+          .inner-progress {
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 4px;
+            border-radius: 5px;
+            background-color: #bfbfbf;
+            transform-origin: left;
+            transition: transform 0.4s linear;
+          }
+        }
+      }
+      .text {
+        margin-top: 60px;
+        font-size: 18px;
+        max-width: 420px;
+        text-align: center;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &.gray-text {
+          color:#585656e5;
+        }
+        &.green-text {
+          color:rgb(50, 205, 50);
+        }
+        &.red-text {
+          color: red;
+        }
+        .error-connect {
+          width: 20px;
+          height: 20px;
+          margin-left: 8px;
+          position: relative;
+          .error-icon {
+            svg {
+              width: 20px;
+              height: 20px;
+            }
+          }
+          .connect-attention-info{
+            padding: 8px 12px;
+            min-width: 160px;
+            min-height: 50px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            color: #fff;
+            position: absolute;
+            right: 0;
+            bottom: 100%;
+            transform: translate(20px, -10px);
+            display: block;
+            white-space: nowrap;
+            font-size: 12px;
+            text-align: left;
+            &::after {
+              content: '';
+              width: 0;
+              height: 0;
+              border: 10px transparent solid;
+              border-top-color: rgba(0, 0, 0, 0.6);
+              position: absolute;
+              left: 100%;
+              top: 100%;
+              transform: translateX(-40px);
+            }
+          }
+        }
+      }
+  
+      .button-container {
+        margin-top: 40px;
+        width: 40%;
+        display: flex;
+        justify-content: space-around;
+      }
+    }
+
+    .device-select {
+      width: 260px;
+      padding: 6px 14px 6px 12px;
+      position: relative;
+      font-size: 16px;
+      border-radius: 4px;
+      background-color: #fff;
+      cursor: pointer;
+      &:focus {
+        outline: none;
+      }
+    }
+    
+    .step-container {
+      display: flex;
+      padding: 24px;
+      .step {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        fill: rgba(0, 0, 0, 0.54);
+        color: rgba(0, 0, 0, 0.54);
+        &:not(:first-child) {
+          &::after{
+            position: absolute;
+            content: '';
+            height: 1px;
+            background-color: rgba($color: #000000, $alpha: 0.16);
+            right: 100%;
+            top: 30%;
+            right: calc(50% + 20px);
+            left: calc(-50% + 20px);
+            top: 16px;
+          }
+        }
+        &.active {
+          fill: #006EFF;
+          color: #006EFF;
+          cursor: pointer;
+          &::after{
+            background-color: #006EFF;
+          }
+        }
+        &.error {
+          fill: red;
+          color: red;
+          cursor: pointer;
+          &::after{
+            background-color: #006EFF;
+          }
+        }
+        .step-label {
+          margin-top: 12px;
+        }
+      }
+    }
+  
+    .testing-container {
+      width: 100%;
+      margin: 10px auto 30px;
+      .testing-body {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        &.hide {
+          display: none;
+        }
+        .device-list {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-bottom: 20px;
+          .device-list-title {
+            margin-right: 10px;
+          }
+        }
+        .camera-video {
+          width: 300px;
+          height: 180px;
+        }
+      }
+    }
+  
+    .testing-info-container{
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: absolute;
+      bottom: 30px;
+      .testing-info{
+        width: 100%;
+        text-align: center;
+        display: block;
+      }
+      .button-list{
+        margin-top: 20px;
+        width: 300px;
+        display: flex;
+        justify-content: space-around;
+      }
+    }
+  
+    .mic-testing-container {
+      margin-top: 20px;
+      .mic-bar-container{
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+        .mic-bar{
+          width: 8px;
+          height: 30px;
+          border: 1px solid #cccccc;
+          border-radius: 1px;
+        }
+        .mic-bar:not(:first-child){
+            margin-left: 3px;
+        }
+        .mic-bar.active{
+            background: #006EFF;
+        }
+      }
+    }
+  
+    .audio-player-container {
+      width: 340px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 20px auto 0;
+      text-align: center;
+      .audio-player-info {
+        margin: 0px auto 16px;
+        color: #5f5f5f;
+      }
+    }
+  
+    .testing-list {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      .testing-item-container {
+        width: 70%;
+        margin: 0 auto 10px;
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+    @keyframes loading-circle{
+      0% {
+          transform: rotate(0deg);
+      }
+      25% {
+          transform: rotate(90deg);
+      }
+      50% {
+          transform: rotate(180deg);
+      }
+      75% {
+          transform: rotate(270deg);
+      }
+      100% {
+          transform: rotate(360deg);
+      }
+    }
+    .network-loading{
+      display: flex;
+    }
+    .network-loading::before{
+        content: '';
+        width: 16px;
+        height: 16px;
+        background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAChElEQVRYR82WO2wTQRCGZ9YFLmmCQDRUFIgOCuhMg2QJ8OxKtpQuEggqQDz6hDIiSAg6QEo6pFi+WVsoLgkVDakgFFBAlYJ0IGRceAetdWddLF/uznacXHe38/j2n9mbRTjkB6eRn4jOWGt/jhMrMwARlRDxkogUEfETM7/zCY0xqyKyAAAe4G70PStMZgCt9WsAuBUG3mLmi5VK5ZxSajuWrM7MtazJvd1EAER0HBG/AcBcPxji8yAIHhDREiJeA4A/IvLBWruUBJUIoLX+AgC7IvLEWruZVAIimldKXXXOefstb6u1lljCbWY+nwsg3MFi6LTJzFeyyloul48Vi8V/MfvvzHw2F0Cstl6BZWvts6wA3o6I3iDizdDnBTPfzwUQGVer1bl6vb6bJ3nM92S321WtVmtHa/3QnxBE/BwEwY14vD094KXfr2HGASGiBURcjXxF5KW19l70PgDQWr8HgBIA5Kp5GpTWeh0AqjG7HWY+PUsAn9xD9J/wVA2O5YGXIGzKklJq3jn30Vq7ltgDaXJOsu7nhS+xUuqyc+6t/1/k+hNOktz7GmNYRCgWp8bM9X4JiGhZKXVCRDb8x0mTDfuPmBnepD83+gDRr3O4QaYJorX+AQC+DHuacSYKhCovIuJ1ALiAiGu9Xu9ps9n8mnkaTkuN4cvLzAGGN3J0AIjoESKuiMgda+2raUmeFmegwEED+KPom+7QSpA0aY9ODwxLY4w51el0/rbb7d9pdZxkfb9Lqb9YTvVuMAo0EcDfZAqFwq9Go7Exzg6NMStBEDxO883VA0R0e9QRTerwtOS5x3E4tPpjNAoeTrp151xt1DFLg8ilQFKwmSmQtptx1v8DVbAxMP//OLQAAAAASUVORK5CYII=') no-repeat;
+        background-size: 100% 100%;
+        animation: loading-circle 2s linear infinite;
+    }
+    .report-button {
+      position: absolute;
+      bottom: 60px;
+      cursor: pointer;
+    }
+    .gray-button {
+      position: absolute;
+      bottom: 60px;
+    }
+  
+    .device-testing-report {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: center;
+      .testing-title{
+        display: flex;
+        font-size: 34px;
+        justify-content: center;
+        margin-top: 30px;
+        color: #201e1ee5;
+      }
+      .device-report-list{
+        display: block;
+        width: 100%;
+        margin-top: 10px;
+        .device-report{
+          display: flex;
+          width: 70%;
+          margin: 20px auto 0;
+          justify-content: space-between;
+          .device-info{
+            display: flex;
+            width: 80%;
+            .report-icon{
+              margin-right: 20px;
+              justify-content: center;
+              font-size: 22px;
+              line-height: 22px;
+              color: #515151;
+              svg {
+                width: 24px;
+                height: 24px;
+              }
+            }
+            .device-name{
+              width: 280px;
+              height: 24px;
+              line-height: 24px;
+              display: block;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              text-align: left;
+            }
+          }
+          .green {
+            color: green;
+          }
+          .red {
+            color: red;
+          }
+        }
+      }
+      .device-report-footer{
+        width: 50%;
+        display: flex;
+        justify-content: space-between;
+        position: absolute;
+        bottom: 36px;
+      }
+    }
+  }
+}
