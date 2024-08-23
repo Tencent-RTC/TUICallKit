@@ -13,6 +13,3 @@ import LayoutPC from './PC/Layout.vue';
 import LayoutH5 from './H5/Layout.vue';
 
 </script>
-
-<style lang="scss" scoped>
-</style>
