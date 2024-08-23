@@ -1,0 +1,47 @@
+.h5-group-call-panel {
+  width: 303px;
+  padding: 20px 20px 15px 20px;
+  margin: 20px auto;
+  background: #FFFFFF;
+  border-radius: 6px;
+}
+
+.h5-group-call-member-panel {
+  border-bottom: 1px solid rgba(79, 88, 107, 0.2);;
+  padding-bottom: 16px;
+}
+
+.h5-group-call-list {
+  width: 90px;
+  height: 30px;
+  padding: 0 4px;
+  margin: 2px 1px;
+  background: #F2F5FC;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.h5-group-call-input {
+  background: #fff;
+  border: none;
+}
+
+.h5-group-call-add-panel {
+  margin-top: 15px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.h5-group-call-add-btn {
+  font-weight: 500;
+  font-size: 16px;
+  color: #0567FB;
+  border: none;
+}
+
+.disabled-btn {
+  color: #0567fb34;
+  border: none;
+}

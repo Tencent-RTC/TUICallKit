@@ -1,0 +1,24 @@
+.card {
+  width: 680px;
+  height: 450px;
+  background: #FFFFFF;
+  box-shadow: 0px 2px 3px rgba(197, 210, 230, 0.3), 0px 8px 30px rgba(197, 210, 229, 0.3);
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  height: 64px;
+  padding: 0 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(240, 244, 250, 0.3);
+  border-radius: 24px 24px 0 0;
+}
+
+.card-content {
+  height: 386px;
+  display: flex;
+}

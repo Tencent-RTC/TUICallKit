@@ -1,0 +1,23 @@
+.h5-layout {
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+  padding: 20px;
+  background: #fff;
+}
+
+.h5-layout-bg {
+  background: #fff url('../../../assets/layout//h5-bg.png') no-repeat;
+}
+
+.h5-layout-content {
+  height: 483px;
+}
+
+.h5-layout-footer {
+  margin-top: 20px;
+}
+
+.h5-layout-footer-small-device {
+  margin-top: -10px;
+}

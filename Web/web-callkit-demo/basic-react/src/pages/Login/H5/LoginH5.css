@@ -1,0 +1,28 @@
+.h5-login-tip {
+  margin: 8px 0 12px 0 !important;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 24px;
+  color: #99A2B2;
+}
+
+.h5-login-panel {
+  margin: 0 auto;
+}
+.h5-login-input {
+  width: 315px;
+  height: 52px;
+}
+.h5-login-btn {
+  width: 315px;
+  height: 48px;
+  background: linear-gradient(95.14deg, #0052D9 0%, #0676FF 100%);
+  box-shadow: 0px 1px 3px rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 48px;
+  text-align: center;
+  color: #FFFFFF;
+}
+
