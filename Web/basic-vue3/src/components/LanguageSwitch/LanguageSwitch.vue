@@ -1,5 +1,8 @@
 <template>
-  <el-dropdown placement="top-start"  @command="handleCommand">
+  <el-dropdown
+    placement="top-start"
+    @command="handleCommand"
+  >
     <Card>
       <Icon :src="LanguageSwitchSrc" :width="16"/>
       {{ showLang }}
@@ -48,7 +51,3 @@ onMounted(() => {
 })
 
 </script>
-
-<style lang="scss">
-
-</style>
