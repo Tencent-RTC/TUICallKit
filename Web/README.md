@@ -1,81 +1,82 @@
-<h1 align="center">TUICallKit</h1>
+# Call UIKit for React QuickStart
 
-<p align="center">A React Voice & Video Calling UI Component, easily add calling capabilities to your web application.React version
+<b> English </b> | <a href="https://github.com/tencentyun/TUICallKit/blob/main/Web/basic-react/README-zh_CN.md"> 简体中文 </a>
 
-<div align="center">
-<img src="https://img.shields.io/badge/Platform-React/Vue-green">
-<img src="https://img.shields.io/npm/v/@tencentcloud/call-uikit-react">
-<img src="https://img.shields.io/badge/support-docs%20%26%20demos-yellow">
-<img src="https://img.shields.io/npm/l/@tencentcloud/call-uikit-react">
+<img src="https://img.shields.io/badge/Platform-React-orange.svg"><img src="https://img.shields.io/badge/Language-Typescript-orange.svg">
 
-[Demo](https://trtc.io/demo/homepage/#/detail?scene=callkit) · [Docs](https://trtc.io/document/58484?platform=web&product=call) · English · [中文](https://github.com/tencentyun/TUICallKit/blob/main/Web/README-zh_CN.md)
-</div>
+<img src="https://qcloudimg.tencent-cloud.cn/raw/ec034fc6e4cf42cae579d32f5ab434a1.png" align="left" width=120 height=120>TUICallKit is a UIKit component for **audio and video calls** developed by Tencent Cloud. By integrating this component, you can easily add video calling functionality to your app with just a few lines of code. TUICallKit supports features like offline calling and is available on multiple platforms including Android, iOS, Web, and Flutter.
 
-![](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
+<a href="https://apps.apple.com/cn/app/%E8%85%BE%E8%AE%AF%E4%BA%91%E8%A7%86%E7%AB%8B%E6%96%B9trtc/id1400663224"><img src="https://qcloudimg.tencent-cloud.cn/raw/afe9b8cc4c715346cf3d9feea8a65e33.svg" height=40></a> <a href="https://dldir1.qq.com/hudongzhibo/liteav/TRTCDemo.apk"><img src="https://qcloudimg.tencent-cloud.cn/raw/006d5ed3359640424955baa08dab7c7f.svg" height=40></a> <a href="https://rtcube.cloud.tencent.com/prerelease/internation/homepage/index.html#/detail?scene=callkit"><img src="https://qcloudimg.tencent-cloud.cn/raw/d326e70750f8bbad7245e229c5bd6d2b.svg" height=40></a>
 
 
-## Online Demo
+## Before getting started
 
-- Desktop Web
+This section shows you the prerequisites you need for use Tencent Calls for Web React demo.
 
-<img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/en/Background-pc-en.png" style="width: 600px; margin: 10px;" align="center">
+#### Requirements
 
-- H5
+The minimum requirements for Calls SDK for Web React demo are:
 
-<img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/en/Background-en.png" style="width: 600px; margin: 10px;" align="center">
-
-- Group Call
-
-<img src="https://web.sdk.qcloud.com/trtc/call/pope-test/react-doc/en/Background-group-mobile-en.png" style="width: 600px; margin: 10px;" align="center">
-
-
-## Features
-
-- ⚡️ Supports C2C/Group/Voice/Video calls, switch calling type, select calling devices
-- 🌟 3 lines of code to run through the test demo, 6 lines of code to complete the common ability to access
-- 📱 Multi-device adaptation, support H5 webview
-- 🛠 Ecology system, works with [TUIKit](https://www.tencentcloud.com/document/product/1047/50061) to initiate audio/video calls directly in [Chat](https://www.tencentcloud.com/document/product/1047/33513) sessions
-- ☁️ eploy on Tencent Cloud, end-to-end average latency < 300ms on international links
-- 🤙🏻 Low lag, anti-packet loss rate over 80%, anti-network jitter over 1000ms, still smooth and stable in weak network environment
-- 🌈 High calling quality, support 720P, 1080P HD quality, 70% packet loss can still running
-- 🌍 Internationalization, supporting three languages: Chinese, English, and Japanese
+- Node
+- npm（or yarn）
+- Modern browser, supporting WebRTC APIs.
+- React ≥ v18.0 is recommended
 
 
+## Getting started
 
-## Usage
+If you would like to try the demo specifically fit to your usage, you can do so by following the steps below.
 
-Here are a few guidelines for using this component
+#### Create an application
 
-- Click [React online-demo](https://web.sdk.qcloud.com/component/TUICallKit/demos/basic-react/index.html) to try out 1v1 Voice and Video Call online. [Vue online-demo](https://rtcube.cloud.tencent.com/prerelease/internation/homepage/index.html#/detail?scene=callkit).
-
-- If you want to experience it in your dev mode, please read [Run Sample Demo](https://trtc.io/document/60415?platform=web&product=call).
-
-- If you want to install this component into your project, please read [TUICallKit Getting Started](https://trtc.io/document/58484).
+1. Login or Sign-up for an account on [Tencent RTC Console](https://console.trtc.io/).
+2. Create or select an application on the console.
+3. Note your `SDKAppID` and `SDKSecretKey` for future reference.
 
 
-## Contents
+#### Install and run the demo
 
-```text
-├── basic-react
-├── basic-vue2.6
-├── basic-vue2.7
-├── basic-vue3
-├── README.md 
-├── README-zh_CN.md
-```
-**basic-react**
-- This directory contains the React basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
+1. Clone this repository
 
-**basic-vue3**
-- This directory contains the Vue3 basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
+  ```shell
+   git clone https://github.com/tencentyun/TUICallKit.git
+  ```
 
-**basic-vue2.7**
-- This directory contains the Vue2.7 basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
+2. Install dependencies
 
-**basic-vue2.6**
-- This directory contains the Vue2.6 basic demo of TUICallKit, which is integrated with all the features of the full TUICallKit component.
+  ```shell
+   cd ./TUICallKit/Web/basic-react
+   npm install
+  ```
 
-## Contact Us
+3. Specify the SDKAppID and SDKSecretKey
+   Input the SDKAppID and SDKSecretKey into file `Web/basic-react/src/debug/GenerateTestUserSig-es.js`
+  ```javascript
+    let SDKAppID = 0;
+    let SecretKey = '';
+  ```
 
-- If you have questions, see [FAQs](https://trtc.io/document/53565).
-- Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you，Click to join https://t.me/+EPk6TMZEZMM5OGY1.
+4. Run the demo
+  ```shell
+   npm run dev
+  ```
+
+
+## Making your first call
+
+1. On each device, open a browser and go to the index page of the sample web app. The default URL is `localhost:5173`.
+2. Log in to the sample app on the primary device with the user ID set as the `caller`.
+3. Log in to the sample app on the secondary device using the ID of the user set as the `callee`.
+4. On the primary device, specify the user ID of the `callee` and initiate a call.
+
+
+## Reference
+
+- If you want to learn more about the product features, you can click on the following [link](https://trtc.io/products/call).
+- If you encounter difficulties, you can refer to [FAQs](https://trtc.io/document/53565), here are the most frequently encountered problems of developers, covering various platforms, I hope you can Help you solve problems quickly.
+- For complete API documentation, see [Audio Video Call SDK API Example](https://trtc.io/document/51014): including TUICallKit (with UIKit), TUICallEngine (without UIKit), and call events Callbacks, etc.
+
+## FAQs
+
+### What is Aegis used for in the project?
+Aegis is used for performance analysis purposes only. If you don't need it, you can simply remove the Aegis-related code from the project without affecting its normal functionality.
