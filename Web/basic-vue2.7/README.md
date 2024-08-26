@@ -38,26 +38,26 @@ If you would like to try the demo specifically fit to your usage, you can do so 
 1. Clone this repository
 
   ```shell
-   git clone https://github.com/tencentyun/TUICallKit.git
+    git clone https://github.com/tencentyun/TUICallKit.git
   ```
 
 2. Install dependencies
 
   ```shell
-   cd ./TUICallKit/Web/basic-vue2.7
-   npm install # or, yarn
+    cd ./TUICallKit/Web/basic-vue2.7
+    npm install
   ```
 
 3. Specify the SDKAppID and SDKSecretKey
    Input the SDKAppID and SDKSecretKey into file `Web/basic-vue2.7/src/debug/GenerateTestUserSig-es.js`
   ```javascript
-   const SDKAPPID = 0;
-   const SECRETKEY = '';
+    let SDKAppID = 0;
+    let SecretKey = '';
   ```
 
 4. Run the demo
   ```shell
-   npm run serve
+    npm run serve
   ```
 
 
