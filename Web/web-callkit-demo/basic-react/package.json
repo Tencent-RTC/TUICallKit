@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
-    "@tencentcloud/call-uikit-react": "workspace:^3.0.0",
+    "@tencentcloud/call-uikit-react": "latest",
     "aegis-web-sdk": "^1.39.1",
     "antd": "^5.19.0",
     "i18next-browser-languagedetector": "^8.0.0",

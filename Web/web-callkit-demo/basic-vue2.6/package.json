@@ -10,7 +10,7 @@
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@tencentcloud/call-uikit-vue2.6": "workspace:^3.0.0",
+    "@tencentcloud/call-uikit-vue2.6": "latest",
     "aegis-web-sdk": "^1.36.5",
     "copy-to-clipboard": "^3.3.3",
     "element-ui": "^2.15.12",

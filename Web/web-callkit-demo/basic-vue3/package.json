@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tencentcloud/call-uikit-vue": "workspace:^3.0.0",
+    "@tencentcloud/call-uikit-vue": "latest",
     "aegis-web-sdk": "^1.39.1",
     "element-plus": "^2.7.7",
     "qrcode": "^1.5.4",
