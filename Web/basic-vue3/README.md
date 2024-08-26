@@ -38,14 +38,14 @@ If you would like to try the demo specifically fit to your usage, you can do so 
 1. Clone this repository
 
   ```shell
-   git clone https://github.com/tencentyun/TUICallKit.git
+    git clone https://github.com/tencentyun/TUICallKit.git
   ```
 
 2. Install dependencies
 
   ```shell
-   cd ./TUICallKit/Web/basic-vue3
-   npm install
+    cd ./TUICallKit/Web/basic-vue3
+    npm install
   ```
 
 3. Specify the SDKAppID and SDKSecretKey
@@ -57,7 +57,7 @@ If you would like to try the demo specifically fit to your usage, you can do so 
 
 4. Run the demo
   ```shell
-   npm run dev
+    npm run dev
   ```
 
 
