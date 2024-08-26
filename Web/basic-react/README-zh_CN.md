@@ -39,14 +39,14 @@ Calls SDK for Web React demo 的最低要求是：
 1. 克隆仓库
 
   ```shell
-   git clone https://github.com/tencentyun/TUICallKit.git
+    git clone https://github.com/tencentyun/TUICallKit.git
   ```
 
 2. 安装依赖
 
   ```shell
-   cd ./TUICallKit/Web/basic-react
-   npm install
+    cd ./TUICallKit/Web/basic-react
+    npm install
   ```
 
 3. 配置 SDKAppID 和 SDKSecretKey 在 `Web/basic-react/src/debug/GenerateTestUserSig-es.js` 文件中填写 SDKAppID 和 SecretKey。
@@ -57,7 +57,7 @@ Calls SDK for Web React demo 的最低要求是：
 
 4. 运行
   ```shell
-   npm run dev
+    npm run dev
   ```
 
 ## 开始您的第一次通话
