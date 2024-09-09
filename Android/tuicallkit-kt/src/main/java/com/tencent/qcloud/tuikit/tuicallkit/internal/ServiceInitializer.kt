@@ -34,6 +34,10 @@ class ServiceInitializer : ContentProvider() {
                 private var isChangingConfiguration = false
                 override fun onActivityCreated(activity: Activity, bundle: Bundle?) {}
                 override fun onActivityStarted(activity: Activity) {
+                    if (isMiPushActivity(activity)) {
+                        return
+                    }
+
                     foregroundActivities++
                     if (foregroundActivities == 1 && !isChangingConfiguration) {
                         //  The Call page exits the background and re-enters without repeatedly pulling up the page.
@@ -50,6 +54,9 @@ class ServiceInitializer : ContentProvider() {
                 override fun onActivityResumed(activity: Activity) {}
                 override fun onActivityPaused(activity: Activity) {}
                 override fun onActivityStopped(activity: Activity) {
+                    if (isMiPushActivity(activity)) {
+                        return
+                    }
                     foregroundActivities--
                     isChangingConfiguration = activity.isChangingConfigurations
                 }
@@ -58,6 +65,16 @@ class ServiceInitializer : ContentProvider() {
                 override fun onActivityDestroyed(activity: Activity) {}
             })
         }
+    }
+
+    private fun isMiPushActivity(activity: Activity): Boolean {
+        try {
+            val clazzName = activity.componentName.className
+            return clazzName.contains("mipush.sdk")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return false
     }
 
     override fun onCreate(): Boolean {

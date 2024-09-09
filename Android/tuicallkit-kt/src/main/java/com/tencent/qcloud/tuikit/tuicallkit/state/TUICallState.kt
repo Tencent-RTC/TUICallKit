@@ -4,6 +4,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.text.TextUtils
 import com.tencent.qcloud.tuicore.TUIConfig
+import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.TUILogin
 import com.tencent.qcloud.tuicore.util.SPUtils
@@ -388,6 +389,12 @@ class TUICallState {
         showLargeViewUserId.removeAll()
         enableBlurBackground.removeAll()
         networkQualityReminder.removeAll()
+
+        if (TUICore.getService(TUIConstants.USBCamera.SERVICE_NAME) != null) {
+            TUICore.notifyEvent(
+                TUIConstants.USBCamera.KEY_USB_CAMERA, TUIConstants.USBCamera.SUB_KEY_CLOSE_CAMERA, null
+            )
+        }
     }
 
     private fun resetCall() {

@@ -285,7 +285,10 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
                     when {
                         isFCMData && hasFloatPermission -> startSmallScreenView(IncomingFloatView(context))
                         isFCMData && hasNotificationPermission -> startSmallScreenView(IncomingNotificationView(context))
-                        else -> startFullScreenView()
+                        hasBgPermission -> startFullScreenView()
+                        else -> {
+                            TUILog.w(TAG_VIEW, "App is in background with no permission")
+                        }
                     }
                 } else {
                     startFullScreenView()
@@ -298,7 +301,10 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit(), ITUIN
                 when {
                     hasFloatPermission -> startSmallScreenView(IncomingFloatView(context))
                     isFCMData && hasNotificationPermission -> startSmallScreenView(IncomingNotificationView(context))
-                    else -> startFullScreenView()
+                    hasBgPermission -> startFullScreenView()
+                    else -> {
+                        TUILog.w(TAG_VIEW, "App is in background with no permission")
+                    }
                 }
                 return@post
             }
