@@ -239,7 +239,7 @@ const allCancel = () => {
 const createGroup = (userIDList) => {
   return TUICallKitServer.getTim()
     .createGroup({
-      type: Chat.TYPES.GRP_MEETING,
+      type: Chat.TYPES.GRP_PUBLIC,
       name: "call 测试",
       memberList: userIDList, // 如果填写了 memberList，则必须填写 userID
     })

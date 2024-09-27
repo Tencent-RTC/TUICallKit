@@ -179,7 +179,7 @@ Page({
   // 创建IM群聊
   createGroup(userIDList) {
     return plugin.getTUICallKitServer().getTim().createGroup({
-      type: 'ChatRoom',
+      type: 'Public',
       name: 'WebSDK',
       memberList: userIDList, // 如果填写了 memberList，则必须填写 userID
     })
