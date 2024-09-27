@@ -180,7 +180,7 @@ Page({
   // 创建IM群聊
   createGroup(userIDList) {
     return TUICallKitServer.getTim().createGroup({
-      type: TIM.TYPES.GRP_MEETING,
+      type: TIM.TYPES.GRP_PUBLIC,
       name: 'WebSDK',
       memberList: userIDList, // 如果填写了 memberList，则必须填写 userID
     })
