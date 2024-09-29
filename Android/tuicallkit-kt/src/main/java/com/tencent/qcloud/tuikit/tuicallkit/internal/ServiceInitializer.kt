@@ -11,10 +11,15 @@ import android.os.Bundle
 import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.TUILogin
+import com.tencent.qcloud.tuicore.permission.PermissionRequester
+import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKitImpl
+import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.utils.DeviceUtils
 import com.tencent.qcloud.tuikit.tuicallkit.view.CallKitActivity
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.floatview.FloatWindowService
+import com.tencent.qcloud.tuikit.tuicallkit.view.component.floatview.FloatingWindowGroupView
+import com.tencent.qcloud.tuikit.tuicallkit.view.floatwindow.FloatingWindowView
 
 /**
  * `TUICallKit` uses `ContentProvider` to be registered with `TUICore`.
@@ -59,6 +64,10 @@ class ServiceInitializer : ContentProvider() {
                     }
                     foregroundActivities--
                     isChangingConfiguration = activity.isChangingConfigurations
+
+                    if (foregroundActivities == 0 && !isChangingConfiguration) {
+                        checkToShowFloatWindow(context)
+                    }
                 }
 
                 override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
@@ -75,6 +84,27 @@ class ServiceInitializer : ContentProvider() {
             e.printStackTrace()
         }
         return false
+    }
+
+    private fun checkToShowFloatWindow(context: Context) {
+        if (TUICallDefine.Status.None == TUICallState.instance.selfUser.get().callStatus.get()) {
+            return
+        }
+
+        if (!PermissionRequester.newInstance(PermissionRequester.FLOAT_PERMISSION).has()) {
+            return
+        }
+
+        if (DeviceUtils.isServiceRunning(context, FloatWindowService::class.java.name)) {
+            return
+        }
+
+        if (TUICallState.instance.scene.get() == TUICallDefine.Scene.GROUP_CALL) {
+            FloatWindowService.startFloatService(FloatingWindowGroupView(context.applicationContext))
+        } else {
+            FloatWindowService.startFloatService(FloatingWindowView(context.applicationContext))
+        }
+        CallKitActivity.finishActivity()
     }
 
     override fun onCreate(): Boolean {

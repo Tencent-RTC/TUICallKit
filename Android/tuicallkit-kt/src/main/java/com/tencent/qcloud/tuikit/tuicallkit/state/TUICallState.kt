@@ -49,6 +49,8 @@ class TUICallState {
     public var showLargeViewUserId = LiveData<String>()
     public var networkQualityReminder = LiveData<Constants.NetworkQualityHint>()
 
+    var orientation = Constants.Orientation.Portrait
+
     private var timeHandler: Handler? = null
     private var timeHandlerThread: HandlerThread? = null
     private var timeRunnable: Runnable? = null
@@ -207,6 +209,7 @@ class TUICallState {
 
             removeUserOnLeave(userId)
             if (TUICallDefine.Scene.SINGLE_CALL == instance.scene.get()) {
+                ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(R.string.tuicallkit_toast_callee_reject))
                 instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
             } else if (remoteUserList.get().isEmpty()) {
                 instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
@@ -221,6 +224,7 @@ class TUICallState {
 
             removeUserOnLeave(userId)
             if (TUICallDefine.Scene.SINGLE_CALL == instance.scene.get()) {
+                ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(R.string.tuicallkit_toast_callee_no_response))
                 instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
             } else if (remoteUserList.get().isEmpty()) {
                 instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
@@ -257,6 +261,7 @@ class TUICallState {
 
             removeUserOnLeave(userId)
             if (TUICallDefine.Scene.SINGLE_CALL == instance.scene.get()) {
+                ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(R.string.tuicallkit_toast_callee_hangup))
                 instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
             } else if (remoteUserList.get().isEmpty()) {
                 instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
