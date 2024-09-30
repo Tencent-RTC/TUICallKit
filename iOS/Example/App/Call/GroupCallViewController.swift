@@ -44,6 +44,7 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
         textField.attributedPlaceholder = NSAttributedString(string: TUICallKitAppLocalize("TUICallKitApp.Call.InputGroupId"))
         textField.textAlignment = .right
         textField.delegate = self
+        textField.keyboardType = .asciiCapable
         return textField
     }()
     lazy var userIdContentView: UIView = {
@@ -66,6 +67,7 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
         textField.attributedPlaceholder = NSAttributedString(string: TUICallKitAppLocalize("TUICallKitApp.Call.InputUserIds"))
         textField.textAlignment = .right
         textField.delegate = self
+        textField.keyboardType = .asciiCapable
         return textField
     }()
     

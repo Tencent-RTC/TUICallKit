@@ -65,6 +65,7 @@ class RegisterRootView: UIView {
         ]
         textField.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: attrs)
         textField.delegate = self
+        textField.keyboardType = .asciiCapable
         return textField
     }
     

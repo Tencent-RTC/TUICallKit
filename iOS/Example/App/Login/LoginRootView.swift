@@ -52,7 +52,7 @@ class LoginRootView: UIView {
         textField.textColor = UIColor(hex: "333333")
         textField.placeholder = TUICallKitAppLocalize("TUICallKitApp.Login.EnterUserId")
         textField.delegate = self
-        textField.keyboardType = .phonePad
+        textField.keyboardType = .asciiCapable
         return textField
     }()
     weak var currentTextField: UITextField?
@@ -152,6 +152,7 @@ class LoginRootView: UIView {
         ]
         textField.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: attrs)
         textField.delegate = self
+        textField.keyboardType = .asciiCapable
         return textField
     }
     

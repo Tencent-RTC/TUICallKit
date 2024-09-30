@@ -100,55 +100,40 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         view.isUserInteractionEnabled = true
         return view
     }()
-    
-    lazy var muteContentView: UIView = {
-        let view = UIView(frame: .zero)
-        view.backgroundColor = .white
-        return view
+    lazy var muteSwitchView: UIView = {
+        let customSwitchView = SettingsCustomSwitchView(title: TUICallKitAppLocalize("TUICallKitApp.Setting.MuteMode"),
+                                                        isOn: SettingsConfig.share.mute)
+        customSwitchView.switchValueChanged = { isOn in
+            self.muteSwitchClick(isOn)
+        }
+        return customSwitchView
     }()
-    lazy var muteLabel: UILabel = {
-        return createLabel(textSize: 16, text: TUICallKitAppLocalize("TUICallKitApp.Setting.MuteMode"))
+    lazy var floatingSwitchView: UIView = {
+        let customSwitchView = SettingsCustomSwitchView(title: TUICallKitAppLocalize("TUICallKitApp.Setting.EnableFloating"),
+                                                        isOn: SettingsConfig.share.floatWindow)
+        customSwitchView.switchValueChanged = { isOn in
+            self.floatingSwitchClick(isOn)
+        }
+        return customSwitchView
     }()
-    lazy var muteSwitch: UISwitch = {
-        return createSwitch(isOn: SettingsConfig.share.mute)
+#if canImport(TUICallKit_Swift)
+    lazy var virtualBackgroundSwitchView: SettingsCustomSwitchView = {
+        let customSwitchView = SettingsCustomSwitchView(title: TUICallKitAppLocalize("TUICallKitApp.Setting.EnableVirtualBackground"),
+                                                        isOn: SettingsConfig.share.enableVirtualBackground)
+        customSwitchView.switchValueChanged = { isOn in
+            self.virtualBackgroundSwitchClick(isOn)
+        }
+        return customSwitchView
     }()
-    
-    lazy var floatingContentView: UIView = {
-        let view = UIView(frame: .zero)
-        view.backgroundColor = .white
-        return view
+    lazy var incomingBannerSwitchView: SettingsCustomSwitchView = {
+        let customSwitchView = SettingsCustomSwitchView(title: TUICallKitAppLocalize("TUICallKitApp.Setting.EnableIncomingBanner"),
+                                                        isOn: SettingsConfig.share.enableIncomingBanner)
+        customSwitchView.switchValueChanged = { isOn in
+            self.incomingBannerSwitchClick(isOn)
+        }
+        return customSwitchView
     }()
-    lazy var floatingLabel: UILabel = {
-        return createLabel(textSize: 16, text: TUICallKitAppLocalize("TUICallKitApp.Setting.EnableFloating"))
-    }()
-    lazy var floatingSwitch: UISwitch = {
-        return createSwitch(isOn: SettingsConfig.share.floatWindow)
-    }()
-    
-    lazy var virtualBackgroundContentView: UIView = {
-        let view = UIView(frame: .zero)
-        view.backgroundColor = .white
-        return view
-    }()
-    lazy var virtualBackgroundLabel: UILabel = {
-        return createLabel(textSize: 16, text: TUICallKitAppLocalize("TUICallKitApp.Setting.EnableVirtualBackground"))
-    }()
-    lazy var virtualBackgroundSwitch: UISwitch = {
-        return createSwitch(isOn: SettingsConfig.share.enableVirtualBackground)
-    }()
-    
-    lazy var incomingBannerContentView: UIView = {
-        let view = UIView(frame: .zero)
-        view.backgroundColor = .white
-        return view
-    }()
-    lazy var incomingBannerLabel: UILabel = {
-        return createLabel(textSize: 16, text: TUICallKitAppLocalize("TUICallKitApp.Setting.EnableIncomingBanner"))
-    }()
-    lazy var incomingBannerSwitch: UISwitch = {
-        return createSwitch(isOn: SettingsConfig.share.EnableIncomingBanner)
-    }()
-    
+#endif
     lazy var callSettingContentView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor(hex: "AAAAAA")
@@ -167,7 +152,9 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         return createLabel(textSize: 16, text: TUICallKitAppLocalize("TUICallKitApp.Setting.Timeout"))
     }()
     lazy var timeoutTextField: UITextField = {
-        return createTextField(text: "30")
+        let timeoutTextField = createTextField(text: "30")
+        timeoutTextField.keyboardType = .phonePad
+        return timeoutTextField
     }()
     
     lazy var extendedInfoContentView: UIView = {
@@ -293,7 +280,8 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         return createLabel(textSize: 16, text: TUICallKitAppLocalize("TUICallKitApp.Setting.BeautyLevel"))
     }()
     lazy var beautyLevelTextField: UITextField = {
-        let textField = createTextField(text: "\(SettingsConfig.share.beaurtLevel)")
+        let textField = createTextField(text: "\(SettingsConfig.share.beautyLevel)")
+        textField.keyboardType = .phonePad
         return textField
     }()
     
@@ -355,22 +343,12 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         ringContentView.addSubview(ringInfoLabel)
         ringContentView.addSubview(ringAvBtn)
         
-        scrollContentView.addSubview(muteContentView)
-        muteContentView.addSubview(muteLabel)
-        muteContentView.addSubview(muteSwitch)
-        
-        scrollContentView.addSubview(floatingContentView)
-        floatingContentView.addSubview(floatingLabel)
-        floatingContentView.addSubview(floatingSwitch)
+        scrollContentView.addSubview(muteSwitchView)
+        scrollContentView.addSubview(floatingSwitchView)
         
 #if canImport(TUICallKit_Swift)
-        scrollContentView.addSubview(virtualBackgroundContentView)
-        virtualBackgroundContentView.addSubview(virtualBackgroundLabel)
-        virtualBackgroundContentView.addSubview(virtualBackgroundSwitch)
-        
-        scrollContentView.addSubview(incomingBannerContentView)
-        incomingBannerContentView.addSubview(incomingBannerLabel)
-        incomingBannerContentView.addSubview(incomingBannerSwitch)
+        scrollContentView.addSubview(virtualBackgroundSwitchView)
+        scrollContentView.addSubview(incomingBannerSwitchView)
 #endif
         
         scrollContentView.addSubview(callSettingContentView)
@@ -491,80 +469,43 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
             make.trailing.equalTo(ringAvBtn.snp.leading)
             make.leading.equalTo(ringLabel.snp.trailing).offset(20)
         }
-        
-        muteContentView.snp.makeConstraints { make in
+        muteSwitchView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.top.equalTo(ringContentView.snp.bottom).offset(20)
             make.height.equalTo(20)
         }
-        muteLabel.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().offset(20)
-        }
-        muteSwitch.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-20)
-        }
-        
-        floatingContentView.snp.makeConstraints { make in
+        floatingSwitchView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.top.equalTo(muteContentView.snp.bottom).offset(20)
+            make.top.equalTo(muteSwitchView.snp.bottom).offset(20)
             make.height.equalTo(20)
         }
-        floatingLabel.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().offset(20)
-        }
-        floatingSwitch.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-20)
-        }
-        
 #if canImport(TUICallKit_Swift)
-        virtualBackgroundContentView.snp.makeConstraints { make in
+        virtualBackgroundSwitchView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.top.equalTo(floatingContentView.snp.bottom).offset(20)
+            make.top.equalTo(floatingSwitchView.snp.bottom).offset(20)
             make.height.equalTo(20)
         }
-        virtualBackgroundLabel .snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().offset(20)
-        }
-        virtualBackgroundSwitch.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-20)
-        }
-        
-        incomingBannerContentView.snp.makeConstraints { make in
+        incomingBannerSwitchView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.top.equalTo(virtualBackgroundContentView.snp.bottom).offset(20)
+            make.top.equalTo(virtualBackgroundSwitchView.snp.bottom).offset(20)
             make.height.equalTo(20)
-        }
-        incomingBannerLabel.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().offset(20)
-        }
-        incomingBannerSwitch.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-20)
         }
         callSettingContentView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.top.equalTo(incomingBannerContentView.snp.bottom).offset(20)
+            make.top.equalTo(incomingBannerSwitchView.snp.bottom).offset(20)
             make.height.equalTo(30)
         }
 #elseif canImport(TUICallKit)
         callSettingContentView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.top.equalTo(floatingContentView.snp.bottom).offset(20)
+            make.top.equalTo(floatingSwitchView.snp.bottom).offset(20)
             make.height.equalTo(30)
         }
 #endif
-        
         callSettingLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(20)
@@ -730,12 +671,6 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         let extendedBtnTapGesture = UITapGestureRecognizer(target: self, action: #selector(extendClick))
         extendedBtn.addGestureRecognizer(extendedBtnTapGesture)
         
-        muteSwitch.addTarget(self, action:  #selector(muteSwitchClick), for: .valueChanged)
-        floatingSwitch.addTarget(self, action: #selector(floatingSwitchClick), for: .valueChanged)
-#if canImport(TUICallKit_Swift)
-        virtualBackgroundSwitch.addTarget(self, action: #selector(virtualBackgroundSwitchClick), for: .valueChanged)
-        incomingBannerSwitch.addTarget(self, action: #selector(incomingBannerSwitchClick), for: .valueChanged)
-#endif
         resolutionModeSegment.addTarget(self, action: #selector(resolutionModeSegmentClick), for: .valueChanged)
         fillModeSegment.addTarget(self, action: #selector(fillModeSegmentClick), for: .valueChanged)
         rotationSegment.addTarget(self, action: #selector(rotationSegmentClick), for: .valueChanged)
@@ -769,25 +704,22 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         navigationController?.pushViewController(extendVC, animated: true)
     }
     
-    @objc func muteSwitchClick(_ sender: UISwitch) {
-        SettingsConfig.share.mute = sender.isOn
-        TUICallKit.createInstance().enableMuteMode(enable: sender.isOn)
+    func muteSwitchClick(_ isOn: Bool) {
+        SettingsConfig.share.mute = isOn
+        TUICallKit.createInstance().enableMuteMode(enable: isOn)
     }
-    
-    @objc func floatingSwitchClick(_ sender: UISwitch) {
-        SettingsConfig.share.floatWindow = sender.isOn
-        TUICallKit.createInstance().enableFloatWindow(enable: sender.isOn)
+    func floatingSwitchClick(_ isOn: Bool) {
+        SettingsConfig.share.floatWindow = isOn
+        TUICallKit.createInstance().enableFloatWindow(enable: isOn)
     }
-    
 #if canImport(TUICallKit_Swift)
-    @objc func virtualBackgroundSwitchClick(_ sender: UISwitch) {
-        SettingsConfig.share.enableVirtualBackground = sender.isOn
-        TUICallKit.createInstance().enableVirtualBackground(enable: sender.isOn)
+    func virtualBackgroundSwitchClick(_ isOn: Bool) {
+        SettingsConfig.share.enableVirtualBackground = isOn
+        TUICallKit.createInstance().enableVirtualBackground(enable: isOn)
     }
-    
-    @objc func incomingBannerSwitchClick(_ sender: UISwitch) {
-        SettingsConfig.share.EnableIncomingBanner = sender.isOn
-        TUICallKit.createInstance().enableIncomingBanner(enable: sender.isOn)
+    func incomingBannerSwitchClick(_ isOn: Bool) {
+        SettingsConfig.share.enableIncomingBanner = isOn
+        TUICallKit.createInstance().enableIncomingBanner(enable: isOn)
     }
 #endif
     
@@ -858,9 +790,9 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         
         TUICallEngine.createInstance().setBeautyLevel(CGFloat(Int(text) ?? 0)) { [weak self] in
             guard let self = self else { return }
-            SettingsConfig.share.beaurtLevel = Int(text) ?? SettingsConfig.share.beaurtLevel
+            SettingsConfig.share.beautyLevel = Int(text) ?? SettingsConfig.share.beautyLevel
             
-            self.beautyLevelTextField.attributedPlaceholder = NSAttributedString(string: String(SettingsConfig.share.beaurtLevel))
+            self.beautyLevelTextField.attributedPlaceholder = NSAttributedString(string: String(SettingsConfig.share.beautyLevel))
         } fail: { code, message in
             TUITool.makeToast("Error \(code):\(message ?? "")")
         }

@@ -25,6 +25,7 @@
 		4F3F7CB526D65DE3002912DE /* GenerateTestUserSig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3F7CB426D65DE3002912DE /* GenerateTestUserSig.swift */; };
 		4F450FAD2B986641004A4B8A /* RegisterRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F450FAA2B986641004A4B8A /* RegisterRootView.swift */; };
 		4F450FAE2B986641004A4B8A /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F450FAB2B986641004A4B8A /* RegisterViewController.swift */; };
+		4F5280B62C74823500B33AE5 /* SettingsCustomSwitchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5280B52C74823500B33AE5 /* SettingsCustomSwitchView.swift */; };
 		4FE7A785275E3A89009CCB09 /* phone_ringing.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4FE7A784275E3A89009CCB09 /* phone_ringing.mp3 */; };
 		B811E29B2A09E45100E74024 /* SingleCallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B811E29A2A09E45100E74024 /* SingleCallViewController.swift */; };
 		B811E29D2A09F6E600E74024 /* RadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B811E29C2A09F6E600E74024 /* RadioButton.swift */; };
@@ -61,6 +62,7 @@
 		4F450FAA2B986641004A4B8A /* RegisterRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterRootView.swift; sourceTree = "<group>"; };
 		4F450FAB2B986641004A4B8A /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		4F450FAF2B986821004A4B8A /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		4F5280B52C74823500B33AE5 /* SettingsCustomSwitchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCustomSwitchView.swift; sourceTree = "<group>"; };
 		4F9E8F6E2AD9413C00DB82C4 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/TUICallKitAppLocalized.strings; sourceTree = "<group>"; };
 		4FE7A784275E3A89009CCB09 /* phone_ringing.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = phone_ringing.mp3; sourceTree = "<group>"; };
 		4FF707AB28A9EFBE0044B20E /* TUICallKitApp.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = TUICallKitApp.entitlements; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 				B81C962D2A2DC65100E3CBC6 /* MainPage */,
 				B89ECFCA2A0CFD3000D7F0EB /* Call */,
 				B83383802A08DBA300E71348 /* Setting */,
+				4F4277DE2C782F0D007F4B27 /* CustomViews */,
 				4739C7D32657507800CA7C45 /* Resource */,
 				4F0CA23E2BA92FE200994340 /* Utils */,
 				47D9D36226521A7A0007EE1F /* Assets.xcassets */,
@@ -177,11 +180,21 @@
 			path = Debug;
 			sourceTree = "<group>";
 		};
+		4F4277DE2C782F0D007F4B27 /* CustomViews */ = {
+			isa = PBXGroup;
+			children = (
+				B811E29C2A09F6E600E74024 /* RadioButton.swift */,
+				4F5280B52C74823500B33AE5 /* SettingsCustomSwitchView.swift */,
+				B8D16ED62A1321F100937E40 /* DropMenuView.swift */,
+			);
+			path = CustomViews;
+			sourceTree = "<group>";
+		};
 		4F450FAC2B986641004A4B8A /* Register */ = {
 			isa = PBXGroup;
 			children = (
-				4F450FAA2B986641004A4B8A /* RegisterRootView.swift */,
 				4F450FAB2B986641004A4B8A /* RegisterViewController.swift */,
+				4F450FAA2B986641004A4B8A /* RegisterRootView.swift */,
 			);
 			path = Register;
 			sourceTree = "<group>";
@@ -217,7 +230,6 @@
 			children = (
 				B811E29E2A0A318500E74024 /* SettingsViewController.swift */,
 				B89ECFC62A0B830500D7F0EB /* SettingsConfig.swift */,
-				B8D16ED62A1321F100937E40 /* DropMenuView.swift */,
 				B8D77D442A42E45200377391 /* SettingDetailViewController.swift */,
 			);
 			path = Setting;
@@ -229,7 +241,6 @@
 				B811E29A2A09E45100E74024 /* SingleCallViewController.swift */,
 				B811E2A82A0A5C0800E74024 /* GroupCallViewController.swift */,
 				B811E2AA2A0A5C3200E74024 /* JoinGroupCallViewController.swift */,
-				B811E29C2A09F6E600E74024 /* RadioButton.swift */,
 			);
 			path = Call;
 			sourceTree = "<group>";
@@ -377,6 +388,7 @@
 			files = (
 				B89ECFC72A0B830500D7F0EB /* SettingsConfig.swift in Sources */,
 				B811E2A92A0A5C0800E74024 /* GroupCallViewController.swift in Sources */,
+				4F5280B62C74823500B33AE5 /* SettingsCustomSwitchView.swift in Sources */,
 				B811E29F2A0A318500E74024 /* SettingsViewController.swift in Sources */,
 				47D9D37026521A7A0007EE1F /* AppDelegate.swift in Sources */,
 				4F450FAE2B986641004A4B8A /* RegisterViewController.swift in Sources */,

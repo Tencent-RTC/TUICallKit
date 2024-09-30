@@ -45,6 +45,7 @@ public class JoinGroupCallViewController: UIViewController, UITextFieldDelegate 
         textField.attributedPlaceholder = NSAttributedString(string: TUICallKitAppLocalize("TUICallKitApp.Call.InputGroupId"))
         textField.textAlignment = .right
         textField.delegate = self
+        textField.keyboardType = .asciiCapable
         return textField
     }()
     lazy var roomIdContentView: UIView = {
