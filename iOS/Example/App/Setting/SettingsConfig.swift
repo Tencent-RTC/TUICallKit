@@ -34,7 +34,7 @@ class SettingsConfig {
     var mute: Bool = false
     var floatWindow: Bool = true
     var enableVirtualBackground: Bool = true
-    var EnableIncomingBanner: Bool = true
+    var enableIncomingBanner: Bool = true
     var intRoomId: UInt32 = 0
     var strRoomId: String = ""
     var timeout: Int = 30
@@ -62,5 +62,5 @@ class SettingsConfig {
     var resolutionMode: TUIVideoEncoderParamsResolutionMode = .portrait
     var rotation: TUIVideoRenderParamsRotation = ._0
     var fillMode: TUIVideoRenderParamsFillMode = .fill
-    var beaurtLevel: Int = 6
+    var beautyLevel: Int = 6
 }

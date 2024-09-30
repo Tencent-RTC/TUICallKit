@@ -10,7 +10,6 @@ target 'TUICallKitApp' do
   pod 'Kingfisher', '<= 6.3.1'
   pod 'SnapKit'
   pod 'TUICallKit-Swift', :path => "../", :subspecs => ["Professional"]
-  pod 'TXLiteAVSDK_Professional', '11.8.15669'
   
 end
 

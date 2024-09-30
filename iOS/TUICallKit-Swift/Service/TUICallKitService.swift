@@ -46,6 +46,16 @@ extension TUICallKitService {
                 return nil
             }
             TUICallKit.createInstance().enableFloatWindow(enable: enableFloatWindow)
+        } else if method == TUICore_TUICallingService_EnableIncomingBannerMethod {
+            guard let enableIncomingBanner = param[TUICore_TUICallingService_EnableIncomingBannerMethod_EnableIncomingBanner] as? Bool else {
+                return nil
+            }
+            TUICallKit.createInstance().enableIncomingBanner(enable: enableIncomingBanner)
+        } else if method == TUICore_TUICallingService_EnableVirtualBackgroundForCallMethod {
+            guard let enableVirtualBackground = param[TUICore_TUICallingService_EnableVirtualBackgroundForCallMethod_EnableVirtualBackgroundForCall] as? Bool else {
+                return nil
+            }
+            TUICallKit.createInstance().enableVirtualBackground(enable: enableVirtualBackground)
         } else if method == TUICore_TUICallingService_ShowCallingViewMethod {
             guard let userIDs = param[TUICore_TUICallingService_ShowCallingViewMethod_UserIDsKey] as? [ String],
                   let mediaTypeIndex = param[TUICore_TUICallingService_ShowCallingViewMethod_CallTypeKey] as? String else {
@@ -83,22 +93,23 @@ extension TUICallKitService {
             guard let value = param[key] as? UInt else {
                 return nil
             }
-            var audioPlaybackDevice: TUIAudioPlaybackDevice
+            let audioPlaybackDevice: TUIAudioPlaybackDevice
             switch value {
             case TUIAudioPlaybackDevice.earpiece.rawValue:
                 audioPlaybackDevice = .earpiece
             default:
                 audioPlaybackDevice = .speakerphone
             }
-            DispatchQueue.main.async {
-                TUICallState.instance.audioDevice.value = audioPlaybackDevice
-            }
+            CallEngineManager.instance.selectAudioPlaybackDevice(device: audioPlaybackDevice)
         } else if method == TUICore_TUICallingService_SetIsMicMuteMethod {
             guard let isMicMute = param[TUICore_TUICallingService_SetIsMicMuteMethod_IsMicMute] as? Bool else {
                 return nil
             }
-            DispatchQueue.main.async {
-                TUICallState.instance.isMicMute.value = !isMicMute
+            
+            if isMicMute {
+                CallEngineManager.instance.openMicrophone(false)
+            } else {
+                CallEngineManager.instance.closeMicrophone(false)
             }
         }
         

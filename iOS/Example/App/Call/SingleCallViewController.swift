@@ -43,6 +43,7 @@ public class SingleCallViewController: UIViewController, UITextFieldDelegate {
         textField.attributedPlaceholder = NSAttributedString(string: TUICallKitAppLocalize("TUICallKitApp.Call.InputUserId"))
         textField.textAlignment = .right
         textField.delegate = self
+        textField.keyboardType = .asciiCapable
         return textField
     }()
     weak var currentTextField: UITextField?

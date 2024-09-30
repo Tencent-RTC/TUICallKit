@@ -81,10 +81,10 @@ extension AppDelegate: V2TIMConversationListener, V2TIMAPNSListener {
     
     @objc func registerIfLoggedIn(_ notification: Notification) {
         DispatchQueue.main.async {
-            TUICallKit.createInstance().enableFloatWindow(enable: true)
+            TUICallKit.createInstance().enableFloatWindow(enable: SettingsConfig.share.floatWindow)
 #if canImport(TUICallKit_Swift)
-            TUICallKit.createInstance().enableVirtualBackground(enable: true)
-            TUICallKit.createInstance().enableIncomingBanner(enable: true)
+            TUICallKit.createInstance().enableVirtualBackground(enable: SettingsConfig.share.enableVirtualBackground)
+            TUICallKit.createInstance().enableIncomingBanner(enable: SettingsConfig.share.enableIncomingBanner)
 #endif
         }
         
