@@ -6,7 +6,6 @@ import android.os.StrictMode;
 
 import androidx.multidex.MultiDex;
 
-import com.tencent.qcloud.tim.push.TIMPushManager;
 import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
@@ -34,9 +33,6 @@ public class BaseApplication extends Application {
     }
 
     private void configFCMPrivateRing() {
-        String channelId = "fcm_push_channel";
-        TIMPushManager.getInstance().setCustomFCMRing(channelId, "phone_ring", true);
-
         TUICore.registerEvent(TUIConstants.TIMPush.EVENT_IM_LOGIN_AFTER_APP_WAKEUP_KEY,
                 TUIConstants.TIMPush.EVENT_IM_LOGIN_AFTER_APP_WAKEUP_SUB_KEY, new ITUINotification() {
                     @Override
