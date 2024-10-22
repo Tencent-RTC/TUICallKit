@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "main.js",
 	"dependencies": {
-		"tim-wx-sdk": "^2.24.2"
+		"@tencentcloud/chat": "^3.3.5"
 	},
 	"devDependencies": {},
 	"scripts": {
