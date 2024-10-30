@@ -44,6 +44,8 @@ public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, TUICallKit
         case apiLog
         case showIncomingBanner
         case enableWakeLock
+        case loginSuccessEvent
+        case logoutSuccessEvent
     }
     
     @objc func applicationWillResignActive() {
@@ -118,6 +120,11 @@ extension TUICallKitPlugin: FlutterPlugin {
             TUICallKitManager.shared.showIncomingBanner(call: call, result: result)
         case .enableWakeLock:
             TUICallKitManager.shared.enableWakeLock(call: call, result: result)
+        case .loginSuccessEvent:
+            TUICallKitManager.shared.loginSuccessEvent(call: call, result: result)
+        case .logoutSuccessEvent:
+            TUICallKitManager.shared.logoutSuccessEvent(call: call, result: result)
+
         default:
             break
         }

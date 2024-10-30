@@ -48,8 +48,10 @@ class _TUICallKitWidgetState extends State<TUICallKitWidget> {
       DeviceOrientation.portraitDown,
     ]);
 
-    return PopScope(
-      canPop: false,
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
       child: Scaffold(
           resizeToAvoidBottomInset: false,
           body: (CallState.instance.scene == TUICallScene.singleCall)

@@ -57,9 +57,8 @@ class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
         ((widget.user.id == CallState.instance.selfUser.id) ||
             (widget.user.id != CallState.instance.selfUser.id &&
                 widget.user.callStatus == TUICallStatus.accept));
-    bool isShowRemoteMute = (widget.user.callStatus == TUICallStatus.accept) &&
-        (widget.user.id != CallState.instance.selfUser.id) &&
-        !widget.user.audioAvailable;
+    bool isShowLocalMute = (widget.user.id == CallState.instance.selfUser.id) &&
+        CallState.instance.isMicrophoneMute;
     bool isShowSwitchCameraAndVB = GroupCallUserWidgetData.blockBigger[widget.index]! &&
         (widget.user.id == CallState.instance.selfUser.id) &&
         (CallState.instance.isCameraOpen == true);
@@ -134,9 +133,9 @@ class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
                           ))),
                 ),
                 Visibility(
-                  visible: isShowRemoteMute,
+                  visible: isShowLocalMute,
                   child: Positioned(
-                      right: 5,
+                      left: 5,
                       bottom: 5,
                       width: 24,
                       height: 24,
@@ -203,12 +202,36 @@ class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
                                       width: 14,
                                       height: 14,
                                       child: Image.asset("assets/images/virtual_background.png",
-                                          package: 'tencent_calls_uikit', fit: BoxFit.contain))
+                                          package: 'tencent_calls_uikit', fit: BoxFit.fill))
                                 ],
                               )))),
                 ),
+                Visibility(
+                  visible: widget.user.networkQualityReminder,
+                  child: Positioned(
+                      right: _getNetworkBadHintRightMargin(),
+                      bottom: 5,
+                      width: 24,
+                      height: 24,
+                      child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Image.asset(
+                            "assets/images/network_bad.png",
+                            package: 'tencent_calls_uikit',
+                          ))),
+                ),
               ],
             )));
+  }
+
+  double _getNetworkBadHintRightMargin() {
+    return GroupCallUserWidgetData.blockBigger[widget.index]!
+        ? CallState.instance.isCameraOpen ? 90 : 10
+        : 10;
   }
 
   _getWH(Map<int, bool> blockBigger, int index, int count) {

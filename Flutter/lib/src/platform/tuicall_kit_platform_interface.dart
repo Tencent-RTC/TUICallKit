@@ -90,11 +90,43 @@ abstract class TUICallKitPlatform extends PlatformInterface {
     await instance.pullBackgroundApp();
   }
 
+  Future<void> openLockScreenApp() async {
+    await instance.openLockScreenApp();
+  }
+
   Future<void> enableWakeLock(bool enable) async {
     await instance.enableWakeLock(enable);
   }
 
   Future<bool> isScreenLocked() async {
     return await instance.isScreenLocked();
+  }
+
+  Future<void> imSDKInitSuccessEvent() async {
+    await instance.imSDKInitSuccessEvent();
+  }
+
+  Future<void> loginSuccessEvent() async {
+    await instance.loginSuccessEvent();
+  }
+
+  Future<void> logoutSuccessEvent() async {
+    await instance.logoutSuccessEvent();
+  }
+
+  Future<bool> checkUsbCameraService() async {
+    return await instance.checkUsbCameraService();
+  }
+
+  Future<void> openUsbCamera(int viewId) async {
+    await instance.openUsbCamera(viewId);
+  }
+
+  Future<void> closeUsbCamera() async {
+    await instance.closeUsbCamera();
+  }
+
+  Future<bool> isSamsungDevice() async {
+    return await instance.isSamsungDevice();
   }
 }

@@ -21,6 +21,7 @@ class TUICallKitNavigatorObserver extends NavigatorObserver {
   }
 
   void enterCallingPage() async {
+    TRTCLogger.info('TUICallKitNavigatorObserver enterCallingPage：[isClose：$isClose]');
     if (!isClose) {
       return;
     }
@@ -39,6 +40,7 @@ class TUICallKitNavigatorObserver extends NavigatorObserver {
   }
 
   void exitCallingPage() async {
+    TRTCLogger.info('TUICallKitNavigatorObserver exitCallingPage：[currentPage：$currentPage]');
     if (currentPage == CallPage.inviteUserPage) {
       TUICallKitNavigatorObserver.getInstance().navigator?.pop();
       TUICallKitNavigatorObserver.getInstance().navigator?.pop();

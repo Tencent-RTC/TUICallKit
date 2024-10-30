@@ -6,7 +6,6 @@ import static com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants.SUBKEY
 import android.Manifest;
 import android.content.Context;
 import android.os.Build;
-import android.os.PowerManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +15,7 @@ import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.CallingBellPlayer;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.service.ForegroundService;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.TUICallState;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.User;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.CallingVibrator;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Constants;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Devices;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.KitEnumUtils;
@@ -24,6 +24,7 @@ import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Permission;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.WakeLock;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.view.WindowManager;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.view.incomingfloatwindow.IncomingNotificationView;
+import com.tencent.cloud.tuikit.tuicall_engine.PlatformVideoViewFactory;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.EnumUtils;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.Logger;
 import com.tencent.cloud.tuikit.tuicall_engine.utils.MethodCallUtils;
@@ -32,12 +33,15 @@ import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.tencent.qcloud.tuicore.permission.PermissionCallback;
 import com.tencent.qcloud.tuicore.permission.PermissionRequester;
-import com.tencent.qcloud.tuicore.util.TUIBuild;
+import com.tencent.qcloud.tuicore.TUIConstants;
+import com.tencent.qcloud.tuikit.TUIVideoView;
+import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -55,6 +59,7 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
     private MethodChannel     mChannel;
     private Context           mApplicationContext;
     private CallingBellPlayer mCallingBellPlayer;
+    private CallingVibrator   mCallingVibrator;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -64,7 +69,7 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
 
         mApplicationContext = flutterPluginBinding.getApplicationContext();
         mCallingBellPlayer = new CallingBellPlayer(mApplicationContext);
-
+        mCallingVibrator = new CallingVibrator(mApplicationContext);
         registerObserver();
     }
 
@@ -120,11 +125,17 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
     public void startRing(MethodCall call, MethodChannel.Result result) {
         String filePath = MethodCallUtils.getMethodRequiredParams(call, "filePath", result);
         mCallingBellPlayer.startRing(filePath);
+        if (TUICallState.getInstance().mSelfUser.callRole == TUICallDefine.Role.Called) {
+            mCallingVibrator.startVibration();
+        }
         result.success(0);
     }
 
     public void stopRing(MethodCall call, MethodChannel.Result result) {
         mCallingBellPlayer.stopRing();
+        if (TUICallState.getInstance().mSelfUser.callRole == TUICallDefine.Role.Called) {
+            mCallingVibrator.stopVibration();
+        }
         IncomingNotificationView.getInstance(mApplicationContext).cancelNotification();
         if (TUICallState.getInstance().mIncomingFloatView != null) {
             TUICallState.getInstance().mIncomingFloatView.cancelIncomingView();
@@ -284,6 +295,11 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
         result.success(0);
     }
 
+    public void openLockScreenApp(MethodCall call, MethodChannel.Result result) {
+        WindowManager.openLockScreenApp(mApplicationContext);
+        result.success(0);
+    }
+
     public void enableWakeLock(MethodCall call, MethodChannel.Result result) {
         boolean enable = MethodCallUtils.getMethodParams(call, "enable");
         if (enable) {
@@ -296,6 +312,51 @@ public class TUICallKitPlugin implements FlutterPlugin, MethodCallHandler, ITUIN
 
     public void isScreenLocked(MethodCall call, MethodChannel.Result result) {
         if (Devices.isScreenLocked(mApplicationContext)) {
+            result.success(true);
+        } else {
+            result.success(false);
+        }
+    }
+
+    public void imSDKInitSuccessEvent(MethodCall call, MethodChannel.Result result) {
+        TUICore.notifyEvent(TUIConstants.TUILogin.EVENT_IMSDK_INIT_STATE_CHANGED, TUIConstants.TUILogin.EVENT_SUB_KEY_START_INIT, null);
+        result.success(0);
+    }
+
+    public void loginSuccessEvent(MethodCall call, MethodChannel.Result result) {
+        TUICore.notifyEvent(TUIConstants.TUILogin.EVENT_LOGIN_STATE_CHANGED, TUIConstants.TUILogin.EVENT_SUB_KEY_USER_LOGIN_SUCCESS, null);
+        result.success(0);
+    }
+
+    public void logoutSuccessEvent(MethodCall call, MethodChannel.Result result) {
+        TUICore.notifyEvent(TUIConstants.TUILogin.EVENT_LOGIN_STATE_CHANGED, TUIConstants.TUILogin.EVENT_SUB_KEY_USER_LOGOUT_SUCCESS, null);
+        result.success(0);
+    }
+
+    public void checkUsbCameraService(MethodCall call, MethodChannel.Result result) {
+        if (TUICore.getService(TUIConstants.USBCamera.SERVICE_NAME) != null) {
+            result.success(true);
+        } else {
+            result.success(false);
+        }
+    }
+
+    public void openUsbCamera(MethodCall call, MethodChannel.Result result) {
+        int viewId = MethodCallUtils.getMethodParams(call, "viewId");
+        TUIVideoView videoView = (TUIVideoView) PlatformVideoViewFactory.mVideoViewMap.get(viewId).getView();
+        Map map = new HashMap();
+        map.put(TUIConstants.USBCamera.PARAM_TX_CLOUD_VIEW, videoView);
+        TUICore.notifyEvent(TUIConstants.USBCamera.KEY_USB_CAMERA, TUIConstants.USBCamera.SUB_KEY_OPEN_CAMERA, map);
+        result.success(0);
+    }
+
+    public void closeUsbCamera(MethodCall call, MethodChannel.Result result) {
+        TUICore.notifyEvent(TUIConstants.USBCamera.KEY_USB_CAMERA, TUIConstants.USBCamera.SUB_KEY_CLOSE_CAMERA, null);
+        result.success(0);
+    }
+
+    public void isSamsungDevice(MethodCall call, MethodChannel.Result result) {
+        if (Devices.isSamsungDevice()) {
             result.success(true);
         } else {
             result.success(false);

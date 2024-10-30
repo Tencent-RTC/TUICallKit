@@ -30,7 +30,10 @@ class _InviteUserWidgetState extends State<InviteUserWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(CallKit_t('inviteMembers')),
+          title: Text(
+              CallKit_t('inviteMembers'),
+              textScaleFactor: 1.0,
+          ),
           leading: IconButton(
               onPressed: _goBack,
               icon: const Icon(
@@ -84,6 +87,7 @@ class _InviteUserWidgetState extends State<InviteUserWidget> {
                     const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
                     Text(
                       _getMemberDisPlayName(_groupMemberList[index]),
+                      textScaleFactor: 1.0,
                       style: const TextStyle(color: Colors.black, fontSize: 18),
                     )
                   ],
