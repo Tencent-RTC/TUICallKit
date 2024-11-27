@@ -36,7 +36,7 @@ class TUICallState: NSObject {
         return enable
     }()
     
-    var enableFloatWindow: Bool = false
+    var enableFloatWindow: Bool = true
     var showVirtualBackgroundButton = false
     var enableIncomingBanner = false
     

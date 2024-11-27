@@ -19,7 +19,7 @@ class TUICallKitExtension: NSObject, TUIExtensionProtocol {
             var requestParam: [String: Any] = [:]
             requestParam[TUICore_TUIGroupObjectFactory_SelectGroupMemberVC_GroupID] = groupID
             requestParam[TUICore_TUIGroupObjectFactory_SelectGroupMemberVC_Name] =
-            TUIGlobalization.getLocalizedString(forKey: "Make-a-call", bundle: TIMCommonLocalizableBundle)
+            TUIGlobalization.getLocalizedString(forKey: "Make-a-call", bundle: TUIKitLocalizableBundle)
             let viewControllerKey = isClassic ? TUICore_TUIGroupObjectFactory_SelectGroupMemberVC_Classic :
             TUICore_TUIGroupObjectFactory_SelectGroupMemberVC_Minimalist
             pushVC.push(viewControllerKey, param: requestParam) { [weak self] responseData in

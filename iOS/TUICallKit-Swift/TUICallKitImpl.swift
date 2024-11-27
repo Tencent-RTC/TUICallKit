@@ -302,7 +302,7 @@ private extension TUICallKitImpl {
                     TUICallState.instance.audioDevice.value = TUIAudioPlaybackDevice.earpiece
                     CallEngineManager.instance.setAudioPlaybackDevice(device: TUIAudioPlaybackDevice.earpiece)
                     WindowManager.instance.showCallWindow(TUICallState.instance.enableIncomingBanner)
-                } else if TUICallState.instance.selfUser.value.callStatus.value == TUICallStatus.accept {
+                } else if TUICallState.instance.selfUser.value.callStatus.value == TUICallStatus.accept && !WindowManager.instance.isFloating {
                     WindowManager.instance.showCallWindow(false)
                 }
             } else {

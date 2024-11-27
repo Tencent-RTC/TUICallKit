@@ -17,10 +17,9 @@ import TXLiteAVSDK_Professional
 
 class CallEngineManager {
     static let instance = CallEngineManager()
-    let engine = TUICallEngine.createInstance()
     
     func setSelfInfo(nickname: String, avatar: String, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
-        engine.setSelfInfo(nickname: nickname, avatar: avatar) {
+        TUICallEngine.createInstance().setSelfInfo(nickname: nickname, avatar: avatar) {
             TUICallState.instance.selfUser.value.avatar.value = avatar
             TUICallState.instance.selfUser.value.nickname.value = nickname
             succ()
@@ -30,7 +29,7 @@ class CallEngineManager {
     }
     
     func call(userId: String, callMediaType: TUICallMediaType, params: TUICallParams, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
-        engine.call(userId: userId, callMediaType: callMediaType, params: params) {
+        TUICallEngine.createInstance().call(userId: userId, callMediaType: callMediaType, params: params) {
             User.getUserInfosFromIM(userIDs: [userId]) { mInviteeList in
                 TUICallState.instance.remoteUserList.value = mInviteeList
                 
@@ -68,10 +67,10 @@ class CallEngineManager {
                    params: TUICallParams,
                    succ: @escaping TUICallSucc,
                    fail: @escaping TUICallFail) {
-        engine.groupCall(groupId: groupId,
-                         userIdList: userIdList,
-                         callMediaType: callMediaType,
-                         params: params) {
+        TUICallEngine.createInstance().groupCall(groupId: groupId,
+                                                 userIdList: userIdList,
+                                                 callMediaType: callMediaType,
+                                                 params: params) {
             TUICallState.instance.groupId.value = groupId
             
             User.getUserInfosFromIM(userIDs: userIdList) { mInviteeList in
@@ -110,7 +109,7 @@ class CallEngineManager {
                          callMediaType: TUICallMediaType,
                          succ: @escaping TUICallSucc,
                          fail: @escaping TUICallFail) {
-        engine.joinInGroupCall(roomId: roomId, groupId: groupId, callMediaType: callMediaType) {
+        TUICallEngine.createInstance().joinInGroupCall(roomId: roomId, groupId: groupId, callMediaType: callMediaType) {
             TUICallState.instance.mediaType.value = callMediaType
             TUICallState.instance.scene.value = TUICallScene.group
             TUICallState.instance.groupId.value = groupId
@@ -134,26 +133,26 @@ class CallEngineManager {
     }
     
     func hangup() {
-        engine.hangup {
+        TUICallEngine.createInstance().hangup {
         } fail: { code, message in
         }
     }
     
     func accept() {
-        engine.accept {
+        TUICallEngine.createInstance().accept {
         } fail: { code, message in
         }
     }
     
     func reject() {
-        engine.reject {
+        TUICallEngine.createInstance().reject {
         } fail: { code, message in
         }
     }
     
     func muteMic() {
         if TUICallState.instance.isMicMute.value == true {
-            engine.openMicrophone {
+            TUICallEngine.createInstance().openMicrophone {
                 TUICallState.instance.isMicMute.value = false
                 TUICore.notifyEvent(TUICore_TUICallKitVoIPExtensionNotify,
                                     subKey: TUICore_TUICore_TUICallKitVoIPExtensionNotify_OpenMicrophoneSubKey,
@@ -162,7 +161,7 @@ class CallEngineManager {
             } fail: { code , message  in
             }
         } else {
-            engine.closeMicrophone()
+            TUICallEngine.createInstance().closeMicrophone()
             TUICallState.instance.isMicMute.value = true
             TUICore.notifyEvent(TUICore_TUICallKitVoIPExtensionNotify,
                                 subKey: TUICore_TUICore_TUICallKitVoIPExtensionNotify_CloseMicrophoneSubKey,
@@ -173,7 +172,7 @@ class CallEngineManager {
     
     func openMicrophone(_ notifyEvent: Bool = true) {
         if TUICallState.instance.selfUser.value.callStatus.value != .none {
-            engine.openMicrophone {
+            TUICallEngine.createInstance().openMicrophone {
                 TUICallState.instance.isMicMute.value = false
                 if (notifyEvent) {
                     TUICore.notifyEvent(TUICore_TUICallKitVoIPExtensionNotify,
@@ -187,7 +186,7 @@ class CallEngineManager {
     }
     
     func closeMicrophone(_ notifyEvent: Bool = true) {
-        engine.closeMicrophone()
+        TUICallEngine.createInstance().closeMicrophone()
         TUICallState.instance.isMicMute.value = true
         if (notifyEvent) {
             TUICore.notifyEvent(TUICore_TUICallKitVoIPExtensionNotify,
@@ -206,49 +205,49 @@ class CallEngineManager {
     }
     
     func selectAudioPlaybackDevice(device: TUIAudioPlaybackDevice) {
-        engine.selectAudioPlaybackDevice(device)
+        TUICallEngine.createInstance().selectAudioPlaybackDevice(device)
         TUICallState.instance.audioDevice.value = device
     }
     
     func switchCamera() {
         if TUICallState.instance.isFrontCamera.value == .front {
-            engine.switchCamera(.back)
+            TUICallEngine.createInstance().switchCamera(.back)
             TUICallState.instance.isFrontCamera.value = .back
         } else {
-            engine.switchCamera(.front)
+            TUICallEngine.createInstance().switchCamera(.front)
             TUICallState.instance.isFrontCamera.value = .front
         }
     }
     
     func closeCamera() {
-        engine.closeCamera()
+        TUICallEngine.createInstance().closeCamera()
         TUICallState.instance.isCameraOpen.value = false
     }
     
     func openCamera(videoView: TUIVideoView) {
-        engine.openCamera(TUICallState.instance.isFrontCamera.value == .front ? .front : .back, videoView: videoView) {
+        TUICallEngine.createInstance().openCamera(TUICallState.instance.isFrontCamera.value == .front ? .front : .back, videoView: videoView) {
             TUICallState.instance.isCameraOpen.value = true
         } fail: { code, message in
         }
     }
     
     func startRemoteView(user: User, videoView: TUIVideoView){
-        engine.startRemoteView(userId: user.id.value, videoView: videoView) { userId in
+        TUICallEngine.createInstance().startRemoteView(userId: user.id.value, videoView: videoView) { userId in
         } onLoading: { userId in
         } onError: { userId, code, message in
         }
     }
     
     func stopRemoteView(user: User) {
-        engine.stopRemoteView(userId: user.id.value)
+        TUICallEngine.createInstance().stopRemoteView(userId: user.id.value)
     }
     
     func setAudioPlaybackDevice(device: TUIAudioPlaybackDevice) {
-        engine.selectAudioPlaybackDevice(device)
+        TUICallEngine.createInstance().selectAudioPlaybackDevice(device)
     }
     
     func switchToAudio() {
-        engine.switchCallMediaType(.audio)
+        TUICallEngine.createInstance().switchCallMediaType(.audio)
     }
     
     func inviteUser(userIds: [String]) {
@@ -256,7 +255,7 @@ class CallEngineManager {
         callParams.offlinePushInfo = OfflinePushInfoConfig.createOfflinePushInfo()
         callParams.timeout = TUI_CALLKIT_SIGNALING_MAX_TIME
         
-        engine.inviteUser(userIdList: userIds, params: callParams) { userIds in
+        TUICallEngine.createInstance().inviteUser(userIdList: userIds, params: callParams) { userIds in
             User.getUserInfosFromIM(userIDs: userIds) { newRemoteUsers in
                 for newUser in newRemoteUsers {
                     newUser.callStatus.value = TUICallStatus.waiting
@@ -269,15 +268,15 @@ class CallEngineManager {
     }
     
     func addObserver(_ observer: TUICallObserver) {
-        engine.addObserver(observer)
+        TUICallEngine.createInstance().addObserver(observer)
     }
     
     func removeObserver(_ observer: TUICallObserver) {
-        engine.removeObserver(observer)
+        TUICallEngine.createInstance().removeObserver(observer)
     }
     
     func initEngine(sdkAppId: Int32, userId: String, userSig: String, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
-        engine.`init`(sdkAppId, userId: userId, userSig: userSig) {
+        TUICallEngine.createInstance().`init`(sdkAppId, userId: userId, userSig: userSig) {
             succ()
         } fail: { code, message in
             fail(code, message)
@@ -285,7 +284,7 @@ class CallEngineManager {
     }
     
     func setVideoEncoderParams(params: TUIVideoEncoderParams, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
-        engine.setVideoEncoderParams(params) {
+        TUICallEngine.createInstance().setVideoEncoderParams(params) {
             succ()
         } fail: { code, message in
             fail(code, message)
@@ -293,7 +292,7 @@ class CallEngineManager {
     }
     
     func setVideoRenderParams(userId: String, params: TUIVideoRenderParams, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
-        engine.setVideoRenderParams(userId: userId, params: params) {
+        TUICallEngine.createInstance().setVideoRenderParams(userId: userId, params: params) {
             succ()
         } fail: { code, message in
             fail(code, message)
@@ -301,7 +300,7 @@ class CallEngineManager {
     }
     
     func getTRTCCloudInstance() -> TRTCCloud {
-        return engine.getTRTCCloudInstance()
+        return TUICallEngine.createInstance().getTRTCCloudInstance()
     }
     
     func setFramework() {
@@ -324,7 +323,7 @@ class CallEngineManager {
             return
         }
         
-        engine.callExperimentalAPI(jsonObject: paramsString)
+        TUICallEngine.createInstance().callExperimentalAPI(jsonObject: paramsString)
     }
     
     func setExcludeFromHistoryMessage() {
@@ -342,14 +341,14 @@ class CallEngineManager {
             return
         }
         
-        engine.callExperimentalAPI(jsonObject: paramsString)
+        TUICallEngine.createInstance().callExperimentalAPI(jsonObject: paramsString)
     }
     
     func setBlurBackground() {
         let currentEnable = TUICallState.instance.enableBlurBackground.value
         let level = !currentEnable ? 3 : 0
         TUICallState.instance.enableBlurBackground.value = !currentEnable
-        engine.setBlurBackground(level) { code, message in
+        TUICallEngine.createInstance().setBlurBackground(level) { code, message in
             TUICallState.instance.enableBlurBackground.value = false
         }
     }
@@ -378,7 +377,7 @@ class CallEngineManager {
         guard let paramsString = NSString(data: data, encoding: String.Encoding.utf8.rawValue) as? String else {
             return
         }
-        engine.getTRTCCloudInstance().callExperimentalAPI(paramsString)
+        TUICallEngine.createInstance().getTRTCCloudInstance().callExperimentalAPI(paramsString)
     }
     
 }
