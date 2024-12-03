@@ -8,6 +8,7 @@
   <template v-else>
     <RouterView />
   </template>
+  <!-- add notice -->
 </template>
 
 <script setup lang="ts">
