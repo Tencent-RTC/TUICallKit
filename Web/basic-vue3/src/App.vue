@@ -8,7 +8,7 @@
   <template v-else>
     <RouterView />
   </template>
-  <!-- add ++++ vue3 -->
+  <!-- add ++++ vue3: test -->
 </template>
 
 <script setup lang="ts">
