@@ -29,9 +29,6 @@ class CallManager {
     TUICore.instance.registerEvent(setStateEventOnCallReceived, (arg) async {
       if (Platform.isAndroid && await TUICallKitPlatform.instance.isAppInForeground()) {
         var permissionResult = await Permission.request(CallState.instance.mediaType);
-        if (CallState.instance.scene != TUICallScene.singleCall) {
-          permissionResult = await Permission.request(TUICallMediaType.video);
-        }
 
         if (PermissionResult.granted == permissionResult) {
           TUICallKitNavigatorObserver.getInstance().enterCallingPage();
@@ -349,7 +346,27 @@ class CallManager {
   }
 
   Future<TUIResult> openCamera(TUICamera camera, int viewId) async {
-    final result = await TUICallEngine.instance.openCamera(camera, viewId);
+    TUIResult result = TUIResult(code: '', message: 'success');
+    if (Platform.isAndroid) {
+      if (await TUICallKitPlatform.instance.checkUsbCameraService()) {
+        TRTCLogger.info('CallManager openUsbCamera');
+        await TUICallKitPlatform.instance.openUsbCamera(viewId);
+      } else {
+        TRTCLogger.info('CallManager openCamera');
+        PermissionResult permissionResult = PermissionResult.granted;
+        if (await Permission.has(permissions: [PermissionType.camera])) {
+          permissionResult = await Permission.request(TUICallMediaType.video);
+        }
+        if (PermissionResult.granted == permissionResult) {
+          result = await TUICallEngine.instance.openCamera(camera, viewId);
+        } else {
+          result = TUIResult(code: "-1", message: "Start camera permission denied.");
+        }
+      }
+    } else {
+      result = await TUICallEngine.instance.openCamera(camera, viewId);
+    }
+
     if (result.code.isEmpty && TUICallStatus.none != CallState.instance.selfUser.callStatus) {
       CallState.instance.isCameraOpen = true;
       CallState.instance.camera = camera;
@@ -357,15 +374,19 @@ class CallManager {
     }
 
     TUICallKitPlatform.instance.updateCallStateToNative();
-
     return result;
   }
 
   Future<void> closeCamera() async {
-    TUICallEngine.instance.closeCamera();
+    if (await TUICallKitPlatform.instance.checkUsbCameraService()) {
+      TRTCLogger.info('CallManager closeUsbCamera');
+      TUICallKitPlatform.instance.closeUsbCamera();
+    } else {
+      TRTCLogger.info('CallManager closeCamera');
+      TUICallEngine.instance.closeCamera();
+  }
     CallState.instance.isCameraOpen = false;
     CallState.instance.selfUser.videoAvailable = false;
-
     TUICallKitPlatform.instance.updateCallStateToNative();
   }
 
@@ -376,25 +397,25 @@ class CallManager {
     TUICallKitPlatform.instance.updateCallStateToNative();
   }
 
-  Future<TUIResult> openMicrophone() async {
+  Future<TUIResult> openMicrophone([bool notify = true]) async {
     final result = await TUICallEngine.instance.openMicrophone();
     CallState.instance.isMicrophoneMute = false;
 
     TUICallKitPlatform.instance.updateCallStateToNative();
 
-    if (Platform.isIOS && result.code.isEmpty) {
+    if (notify && Platform.isIOS && result.code.isEmpty) {
       TUICallKitPlatform.instance.openMicrophone();
     }
     return result;
   }
 
-  Future<void> closeMicrophone() async {
+  Future<void> closeMicrophone([bool notify = true]) async {
     TUICallEngine.instance.closeMicrophone();
     CallState.instance.isMicrophoneMute = true;
 
     TUICallKitPlatform.instance.updateCallStateToNative();
 
-    if (Platform.isIOS) {
+    if (notify && Platform.isIOS) {
       TUICallKitPlatform.instance.closeMicrophone();
     }
   }
@@ -533,6 +554,7 @@ class CallManager {
     CallManager.instance.initEngine(sdkAppId, userId, userSig);
     _adaptiveComponentReport();
     _setExcludeFromHistoryMessage();
+    _enablePictureInPicture();
   }
 
   void handleLogoutSuccess() {
@@ -610,14 +632,32 @@ class CallManager {
     TUICallKitPlatform.instance.pullBackgroundApp();
   }
 
+  void openLockScreenApp() {
+    TRTCLogger.info('CallManager openLockScreenApp');
+    TUICallKitPlatform.instance.openLockScreenApp();
+  }
+
   Future<bool> isScreenLocked() async {
     return await TUICallKitPlatform.instance.isScreenLocked();
+  }
+
+  Future<bool> isSamsungDevice() async {
+    return await TUICallKitPlatform.instance.isSamsungDevice();
   }
 
   void _setExcludeFromHistoryMessage() async {
     await TUICallEngine.instance.callExperimentalAPI({
       "api": "setExcludeFromHistoryMessage",
       "params": {"excludeFromHistoryMessage": false}
+    });
+  }
+
+  void _enablePictureInPicture() async {
+    await TUICallEngine.instance.callExperimentalAPI({
+      "api": "enablePictureInPicture",
+      "params": {
+        "enable": true
+      }
     });
   }
 

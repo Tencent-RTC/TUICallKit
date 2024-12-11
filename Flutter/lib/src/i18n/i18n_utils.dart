@@ -297,6 +297,8 @@ class CallKitI18nUtils {
     "k_0000100": "personIsOnTheCall",
     "k_0000101": "switchCamera",
     "k_0000102": "blurBackground",
-    "k_0000103": "showBlurBackground"
+    "k_0000103": "showBlurBackground",
+    "k_0000104": "otherPartyNetworkLowQuality",
+    "k_0000105": "selfNetworkLowQuality"
   }''';
 }

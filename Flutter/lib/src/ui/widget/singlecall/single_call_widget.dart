@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_calls_uikit/src/call_manager.dart';
@@ -196,6 +197,7 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
             const SizedBox(height: 20),
             Text(
               showName,
+              textScaleFactor: 1.0,
               style: TextStyle(
                 fontSize: 24,
                 color: _getTextColor(),
@@ -213,8 +215,6 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
   }
 
   _buildHintTextWidget() {
-    bool isWaiting = CallState.instance.selfUser.callStatus == TUICallStatus.waiting ? true : false;
-
     if (CallState.instance.selfUser.callRole == TUICallRole.caller &&
         CallState.instance.selfUser.callStatus == TUICallStatus.accept &&
         CallState.instance.timeCount < 1) {
@@ -229,32 +229,42 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
       }
     }
 
+    String hintText = "";
+    TextStyle textStyle;
+
+    bool isWaiting = CallState.instance.selfUser.callStatus == TUICallStatus.waiting ? true : false;
+
+    if (_isShowAcceptText) {
+      hintText = CallKit_t('connected');
+      textStyle = TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: _getTextColor());
+    } else {
+      if (isWaiting && CallState.instance.selfUser.callRole == TUICallRole.called) {
+        hintText = CallState.instance.mediaType == TUICallMediaType.audio
+            ? CallKit_t("invitedToAudioCall")
+            : CallKit_t("invitedToVideoCall");
+      } else if (NetworkQualityHint.local == CallState.instance.networkQualityReminder) {
+        hintText = CallKit_t("selfNetworkLowQuality");
+      } else if (NetworkQualityHint.remote == CallState.instance.networkQualityReminder) {
+        hintText = CallKit_t("otherPartyNetworkLowQuality");
+      } else if (isWaiting) {
+        hintText = CallKit_t("waitingForInvitationAcceptance");
+      }
+      textStyle = TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: _getTextColor());
+    }
+
     return Positioned(
         top: MediaQuery.of(context).size.height * 2 / 3,
         width: MediaQuery.of(context).size.width,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            isWaiting
-                ? Text(
-                    CallState.instance.selfUser.callRole == TUICallRole.caller
-                        ? CallKit_t("waitingForInvitationAcceptance")
-                        : CallState.instance.mediaType == TUICallMediaType.audio
-                            ? CallKit_t("invitedToAudioCall")
-                            : CallKit_t("invitedToVideoCall"),
-                    style: TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w400, color: _getTextColor()),
-                  )
-                : const SizedBox(),
-            _isShowAcceptText
-                ? Text(
-                    CallKit_t('connected'),
-                    style: TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w600, color: _getTextColor()),
-                  )
-                : const SizedBox(),
-          ],
-        ));
+        child: Center(
+          child: hintText.isNotEmpty
+              ? Text(
+            hintText,
+            textScaleFactor: 1.0,
+            style: textStyle,
+          )
+              : const SizedBox(),
+        ),
+    );
   }
 
   _buildFunctionButtonWidget() {

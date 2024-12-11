@@ -1,5 +1,4 @@
-import 'dart:async';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_calls_uikit/src/call_manager.dart';
@@ -26,9 +25,7 @@ class JoinInGroupWidget extends StatefulWidget {
 
 class _JoinInGroupWidgetState extends State<JoinInGroupWidget> {
   bool _isExpand = false;
-  bool _isShowAll = false;
   final List<String> _userAvatars = [];
-  final expandDurationTime = 300;
 
   @override
   void initState() {
@@ -37,9 +34,16 @@ class _JoinInGroupWidgetState extends State<JoinInGroupWidget> {
   }
 
   @override
+  void didUpdateWidget(covariant JoinInGroupWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!listEquals(widget.userIDs, oldWidget.userIDs)) {
+      _updateUserAvatars();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     CallKitI18nUtils.setLanguage(Localizations.localeOf(context));
-
     return Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -55,11 +59,9 @@ class _JoinInGroupWidgetState extends State<JoinInGroupWidget> {
         ),
         child: GestureDetector(
             onTap: () => _changeExpand(),
-            child: AnimatedContainer(
-                curve: Curves.easeInOut,
+            child: Container(
                 width: MediaQuery.of(context).size.width - 10,
                 height: _isExpand ? 260 : 40,
-                duration: Duration(milliseconds: expandDurationTime),
                 child: Column(
                   children: [
                     const Padding(padding: EdgeInsets.only(top: 5)),
@@ -73,7 +75,10 @@ class _JoinInGroupWidgetState extends State<JoinInGroupWidget> {
                           height: 20,
                         ),
                         const Padding(padding: EdgeInsets.only(left: 15)),
-                        Text('${widget.userIDs.length} ${CallKit_t("personIsOnTheCall")}'),
+                        Text(
+                            '${widget.userIDs.length} ${CallKit_t("personIsOnTheCall")}',
+                            textScaleFactor: 1.0,
+                        ),
                         const Spacer(),
                         Image.asset(
                           _isExpand
@@ -84,10 +89,8 @@ class _JoinInGroupWidgetState extends State<JoinInGroupWidget> {
                         const Padding(padding: EdgeInsets.only(left: 15)),
                       ],
                     ),
-                    _isShowAll
-                        ? const Padding(padding: EdgeInsets.only(top: 15))
-                        : const SizedBox(),
-                    _isShowAll
+                    _isExpand ? const Padding(padding: EdgeInsets.only(top: 10)) : const SizedBox(),
+                    _isExpand
                         ? Container(
                             width: MediaQuery.of(context).size.width - 30,
                             height: 200,
@@ -149,6 +152,7 @@ class _JoinInGroupWidgetState extends State<JoinInGroupWidget> {
                                       alignment: Alignment.center,
                                       child: Text(
                                         CallKit_t('joinIn'),
+                                        textScaleFactor: 1.0,
                                         style: const TextStyle(
                                             fontSize: 16, fontWeight: FontWeight.w500),
                                       ),
@@ -158,7 +162,10 @@ class _JoinInGroupWidgetState extends State<JoinInGroupWidget> {
                           )
                         : const SizedBox(),
                   ],
-                ))));
+                )
+            )
+        )
+    );
   }
 
   _computeEdge(double maxWidth, int imageWidth, int count) {
@@ -171,18 +178,8 @@ class _JoinInGroupWidgetState extends State<JoinInGroupWidget> {
   }
 
   _changeExpand() {
-    if (!_isExpand) {
-      _isExpand = !_isExpand;
-      setState(() {});
-      Timer(Duration(milliseconds: expandDurationTime), () {
-        _isShowAll = _isExpand;
-        setState(() {});
-      });
-    } else {
-      _isExpand = !_isExpand;
-      _isShowAll = _isExpand;
-      setState(() {});
-    }
+    _isExpand = !_isExpand;
+    setState(() {});
   }
 
   _joinInGroupCallAction() {
@@ -190,6 +187,7 @@ class _JoinInGroupWidgetState extends State<JoinInGroupWidget> {
   }
 
   _updateUserAvatars() async {
+    _userAvatars.clear();
     final result = await TencentImSDKPlugin.v2TIMManager.getUsersInfo(userIDList: widget.userIDs);
     for (var userinfo in result.data!) {
       _userAvatars.add(userinfo.faceUrl!);
