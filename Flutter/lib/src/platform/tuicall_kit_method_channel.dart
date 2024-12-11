@@ -211,6 +211,13 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
   }
 
   @override
+  Future<void> openLockScreenApp() async {
+    if (!kIsWeb && Platform.isAndroid) {
+      await methodChannel.invokeMethod('openLockScreenApp', {});
+    }
+  }
+
+  @override
   Future<void> enableWakeLock(bool enable) async {
     if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
       await methodChannel.invokeMethod('enableWakeLock', {'enable': enable});
@@ -225,6 +232,58 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
     return false;
   }
 
+  @override
+  Future<void> imSDKInitSuccessEvent() async {
+    if (!kIsWeb && Platform.isAndroid) {
+      TRTCLogger.info('imSDKInitSuccessEvent USBCameraService');
+      await methodChannel.invokeMethod('imSDKInitSuccessEvent', {});
+    }
+  }
+
+  @override
+  Future<void> loginSuccessEvent() async {
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      await methodChannel.invokeMethod('loginSuccessEvent', {});
+    }
+  }
+
+  @override
+  Future<void> logoutSuccessEvent() async {
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      await methodChannel.invokeMethod('logoutSuccessEvent', {});
+    }
+  }
+
+  @override
+  Future<bool> checkUsbCameraService() async {
+    if (!kIsWeb &&  Platform.isAndroid) {
+      return await methodChannel.invokeMethod('checkUsbCameraService', {});
+    }
+    return false;
+  }
+
+  @override
+  Future<void> openUsbCamera(int viewId) async {
+    if (!kIsWeb &&  Platform.isAndroid) {
+      await methodChannel.invokeMethod('openUsbCamera', {'viewId': viewId});
+    }
+  }
+
+  @override
+  Future<void> closeUsbCamera() async {
+    if (!kIsWeb &&  Platform.isAndroid) {
+      await methodChannel.invokeMethod('closeUsbCamera', {});
+    }
+  }
+
+  @override
+  Future<bool> isSamsungDevice() async {
+    if (!kIsWeb &&  Platform.isAndroid) {
+      return await methodChannel.invokeMethod('isSamsungDevice', {});
+    }
+    return false;
+  }
+
   void _handleNativeCall(MethodCall call) {
     debugPrint("CallHandler method:${call.method}, arguments:${call.arguments}");
     switch (call.method) {
@@ -234,7 +293,6 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
       case "launchCallingPageFromIncomingBanner":
         _launchCallingPageFromIncomingBanner();
         break;
-
       case "appEnterForeground":
         _appEnterForeground();
         break;
@@ -243,6 +301,12 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
         break;
       case "voipChangeAudioPlaybackDevice":
         _handleVoipChangeAudioPlaybackDevice(call);
+        break;
+      case "voipChangeHangup":
+        _handleVoipHangup();
+        break;
+      case "voipChangeAccept":
+        _handleVoipAccept();
         break;
       default:
         debugPrint("flutter: MethodNotImplemented ${call.method}");
@@ -267,7 +331,9 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
 
   void _handleVoipChangeMute(MethodCall call) {
     if (CallState.instance.selfUser.callStatus != TUICallStatus.none) {
-      CallState.instance.isMicrophoneMute = call.arguments['mute'];
+      bool mute = call.arguments['mute'];
+      CallState.instance.isMicrophoneMute = mute;
+      mute ? CallManager.instance.closeMicrophone(false) : CallManager.instance.openMicrophone(false);
       TUICore.instance.notifyEvent(setStateEvent);
     }
   }
@@ -275,7 +341,22 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
   void _handleVoipChangeAudioPlaybackDevice(MethodCall call) {
     if (CallState.instance.selfUser.callStatus != TUICallStatus.none) {
       CallState.instance.audioDevice = call.arguments['audioPlaybackDevice'];
+      CallManager.instance.selectAudioPlaybackDevice(CallState.instance.audioDevice);
       TUICore.instance.notifyEvent(setStateEvent);
+    }
+  }
+
+  void _handleVoipHangup() {
+    if (CallState.instance.selfUser.callStatus == TUICallStatus.waiting) {
+      CallManager.instance.reject();
+    } else if (CallState.instance.selfUser.callStatus == TUICallStatus.accept) {
+      CallManager.instance.hangup();
+    }
+  }
+
+  void _handleVoipAccept() {
+    if (CallState.instance.selfUser.callStatus == TUICallStatus.waiting) {
+      CallManager.instance.accept();
     }
   }
 }

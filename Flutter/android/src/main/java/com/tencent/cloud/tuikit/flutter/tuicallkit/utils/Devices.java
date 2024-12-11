@@ -6,6 +6,11 @@ import android.os.Build;
 import com.tencent.qcloud.tuicore.util.TUIBuild;
 
 public class Devices {
+    static public Boolean isSamsungDevice() {
+        String brand = TUIBuild.getBrand();
+        String manufacturer = TUIBuild.getManufacturer();
+        return "samsung".equalsIgnoreCase(brand) && "samsung".equalsIgnoreCase(manufacturer);
+    }
 
     static public boolean isScreenLocked(Context context) {
         KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);

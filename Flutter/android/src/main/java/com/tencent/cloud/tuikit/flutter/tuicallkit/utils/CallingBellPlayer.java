@@ -59,7 +59,7 @@ public class CallingBellPlayer {
                     mMediaPlayer.stop();
                 }
                 mMediaPlayer.reset();
-                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_RING);
 
                 try {
                     mMediaPlayer.setDataSource(mRingFilePath);

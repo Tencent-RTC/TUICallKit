@@ -5,7 +5,7 @@ import Flutter
 import UIKit
 import TUICallEngine
 
-public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, TUICallKitServiceDelegate {
+public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, VoIPDataSyncHandlerDelegate {
         
     static let channelName = "tuicall_kit"
     private let channel: FlutterMethodChannel
@@ -23,7 +23,7 @@ public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, TUICallKit
         super.init()
         
         WindowManger.instance.backToFlutterWidgetDelegate = self
-        TUICallKitService.instance.callKitServiceDelegate = self
+        TUICallKitService.instance.voipDataSyncHandler.voipDataSyncHandlerDelegate = self
         
         NotificationCenter.default.addObserver(self, selector: #selector(applicationWillResignActive),
                                                name: UIApplication.willResignActiveNotification, object: nil)
@@ -44,6 +44,8 @@ public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, TUICallKit
         case apiLog
         case showIncomingBanner
         case enableWakeLock
+        case loginSuccessEvent
+        case logoutSuccessEvent
     }
     
     @objc func applicationWillResignActive() {
@@ -74,6 +76,14 @@ extension TUICallKitPlugin {
     
     func callMethodVoipChangeAudioPlaybackDevice(audioPlaybackDevice: TUIAudioPlaybackDevice) {
         channel.invokeMethod("voipChangeAudioPlaybackDevice", arguments: ["audioPlaybackDevice": audioPlaybackDevice.rawValue])
+    }
+    
+    func callMethodVoipHangup() {
+        channel.invokeMethod("voipChangeHangup", arguments: [:])
+    }
+    
+    func callMethodVoipAccept() {
+        channel.invokeMethod("voipChangeAccept", arguments: [:])
     }
 }
 
@@ -118,6 +128,10 @@ extension TUICallKitPlugin: FlutterPlugin {
             TUICallKitManager.shared.showIncomingBanner(call: call, result: result)
         case .enableWakeLock:
             TUICallKitManager.shared.enableWakeLock(call: call, result: result)
+        case .loginSuccessEvent:
+            TUICallKitManager.shared.loginSuccessEvent(call: call, result: result)
+        case .logoutSuccessEvent:
+            TUICallKitManager.shared.logoutSuccessEvent(call: call, result: result)
         default:
             break
         }

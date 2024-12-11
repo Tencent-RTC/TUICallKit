@@ -18,6 +18,9 @@ class TUICallKitManager {
     private init() {}
     
     func startRing(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        if TUICallState.instance.selfUser.value.callRole.value == TUICallRole.called {
+            CallingVibrator.startVibration()
+        }
         guard let filePath = MethodUtils.getMethodParams(call: call, key: "filePath", resultType: String.self) else {
             FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "startRing", paramKey: "filePath", result: result)
             result(NSNumber(value: -1))
@@ -28,6 +31,9 @@ class TUICallKitManager {
     }
     
     func stopRing(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        if TUICallState.instance.selfUser.value.callRole.value == TUICallRole.called {
+            CallingVibrator.stopVirbration()
+        }
         CallingBellPlayer.instance.stopRing()
         result(NSNumber(value: 0))
     }
@@ -51,6 +57,7 @@ class TUICallKitManager {
         }
         
         if let remoteUserDicList = MethodUtils.getMethodParams(call: call, key: "remoteUserList", resultType: Array<Dictionary<String, Any>>.self) {
+            TUICallState.instance.remoteUserList.value.removeAll()
             for remoteUserDic in remoteUserDicList {
                 setUserInfo(dic: remoteUserDic, isSelfUser: false)
             }
@@ -204,19 +211,16 @@ class TUICallKitManager {
     }
     
     func openMicrophone(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        TUICore.notifyEvent(TUICore_TUICallKitVoIPExtensionNotify,
-                            subKey: TUICore_TUICore_TUICallKitVoIPExtensionNotify_OpenMicrophoneSubKey,
-                            object: nil,
-                            param: nil)
+        TUICallKitService.instance.voipDataSyncHandler.setVoIPMute(false)
+        TUICallKitService.instance.voipDataSyncHandler.setVoIPMuteForTUICallKitVoIPExtension(false)
+
         result(NSNumber(value: 0))
     }
     
     func closeMicrophone(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        TUICore.notifyEvent(TUICore_TUICallKitVoIPExtensionNotify,
-                            subKey: TUICore_TUICore_TUICallKitVoIPExtensionNotify_CloseMicrophoneSubKey,
-                            object: nil,
-                            param: nil)
-        
+        TUICallKitService.instance.voipDataSyncHandler.setVoIPMute(true)
+        TUICallKitService.instance.voipDataSyncHandler.setVoIPMuteForTUICallKitVoIPExtension(true)
+
         result(NSNumber(value: 0))
     }
     
@@ -273,5 +277,14 @@ class TUICallKitManager {
 
         result(NSNumber(value: 0))
     }
+    
+    func loginSuccessEvent(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        NotificationCenter.default.post(name: NSNotification.Name.TUILoginSuccess , object: nil)
+        result(NSNumber(value: 0))
+    }
 
+    func logoutSuccessEvent(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        NotificationCenter.default.post(name: NSNotification.Name.TUILogoutSuccess , object: nil)
+        result(NSNumber(value: 0))
+    }
 }

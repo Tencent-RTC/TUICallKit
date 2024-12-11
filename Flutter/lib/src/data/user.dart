@@ -12,6 +12,7 @@ class User {
   bool videoAvailable = false;
   int playOutVolume = 0;
   int viewID = 0;
+  bool networkQualityReminder = false;
   var key = GlobalKey();
 
   Map<String, dynamic> toJson() {
@@ -26,6 +27,7 @@ class User {
     data['videoAvailable'] = videoAvailable;
     data['playOutVolume'] = playOutVolume;
     data['viewID'] = viewID;
+    data['networkQualityReminder'] = networkQualityReminder;
     return data;
   }
 

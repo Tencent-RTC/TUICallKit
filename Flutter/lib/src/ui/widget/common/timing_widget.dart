@@ -26,6 +26,7 @@ class _TimingWidgetState extends State<TimingWidget> {
   Widget build(BuildContext context) {
     return Text(
       _formatCallTime(),
+      textScaleFactor: 1.0,
       style: const TextStyle(color: Colors.white, fontSize: 14),
     );
   }
