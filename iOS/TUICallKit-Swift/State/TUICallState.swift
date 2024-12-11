@@ -119,10 +119,14 @@ extension TUICallState: TUICallObserver {
             }
         }
         
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            CallEngineManager.instance.updateVoIPInfo(callerId: callerId, calleeList: calleeIdList, groupId: groupId ?? "")
+        }
     }
     
     func onCallCancelled(callerId: String) {
         cleanState()
+        CallEngineManager.instance.closeVoIP()
     }
     
     func onKickedOffline() {
@@ -329,12 +333,14 @@ extension TUICallState: TUICallObserver {
         } else {
             CallEngineManager.instance.closeMicrophone()
         }
-        
+
         showAntiFraudReminder()
+        CallEngineManager.instance.callBegin()
     }
     
     func onCallEnd(roomId: TUIRoomId, callMediaType: TUICallMediaType, callRole: TUICallRole, totalTime: Float) {
         cleanState()
+        CallEngineManager.instance.closeVoIP()
     }
     
     func onCallMediaTypeChanged(oldCallMediaType: TUICallMediaType, newCallMediaType: TUICallMediaType) {

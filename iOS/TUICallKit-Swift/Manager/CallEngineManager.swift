@@ -17,6 +17,7 @@ import TXLiteAVSDK_Professional
 
 class CallEngineManager {
     static let instance = CallEngineManager()
+    let voipDataSyncHandler = VoIPDataSyncHandler()
     
     func setSelfInfo(nickname: String, avatar: String, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
         TUICallEngine.createInstance().setSelfInfo(nickname: nickname, avatar: avatar) {
@@ -152,33 +153,29 @@ class CallEngineManager {
     
     func muteMic() {
         if TUICallState.instance.isMicMute.value == true {
-            TUICallEngine.createInstance().openMicrophone {
+            TUICallEngine.createInstance().openMicrophone { [weak self] in
+                guard let self = self else { return }
                 TUICallState.instance.isMicMute.value = false
-                TUICore.notifyEvent(TUICore_TUICallKitVoIPExtensionNotify,
-                                    subKey: TUICore_TUICore_TUICallKitVoIPExtensionNotify_OpenMicrophoneSubKey,
-                                    object: nil,
-                                    param: nil)
+                self.voipDataSyncHandler.setVoIPMuteForTUICallKitVoIPExtension(false)
+                self.voipDataSyncHandler.setVoIPMute(false)
             } fail: { code , message  in
             }
         } else {
             TUICallEngine.createInstance().closeMicrophone()
             TUICallState.instance.isMicMute.value = true
-            TUICore.notifyEvent(TUICore_TUICallKitVoIPExtensionNotify,
-                                subKey: TUICore_TUICore_TUICallKitVoIPExtensionNotify_CloseMicrophoneSubKey,
-                                object: nil,
-                                param: nil)
+            voipDataSyncHandler.setVoIPMuteForTUICallKitVoIPExtension(true)
+            voipDataSyncHandler.setVoIPMute(true)
         }
     }
     
     func openMicrophone(_ notifyEvent: Bool = true) {
         if TUICallState.instance.selfUser.value.callStatus.value != .none {
-            TUICallEngine.createInstance().openMicrophone {
+            TUICallEngine.createInstance().openMicrophone { [weak self] in
+                guard let self = self else { return }
                 TUICallState.instance.isMicMute.value = false
                 if (notifyEvent) {
-                    TUICore.notifyEvent(TUICore_TUICallKitVoIPExtensionNotify,
-                                        subKey: TUICore_TUICore_TUICallKitVoIPExtensionNotify_OpenMicrophoneSubKey,
-                                        object: nil,
-                                        param: nil)
+                    self.voipDataSyncHandler.setVoIPMuteForTUICallKitVoIPExtension(false)
+                    self.voipDataSyncHandler.setVoIPMute(false)
                 }
             } fail: { code , message  in
             }
@@ -189,10 +186,8 @@ class CallEngineManager {
         TUICallEngine.createInstance().closeMicrophone()
         TUICallState.instance.isMicMute.value = true
         if (notifyEvent) {
-            TUICore.notifyEvent(TUICore_TUICallKitVoIPExtensionNotify,
-                                subKey: TUICore_TUICore_TUICallKitVoIPExtensionNotify_CloseMicrophoneSubKey,
-                                object: nil,
-                                param: nil)
+            voipDataSyncHandler.setVoIPMuteForTUICallKitVoIPExtension(true)
+            voipDataSyncHandler.setVoIPMute(true)
         }
     }
     
@@ -378,6 +373,18 @@ class CallEngineManager {
             return
         }
         TUICallEngine.createInstance().getTRTCCloudInstance().callExperimentalAPI(paramsString)
+    }
+    
+    func closeVoIP() {
+        voipDataSyncHandler.closeVoIP()
+    }
+    
+    func callBegin() {
+        voipDataSyncHandler.callBegin()
+    }
+    
+    func updateVoIPInfo(callerId: String, calleeList: [String], groupId: String) {
+        voipDataSyncHandler.updateVoIPInfo(callerId: callerId, calleeList: calleeList, groupId: groupId)
     }
     
 }
