@@ -43,7 +43,6 @@
     <string name="app_user_id_list">ユーザーIDリスト</string>
     <string name="app_join_group_call">グループ通話に参加する</string>
     <string name="app_media_type">メディアタイプ</string>
-    <string name="app_group_call_button">グループ通話を体験する</string>
     <string name="app_basic_setting">基本設定</string>
     <string name="app_user_info">ユーザー情報</string>
     <string name="app_setting">設定</string>
@@ -73,6 +72,8 @@
     <string name="app_beauty_level">美顔のレベル</string>
     <string name="app_please_set_beauty_level">美顔のレベルを入力してください</string>
     <string name="app_1v1_call">1v1通話</string>
+    <string name="app_calls">マルチパーティ通話</string>
+
     <string name="app_nickname_colon">ニックネーム：</string>
     <string name="app_user_id_colon">ユーザーID：</string>
     <string name="app_group_call">グループ通話</string>
@@ -91,4 +92,5 @@
 
     <string name="app_version">バージョン：</string>
     <string name="app_not_setting">未設定</string>
+    <string name="app_optional_parameters">オプションパラメータ</string>
 </resources>

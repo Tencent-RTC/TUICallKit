@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUICore
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.CallTimerView
@@ -21,8 +20,10 @@ import com.tencent.qcloud.tuikit.tuicallkit.view.component.function.VideoCallerW
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.userinfo.single.AudioCallUserInfoView
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.userinfo.single.VideoCallUserInfoView
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout.SingleCallVideoLayout
+import com.trtc.tuikit.common.livedata.Observer
 
 class SingleCallView(context: Context) : RelativeLayout(context) {
+    private val context: Context = context
     private var layoutTimer: FrameLayout? = null
     private var layoutUserInfo: FrameLayout? = null
     private var layoutFunction: FrameLayout? = null

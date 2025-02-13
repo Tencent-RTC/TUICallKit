@@ -16,7 +16,7 @@
             android:layout_width="30dp"
             android:layout_height="38dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
             android:gravity="center_vertical"
             android:padding="10dp"
             android:src="@drawable/app_back" />
@@ -35,39 +35,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="40dp"
-        android:layout_marginRight="16dp">
-
-        <TextView
-            android:id="@+id/tv_group_call_group_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_group_id"
-            android:textColor="@color/app_color_black"
-            android:textSize="16sp" />
-
-        <EditText
-            android:id="@+id/et_group_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/tv_group_call_group_id"
-            android:background="@null"
-            android:gravity="right"
-            android:hint="@string/app_please_input_group_id"
-            android:textColor="@color/app_color_black"
-            android:textColorHint="@color/app_color_input_normal"
-            android:textSize="16sp" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="16dp">
+        android:layout_marginEnd="16dp">
 
         <TextView
             android:id="@+id/tv_group_call_user_id"
@@ -81,7 +51,7 @@
             android:id="@+id/et_user_id_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/tv_group_call_user_id"
             android:background="@null"
@@ -96,9 +66,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="40dp"
-        android:layout_marginRight="16dp">
+        android:layout_marginEnd="16dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -111,18 +81,18 @@
             android:id="@+id/rg_media_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginLeft="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="20dp"
             android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/rb_video"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:background="@null"
                 android:button="@drawable/app_bg_rb_selector"
-                android:drawableLeft="@drawable/app_bg_rb_selector"
+                android:drawableStart="@drawable/app_bg_rb_selector"
                 android:drawablePadding="5dp"
                 android:gravity="center"
                 android:text="@string/app_video_call"
@@ -133,17 +103,81 @@
                 android:id="@+id/rb_audio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
                 android:background="@null"
                 android:button="@drawable/app_bg_rb_selector"
                 android:checked="true"
-                android:drawableLeft="@drawable/app_bg_rb_selector"
+                android:drawableStart="@drawable/app_bg_rb_selector"
                 android:drawablePadding="5dp"
                 android:gravity="center"
                 android:text="@string/app_audio_call"
                 android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
         </RadioGroup>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:background="#CCCCCC" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_optional_parameters"
+            android:textColor="@color/app_color_blue"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/iv_app_expand"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="4dp"
+            android:padding="4dp"
+            android:src="@drawable/app_right" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_chat_group_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_group_call_group_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_group_id"
+            android:textColor="@color/app_color_black"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/et_group_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/tv_group_call_group_id"
+            android:background="@null"
+            android:gravity="end"
+            android:hint="@string/app_please_input_group_id"
+            android:textColor="@color/app_color_black"
+            android:textColorHint="@color/app_color_input_normal"
+            android:textSize="16sp" />
     </RelativeLayout>
 
     <LinearLayout
@@ -160,42 +194,41 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/app_call_setting"
-            android:textColor="#0062E3"
+            android:textColor="@color/app_color_blue"
             android:textSize="16sp" />
 
         <ImageView
             android:layout_width="5.3dp"
             android:layout_height="9dp"
-            android:layout_marginLeft="9.5dp"
+            android:layout_marginStart="9.5dp"
             android:background="@drawable/app_right" />
-
     </LinearLayout>
 
     <View
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1" />
 
     <TextView
         android:id="@+id/tv_join_group_call"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:gravity="center"
         android:text="@string/app_join_group_call"
         android:textColor="#0062E3"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/btn_call"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_media_type"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="46dp"
         android:background="@drawable/app_bg_button"
         android:text="@string/app_start_call"

@@ -7,17 +7,17 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
+import com.tencent.cloud.tuikit.engine.call.TUICallEngine
+import com.tencent.cloud.tuikit.engine.call.TUICallObserver
 import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification
 import com.tencent.qcloud.tuicore.interfaces.ITUIService
 import com.tencent.qcloud.tuicore.interfaces.TUIServiceCallback
 import com.tencent.qcloud.tuicore.permission.PermissionCallback
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallObserver
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
+import com.tencent.qcloud.tuikit.tuicallkit.utils.Logger
 import com.tencent.qcloud.tuikit.tuicallkit.utils.PermissionRequest
 import com.tencent.trtc.TRTCCloud
 import com.tencent.trtc.TRTCCloudDef
@@ -37,7 +37,7 @@ class TUIAudioMessageRecordService(context: Context) : ITUIService, ITUINotifica
         mAudioRecordValueCallback = callback
         if (TextUtils.equals(TUIConstants.TUICalling.METHOD_NAME_START_RECORD_AUDIO_MESSAGE, method)) {
             if (param == null) {
-                TUILog.e(TAG, "startRecordAudioMessage failed, param is empty")
+                Logger.error(TAG, "startRecordAudioMessage failed, param is empty")
                 notifyAudioMessageRecordEvent(
                     TUIConstants.TUICalling.EVENT_SUB_KEY_RECORD_START,
                     TUIConstants.TUICalling.ERROR_INVALID_PARAM,
@@ -47,7 +47,7 @@ class TUIAudioMessageRecordService(context: Context) : ITUIService, ITUINotifica
             }
 
             if (TUICallDefine.Status.None != TUICallState.instance.selfUser.get().callStatus.get()) {
-                TUILog.e(TAG, "startRecordAudioMessage failed, The current call status does not support recording")
+                Logger.error(TAG, "startRecordAudioMessage failed, The current call status does not support recording")
                 notifyAudioMessageRecordEvent(
                     TUIConstants.TUICalling.EVENT_SUB_KEY_RECORD_START,
                     TUIConstants.TUICalling.ERROR_STATUS_IN_CALL,
@@ -57,7 +57,9 @@ class TUIAudioMessageRecordService(context: Context) : ITUIService, ITUINotifica
             }
 
             if (mAudioRecordInfo != null) {
-                TUILog.e(TAG, "startRecordAudioMessage failed, The recording is not over, It cannot be called again")
+                Logger.error(
+                    TAG, "startRecordAudioMessage failed, The recording is not over, It cannot be called again"
+                )
                 notifyAudioMessageRecordEvent(
                     TUIConstants.TUICalling.EVENT_SUB_KEY_RECORD_START,
                     TUIConstants.TUICalling.ERROR_STATUS_IS_AUDIO_RECORDING,
@@ -70,7 +72,7 @@ class TUIAudioMessageRecordService(context: Context) : ITUIService, ITUINotifica
                 override fun onGranted() {
                     initAudioFocusManager()
                     if (requestAudioFocus() != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                        TUILog.e(TAG, "startRecordAudioMessage failed, Failed to obtain audio focus")
+                        Logger.error(TAG, "startRecordAudioMessage failed, Failed to obtain audio focus")
                         notifyAudioMessageRecordEvent(
                             TUIConstants.TUICalling.EVENT_SUB_KEY_RECORD_START,
                             TUIConstants.TUICalling.ERROR_REQUEST_AUDIO_FOCUS_FAILED,
@@ -161,10 +163,10 @@ class TUIAudioMessageRecordService(context: Context) : ITUIService, ITUINotifica
 
     private fun startRecordAudioMessage() {
         if (mAudioRecordInfo == null) {
-            TUILog.e(TAG, "startRecordAudioMessage failed, audioRecordInfo is empty")
+            Logger.error(TAG, "startRecordAudioMessage failed, audioRecordInfo is empty")
             return
         }
-        TUILog.i(TAG, "startRecordAudioMessage, mAudioRecordInfo: $mAudioRecordInfo")
+        Logger.info(TAG, "startRecordAudioMessage, mAudioRecordInfo: $mAudioRecordInfo")
         val jsonObject = JSONObject()
         try {
             jsonObject.put("api", "startRecordAudioMessage")
@@ -181,7 +183,7 @@ class TUIAudioMessageRecordService(context: Context) : ITUIService, ITUINotifica
 
     private fun stopRecordAudioMessage() {
         if (mAudioRecordInfo == null) {
-            TUILog.w(TAG, "stopRecordAudioMessage, current recording status is Idle,do not need to stop")
+            Logger.warn(TAG, "stopRecordAudioMessage, current recording status is Idle,do not need to stop")
             return
         }
         val jsonObject = JSONObject()
@@ -193,7 +195,7 @@ class TUIAudioMessageRecordService(context: Context) : ITUIService, ITUINotifica
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        TUILog.i(TAG, "stopRecordAudioMessage, stopLocalAudio")
+        Logger.info(TAG, "stopRecordAudioMessage, stopLocalAudio")
         TRTCCloud.sharedInstance(context).stopLocalAudio()
 
         mAudioRecordInfo = null
@@ -201,7 +203,7 @@ class TUIAudioMessageRecordService(context: Context) : ITUIService, ITUINotifica
     }
 
     private fun notifyAudioMessageRecordEvent(method: String, errCode: Int, path: String?) {
-        TUILog.i(TAG, "notifyAudioMessageRecordEvent, method: $method, errCode: $errCode,path: $path")
+        Logger.info(TAG, "notifyAudioMessageRecordEvent, method: $method, errCode: $errCode,path: $path")
         if (mAudioRecordValueCallback != null) {
             val bundleInfo = Bundle()
             bundleInfo.putString(TUIConstants.TUICalling.EVENT_KEY_RECORD_AUDIO_MESSAGE, method)

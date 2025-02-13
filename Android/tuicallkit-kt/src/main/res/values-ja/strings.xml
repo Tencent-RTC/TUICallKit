@@ -28,7 +28,7 @@
     <string name="tuicallkit_btn_cancel">キャンセル</string>
     <string name="tuicallkit_video_call">ビデオ通話</string>
     <string name="tuicallkit_audio_call">音声通話</string>
-    <string name="tuicallkit_user_exceed_limit">暫して、最大9人までの通话をサポートしています。複数人の会議を希望する場合、TUIRoomを使用してください。</string>
+    <string name="tuicallkit_user_exceed_limit">暫して、最大9人までの通话をサポートしています。複数人の会議を希望する場合、TUIRoomKitを使用してください。</string>
     <string name="tuicallkit_wait_response">応答を待っています...</string>
     <string name="tuicallkit_wait_accept_group">グループ通話に招待します</string>
     <string name="tuicallkit_accept_single">接続済み</string>
@@ -77,4 +77,6 @@
     <string name="tuicallkit_join_group_call_users">%s人が%sをしています</string>
 
     <string name="tuicallkit_blur_background">背景をぼかす</string>
+    <string name="tuicallkit_notification_channel_group_id">つうわかんり</string>
+    <string name="tuicallkit_notification_channel_id">おんせい・えいぞうつうわ</string>
 </resources>

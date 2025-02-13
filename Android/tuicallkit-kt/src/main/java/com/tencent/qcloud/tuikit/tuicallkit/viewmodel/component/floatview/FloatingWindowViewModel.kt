@@ -1,10 +1,10 @@
 package com.tencent.qcloud.tuikit.tuicallkit.viewmodel.component.floatview
 
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.LiveData
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.floatview.FloatWindowService
+import com.trtc.tuikit.common.livedata.LiveData
 
 class FloatingWindowViewModel {
     public var selfUser: User

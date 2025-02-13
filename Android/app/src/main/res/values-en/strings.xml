@@ -45,7 +45,6 @@
     <string name="app_user_id_list">UserIdList</string>
     <string name="app_join_group_call">Join group call</string>
     <string name="app_media_type">Media Type</string>
-    <string name="app_group_call_button">Experience group calling</string>
 
     <string name="app_basic_setting">Basic Settings</string>
     <string name="app_user_info">User Info</string>
@@ -76,6 +75,7 @@
     <string name="app_beauty_level">Beauty level</string>
     <string name="app_please_set_beauty_level">Please set the beauty level</string>
     <string name="app_1v1_call">1V1 call</string>
+    <string name="app_calls">Multi calls</string>
 
     <string name="app_nickname_colon">Nickname：</string>
     <string name="app_user_id_colon">UserID:</string>
@@ -95,4 +95,5 @@
 
     <string name="app_version">Version:</string>
     <string name="app_not_setting">Not set</string>
+    <string name="app_optional_parameters">Optional Parameters</string>
 </resources>

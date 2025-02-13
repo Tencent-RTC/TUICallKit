@@ -5,9 +5,10 @@ import org.gradle.util.VersionNumber
 buildscript {
 
     repositories {
+        maven { url "https://mirrors.tencent.com/nexus/repository/maven-public/" }
+        maven { url "https://mirrors.tencent.com/repository/maven/thirdparty" }
         google()
         mavenCentral()
-        maven { url "https://mirrors.tencent.com/nexus/repository/maven-public/" }
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
@@ -30,6 +31,8 @@ allprojects {
         flatDir {
             dirs project(':app').file('libs')
         }
+        maven { url "https://mirrors.tencent.com/nexus/repository/maven-public/" }
+        maven { url "https://mirrors.tencent.com/repository/maven/thirdparty" }
         google()
         mavenCentral()
     }

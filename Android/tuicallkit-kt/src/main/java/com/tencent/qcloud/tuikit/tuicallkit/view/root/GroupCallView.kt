@@ -6,10 +6,9 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUICore
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.utils.ImageLoader
@@ -22,9 +21,10 @@ import com.tencent.qcloud.tuikit.tuicallkit.view.component.function.VideoCallerA
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.userinfo.group.GroupCallerUserInfoView
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.userinfo.group.InviteeAvatarListView
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout.GroupCallVideoLayout
+import com.trtc.tuikit.common.livedata.Observer
 
 class GroupCallView(context: Context) : BaseCallView(context) {
-
+    private val context: Context = context
     private var layoutRender: ScrollView? = null
     private var layoutFunction: FrameLayout? = null
     private var layoutCallTime: FrameLayout? = null
@@ -53,7 +53,6 @@ class GroupCallView(context: Context) : BaseCallView(context) {
         refreshRenderView()
         refreshFunctionView()
         refreshFloatView()
-        refreshInviteUserIconView()
         refreshCallStatusView()
         refreshTimerView()
 
@@ -168,19 +167,8 @@ class GroupCallView(context: Context) : BaseCallView(context) {
     }
 
     private fun refreshInviteUserIconView() {
-        if ((TUICallDefine.Role.Caller == TUICallState.instance.selfUser.get().callRole.get()
-                    && TUICallDefine.Status.None != TUICallState.instance.selfUser.get().callStatus.get())
-            || TUICallDefine.Status.Accept == TUICallState.instance.selfUser.get().callStatus.get()
-        ) {
-            layoutInviteUserIcon?.removeAllViews()
-            inviteUserButton?.clear()
-            inviteUserButton = InviteUserButton(context)
-            layoutInviteUserIcon?.addView(inviteUserButton)
-        } else {
-            layoutInviteUserIcon?.removeAllViews()
-            inviteUserButton?.clear()
-            inviteUserButton = null
-        }
+        inviteUserButton = InviteUserButton(context)
+        layoutInviteUserIcon?.addView(inviteUserButton)
     }
 
     private fun refreshFloatView() {

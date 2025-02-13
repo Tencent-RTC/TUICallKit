@@ -7,9 +7,7 @@
 
     <string-array name="app_resolution">
         <item>Resolution_640_360</item>
-        <item>Resolution_640_480</item>
         <item>Resolution_960_540</item>
-        <item>Resolution_960_720</item>
         <item>Resolution_1280_720</item>
         <item>Resolution_1920_1080</item>
     </string-array>

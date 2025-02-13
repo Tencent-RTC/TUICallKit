@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
-    <com.tencent.qcloud.tuikit.TUIVideoView
+    <com.tencent.cloud.tuikit.engine.common.TUIVideoView
         android:id="@+id/tx_cloud_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

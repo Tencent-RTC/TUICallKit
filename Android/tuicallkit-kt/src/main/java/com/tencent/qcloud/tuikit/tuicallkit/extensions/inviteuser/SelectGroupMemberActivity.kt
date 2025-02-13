@@ -11,16 +11,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.imsdk.v2.V2TIMGroupMemberFullInfo
 import com.tencent.imsdk.v2.V2TIMGroupMemberInfoResult
 import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMValueCallback
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.manager.EngineManager
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
+import com.trtc.tuikit.common.livedata.Observer
 
 class SelectGroupMemberActivity : AppCompatActivity() {
     private var recyclerUserList: RecyclerView? = null

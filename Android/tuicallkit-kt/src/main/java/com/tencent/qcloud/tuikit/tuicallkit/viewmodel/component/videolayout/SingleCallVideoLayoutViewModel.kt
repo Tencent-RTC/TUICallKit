@@ -1,10 +1,10 @@
 package com.tencent.qcloud.tuikit.tuicallkit.viewmodel.component.videolayout
 
-import com.tencent.qcloud.tuikit.TUICommonDefine
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.LiveData
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
+import com.trtc.tuikit.common.livedata.LiveData
 
 class SingleCallVideoLayoutViewModel {
     public var selfUser: User
