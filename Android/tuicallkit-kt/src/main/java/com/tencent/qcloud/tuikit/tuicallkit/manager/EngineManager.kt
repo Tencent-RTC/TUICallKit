@@ -2,6 +2,12 @@ package com.tencent.qcloud.tuikit.tuicallkit.manager
 
 import android.content.Context
 import android.text.TextUtils
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine.CallParams
+import com.tencent.cloud.tuikit.engine.call.TUICallEngine
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine.ValueCallback
+import com.tencent.cloud.tuikit.engine.common.TUIVideoView
 import com.tencent.imsdk.BaseConstants
 import com.tencent.qcloud.tuicore.TUIConfig
 import com.tencent.qcloud.tuicore.TUIConstants
@@ -11,19 +17,13 @@ import com.tencent.qcloud.tuicore.permission.PermissionCallback
 import com.tencent.qcloud.tuicore.util.ErrorMessageConverter
 import com.tencent.qcloud.tuicore.util.SPUtils
 import com.tencent.qcloud.tuicore.util.ToastUtil
-import com.tencent.qcloud.tuikit.TUICommonDefine
-import com.tencent.qcloud.tuikit.TUICommonDefine.ValueCallback
-import com.tencent.qcloud.tuikit.TUIVideoView
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine.CallParams
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.data.OfflinePushInfoConfig
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
 import com.tencent.qcloud.tuikit.tuicallkit.extensions.CallingBellFeature
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
+import com.tencent.qcloud.tuikit.tuicallkit.utils.Logger
 import com.tencent.qcloud.tuikit.tuicallkit.utils.PermissionRequest
 import com.tencent.qcloud.tuikit.tuicallkit.utils.PermissionRequest.requestPermissions
 import com.tencent.qcloud.tuikit.tuicallkit.utils.UserInfoUtils
@@ -50,14 +50,14 @@ class EngineManager private constructor(context: Context) {
         userId: String?, callMediaType: TUICallDefine.MediaType?, params: TUICallDefine.CallParams?,
         callback: TUICommonDefine.Callback?
     ) {
-        TUILog.i(TAG, "call -> {userId: $userId, callMediaType: $callMediaType, params: $params}")
+        Logger.info(TAG, "call -> {userId: $userId, callMediaType: $callMediaType, params: $params}")
         if (TextUtils.isEmpty(userId)) {
-            TUILog.e(TAG, "call failed, userId is empty")
+            Logger.error(TAG, "call failed, userId is empty")
             callback?.onError(TUICallDefine.ERROR_PARAM_INVALID, "call failed, userId is empty")
             return
         }
         if (TUICallDefine.MediaType.Unknown == callMediaType) {
-            TUILog.e(TAG, "call failed, callMediaType is Unknown")
+            Logger.error(TAG, "call failed, callMediaType is Unknown")
             callback?.onError(TUICallDefine.ERROR_PARAM_INVALID, "call failed, callMediaType is Unknown")
             return
         }
@@ -79,6 +79,7 @@ class EngineManager private constructor(context: Context) {
                             TUICallState.instance.scene.set(TUICallDefine.Scene.SINGLE_CALL)
                             TUICallState.instance.selfUser.get().callRole.set(TUICallDefine.Role.Caller)
                             TUICallState.instance.selfUser.get().callStatus.set(TUICallDefine.Status.Waiting)
+                            initAudioPlayDevice()
                             callback?.onSuccess()
                         }
 
@@ -96,21 +97,92 @@ class EngineManager private constructor(context: Context) {
         })
     }
 
+    fun calls(
+        userIdList: List<String?>?, mediaType: TUICallDefine.MediaType?, params: CallParams?,
+        callback: TUICommonDefine.Callback?
+    ) {
+        Logger.info(TAG, "calls, userIdList: $userIdList, callMediaType: $mediaType, params: $params")
+        if (TUICallDefine.MediaType.Audio != mediaType && TUICallDefine.MediaType.Video != mediaType) {
+            Logger.error(TAG, "calls failed, mediaType is Unknown")
+            callback?.onError(TUICallDefine.ERROR_PARAM_INVALID, "calls failed, mediaType is Unknown")
+            return
+        }
+
+        val list = userIdList?.toHashSet()?.toMutableList()
+        list?.remove(TUILogin.getLoginUser())
+        list?.removeAll(Collections.singleton(null))
+
+        if (list.isNullOrEmpty()) {
+            Logger.error(TAG, "calls failed, userIdList is empty")
+            callback?.onError(TUICallDefine.ERROR_PARAM_INVALID, "calls failed, userIdList is empty")
+            return
+        }
+        if (list.size >= Constants.MAX_USER) {
+            ToastUtil.toastLongMessage(context.getString(R.string.tuicallkit_user_exceed_limit))
+            Logger.error(TAG, "calls failed, exceeding max user number: 9")
+            callback?.onError(TUICallDefine.ERROR_PARAM_INVALID, "calls failed, exceeding max user number")
+            return
+        }
+        TUICallState.instance.selfUser.get().avatar.set(TUILogin.getFaceUrl())
+        TUICallState.instance.selfUser.get().nickname.set(TUILogin.getNickName())
+        TUICallState.instance.selfUser.get().id = TUILogin.getLoginUser()
+        requestPermissions(context, mediaType, object : PermissionCallback() {
+            override fun onGranted() {
+                TUICallEngine.createInstance(context).calls(list, mediaType, params, object : TUICommonDefine.Callback {
+                    override fun onSuccess() {
+                        for (userId in list) {
+                            if (!TextUtils.isEmpty(userId)) {
+                                val model = User()
+                                model.id = userId
+                                model.callRole.set(TUICallDefine.Role.Called)
+                                model.callStatus.set(TUICallDefine.Status.Waiting)
+                                UserInfoUtils.updateUserInfo(model)
+                                TUICallState.instance.remoteUserList.get().add(model)
+                            }
+                        }
+                        TUICallState.instance.mediaType.set(mediaType)
+                        TUICallState.instance.groupId.set(params?.chatGroupId)
+                        if (params != null && !params.chatGroupId.isNullOrEmpty() || list.size > 1) {
+                            TUICallState.instance.scene.set(TUICallDefine.Scene.GROUP_CALL)
+                        } else {
+                            TUICallState.instance.scene.set(TUICallDefine.Scene.SINGLE_CALL)
+                        }
+                        
+                        TUICallState.instance.selfUser.get().callRole.set(TUICallDefine.Role.Caller)
+                        TUICallState.instance.selfUser.get().callStatus.set(TUICallDefine.Status.Waiting)
+                        initAudioPlayDevice()
+                        callback?.onSuccess()
+                    }
+
+                    override fun onError(errCode: Int, errMsg: String) {
+                        val errMessage: String = convertErrorMsg(errCode, errMsg)
+                        ToastUtil.toastLongMessage(errMessage)
+                        Logger.error(TAG, "calls errCode:$errCode, errMsg:$errMessage")
+                        callback?.onError(errCode, errMessage)
+                    }
+                })
+            }
+
+            override fun onDenied() {
+                callback?.onError(TUICallDefine.ERROR_PERMISSION_DENIED, "request Permissions failed")
+            }
+        })
+    }
+
     fun groupCall(
         groupId: String?, userIdList: List<String?>?, callMediaType: TUICallDefine.MediaType,
         params: TUICallDefine.CallParams?, callback: TUICommonDefine.Callback?
     ) {
-        TUILog.i(
-            TAG,
-            "call -> {groupId: $groupId, userIdList: $userIdList, callMediaType: $callMediaType, params: $params}"
+        Logger.info(
+            TAG, "call -> {groupId: $groupId, userIdList: $userIdList, callMediaType: $callMediaType, params: $params}"
         )
         if (TextUtils.isEmpty(groupId)) {
-            TUILog.e(TAG, "groupCall failed, groupId is empty")
+            Logger.error(TAG, "groupCall failed, groupId is empty")
             callback?.onError(TUICallDefine.ERROR_PARAM_INVALID, "groupCall failed, groupId is empty")
             return
         }
         if (TUICallDefine.MediaType.Unknown == callMediaType) {
-            TUILog.e(TAG, "groupCall failed, callMediaType is Unknown")
+            Logger.error(TAG, "groupCall failed, callMediaType is Unknown")
             callback?.onError(TUICallDefine.ERROR_PARAM_INVALID, "groupCall failed, callMediaType is Unknown")
             return
         }
@@ -120,13 +192,13 @@ class EngineManager private constructor(context: Context) {
         list?.removeAll(Collections.singleton(null))
 
         if (list == null || list.isEmpty()) {
-            TUILog.e(TAG, "groupCall failed, userIdList is empty")
+            Logger.error(TAG, "groupCall failed, userIdList is empty")
             callback?.onError(TUICallDefine.ERROR_PARAM_INVALID, "groupCall failed, userIdList is empty")
             return
         }
         if (list.size >= Constants.MAX_USER) {
             ToastUtil.toastLongMessage(context.getString(R.string.tuicallkit_user_exceed_limit))
-            TUILog.e(TAG, "groupCall failed, exceeding max user number: 9")
+            Logger.error(TAG, "groupCall failed, exceeding max user number: 9")
             callback?.onError(TUICallDefine.ERROR_PARAM_INVALID, "groupCall failed, exceeding max user number")
             return
         }
@@ -155,13 +227,14 @@ class EngineManager private constructor(context: Context) {
 
                             TUICallState.instance.selfUser.get().callRole.set(TUICallDefine.Role.Caller)
                             TUICallState.instance.selfUser.get().callStatus.set(TUICallDefine.Status.Waiting)
+                            initAudioPlayDevice()
                             callback?.onSuccess()
                         }
 
                         override fun onError(errCode: Int, errMsg: String) {
                             val errMessage: String = convertErrorMsg(errCode, errMsg)
                             ToastUtil.toastLongMessage(errMessage)
-                            TUILog.e(TAG, "groupCall errCode:$errCode, errMsg:$errMessage")
+                            Logger.error(TAG, "groupCall errCode:$errCode, errMsg:$errMessage")
                             callback?.onError(errCode, errMessage)
                         }
                     })
@@ -177,15 +250,15 @@ class EngineManager private constructor(context: Context) {
         val intRoomId = roomId?.intRoomId ?: 0
         val strRoomId = roomId?.strRoomId ?: ""
         if (intRoomId <= 0 && TextUtils.isEmpty(strRoomId)) {
-            TUILog.e(TAG, "joinInGroupCall failed, roomId is invalid")
+            Logger.error(TAG, "joinInGroupCall failed, roomId is invalid")
             return
         }
         if (TextUtils.isEmpty(groupId)) {
-            TUILog.e(TAG, "joinInGroupCall failed, groupId is empty")
+            Logger.error(TAG, "joinInGroupCall failed, groupId is empty")
             return
         }
         if (TUICallDefine.MediaType.Unknown == mediaType) {
-            TUILog.e(TAG, "joinInGroupCall failed, mediaType is unknown")
+            Logger.error(TAG, "joinInGroupCall failed, mediaType is unknown")
             return
         }
         TUICallState.instance.selfUser.get().avatar.set(TUILogin.getFaceUrl())
@@ -218,7 +291,46 @@ class EngineManager private constructor(context: Context) {
             }
 
             override fun onDenied() {
-                TUILog.e(TAG, "requestPermissions failed")
+                Logger.error(TAG, "requestPermissions failed")
+            }
+        })
+    }
+
+    fun join(callId: String?, callback: TUICommonDefine.Callback?) {
+        if (callId.isNullOrEmpty()) {
+            Logger.error(TAG, "join failed, callId is empty")
+            callback?.onError(TUICallDefine.ERROR_PARAM_INVALID, "join failed, callId is empty")
+            return
+        }
+        Logger.info(TAG, "join callId: $callId")
+        TUICallState.instance.selfUser.get().avatar.set(TUILogin.getFaceUrl())
+        TUICallState.instance.selfUser.get().nickname.set(TUILogin.getNickName())
+        TUICallState.instance.selfUser.get().id = TUILogin.getLoginUser()
+        requestPermissions(context, TUICallDefine.MediaType.Audio, object : PermissionCallback() {
+            override fun onGranted() {
+                TUICallEngine.createInstance(context).join(callId, object : TUICommonDefine.Callback {
+                    override fun onSuccess() {
+                        TUICallState.instance.scene.set(TUICallDefine.Scene.GROUP_CALL)
+                        TUICallState.instance.selfUser.get().callRole.set(TUICallDefine.Role.Called)
+                        TUICallState.instance.selfUser.get().callStatus.set(TUICallDefine.Status.Accept)
+
+                        TUICore.notifyEvent(
+                            Constants.EVENT_TUICALLKIT_CHANGED, Constants.EVENT_START_ACTIVITY, HashMap()
+                        )
+                        callback?.onSuccess()
+                    }
+
+                    override fun onError(errCode: Int, errMsg: String) {
+                        val errMessage = convertErrorMsg(errCode, errMsg)
+                        ToastUtil.toastLongMessage(errMessage)
+                        callback?.onError(errCode, errMsg)
+                    }
+                })
+            }
+
+            override fun onDenied() {
+                Logger.error(TAG, "join failed, requestPermissions denied")
+                callback?.onError(TUICallDefine.ERROR_PERMISSION_DENIED, "request Permissions failed")
             }
         })
     }
@@ -269,7 +381,7 @@ class EngineManager private constructor(context: Context) {
 
     fun openCamera(camera: TUICommonDefine.Camera?, videoView: TUIVideoView?, callback: TUICommonDefine.Callback?) {
         if (TUICore.getService(TUIConstants.USBCamera.SERVICE_NAME) != null) {
-            TUILog.i(TAG, "open usb camera")
+            Logger.info(TAG, "open usb camera")
             val map = HashMap<String, Any?>()
             map[TUIConstants.USBCamera.PARAM_TX_CLOUD_VIEW] = videoView
             TUICore.notifyEvent(TUIConstants.USBCamera.KEY_USB_CAMERA, TUIConstants.USBCamera.SUB_KEY_OPEN_CAMERA, map)
@@ -298,7 +410,7 @@ class EngineManager private constructor(context: Context) {
             }
 
             override fun onDenied() {
-                TUILog.w(TAG, "refused to access to the camera")
+                Logger.warn(TAG, "refused to access to the camera")
             }
         })
     }
@@ -374,7 +486,7 @@ class EngineManager private constructor(context: Context) {
             }
 
             override fun onError(errCode: Int, errMsg: String?) {
-                TUILog.e(TAG, "setBlurBackground failed, errCode: $errCode, errMsg: $errMsg")
+                Logger.error(TAG, "setBlurBackground failed, errCode: $errCode, errMsg: $errMsg")
                 TUICallState.instance.enableBlurBackground.set(false)
             }
         })
@@ -385,17 +497,14 @@ class EngineManager private constructor(context: Context) {
         params.offlinePushInfo = OfflinePushInfoConfig.createOfflinePushInfo(context)
         params.timeout = Constants.SIGNALING_MAX_TIME
         TUICallEngine.createInstance(context)
-            .inviteUser(userIdList, params, object : TUICommonDefine.ValueCallback<Any?> {
-                override fun onSuccess(data: Any?) {
-                    if (data !is List<*>) {
-                        return
-                    }
-                    val userList = data as List<String>
-                    TUILog.i(TAG, "inviteUsersToGroupCall success, list:$userList")
+            .inviteUser(userIdList, params, object : ValueCallback<List<String>> {
+                override fun onSuccess(data: List<String>) {
+                    val userList = data
+                    Logger.info(TAG, "inviteUsersToGroupCall success, list:$userList")
                     UserInfoUtils.getUserListInfo(userList, object : ValueCallback<List<User>?> {
                         override fun onSuccess(data: List<User>?) {
                             if (data.isNullOrEmpty()) {
-                                TUILog.e(TAG, "getUsersInfo onSuccess list = null")
+                                Logger.error(TAG, "getUsersInfo onSuccess list = null")
                                 return
                             }
                             for (info in data) {
@@ -405,13 +514,23 @@ class EngineManager private constructor(context: Context) {
                         }
 
                         override fun onError(errCode: Int, errMsg: String?) {
-                            TUILog.e(TAG, "getUsersInfo onError errorCode = $errCode , errorMsg = $errMsg")
+                            Logger.error(TAG, "getUsersInfo onError errorCode = $errCode , errorMsg = $errMsg")
                         }
                     })
                 }
 
                 override fun onError(errCode: Int, errMsg: String) {}
             })
+    }
+
+    private fun initAudioPlayDevice() {
+        if (TUICallDefine.MediaType.Video == TUICallState.instance.mediaType.get()) {
+            selectAudioPlaybackDevice(TUICommonDefine.AudioPlaybackDevice.Speakerphone)
+            TUICallState.instance.isCameraOpen.set(true)
+        } else {
+            selectAudioPlaybackDevice(TUICommonDefine.AudioPlaybackDevice.Earpiece)
+            TUICallState.instance.isCameraOpen.set(false)
+        }
     }
 
     private fun getCommonErrorMap(): Map<Int, String> {

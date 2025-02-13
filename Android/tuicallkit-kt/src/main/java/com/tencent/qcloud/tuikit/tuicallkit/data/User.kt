@@ -1,7 +1,7 @@
 package com.tencent.qcloud.tuikit.tuicallkit.data
 
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.LiveData
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
+import com.trtc.tuikit.common.livedata.LiveData
 import java.util.Objects
 
 class User {
@@ -63,16 +63,16 @@ class User {
     }
 
     override fun toString(): String {
-        return ("User {"
-                + "id='" + id
-                + ", avatar='" + avatar.get()
-                + ", nickname='" + nickname.get()
-                + ", callRole='" + callRole.get()
+        return ("User{ "
+                + "id=" + id
+                + ", avatar=" + avatar.get()
+                + ", nickname=" + nickname.get()
+                + ", callRole=" + callRole.get()
                 + ", callStates=" + callStatus.get()
                 + ", audioAvailable=" + audioAvailable.get()
                 + ", videoAvailable=" + videoAvailable.get()
                 + ", playoutVolume=" + playoutVolume.get()
                 + ", networkQualityReminder=" + networkQualityReminder.get()
-                + '}')
+                + "}")
     }
 }

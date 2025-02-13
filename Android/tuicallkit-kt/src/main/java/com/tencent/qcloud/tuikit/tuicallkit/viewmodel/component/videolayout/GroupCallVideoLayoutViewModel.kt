@@ -1,11 +1,11 @@
 package com.tencent.qcloud.tuikit.tuicallkit.viewmodel.component.videolayout
 
-import com.tencent.qcloud.tuikit.TUICommonDefine
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.LiveData
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
+import com.trtc.tuikit.common.livedata.LiveData
+import com.trtc.tuikit.common.livedata.Observer
 import java.util.concurrent.CopyOnWriteArrayList
 
 class GroupCallVideoLayoutViewModel {
@@ -41,7 +41,7 @@ class GroupCallVideoLayoutViewModel {
         isCameraOpen = TUICallState.instance.isCameraOpen
         isFrontCamera = TUICallState.instance.isFrontCamera
         mediaType = TUICallState.instance.mediaType
-        changedUser.set(null)
+        changedUser.set(User())
         userList.set(CopyOnWriteArrayList())
         userList.get().add(TUICallState.instance.selfUser.get())
         userList.get().addAll(TUICallState.instance.remoteUserList.get())

@@ -12,20 +12,21 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuicore.TUICore
+import com.tencent.qcloud.tuicore.interfaces.ITUINotification
 import com.tencent.qcloud.tuicore.permission.PermissionCallback
 import com.tencent.qcloud.tuicore.util.ScreenUtil
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
 import com.tencent.qcloud.tuikit.tuicallkit.manager.EngineManager
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.utils.ImageLoader
+import com.tencent.qcloud.tuikit.tuicallkit.utils.Logger
 import com.tencent.qcloud.tuikit.tuicallkit.utils.PermissionRequest
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout.VideoViewFactory
+import com.trtc.tuikit.common.livedata.Observer
 
 class IncomingFloatView(context: Context) : RelativeLayout(context) {
     companion object {
@@ -53,15 +54,22 @@ class IncomingFloatView(context: Context) : RelativeLayout(context) {
         }
     }
 
+    private val notification = ITUINotification { key, subKey, param ->
+        if (key == Constants.EVENT_VIEW_STATE_CHANGED &&
+            (subKey == Constants.EVENT_SHOW_FULL_VIEW || subKey == Constants.EVENT_SHOW_FLOAT_VIEW)) {
+            cancelIncomingView()
+        }
+    }
+
     fun showIncomingView(user: User) {
-        TUILog.i(TAG, "showIncomingView")
-        addObserver()
+        Logger.info(TAG, "showIncomingView, user: $user")
         caller = user
         initWindow()
+        addObserver()
     }
 
     fun cancelIncomingView() {
-        TUILog.i(TAG, "cancelIncomingView")
+        Logger.info(TAG, "cancelIncomingView")
         if (layoutView.isAttachedToWindow) {
             windowManager?.removeView(layoutView)
         }
@@ -70,10 +78,13 @@ class IncomingFloatView(context: Context) : RelativeLayout(context) {
 
     private fun addObserver() {
         TUICallState.instance.selfUser.get().callStatus.observe(callStatusObserver)
+        TUICore.registerEvent(Constants.EVENT_VIEW_STATE_CHANGED, Constants.EVENT_SHOW_FULL_VIEW, notification)
+        TUICore.registerEvent(Constants.EVENT_VIEW_STATE_CHANGED, Constants.EVENT_SHOW_FLOAT_VIEW, notification)
     }
 
     private fun removeObserver() {
         TUICallState.instance.selfUser.get().callStatus.removeObserver(callStatusObserver)
+        TUICore.unRegisterEvent(notification)
     }
 
     private fun initWindow() {
@@ -110,7 +121,7 @@ class IncomingFloatView(context: Context) : RelativeLayout(context) {
         }
         imageAccept?.setOnClickListener {
             if (TUICallState.instance.selfUser.get().callStatus.get() == TUICallDefine.Status.None) {
-                TUILog.w(TAG, "current status is None, ignore")
+                Logger.warn(TAG, "current status is None, ignore")
                 cancelIncomingView()
                 return@setOnClickListener
             }
@@ -119,11 +130,11 @@ class IncomingFloatView(context: Context) : RelativeLayout(context) {
                 object : PermissionCallback() {
                     override fun onGranted() {
                         if (TUICallState.instance.selfUser.get().callStatus.get() == TUICallDefine.Status.None) {
-                            TUILog.w(TAG, "current status is None, ignore")
+                            Logger.warn(TAG, "current status is None, ignore")
                             cancelIncomingView()
                             return
                         }
-                        TUILog.i(TAG, "accept the call")
+                        Logger.info(TAG, "accept the call")
                         TUICore.notifyEvent(
                             Constants.EVENT_TUICALLKIT_CHANGED, Constants.EVENT_START_ACTIVITY, HashMap()
                         )

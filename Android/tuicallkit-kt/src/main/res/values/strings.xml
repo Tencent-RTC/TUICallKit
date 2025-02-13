@@ -28,7 +28,7 @@
     <string name="tuicallkit_btn_cancel">Cancel</string>
     <string name="tuicallkit_video_call">Video Call</string>
     <string name="tuicallkit_audio_call">Voice Call</string>
-    <string name="tuicallkit_user_exceed_limit">TUICallKit currently supports call with up to 9 people.For larger conference calls,try using TUIRoom</string>
+    <string name="tuicallkit_user_exceed_limit">TUICallKit currently supports call with up to 9 people.For larger conference calls,try using TUIRoomKit</string>
     <string name="tuicallkit_wait_response">Waiting</string>
     <string name="tuicallkit_wait_accept_group">invites you to a group call</string>
     <string name="tuicallkit_accept_single">Connected</string>
@@ -77,5 +77,7 @@
     <string name="tuicallkit_join_group_call_users">%s member(s) in %s</string>
 
     <string name="tuicallkit_blur_background">Blur Background</string>
+    <string name="tuicallkit_notification_channel_group_id">Call Manager</string>
+    <string name="tuicallkit_notification_channel_id">TUICallKit</string>
 
 </resources>

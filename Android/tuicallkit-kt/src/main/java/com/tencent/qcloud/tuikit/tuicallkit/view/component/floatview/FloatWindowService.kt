@@ -12,10 +12,13 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuicore.ServiceInitializer
+import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.util.ScreenUtil
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
+import com.tencent.qcloud.tuikit.tuicallkit.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
+import com.tencent.qcloud.tuikit.tuicallkit.utils.Logger
 import com.tencent.qcloud.tuikit.tuicallkit.view.CallKitActivity
 import com.tencent.qcloud.tuikit.tuicallkit.view.root.BaseCallView
 
@@ -35,9 +38,11 @@ class FloatWindowService : Service() {
     private var isMove = false
 
     companion object {
+        private const val TAG = "FloatWindowService"
         private var callView: BaseCallView? = null
 
         fun startFloatService(view: BaseCallView) {
+            Logger.info(TAG, "startFloatService, view: $callView")
             this.callView = view
             this.callView?.setOnClickListener {
                 stopService()
@@ -47,15 +52,16 @@ class FloatWindowService : Service() {
                     ServiceInitializer.getAppContext().startActivity(intent)
                 }
             }
-            var serviceIntent = Intent(ServiceInitializer.getAppContext(), FloatWindowService::class.java)
+            val serviceIntent = Intent(ServiceInitializer.getAppContext(), FloatWindowService::class.java)
             ServiceInitializer.getAppContext().startService(serviceIntent)
         }
 
         fun stopService() {
+            Logger.info(TAG, "stopService")
             if (callView != null) {
                 callView?.clear()
             }
-            var serviceIntent = Intent(ServiceInitializer.getAppContext(), FloatWindowService::class.java)
+            val serviceIntent = Intent(ServiceInitializer.getAppContext(), FloatWindowService::class.java)
             ServiceInitializer.getAppContext().stopService(serviceIntent)
         }
     }
@@ -102,7 +108,9 @@ class FloatWindowService : Service() {
         windowLayoutParams = viewParams
         screenWidth = ScreenUtil.getScreenWidth(applicationContext)
         if (null != callView) {
+            Logger.info(TAG, "startFloatService, addView: $callView")
             windowManager!!.addView(callView, windowLayoutParams)
+            TUICore.notifyEvent(Constants.EVENT_VIEW_STATE_CHANGED, Constants.EVENT_SHOW_FLOAT_VIEW, HashMap())
             callView!!.setOnTouchListener(FloatingListener())
         }
     }

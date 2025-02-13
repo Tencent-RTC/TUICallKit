@@ -28,6 +28,7 @@
 
         <activity
             android:name="com.tencent.qcloud.tuikit.tuicallkit.demo.LoginActivity"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity

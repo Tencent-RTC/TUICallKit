@@ -11,15 +11,15 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuicore.util.ScreenUtil
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.manager.EngineManager
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.view.root.BaseCallView
 import com.tencent.qcloud.tuikit.tuicallkit.viewmodel.component.videolayout.SingleCallVideoLayoutViewModel
+import com.trtc.tuikit.common.livedata.Observer
 
 class SingleCallVideoLayout(context: Context) : BaseCallView(context) {
     private val MESSAGE_VIDEO_AVAIABLE_UPDATE = 2
@@ -148,8 +148,7 @@ class SingleCallVideoLayout(context: Context) : BaseCallView(context) {
             layoutRenderBig?.removeAllViews()
         }
         layoutRenderBig?.addView(videoViewBig)
-        if (!viewModel.isCameraOpen.get() && TUICallDefine.Status.Accept != viewModel.selfUser.callStatus.get()) {
-            viewModel.selfUser.videoAvailable.set(true)
+        if (TUICallState.instance.isCameraOpen.get()) {
             EngineManager.instance.openCamera(viewModel.isFrontCamera.get(), videoViewBig?.getVideoView(), null)
         }
     }

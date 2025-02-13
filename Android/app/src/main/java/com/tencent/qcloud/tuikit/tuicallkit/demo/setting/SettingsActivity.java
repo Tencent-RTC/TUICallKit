@@ -18,10 +18,10 @@ import android.widget.TextView;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.tencent.cloud.tuikit.engine.call.TUICallEngine;
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
-import com.tencent.qcloud.tuikit.TUICommonDefine;
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine;
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.BaseActivity;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.R;

@@ -1,6 +1,7 @@
 package com.tencent.qcloud.tuikit.tuicallkit.demo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,13 +14,26 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.tencent.qcloud.tuicore.TUILogin;
+
 public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        checkUserLoginStatus(savedInstanceState);
         initStatusBar();
         hideSoftKeyboard();
+    }
+
+    private void checkUserLoginStatus(Bundle savedInstanceState) {
+        if (savedInstanceState != null && !TUILogin.isUserLogined()) {
+            Intent loginIntent = new Intent(this, LoginActivity.class);
+            loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(loginIntent);
+            finish();
+        }
     }
 
     @Override
@@ -27,7 +41,8 @@ public class BaseActivity extends AppCompatActivity {
         try {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         return super.onTouchEvent(event);
     }
 

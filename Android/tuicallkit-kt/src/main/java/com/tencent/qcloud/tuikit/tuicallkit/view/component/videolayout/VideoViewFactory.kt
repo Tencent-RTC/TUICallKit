@@ -2,20 +2,20 @@ package com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout
 
 import android.content.Context
 import android.text.TextUtils
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
+import com.tencent.qcloud.tuikit.tuicallkit.utils.Logger
 
 class VideoViewFactory {
     var videoEntityList = HashMap<String, UserVideoEntity?>()
 
     companion object {
-        const val TAG = "TUICall-VideoViewFactory"
+        const val TAG = "VideoViewFactory"
         var instance: VideoViewFactory = VideoViewFactory()
     }
 
     fun createVideoView(user: User?, context: Context): VideoView? {
         if (null == user || TextUtils.isEmpty(user.id)) {
-            TUILog.e(TAG, "createVideoView failed, user is invalid: $user")
+            Logger.error(TAG, "createVideoView failed, user is invalid: $user")
             return null
         }
         var videoView = findVideoView(user.id)

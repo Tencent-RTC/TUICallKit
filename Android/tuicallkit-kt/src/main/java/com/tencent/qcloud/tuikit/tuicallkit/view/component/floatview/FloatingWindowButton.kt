@@ -4,15 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.ViewGroup
 import android.widget.ImageView
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuicore.ServiceInitializer
 import com.tencent.qcloud.tuicore.permission.PermissionRequester
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.utils.PermissionRequest
 import com.tencent.qcloud.tuikit.tuicallkit.view.CallKitActivity
-import com.tencent.qcloud.tuikit.tuicallkit.view.floatwindow.FloatingWindowView
+import com.trtc.tuikit.common.livedata.Observer
 
 @SuppressLint("AppCompatCustomView")
 class FloatingWindowButton(context: Context) : ImageView(context) {

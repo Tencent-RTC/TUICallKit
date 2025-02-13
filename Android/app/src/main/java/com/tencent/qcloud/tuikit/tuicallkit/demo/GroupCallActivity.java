@@ -3,14 +3,15 @@ package com.tencent.qcloud.tuikit.tuicallkit.demo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine;
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
-import com.tencent.qcloud.tuikit.TUICommonDefine;
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.setting.SettingsActivity;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.setting.SettingsConfig;
@@ -22,7 +23,8 @@ public class GroupCallActivity extends BaseActivity {
 
     private EditText                mEditGroupId;
     private EditText                mEditUserList;
-    private TUICallDefine.MediaType mMediaType = TUICallDefine.MediaType.Audio;
+    private TUICallDefine.MediaType mMediaType                 = TUICallDefine.MediaType.Audio;
+    private boolean                 mIsOptionalParamViewExpand = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,8 +39,7 @@ public class GroupCallActivity extends BaseActivity {
 
         findViewById(R.id.iv_back).setOnClickListener(v -> onBackPressed());
         findViewById(R.id.btn_call).setOnClickListener(v -> startGroupCall());
-        findViewById(R.id.rb_video).setOnClickListener(v -> ((RadioButton) v).setChecked(true));
-        findViewById(R.id.rb_video).setOnClickListener(v -> ((RadioButton) v).setChecked(true));
+
         findViewById(R.id.tv_join_group_call).setOnClickListener(v -> {
             Intent intent = new Intent(this, JoinInGroupCallActivity.class);
             startActivity(intent);
@@ -54,16 +55,16 @@ public class GroupCallActivity extends BaseActivity {
                 mMediaType = TUICallDefine.MediaType.Audio;
             }
         });
+        RelativeLayout layoutChatGroupId = findViewById(R.id.rl_chat_group_id);
+        findViewById(R.id.iv_app_expand).setOnClickListener(v -> {
+            layoutChatGroupId.setVisibility(!mIsOptionalParamViewExpand ? View.VISIBLE : View.GONE);
+            mIsOptionalParamViewExpand = !mIsOptionalParamViewExpand;
+        });
     }
 
     private void startGroupCall() {
-        String groupId = mEditGroupId.getText().toString();
         String userList = mEditUserList.getText().toString();
 
-        if (TextUtils.isEmpty(groupId)) {
-            ToastUtil.toastShortMessage(getString(R.string.app_please_input_group_id));
-            return;
-        }
         if (TextUtils.isEmpty(userList)) {
             ToastUtil.toastShortMessage(getString(R.string.app_please_input_user_id_list));
             return;
@@ -78,10 +79,10 @@ public class GroupCallActivity extends BaseActivity {
         }
         TUICallDefine.CallParams callParams = createCallParams();
         if (callParams == null) {
-            TUICallKit.createInstance(this).groupCall(groupId, userIdList, mMediaType);
-        } else {
-            TUICallKit.createInstance(this).groupCall(groupId, userIdList, mMediaType, callParams, null);
+            callParams = new TUICallDefine.CallParams();
         }
+        callParams.chatGroupId = mEditGroupId.getText().toString();
+        TUICallKit.createInstance(this).calls(userIdList, mMediaType, callParams, null);
     }
 
     private TUICallDefine.CallParams createCallParams() {

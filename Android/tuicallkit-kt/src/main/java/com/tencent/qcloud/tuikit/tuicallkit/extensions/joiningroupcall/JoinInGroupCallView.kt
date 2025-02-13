@@ -9,15 +9,15 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.utils.widget.ImageFilterView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine.MediaType
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine.ValueCallback
 import com.tencent.qcloud.tuicore.util.ScreenUtil
-import com.tencent.qcloud.tuikit.TUICommonDefine
-import com.tencent.qcloud.tuikit.TUICommonDefine.ValueCallback
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine.MediaType
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
 import com.tencent.qcloud.tuikit.tuicallkit.utils.ImageLoader
+import com.tencent.qcloud.tuikit.tuicallkit.utils.Logger
 import com.tencent.qcloud.tuikit.tuicallkit.utils.UserInfoUtils
 
 class JoinInGroupCallView(context: Context) : FrameLayout(context) {
@@ -48,7 +48,7 @@ class JoinInGroupCallView(context: Context) : FrameLayout(context) {
     }
 
     fun updateView(groupId: String?, roomId: TUICommonDefine.RoomId, mediaType: MediaType, userList: List<String>?) {
-        TUILog.i(TAG, "updateView groupId: $groupId, roomId: $roomId, mediaType: $mediaType, userList: $userList")
+        Logger.info(TAG,"updateView groupId: $groupId, roomId: $roomId, mediaType: $mediaType, userList: $userList")
 
         btnJoinCall?.text = context.resources.getString(R.string.tuicallkit_join_group_call)
 

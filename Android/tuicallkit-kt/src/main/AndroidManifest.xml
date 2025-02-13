@@ -43,12 +43,6 @@
             android:exported="false" />
 
         <service
-            android:name="com.tencent.qcloud.tuikit.tuicallkit.extensions.TUICallService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="microphone" />
-
-        <service
             android:name="com.tencent.qcloud.tuikit.tuicallkit.view.component.floatview.FloatWindowService"
             android:enabled="true"
             android:exported="false" />

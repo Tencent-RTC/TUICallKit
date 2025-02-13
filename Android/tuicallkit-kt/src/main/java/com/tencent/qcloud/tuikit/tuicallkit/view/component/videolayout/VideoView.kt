@@ -8,12 +8,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.utils.widget.ImageFilterView
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine.Camera
+import com.tencent.cloud.tuikit.engine.common.TUIVideoView
+import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.TUILogin
+import com.tencent.qcloud.tuicore.interfaces.ITUINotification
 import com.tencent.qcloud.tuicore.util.ScreenUtil
-import com.tencent.qcloud.tuikit.TUICommonDefine.Camera
-import com.tencent.qcloud.tuikit.TUIVideoView
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
@@ -23,6 +24,7 @@ import com.tencent.qcloud.tuikit.tuicallkit.utils.ImageLoader
 import com.tencent.qcloud.tuikit.tuicallkit.view.common.CustomLoadingView
 import com.tencent.qcloud.tuikit.tuicallkit.view.root.BaseCallView
 import com.tencent.qcloud.tuikit.tuicallkit.viewmodel.component.videolayout.VideoViewModel
+import com.trtc.tuikit.common.livedata.Observer
 
 class VideoView(context: Context) : BaseCallView(context) {
     private var tuiVideoView: TUIVideoView? = null
@@ -36,6 +38,13 @@ class VideoView(context: Context) : BaseCallView(context) {
     private var imageBackground: ImageView? = null
     private var viewModel: VideoViewModel? = null
 
+    private var isShowFloatWindow: Boolean = false
+
+    private val notification = ITUINotification { key, subKey, param ->
+        if (key == Constants.EVENT_VIEW_STATE_CHANGED) {
+            isShowFloatWindow = subKey == Constants.EVENT_SHOW_FLOAT_VIEW
+        }
+    }
     private var videoAvailableObserver = Observer<Boolean> {
         if (it) {
             tuiVideoView?.visibility = VISIBLE
@@ -75,6 +84,10 @@ class VideoView(context: Context) : BaseCallView(context) {
     }
 
     private var playoutVolumeAvailableObserver = Observer<Int> {
+        if (isShowFloatWindow) {
+            imageAudioInput?.visibility = GONE
+            return@Observer
+        }
         if (viewModel?.scene?.get() == TUICallDefine.Scene.GROUP_CALL
             && viewModel?.user == viewModel?.selfUser && viewModel?.selfUser?.audioAvailable?.get() == false
         ) {
@@ -183,6 +196,8 @@ class VideoView(context: Context) : BaseCallView(context) {
         viewModel?.user?.networkQualityReminder?.observe(networkQualityObserver)
 
         viewModel?.showLargeViewUserId?.observe(showLargeViewUserIdObserver)
+        TUICore.registerEvent(Constants.EVENT_VIEW_STATE_CHANGED, Constants.EVENT_SHOW_FULL_VIEW, notification)
+        TUICore.registerEvent(Constants.EVENT_VIEW_STATE_CHANGED, Constants.EVENT_SHOW_FLOAT_VIEW, notification)
     }
 
     private fun removeObserver() {
@@ -195,6 +210,7 @@ class VideoView(context: Context) : BaseCallView(context) {
         viewModel?.user?.networkQualityReminder?.removeObserver(networkQualityObserver)
 
         viewModel?.showLargeViewUserId?.removeObserver(showLargeViewUserIdObserver)
+        TUICore.unRegisterEvent(notification)
     }
 
     private fun refreshView() {

@@ -3,12 +3,12 @@ package com.tencent.qcloud.tuikit.tuicallkit.view.component
 import android.content.Context
 import android.view.Gravity
 import android.view.View
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuicore.TUIConfig
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
+import com.trtc.tuikit.common.livedata.Observer
 
 class CallWaitingHintView(context: Context) : androidx.appcompat.widget.AppCompatTextView(context) {
 

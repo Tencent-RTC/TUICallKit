@@ -5,14 +5,15 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuicore.util.TUIBuild
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
+import com.trtc.tuikit.common.livedata.Observer
 
 class CallingVibratorFeature(context: Context) {
-    private val context: Context
+    private val context: Context = context.applicationContext
     private val vibrator: Vibrator
+
     private var callStatusObserver = Observer<TUICallDefine.Status> {
         when (it) {
             TUICallDefine.Status.Waiting -> startVibrating()
@@ -21,10 +22,9 @@ class CallingVibratorFeature(context: Context) {
     }
 
     init {
-        this.context = context.applicationContext
         if (TUIBuild.getVersionInt() >= Build.VERSION_CODES.S) {
             val vibratorManager = this.context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-            this.vibrator = vibratorManager.defaultVibrator
+            vibrator = vibratorManager.defaultVibrator
         } else {
             vibrator = this.context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         }
