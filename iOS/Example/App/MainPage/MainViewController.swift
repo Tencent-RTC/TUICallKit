@@ -73,7 +73,7 @@ class MainViewController: UIViewController {
     lazy var groupCallBtn: UIButton = {
         let btn = UIButton(type: .system)
         btn.setTitleColor(.white, for: .normal)
-        btn.setTitle(TUICallKitAppLocalize("TUICallKitApp.GroupCall"), for: .normal)
+        btn.setTitle(TUICallKitAppLocalize("TUICallKitApp.MultiCall"), for: .normal)
         btn.adjustsImageWhenHighlighted = false
         btn.setBackgroundImage(UIColor(hex: "006EFF")?.trans2Image(), for: .normal)
         btn.titleLabel?.font = UIFont(name: "PingFangSC-Medium", size: 20)
@@ -202,7 +202,7 @@ class MainViewController: UIViewController {
     
     @objc func groupCallBtnClick() {
         let groupCallVC = GroupCallViewController()
-        groupCallVC.title = TUICallKitAppLocalize("TUICallKitApp.GroupCall")
+        groupCallVC.title = TUICallKitAppLocalize("TUICallKitApp.MultiCall")
         groupCallVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(groupCallVC, animated: true)
     }

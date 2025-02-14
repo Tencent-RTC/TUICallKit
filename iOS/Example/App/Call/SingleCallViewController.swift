@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 import TUICore
-import TUICallEngine
+import RTCRoomEngine
 
 #if canImport(TUICallKit_Swift)
 import TUICallKit_Swift
@@ -246,7 +246,7 @@ public class SingleCallViewController: UIViewController, UITextFieldDelegate {
         roomId.strRoomId = SettingsConfig.share.strRoomId
         params.roomId = roomId
         
-        TUICallKit.createInstance().call(userId: userId, callMediaType: callType, params: params) {
+        TUICallKit.createInstance().calls(userIdList: [userId], callMediaType: callType, params: params) {
             
         } fail: { code, message in
             TUITool.makeToast("Error \(code):\(message ?? "")")

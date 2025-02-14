@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 import TUICore
-import TUICallEngine
+import RTCRoomEngine
 
 #if canImport(TUICallKit_Swift)
 import TUICallKit_Swift
@@ -27,6 +27,7 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
     lazy var groupIdContentView: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor.white
+        view.isHidden = true
         return view
     }()
     lazy var groupIdTextLabel: UILabel = {
@@ -116,6 +117,15 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
         return label
     }()
     
+    lazy var optionalParamLabel: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.textColor = UIColor.blue
+        label.text = "\(TUICallKitAppLocalize("TUICallKitApp.Call.OptionalParameters"))  >"
+        label.isUserInteractionEnabled = true
+        return label
+    }()
+    
     lazy var joinInGroupLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont.systemFont(ofSize: 16)
@@ -162,23 +172,24 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
     func constructViewHierarchy() {
         view.addSubview(line1View)
         
-        view.addSubview(groupIdContentView)
-        groupIdContentView.addSubview(groupIdTextLabel)
-        groupIdContentView.addSubview(groupIdTextField)
-        
         view.addSubview(userIdContentView)
         userIdContentView.addSubview(calledUserIdTextField)
         userIdContentView.addSubview(userIdTextLabel)
-        
-        view.addSubview(line2View)
-        
+
         view.addSubview(mediaTypeContentView)
         mediaTypeContentView.addSubview(typeLabel)
         mediaTypeContentView.addSubview(videoButton)
         mediaTypeContentView.addSubview(voiceButton)
+
+        view.addSubview(line2View)
+
+        view.addSubview(optionalParamLabel)
+        
+        view.addSubview(groupIdContentView)
+        groupIdContentView.addSubview(groupIdTextLabel)
+        groupIdContentView.addSubview(groupIdTextField)
         
         view.addSubview(callSettingsLabel)
-        view.addSubview(joinInGroupLabel)
         view.addSubview(callButton)
     }
     
@@ -188,22 +199,9 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(10)
         }
-        groupIdContentView.snp.makeConstraints { make in
-            make.top.equalTo(line1View.snp.bottom)
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(50)
-        }
-        groupIdTextLabel.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().offset(20)
-        }
-        groupIdTextField.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.equalTo(groupIdTextLabel.snp.trailing).offset(20)
-            make.trailing.equalToSuperview().offset(-20)
-        }
+        
         userIdContentView.snp.makeConstraints { make in
-            make.top.equalTo(groupIdContentView.snp.bottom)
+            make.top.equalTo(line1View.snp.bottom)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(50)
         }
@@ -217,13 +215,9 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
             make.leading.equalTo(userIdTextLabel.snp.trailing).offset(20)
             make.trailing.equalToSuperview().offset(-20)
         }
-        line2View.snp.makeConstraints { make in
-            make.top.equalTo(userIdContentView.snp.bottom)
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(10)
-        }
+
         mediaTypeContentView.snp.makeConstraints { make in
-            make.top.equalTo(line2View.snp.bottom).offset(20)
+            make.top.equalTo(userIdContentView.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview()
             make.width.equalToSuperview()
             make.height.equalTo(30)
@@ -240,14 +234,41 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
             make.centerY.equalToSuperview()
             make.leading.equalTo(videoButton.snp.trailing).offset(80)
         }
+
+        line2View.snp.makeConstraints { make in
+            make.top.equalTo(mediaTypeContentView.snp.bottom)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(10)
+        }
+
+        optionalParamLabel.snp.makeConstraints { make in
+            make.top.equalTo(line2View.snp.bottom).offset(10)
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview()
+            make.height.equalTo(30)
+        }
+        
+        groupIdContentView.snp.makeConstraints { make in
+            make.top.equalTo(optionalParamLabel.snp.bottom)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(50)
+        }
+        groupIdTextLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.equalToSuperview().offset(20)
+        }
+        groupIdTextField.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.equalTo(groupIdTextLabel.snp.trailing).offset(20)
+            make.trailing.equalToSuperview().offset(-20)
+        }
+        
+        
         callSettingsLabel.snp.makeConstraints { make in
-            make.top.equalTo(mediaTypeContentView.snp.bottom).offset(50)
+            make.top.equalTo(optionalParamLabel.snp.bottom).offset(100)
             make.centerX.equalToSuperview()
         }
-        joinInGroupLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalTo(callButton.snp.top).offset(-40)
-        }
+                
         callButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-60)
@@ -259,6 +280,9 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
     func bindInteraction() {
         videoButton.addTarget(self, action: #selector(radioButtonTapped), for: .touchUpInside)
         voiceButton.addTarget(self, action: #selector(radioButtonTapped), for: .touchUpInside)
+        
+        let optionalParamLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(callSettingsLabelClick))
+        optionalParamLabel.addGestureRecognizer(optionalParamLabelTapGesture)
         
         let callSettingsLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(settingButtonClick))
         callSettingsLabel.addGestureRecognizer(callSettingsLabelTapGesture)
@@ -279,6 +303,16 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    @objc func callSettingsLabelClick() {
+        if groupIdContentView.isHidden {
+            groupIdContentView.isHidden = false
+            optionalParamLabel.text = "\(TUICallKitAppLocalize("TUICallKitApp.Call.OptionalParameters"))  v"
+        } else {
+            groupIdContentView.isHidden = true
+            optionalParamLabel.text = "\(TUICallKitAppLocalize("TUICallKitApp.Call.OptionalParameters"))  >"
+        }
+    }
+
     @objc func radioButtonTapped(_ sender: RadioButton) {
         buttons.forEach({ $0.isSelected = false})
         sender.isSelected = true
@@ -293,7 +327,7 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
         guard let userIdArray = calledUserIdTextField.text else { return }
         guard let groupId = groupIdTextField.text else { return }
         
-        if userIdArray.isEmpty || groupId.isEmpty {
+        if userIdArray.isEmpty {
             TUITool.makeToast("Please input userId & groupId ")
             return
         }
@@ -309,7 +343,11 @@ public class GroupCallViewController: UIViewController, UITextFieldDelegate {
         roomId.strRoomId = SettingsConfig.share.strRoomId
         params.roomId = roomId
         
-        TUICallKit.createInstance().groupCall(groupId: groupId, userIdList: userIds, callMediaType: callType, params: params){
+        if !groupId.isEmpty {
+            params.chatGroupId = groupId
+        }
+        
+        TUICallKit.createInstance().calls(userIdList: userIds, callMediaType: callType, params: params){
             
         } fail: { code, message in
             TUITool.makeToast("Error \(code):\(message ?? "")")

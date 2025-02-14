@@ -281,6 +281,7 @@ class FloatingWindowGroupView: UIView {
             }
             viewModel.remoteUserList.value[index].videoAvailable.addObserver(remoteVideoAvailableObserver, closure: { [weak self] newValue, _ in
                 guard let self = self else { return }
+                if index >= self.viewModel.remoteUserList.value.count { return }
                 if (self.viewModel.currentSpeakUser.value.id.value == self.viewModel.remoteUserList.value[index].id.value) {
                     self.updateUI()
                 }

@@ -6,14 +6,14 @@
 //
 
 import Foundation
-import TUICallEngine
+import RTCRoomEngine
 
 @objc protocol VideoViewDelegate: NSObjectProtocol {
     @objc optional func tapGestureAction(tapGesture: UITapGestureRecognizer)
     @objc optional func panGestureAction(panGesture: UIPanGestureRecognizer)
 }
 
-class VideoView: TUIVideoView {
+class VideoView: UIView {
     weak var delegate: VideoViewDelegate?
     
     let volumeProgress: UIProgressView = {

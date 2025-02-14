@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 import TUICore
-import TUICallEngine
+import RTCRoomEngine
 
 let kJoinGroupCallViewDefaultHeight: CGFloat = 52.0
 let kJoinGroupCallViewExpandHeight: CGFloat = 225.0

@@ -7,7 +7,7 @@
 
 import Foundation
 import TUICore
-import TUICallEngine
+import RTCRoomEngine
 import UIKit
 
 class VoIPDataSyncHandler {

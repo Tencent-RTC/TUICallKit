@@ -54,7 +54,8 @@ class RegisterViewController: UIViewController {
         self.loading.stopAnimating()
         self.view.makeToast(.registerSuccessText)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            SceneDelegate.showMainController()
+            let vc = MainViewController()
+            self.navigationController?.pushViewController(vc, animated: false)
         }
     }
     

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import TUICallEngine
+import RTCRoomEngine
 
 @objc
 public class TUICallKit: NSObject {
@@ -37,6 +37,7 @@ public class TUICallKit: NSObject {
      * @param userId        callees
      * @param callMediaType Call type
      */
+    @available(*, deprecated, message: "This interface has been deprecated, please use the 'calls' interface.")
     @objc
     public func call(userId: String, callMediaType: TUICallMediaType) {
         return TUICallKitImpl.instance.call(userId: userId, callMediaType: callMediaType)
@@ -49,6 +50,7 @@ public class TUICallKit: NSObject {
      * @param callMediaType Call type
      * @param params        Extension param: eg: offlinePushInfo
      */
+    @available(*, deprecated, message: "This interface has been deprecated, please use the 'calls' interface.")
     @objc
     public func call(userId: String, callMediaType: TUICallMediaType, params: TUICallParams,
                      succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
@@ -62,6 +64,7 @@ public class TUICallKit: NSObject {
      * @param userIdList    List of userId
      * @param callMediaType Call type
      */
+    @available(*, deprecated, message: "This interface has been deprecated, please use the 'calls' interface.")
     @objc
     public func groupCall(groupId: String, userIdList: [String], callMediaType: TUICallMediaType) {
         return TUICallKitImpl.instance.groupCall(groupId: groupId, userIdList: userIdList, callMediaType: callMediaType)
@@ -75,6 +78,7 @@ public class TUICallKit: NSObject {
      * @param callMediaType Call type
      * @param params        Extension param: eg: offlinePushInfo
      */
+    @available(*, deprecated, message: "This interface has been deprecated, please use the 'calls' interface.")
     @objc
     public func groupCall(groupId: String, userIdList: [String], callMediaType: TUICallMediaType, params: TUICallParams,
                           succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
@@ -83,11 +87,37 @@ public class TUICallKit: NSObject {
     }
     
     /**
+     * calls
+     *
+     * @param userIdList    List of userId
+     * @param callMediaType Call type
+     * @param params        Extension param: eg: offlinePushInfo
+     */
+    @objc
+    public func calls(userIdList: [String], callMediaType: TUICallMediaType, params: TUICallParams?,
+                      succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
+        return TUICallKitImpl.instance.calls(userIdList: userIdList, callMediaType: callMediaType, params: params,
+                                             succ: succ, fail: fail)
+    }
+  
+    /**
+     * Join a current call
+     *
+     * @param callId        current call ID
+     * @param callMediaType call type
+     */
+    @objc
+    public func join(callId: String) {
+        return TUICallKitImpl.instance.join(callId: callId)
+    }
+    
+    /**
      * Join a current call
      *
      * @param roomId        current call room ID
      * @param callMediaType call type
      */
+    @available(*, deprecated, message: "This interface has been deprecated, please use the 'join' interface.")
     @objc
     public func joinInGroupCall(roomId: TUIRoomId, groupId: String, callMediaType: TUICallMediaType) {
         return TUICallKitImpl.instance.joinInGroupCall(roomId: roomId, groupId: groupId, callMediaType: callMediaType)

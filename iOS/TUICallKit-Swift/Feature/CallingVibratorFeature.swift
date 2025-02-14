@@ -1,12 +1,12 @@
 //
-//  CallingVibratorFeature.swift
+//  CallingVibrator.swift
 //  TUICallKit-Swift
 //
-//  Created by iveshe on 2025/1/2.
+//  Created by iveshe on 2024/12/31.
 //
 
 import AudioToolbox
-import TUICallEngine
+import RTCRoomEngine
 
 class CallingVibratorFeature: NSObject {
     private static var isVibrating = false;

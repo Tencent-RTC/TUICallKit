@@ -9,6 +9,7 @@
 "TUICallKitApp.Call" = "Call";
 "TUICallKitApp.SingleCall" = "SingleCall";
 "TUICallKitApp.GroupCall" = "GroupCall";
+"TUICallKitApp.MultiCall" = "MultiCall";
 "TUICallKitApp.UseGroupCall" = "Use GroupCall";
 "TUICallKitApp.JoinGroupCall" = "Join GroupCall";
 "TUICallKitApp.MediaType" = "Media Type";
@@ -22,11 +23,12 @@
 "TUICallKitApp.Call.UserId" = "User ID";
 "TUICallKitApp.Call.InputUserId" = "Please enter the user ID";
 "TUICallKitApp.Call.GroupId" = "Group ID";
-"TUICallKitApp.Call.InputGroupId" = "Please enter the Group ID";
+"TUICallKitApp.Call.InputGroupId" = "Please enter the ChatGroup ID";
 "TUICallKitApp.Call.InputUserIds" = "Please enter the User ID, separated by “,”";
 "TUICallKitApp.Call.RoomIdInt" = "Room Id(Int)";
 "TUICallKitApp.Call.RoomIdString" = "Room Id(String)";
 "TUICallKitApp.Call.InputRoomId" = "Please enter the Room ID";
+"TUICallKitApp.Call.OptionalParameters" = "Optional Parameters";
 
 "TUICallKitApp.Login.Product" = "Tencent RTC";
 "TUICallKitApp.Login.EnterUserId" = "Please enter the user ID";
