@@ -104,5 +104,6 @@
   "k_0000102": "Blur Background",
   "k_0000103": "Show blur background",
   "k_0000104": "The other party's network connection is poor",
-  "k_0000105": "Your network connection is poor"
+  "k_0000105": "Your network connection is poor",
+  "k_0000106": "The identifier is in blacklist. Failed to send this message!"
 }

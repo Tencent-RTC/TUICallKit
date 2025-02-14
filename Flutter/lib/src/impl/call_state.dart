@@ -1,15 +1,17 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
-import 'package:tencent_calls_uikit/src/call_manager.dart';
+import 'package:tencent_calls_uikit/src/call_engine.dart';
+import 'package:tencent_calls_uikit/src/call_define.dart';
+import 'package:tencent_calls_uikit/src/call_observer.dart';
+import 'package:tencent_calls_uikit/src/impl/call_manager.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/data/user.dart';
 import 'package:tencent_calls_uikit/src/extensions/calling_bell_feature.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
-import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
-import 'package:tencent_calls_uikit/src/utils/preference_utils.dart';
+import 'package:tencent_calls_uikit/src/platform/call_kit_platform_interface.dart';
+import 'package:tencent_calls_uikit/src/utils/preference.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
 import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
 import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
@@ -123,6 +125,7 @@ class CallState {
         CallManager.instance.selectAudioPlaybackDevice(CallState.instance.audioDevice);
         CallState.instance.startTimer();
         CallState.instance.isChangedBigSmallVideo = true;
+        CallState.instance.isInNativeIncomingBanner = false;
         TUICore.instance.notifyEvent(setStateEvent);
         TUICore.instance.notifyEvent(setStateEventOnCallBegin);
         TUICallKitPlatform.instance.updateCallStateToNative();
@@ -403,7 +406,7 @@ class CallState {
     if (CallState.instance.groupId.isNotEmpty) {
       CallState.instance.scene = TUICallScene.groupCall;
     } else if (calleeIdList.length > 1) {
-      CallState.instance.scene = TUICallScene.multiCall;
+      CallState.instance.scene = TUICallScene.groupCall;
     } else {
       CallState.instance.scene = TUICallScene.singleCall;
     }

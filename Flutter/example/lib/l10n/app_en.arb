@@ -17,6 +17,7 @@
   "common_problems": "Common issues",
   "single_call": "Single call",
   "group_call": "Group call",
+  "multi_call": "Multi-person call",
   "enter_callee_id": "Please enter the UserId you want to call",
   "media_type": "Media type",
   "video_call": "Video call",
@@ -28,6 +29,7 @@
   "callee_id_list": "User ID list",
   "separated": "IDs are separated by commas",
   "join_group_call": "Join group call",
+  "join_multi_call": "Join a multi-person call",
   "digital_room": "Digital room number",
   "string_room": "String room number",
   "enter_room_id": "Please enter RoomId",
@@ -56,5 +58,6 @@
   "offline_push_info_settings": "Offline push message settings",
   "please_enter": "Please enter",
   "show_blur_background_button": "Show blur background",
-  "show_incoming_banner": "Show incoming banner"
+  "show_incoming_banner": "Show incoming banner",
+  "optional_parameters": "Optional parameters"
 }

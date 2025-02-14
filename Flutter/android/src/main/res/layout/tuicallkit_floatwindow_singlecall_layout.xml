@@ -8,7 +8,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <com.tencent.qcloud.tuikit.TUIVideoView
+            <com.tencent.cloud.tuikit.engine.common.TUIVideoView
                 android:id="@+id/tui_video_view"
                 android:layout_width="110dp"
                 android:layout_height="196dp"

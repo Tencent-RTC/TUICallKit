@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import TUICallEngine
+import RTCRoomEngine
 
 class GroupCallFloatWindowView: FloatWindowView {
     
@@ -82,8 +82,8 @@ class GroupCallFloatWindowView: FloatWindowView {
         return containerView
     }()
     
-    lazy var userRenderView: TUIVideoView = {
-        let view = TUIVideoView(frame: CGRect.zero)
+    lazy var userRenderView: UIView = {
+        let view = UIView(frame: CGRect.zero)
         view.layer.masksToBounds = true
         view.layer.cornerRadius = 5.scaleWidth()
         return view

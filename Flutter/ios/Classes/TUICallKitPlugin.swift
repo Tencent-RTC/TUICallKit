@@ -3,22 +3,27 @@
 
 import Flutter
 import UIKit
-import TUICallEngine
+import RTCRoomEngine
 
-public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, VoIPDataSyncHandlerDelegate {
-        
-    static let channelName = "tuicall_kit"
-    private let channel: FlutterMethodChannel
+public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, VoIPDataSyncHandlerDelegate, FlutterPlugin {
+    static var plugin: TUICallKitPlugin? = nil
+    static var isAppInForeground: Bool = false
     let registrar: FlutterPluginRegistrar
+    let callKitManager: TUICallKitHandler
+    let callEngineManager: TUICallEngineHandler
     var messager: FlutterBinaryMessenger {
         return registrar.messenger()
     }
     
-    var isAppInForeground: Bool = false
-    
+    public static func register(with registrar: FlutterPluginRegistrar) {
+        TUICallKitPlugin.plugin = TUICallKitPlugin.init(registrar: registrar)
+        registrar.register(PlatformVideoViewFactory(messager: registrar.messenger()), withId: "TUICallKitVideoView")
+    }
+        
     init(registrar: FlutterPluginRegistrar) {
-        self.channel = FlutterMethodChannel(name: TUICallKitPlugin.channelName, binaryMessenger: registrar.messenger())
         self.registrar = registrar
+        self.callEngineManager = TUICallEngineHandler(registrar: registrar)
+        self.callKitManager = TUICallKitHandler(registrar: registrar)
         
         super.init()
         
@@ -31,109 +36,41 @@ public class TUICallKitPlugin: NSObject, BackToFlutterWidgetDelegate, VoIPDataSy
                                                name: UIApplication.didBecomeActiveNotification, object: nil) 
     }
     
-    enum Mehtod: String {
-        case startRing
-        case stopRing
-        case updateCallStateToNative
-        case stopFloatWindow
-        case startFloatWindow
-        case initResources
-        case openMicrophone
-        case closeMicrophone
-        case isAppInForeground
-        case apiLog
-        case showIncomingBanner
-        case enableWakeLock
-        case loginSuccessEvent
-        case logoutSuccessEvent
-    }
-    
     @objc func applicationWillResignActive() {
-        isAppInForeground = false
-        channel.invokeMethod("appEnterBackground", arguments: nil)
+        TUICallKitPlugin.isAppInForeground = false
+        callKitManager.appEnterBackground()
     }
 
     @objc func applicationDidBecomeActive() {
-        isAppInForeground = true
-        channel.invokeMethod("appEnterForeground", arguments: nil)
+        TUICallKitPlugin.isAppInForeground = true
+        callKitManager.appEnterForeground()
     }
 }
 
 extension TUICallKitPlugin {
     // MARK: BackToFlutterWidgetDelegate
     func backCallingPageFromFloatWindow() {
-        channel.invokeMethod("backCallingPageFromFloatWindow", arguments: nil)
+        callKitManager.backCallingPageFromFloatWindow()
     }
     
     func launchCallingPageFromIncomingBanner() {
-        channel.invokeMethod("launchCallingPageFromIncomingBanner", arguments: nil)
+        callKitManager.launchCallingPageFromIncomingBanner()
     }
     
     // MARK: TUICallKitServiceDelegate
     func callMethodVoipChangeMute(mute: Bool) {
-        channel.invokeMethod("voipChangeMute", arguments: ["mute": mute])
+        callKitManager.callMethodVoipChangeMute(mute: mute)
     }
     
     func callMethodVoipChangeAudioPlaybackDevice(audioPlaybackDevice: TUIAudioPlaybackDevice) {
-        channel.invokeMethod("voipChangeAudioPlaybackDevice", arguments: ["audioPlaybackDevice": audioPlaybackDevice.rawValue])
+        callKitManager.callMethodVoipChangeAudioPlaybackDevice(audioPlaybackDevice: audioPlaybackDevice)
     }
     
     func callMethodVoipHangup() {
-        channel.invokeMethod("voipChangeHangup", arguments: [:])
+        callKitManager.callMethodVoipHangup()
     }
     
     func callMethodVoipAccept() {
-        channel.invokeMethod("voipChangeAccept", arguments: [:])
-    }
-}
-
-extension TUICallKitPlugin: FlutterPlugin {
-    
-    public static func register(with registrar: FlutterPluginRegistrar) {
-        let instance = TUICallKitPlugin.init(registrar: registrar)
-        registrar.addMethodCallDelegate(instance, channel: instance.channel)
-    }
-    
-    public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let method = Mehtod.init(rawValue: call.method)
-        switch method {
-        case .startRing:
-            TUICallKitManager.shared.startRing(call: call, result: result)
-            break
-        case .stopRing:
-            TUICallKitManager.shared.stopRing(call: call, result: result)
-            break
-        case .updateCallStateToNative:
-            TUICallKitManager.shared.updateCallStateToNative(call: call, result: result)
-        case .startFloatWindow:
-            TUICallKitManager.shared.startFloatWindow(call: call, result: result)
-            break
-        case .stopFloatWindow:
-            TUICallKitManager.shared.stopFloatWindow(call: call, result: result)
-            break
-        case .initResources:
-            TUICallKitManager.shared.initResources(call: call, result: result)
-            break
-        case .isAppInForeground:
-            result(isAppInForeground)
-            break
-        case .openMicrophone:
-            TUICallKitManager.shared.openMicrophone(call: call, result: result)
-            break
-        case .closeMicrophone:
-            TUICallKitManager.shared.closeMicrophone(call: call, result: result)
-        case .apiLog:
-            TUICallKitManager.shared.apiLog(call: call, result: result)
-        case .showIncomingBanner:
-            TUICallKitManager.shared.showIncomingBanner(call: call, result: result)
-        case .enableWakeLock:
-            TUICallKitManager.shared.enableWakeLock(call: call, result: result)
-        case .loginSuccessEvent:
-            TUICallKitManager.shared.loginSuccessEvent(call: call, result: result)
-        case .logoutSuccessEvent:
-            TUICallKitManager.shared.logoutSuccessEvent(call: call, result: result)
-        default:
-            break
-        }
+        callKitManager.callMethodVoipAccept()
     }
 }

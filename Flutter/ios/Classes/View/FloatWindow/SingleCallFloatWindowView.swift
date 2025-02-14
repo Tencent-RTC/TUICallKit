@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import TUICallEngine
+import RTCRoomEngine
 
 class SingleCallFloatWindowView: FloatWindowView {
     
@@ -24,13 +24,13 @@ class SingleCallFloatWindowView: FloatWindowView {
     
     
     // Video Call
-    lazy var localPreView: TUIVideoView = {
-        let view = TUIVideoView(frame: CGRect.zero)
+    lazy var localPreView: UIView = {
+        let view = UIView(frame: CGRect.zero)
         return view
     }()
     
-    lazy var remotePreView: TUIVideoView = {
-        let view = TUIVideoView(frame: CGRect.zero)
+    lazy var remotePreView: UIView = {
+        let view = UIView(frame: CGRect.zero)
         return view
     }()
     

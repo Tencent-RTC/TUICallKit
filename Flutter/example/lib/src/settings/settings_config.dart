@@ -1,4 +1,4 @@
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
+import 'package:tencent_calls_uikit/tencent_calls_uikit.dart';
 
 class SettingsConfig {
   static const defaultAvatar =
@@ -20,7 +20,7 @@ class SettingsConfig {
   static String extendInfo = "";
   static TUIOfflinePushInfo? offlinePushInfo;
 
-  static Resolution resolution = Resolution.resolution_640_480;
+  static Resolution resolution = Resolution.resolution_1280_720;
   static ResolutionMode resolutionMode = ResolutionMode.portrait;
   static FillMode fillMode = FillMode.fill;
   static Rotation rotation = Rotation.rotation_0;

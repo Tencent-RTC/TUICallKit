@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
+import 'package:tencent_calls_uikit/src/call_define.dart';
 
 class User {
   String id = '';

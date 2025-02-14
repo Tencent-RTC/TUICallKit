@@ -1,6 +1,6 @@
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
-import 'package:tencent_calls_uikit/src/call_state.dart';
+import 'package:tencent_calls_uikit/src/impl/call_state.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
+import 'package:tencent_calls_uikit/src/call_define.dart';
 
 class OfflinePushInfoConfig {
   static TUIOfflinePushInfo createOfflinePushInfo() {

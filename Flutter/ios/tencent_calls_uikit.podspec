@@ -15,8 +15,8 @@ A new Flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'TUICallEngine/Professional'
-  s.dependency 'TUICore', '>= 8.3.6499'
+  s.dependency 'RTCRoomEngine/Professional', '~>2.9.0'
+  s.dependency 'TUICore', '>= 8.4.6667'
   s.dependency 'SnapKit'
   s.platform = :ios, '9.0'
   s.static_framework = true

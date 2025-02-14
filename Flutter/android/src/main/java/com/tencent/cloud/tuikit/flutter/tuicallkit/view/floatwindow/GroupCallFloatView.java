@@ -10,14 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine;
+import com.tencent.cloud.tuikit.engine.call.TUICallEngine;
+import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.R;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.TUICallState;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.User;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
-import com.tencent.qcloud.tuikit.TUIVideoView;
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine;
 
 import java.util.Map;
 import java.util.Objects;

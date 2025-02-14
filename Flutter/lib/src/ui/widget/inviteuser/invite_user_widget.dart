@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tencent_calls_uikit/src/call_manager.dart';
-import 'package:tencent_calls_uikit/src/call_state.dart';
+import 'package:tencent_calls_uikit/src/impl/call_manager.dart';
+import 'package:tencent_calls_uikit/src/impl/call_state.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/data/user.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
-import 'package:tencent_calls_uikit/src/ui/tuicall_navigator_observer.dart';
+import 'package:tencent_calls_uikit/src/ui/call_navigator_observer.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
 import 'package:tencent_cloud_chat_sdk/enum/group_member_filter_enum.dart';
 import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
@@ -149,7 +149,7 @@ class _InviteUserWidgetState extends State<InviteUserWidget> {
   _inviteUser() {
     List<String> userIdList = [];
     for (GroupMemberInfo info in _groupMemberList) {
-      if (info.isSelected) {
+      if (!_isUserAlreadyInRoom(info.userId) && info.isSelected) {
         userIdList.add(info.userId);
       }
     }
@@ -159,6 +159,18 @@ class _InviteUserWidgetState extends State<InviteUserWidget> {
 
   _goBack() {
     TUICallKitNavigatorObserver.getInstance().exitInviteUserPage();
+  }
+
+  bool _isUserAlreadyInRoom(String userId) {
+    if (userId == CallState.instance.caller.id) {
+      return true;
+    }
+    for (User user in CallState.instance.remoteUserList) {
+      if (user.id == userId) {
+        return true;
+      }
+    }
+    return false;
   }
 
   _getMemberDisPlayName(GroupMemberInfo member) {

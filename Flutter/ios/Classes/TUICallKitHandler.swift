@@ -9,13 +9,95 @@
 
 import Foundation
 import Flutter
-import TUICallEngine
+import RTCRoomEngine
 import TUICore
 import TXLiteAVSDK_Professional
 
-class TUICallKitManager {
-    static let shared = TUICallKitManager.init()
-    private init() {}
+class TUICallKitHandler {
+    static let channelName = "tuicall_kit"
+    private let channel: FlutterMethodChannel
+    
+    enum Mehtod: String {
+        case startRing
+        case stopRing
+        case updateCallStateToNative
+        case stopFloatWindow
+        case startFloatWindow
+        case initResources
+        case openMicrophone
+        case closeMicrophone
+        case isAppInForeground
+        case apiLog
+        case showIncomingBanner
+        case enableWakeLock
+        case loginSuccessEvent
+        case logoutSuccessEvent
+    }
+    
+    init(registrar: FlutterPluginRegistrar) {
+        self.channel = FlutterMethodChannel(name: TUICallKitHandler.channelName, binaryMessenger: registrar.messenger())
+        
+        channel.setMethodCallHandler({[weak self] call, result in
+            guard let self = self else {
+                result(FlutterError(code: "Error", message: "self is nil", details: nil))
+                return
+            }
+            
+            let method = Mehtod.init(rawValue: call.method)
+            switch method {
+            case .startRing:
+                startRing(call: call, result: result)
+                break
+            case .stopRing:
+                stopRing(call: call, result: result)
+                break
+            case .updateCallStateToNative:
+                updateCallStateToNative(call: call, result: result)
+            case .startFloatWindow:
+                startFloatWindow(call: call, result: result)
+                break
+            case .stopFloatWindow:
+                stopFloatWindow(call: call, result: result)
+                break
+            case .initResources:
+                initResources(call: call, result: result)
+                break
+            case .isAppInForeground:
+                result(TUICallKitPlugin.isAppInForeground)
+                break
+            case .openMicrophone:
+                openMicrophone(call: call, result: result)
+                break
+            case .closeMicrophone:
+                closeMicrophone(call: call, result: result)
+            case .apiLog:
+                apiLog(call: call, result: result)
+            case .showIncomingBanner:
+                showIncomingBanner(call: call, result: result)
+            case .enableWakeLock:
+                enableWakeLock(call: call, result: result)
+            case .loginSuccessEvent:
+                loginSuccessEvent(call: call, result: result)
+            case .logoutSuccessEvent:
+                logoutSuccessEvent(call: call, result: result)
+            default:
+                break
+            }
+        })
+    }
+}
+
+extension TUICallKitHandler {
+    public func appEnterBackground() {
+        channel.invokeMethod("appEnterBackground", arguments: nil)
+    }
+    
+    public func appEnterForeground() {
+        channel.invokeMethod("appEnterForeground", arguments: nil)
+    }
+}
+
+extension TUICallKitHandler {
     
     func startRing(call: FlutterMethodCall, result: @escaping FlutterResult) {
         if TUICallState.instance.selfUser.value.callRole.value == TUICallRole.called {
@@ -41,7 +123,7 @@ class TUICallKitManager {
     func updateCallStateToNative(call: FlutterMethodCall, result: @escaping FlutterResult) {
         
         if let sceneIndex = MethodUtils.getMethodParams(call: call, key: "scene", resultType: Int.self)  {
-            TUICallState.instance.scene.value = TUICallScene(rawValue: UInt(sceneIndex)) ?? .single
+            TUICallState.instance.scene.value = UInt(sceneIndex) == 0 ? .single : .group;
         }
         
         if let mediaTypeIndex = MethodUtils.getMethodParams(call: call, key: "mediaType", resultType: Int.self) {
@@ -286,5 +368,34 @@ class TUICallKitManager {
     func logoutSuccessEvent(call: FlutterMethodCall, result: @escaping FlutterResult) {
         NotificationCenter.default.post(name: NSNotification.Name.TUILogoutSuccess , object: nil)
         result(NSNumber(value: 0))
+    }
+}
+
+
+extension TUICallKitHandler {
+    // MARK: BackToFlutterWidgetDelegate
+    func backCallingPageFromFloatWindow() {
+        channel.invokeMethod("backCallingPageFromFloatWindow", arguments: nil)
+    }
+    
+    func launchCallingPageFromIncomingBanner() {
+        channel.invokeMethod("launchCallingPageFromIncomingBanner", arguments: nil)
+    }
+    
+    // MARK: TUICallKitServiceDelegate
+    func callMethodVoipChangeMute(mute: Bool) {
+        channel.invokeMethod("voipChangeMute", arguments: ["mute": mute])
+    }
+    
+    func callMethodVoipChangeAudioPlaybackDevice(audioPlaybackDevice: TUIAudioPlaybackDevice) {
+        channel.invokeMethod("voipChangeAudioPlaybackDevice", arguments: ["audioPlaybackDevice": audioPlaybackDevice.rawValue])
+    }
+    
+    func callMethodVoipHangup() {
+        channel.invokeMethod("voipChangeHangup", arguments: [:])
+    }
+    
+    func callMethodVoipAccept() {
+        channel.invokeMethod("voipChangeAccept", arguments: [:])
     }
 }

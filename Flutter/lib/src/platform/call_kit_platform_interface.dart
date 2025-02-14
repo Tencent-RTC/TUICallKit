@@ -1,6 +1,6 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
-import 'package:tencent_calls_uikit/src/platform/tuicall_kit_method_channel.dart';
+import 'package:tencent_calls_uikit/src/platform/call_kit_method_channel.dart';
 import 'package:tencent_calls_uikit/src/utils/permission.dart';
 
 abstract class TUICallKitPlatform extends PlatformInterface {

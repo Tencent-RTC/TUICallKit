@@ -1,5 +1,5 @@
 class Constants {
-  static const String pluginVersion = '2.7.0';
+  static const String pluginVersion = '2.9.0';
   static const int groupCallMaxUserCount = 9;
   static const int roomIdMaxValue = 2147483647; // 2^31 - 1
   static const String spKeyEnableMuteMode = "enableMuteMode";

@@ -2,14 +2,14 @@ package com.tencent.cloud.tuikit.flutter.tuicallkit.state;
 
 import androidx.annotation.NonNull;
 
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine;
 
 public class User {
     public String               id             = "";
     public String               avatar         = "";
-    public String               nickname       = "";
-    public TUICallDefine.Role   callRole       = TUICallDefine.Role.Caller;
-    public TUICallDefine.Status callStatus     = TUICallDefine.Status.None;
+    public String               nickname   = "";
+    public TUICallDefine.Role   callRole   = TUICallDefine.Role.Caller;
+    public TUICallDefine.Status callStatus = TUICallDefine.Status.None;
     public boolean              audioAvailable = false;
     public boolean              videoAvailable = false;
     public int                  playoutVolume  = 0;

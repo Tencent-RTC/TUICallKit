@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
-import 'package:tencent_calls_uikit/src/call_manager.dart';
+import 'package:tencent_calls_uikit/src/call_define.dart';
+import 'package:tencent_calls_uikit/src/impl/call_manager.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
 

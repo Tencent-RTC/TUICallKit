@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tencent_calls_uikit/tuicall_kit.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tencent_calls_uikit/tencent_calls_uikit.dart';
+
 class JoinInGroupCallWidget extends StatefulWidget {
   const JoinInGroupCallWidget({Key? key}) : super(key: key);
 
@@ -20,7 +20,7 @@ class _JoinInGroupCallWidgetState extends State<JoinInGroupCallWidget> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.group_call),
+        title: Text(AppLocalizations.of(context)!.multi_call),
         leading: IconButton(
             onPressed: () => _goBack(),
             icon: const Icon(
@@ -70,8 +70,10 @@ class _JoinInGroupCallWidgetState extends State<JoinInGroupCallWidget> {
                 DropdownButton(
                   value: _roomIdType,
                   items: [
-                    DropdownMenuItem(value: 0, child: Text(AppLocalizations.of(context)!.digital_room)),
-                    DropdownMenuItem(value: 1, child: Text(AppLocalizations.of(context)!.string_room)),
+                    DropdownMenuItem(
+                        value: 0, child: Text(AppLocalizations.of(context)!.digital_room)),
+                    DropdownMenuItem(
+                        value: 1, child: Text(AppLocalizations.of(context)!.string_room)),
                   ],
                   onChanged: (value) {
                     setState(() {
@@ -115,8 +117,8 @@ class _JoinInGroupCallWidgetState extends State<JoinInGroupCallWidget> {
                         },
                         shape: const CircleBorder(),
                       ),
-                    Text(
-                      AppLocalizations.of(context)!.video_call,
+                      Text(
+                        AppLocalizations.of(context)!.video_call,
                         style: const TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.normal,
@@ -168,16 +170,15 @@ class _JoinInGroupCallWidgetState extends State<JoinInGroupCallWidget> {
               child: ElevatedButton(
                   onPressed: () => _call(),
                   style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(const Color(0xff056DF6)),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8))),
+                    backgroundColor: MaterialStateProperty.all(const Color(0xff056DF6)),
+                    shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                      AppLocalizations.of(context)!.join_group_call,
+                        AppLocalizations.of(context)!.join_multi_call,
                         style: const TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.normal,
@@ -200,7 +201,7 @@ class _JoinInGroupCallWidgetState extends State<JoinInGroupCallWidget> {
         ? TUIRoomId.intRoomId(intRoomId: int.parse(_roomId))
         : TUIRoomId.strRoomId(strRoomId: _roomId);
 
-    TUICallKit.instance.joinInGroupCall(roomId, _groupId,
-        _isAudioCall ? TUICallMediaType.audio : TUICallMediaType.video);
+    TUICallKit.instance.joinInGroupCall(
+        roomId, _groupId, _isAudioCall ? TUICallMediaType.audio : TUICallMediaType.video);
   }
 }
