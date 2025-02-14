@@ -6,10 +6,10 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.HandlerThread;
 
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine;
+import com.tencent.cloud.tuikit.engine.call.TUICallEngine;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.TUICallState;
 import com.tencent.liteav.audio.TXAudioEffectManager;
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine;
 
 public class CallingBellPlayer {
     private final Context mContext;

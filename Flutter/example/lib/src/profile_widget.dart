@@ -1,10 +1,10 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:tencent_calls_uikit/tuicall_kit.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tencent_calls_uikit/tencent_calls_uikit.dart';
 import 'package:tuicall_kit_example/src/main_widget.dart';
 import 'package:tuicall_kit_example/src/settings/settings_config.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({Key? key}) : super(key: key);
@@ -15,41 +15,28 @@ class ProfileWidget extends StatefulWidget {
 
 class _ProfileWidgetState extends State<ProfileWidget> {
   bool _isButtonEnabled = true;
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
           return false;
         },
-        child:Scaffold(
+        child: Scaffold(
             resizeToAvoidBottomInset: false,
             body: SizedBox(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
+              width: MediaQuery.of(context).size.width,
               child: Stack(
-                children: [
-                  _getAppInfoWidget(),
-                  _getSetInfoWidget(),
-                  _getBottomWidget()
-                ],
+                children: [_getAppInfoWidget(), _getSetInfoWidget(), _getBottomWidget()],
               ),
-            ))
-    );
+            )));
   }
 
   _getAppInfoWidget() {
     return Positioned(
         left: 0,
-        top: MediaQuery
-            .of(context)
-            .size
-            .height / 6,
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
+        top: MediaQuery.of(context).size.height / 6,
+        width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -64,18 +51,14 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 Column(
                   children: [
                     SizedBox(
-                        width: _calculateTextWidth(
-                            AppLocalizations.of(context)!.trtc, const TextStyle(
-                            fontSize: 32)) > (MediaQuery
-                            .of(context)
-                            .size
-                            .width - 70 - 10) ?
-                        _calculateTextWidth(
-                            AppLocalizations.of(context)!.trtc, const TextStyle(
-                            fontSize: 32)) / 2 :
-                        _calculateTextWidth(
-                            AppLocalizations.of(context)!.trtc, const TextStyle(
-                            fontSize: 32)),
+                        width: _calculateTextWidth(AppLocalizations.of(context)!.trtc,
+                                    const TextStyle(fontSize: 32)) >
+                                (MediaQuery.of(context).size.width - 70 - 10)
+                            ? _calculateTextWidth(AppLocalizations.of(context)!.trtc,
+                                    const TextStyle(fontSize: 32)) /
+                                2
+                            : _calculateTextWidth(
+                                AppLocalizations.of(context)!.trtc, const TextStyle(fontSize: 32)),
                         child: Text(
                           AppLocalizations.of(context)!.trtc,
                           maxLines: 3,
@@ -85,8 +68,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                               fontStyle: FontStyle.normal,
                               fontWeight: FontWeight.w400,
                               color: Colors.black),
-                        )
-                    )
+                        ))
                   ],
                 )
               ],
@@ -98,22 +80,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   _getSetInfoWidget() {
     return Positioned(
         left: 0,
-        top: MediaQuery
-            .of(context)
-            .size
-            .height * 2 / 5,
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
+        top: MediaQuery.of(context).size.height * 2 / 5,
+        width: MediaQuery.of(context).size.width,
         child: Column(
           children: [
-
             Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width - 60,
+              width: MediaQuery.of(context).size.width - 60,
               height: 52,
               decoration: BoxDecoration(
                 color: Colors.transparent,
@@ -127,16 +99,11 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   Text(
                     AppLocalizations.of(context)!.nick_name,
                     style: const TextStyle(
-                        fontSize: 16,
-                        fontStyle: FontStyle.normal,
-                        color: Colors.black),
+                        fontSize: 16, fontStyle: FontStyle.normal, color: Colors.black),
                   ),
                   const SizedBox(width: 10),
                   SizedBox(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width - 200,
+                    width: MediaQuery.of(context).size.width - 200,
                     child: TextField(
                       autofocus: true,
                       decoration: InputDecoration(
@@ -145,8 +112,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         border: InputBorder.none,
                         labelStyle: const TextStyle(fontSize: 16),
                       ),
-                      onChanged: ((value) =>
-                      SettingsConfig.nickname = value),
+                      onChanged: ((value) => SettingsConfig.nickname = value),
                     ),
                   )
                 ],
@@ -155,37 +121,26 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             const SizedBox(height: 40),
             SizedBox(
               height: 52,
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width - 60,
-              child:
-              ElevatedButton(
+              width: MediaQuery.of(context).size.width - 60,
+              child: ElevatedButton(
                 onPressed: () => _isButtonEnabled ? _setUserInfo() : null,
                 style: ButtonStyle(
-                  backgroundColor:
-                  MaterialStateProperty.all(const Color(0xff056DF6)),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15))),
+                  backgroundColor: MaterialStateProperty.all(const Color(0xff056DF6)),
+                  shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
                 ),
-                child: Text(AppLocalizations.of(context)!.confirm
-                ),
+                child: Text(AppLocalizations.of(context)!.confirm),
               ),
             )
-
           ],
-        )
-    );
+        ));
   }
 
   _getBottomWidget() {
     return Positioned(
       left: 0,
       bottom: 20,
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
+      width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -217,8 +172,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     if (SettingsConfig.nickname.isNotEmpty) {
       int index = Random().nextInt(_userAvatarArray.length);
       SettingsConfig.avatar = _userAvatarArray[index];
-      TUIResult result = await TUICallKit.instance.setSelfInfo(
-          SettingsConfig.nickname, SettingsConfig.avatar);
+      TUIResult result =
+          await TUICallKit.instance.setSelfInfo(SettingsConfig.nickname, SettingsConfig.avatar);
 
       if (result.code.isEmpty) {
         _enterMainWidget();
@@ -243,9 +198,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(AppLocalizations.of(context)!.login_fail),
-          content: Text(
-              "result.code:${result.code}, result.message: ${result
-                  .message}？"),
+          content: Text("result.code:${result.code}, result.message: ${result.message}？"),
           actions: [
             TextButton(
               onPressed: () {

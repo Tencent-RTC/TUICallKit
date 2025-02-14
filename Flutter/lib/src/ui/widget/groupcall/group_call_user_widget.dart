@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
-import 'package:tencent_calls_uikit/src/call_manager.dart';
-import 'package:tencent_calls_uikit/src/call_state.dart';
+import 'package:tencent_calls_uikit/src/call_define.dart';
+import 'package:tencent_calls_uikit/src/ui/widget/common/call_videoview.dart';
+import 'package:tencent_calls_uikit/src/impl/call_manager.dart';
+import 'package:tencent_calls_uikit/src/impl/call_state.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/data/user.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/common/loading_animation.dart';
@@ -87,7 +88,7 @@ class _GroupCallUserWidgetState extends State<GroupCallUserWidget> {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                TUIVideoView(
+                CallVideoView(
                   key: widget.user.key,
                   onPlatformViewCreated: (viewId) {
                     _onPlatformViewCreated(widget.user, viewId);

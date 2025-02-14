@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tencent_calls_uikit/tuicall_kit.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tencent_calls_uikit/tencent_calls_uikit.dart';
 import 'package:tuicall_kit_example/src/settings/settings_config.dart';
 import 'package:tuicall_kit_example/src/settings/settings_widget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class SingleCallWidget extends StatefulWidget {
   const SingleCallWidget({Key? key}) : super(key: key);
 
@@ -155,10 +155,9 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
               child: ElevatedButton(
                   onPressed: () => _call(),
                   style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(const Color(0xff056DF6)),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8))),
+                    backgroundColor: MaterialStateProperty.all(const Color(0xff056DF6)),
+                    shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -185,10 +184,8 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
   }
 
   _call() {
-    TUICallKit.instance.call(
-        _calledUserId,
-        _isAudioCall ? TUICallMediaType.audio : TUICallMediaType.video,
-        _createTUICallParams());
+    TUICallKit.instance.calls([_calledUserId,]
+      , _isAudioCall ? TUICallMediaType.audio : TUICallMediaType.video, _createTUICallParams());
   }
 
   TUICallParams _createTUICallParams() {
@@ -199,25 +196,8 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
       params.roomId = TUIRoomId.strRoomId(strRoomId: SettingsConfig.strRoomId);
     }
     params.timeout = SettingsConfig.timeout;
+    params.offlinePushInfo = SettingsConfig.offlinePushInfo;
     params.userData = SettingsConfig.extendInfo;
-
-    if (SettingsConfig.offlinePushInfo == null || SettingsConfig.offlinePushInfo!.title == null ||
-        SettingsConfig.offlinePushInfo!.title!.isEmpty) {
-      TUIOfflinePushInfo offlinePushInfo = TUIOfflinePushInfo();
-      offlinePushInfo.title = "Flutter TUICallKit";
-      offlinePushInfo.desc = "This is an incoming call from Flutter TUICallkit";
-      offlinePushInfo.ignoreIOSBadge = false;
-      offlinePushInfo.iOSSound = "phone_ringing.mp3";
-      offlinePushInfo.androidSound = "phone_ringing";
-      offlinePushInfo.androidOPPOChannelID = "Flutter TUICallKit";
-      offlinePushInfo.androidVIVOClassification = 1;
-      offlinePushInfo.androidFCMChannelID = "fcm_push_channel";
-      offlinePushInfo.androidHuaWeiCategory = "Flutter TUICallKit";
-      offlinePushInfo.iOSPushType = TUICallIOSOfflinePushType.VoIP;
-      params.offlinePushInfo = offlinePushInfo;
-    } else {
-      params.offlinePushInfo = SettingsConfig.offlinePushInfo;
-    }
     return params;
   }
 

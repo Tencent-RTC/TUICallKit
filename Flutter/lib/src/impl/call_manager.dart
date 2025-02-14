@@ -2,18 +2,19 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
-import 'package:tencent_calls_uikit/src/call_state.dart';
+import 'package:tencent_calls_uikit/src/call_engine.dart';
+import 'package:tencent_calls_uikit/src/call_define.dart';
+import 'package:tencent_calls_uikit/src/impl/call_state.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/data/offline_push_info.dart';
 import 'package:tencent_calls_uikit/src/data/user.dart';
 import 'package:tencent_calls_uikit/src/extensions/calling_bell_feature.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
-import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
-import 'package:tencent_calls_uikit/src/ui/tuicall_navigator_observer.dart';
+import 'package:tencent_calls_uikit/src/platform/call_kit_platform_interface.dart';
+import 'package:tencent_calls_uikit/src/ui/call_navigator_observer.dart';
 import 'package:tencent_calls_uikit/src/utils/permission.dart';
-import 'package:tencent_calls_uikit/src/utils/preference_utils.dart';
+import 'package:tencent_calls_uikit/src/utils/preference.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
 import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
 import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
@@ -56,6 +57,126 @@ class CallManager {
       _updateLocalSelfUserInfo(userId);
     } else {
       CallManager.instance.showToast('Init Engine Fail');
+    }
+  }
+
+
+  Future<TUIResult> calls(List<String> userIdList, TUICallMediaType mediaType, [TUICallParams? params]) async {
+    for (String id in userIdList) {
+      if (CallState.instance.selfUser.id == id) {
+        userIdList.remove(id);
+        break;
+      }
+    }
+    TRTCLogger.info(
+        'CallManager calls(userIdList:$userIdList, mediaType:$mediaType, params:${params.toString()}, '
+            'groupId: ${params?.chatGroupId}), version:${Constants.pluginVersion}');
+    if (TUICallMediaType.none == mediaType) {
+      debugPrint("calls failed, callMediaType is Unknown");
+      return TUIResult(code: "-1", message: "calls failed, callMediaType is Unknown");
+    }
+    if (userIdList.isEmpty) {
+      debugPrint("calls failed, userIdList is empty");
+      return TUIResult(
+          code: "-1",
+          message: "calls failed, userIdList is "
+              "empty");
+    }
+    if (params != null &&
+        params.roomId != null &&
+        params.roomId!.intRoomId > Constants.roomIdMaxValue) {
+      return TUIResult(
+          code: "-1",
+          message: "calls failed, roomId.intRoomId Max Value is "
+              "2147483647");
+    }
+    if (userIdList.length >= Constants.groupCallMaxUserCount) {
+      CallManager.instance.showToast("calls failed, exceeding max user number: 9");
+      return TUIResult(code: "-1", message: "calls failed, exceeding max user number: 9");
+    }
+    if (params == null) {
+      params = TUICallParams();
+      params.offlinePushInfo = OfflinePushInfoConfig.createOfflinePushInfo();
+    }
+    if (Platform.isAndroid) {
+      final permissionResult = await Permission.request(mediaType);
+      if (PermissionResult.granted == permissionResult) {
+        final callResult =
+        await TUICallEngine.instance.calls(userIdList, mediaType, params);
+        if (callResult.code.isEmpty) {
+          for (String userId in userIdList) {
+            if (userId.isNotEmpty) {
+              User user = User();
+              user.id = userId;
+              user.callRole = TUICallRole.called;
+              user.callStatus = TUICallStatus.waiting;
+              final imUserInfo =
+              await _im.getFriendshipManager().getFriendsInfo(userIDList: [userId]);
+              user.nickname =
+                  StringStream.makeNull(imUserInfo.data?[0].friendInfo?.userProfile?.nickName, '');
+              user.avatar = StringStream.makeNull(
+                  imUserInfo.data?[0].friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
+              user.remark = StringStream.makeNull(imUserInfo.data?[0].friendInfo?.friendRemark, '');
+              CallState.instance.remoteUserList.add(user);
+              CallState.instance.calleeList.add(user);
+            }
+          }
+
+          CallState.instance.mediaType = mediaType;
+          CallState.instance.scene = userIdList.length > 1 ? TUICallScene.groupCall : TUICallScene.singleCall;
+          if (params.chatGroupId != null && params.chatGroupId!.isNotEmpty) {
+            CallState.instance.groupId = params.chatGroupId!;
+            CallState.instance.scene = TUICallScene.groupCall;
+          }
+
+          CallState.instance.selfUser.callRole = TUICallRole.caller;
+          CallState.instance.selfUser.callStatus = TUICallStatus.waiting;
+          CallState.instance.caller = CallState.instance.selfUser;
+
+          CallingBellFeature.startRing();
+          launchCallingPage();
+          CallManager.instance.enableWakeLock(true);
+        }
+        return callResult;
+      } else {
+        return TUIResult(code: "-1", message: "Permission result fail");
+      }
+    } else {
+      final callResult =
+      await TUICallEngine.instance.calls(userIdList, mediaType, params);
+      if (callResult.code.isEmpty) {
+        for (String userId in userIdList) {
+          if (userId.isNotEmpty) {
+            User user = User();
+            user.id = userId;
+            user.callRole = TUICallRole.called;
+            user.callStatus = TUICallStatus.waiting;
+            final imUserInfo =
+            await _im.getFriendshipManager().getFriendsInfo(userIDList: [userId]);
+            user.nickname =
+                StringStream.makeNull(imUserInfo.data?[0].friendInfo?.userProfile?.nickName, '');
+            user.avatar = StringStream.makeNull(
+                imUserInfo.data?[0].friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
+            user.remark = StringStream.makeNull(imUserInfo.data?[0].friendInfo?.friendRemark, '');
+            CallState.instance.remoteUserList.add(user);
+          }
+        }
+
+        CallState.instance.mediaType = mediaType;
+        CallState.instance.scene = userIdList.length > 1 ? TUICallScene.groupCall : TUICallScene.singleCall;
+        if (params.chatGroupId != null && params.chatGroupId!.isNotEmpty) {
+          CallState.instance.groupId = params.chatGroupId!;
+          CallState.instance.scene = TUICallScene.groupCall;
+        }
+
+        CallState.instance.selfUser.callRole = TUICallRole.caller;
+        CallState.instance.selfUser.callStatus = TUICallStatus.waiting;
+
+        CallingBellFeature.startRing();
+        launchCallingPage();
+        CallManager.instance.enableWakeLock(true);
+      }
+      return callResult;
     }
   }
 
@@ -107,6 +228,8 @@ class CallManager {
           CallingBellFeature.startRing();
           launchCallingPage();
           CallManager.instance.enableWakeLock(true);
+        } else if (callResult.code == "20007") {
+          CallManager.instance.showToast(CallKit_t("errorInPeerBlacklist"));
         }
         return callResult;
       } else {
@@ -133,6 +256,8 @@ class CallManager {
         CallingBellFeature.startRing();
         launchCallingPage();
         CallManager.instance.enableWakeLock(true);
+      } else if (callResult.code == "20007") {
+        CallManager.instance.showToast(CallKit_t("errorInPeerBlacklist"));
       }
       return callResult;
     }
@@ -246,6 +371,51 @@ class CallManager {
         CallManager.instance.enableWakeLock(true);
       }
       return callResult;
+    }
+  }
+
+  Future<void> join(String callId) async {
+    TRTCLogger.info(
+        'CallManager join(callId: $callId), version:${Constants.pluginVersion}');
+    if (callId.isEmpty) {
+      debugPrint("join failed, callId is empty");
+      return;
+    }
+    if (Platform.isAndroid) {
+      final permissionResult = await Permission.request(TUICallMediaType.audio);
+      if (PermissionResult.granted == permissionResult) {
+        final result = await TUICallEngine.instance.join(callId);
+        if (result.code.isEmpty) {
+          CallState.instance.scene = TUICallScene.groupCall;
+          CallState.instance.selfUser.callRole = TUICallRole.called;
+          CallState.instance.selfUser.callStatus = TUICallStatus.accept;
+
+          launchCallingPage();
+          CallManager.instance.enableWakeLock(true);
+          return;
+        } else {
+          CallManager.instance.showToast("joinInGroupCall Fail, engine call "
+              "fail");
+          return;
+        }
+      } else {
+        CallManager.instance.showToast("Permission result fail");
+        return;
+      }
+    } else {
+      final result = await TUICallEngine.instance.join(callId);
+      if (result.code.isEmpty) {
+        CallState.instance.scene = TUICallScene.groupCall;
+        CallState.instance.selfUser.callRole = TUICallRole.called;
+        CallState.instance.selfUser.callStatus = TUICallStatus.accept;
+
+        launchCallingPage();
+        CallManager.instance.enableWakeLock(true);
+        return;
+      } else {
+        CallManager.instance.showToast("joinInGroupCall Fail,engine call fail");
+        return;
+      }
     }
   }
 

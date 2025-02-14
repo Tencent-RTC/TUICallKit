@@ -1,6 +1,6 @@
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
+import 'package:tencent_calls_uikit/src/call_define.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
-import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
+import 'package:tencent_calls_uikit/src/platform/call_kit_platform_interface.dart';
 
 enum PermissionResult {
   granted,

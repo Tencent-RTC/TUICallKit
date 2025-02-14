@@ -3,14 +3,15 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
-import 'package:tencent_calls_uikit/src/call_manager.dart';
-import 'package:tencent_calls_uikit/src/call_state.dart';
+import 'package:tencent_calls_uikit/src/call_define.dart';
+import 'package:tencent_calls_uikit/src/ui/widget/common/call_videoview.dart';
+import 'package:tencent_calls_uikit/src/impl/call_manager.dart';
+import 'package:tencent_calls_uikit/src/impl/call_state.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/data/user.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
-import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
-import 'package:tencent_calls_uikit/src/ui/tuicall_navigator_observer.dart';
+import 'package:tencent_calls_uikit/src/platform/call_kit_platform_interface.dart';
+import 'package:tencent_calls_uikit/src/ui/call_navigator_observer.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/common/timing_widget.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/singlecall/single_function_widget.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
@@ -36,7 +37,7 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
   double _smallViewRight = 20;
   bool _isOnlyShowBigVideoView = false;
 
-  final Widget _localVideoView = TUIVideoView(
+  final Widget _localVideoView = CallVideoView(
       key: CallState.instance.selfUser.key,
       onPlatformViewCreated: (viewId) {
         CallState.instance.selfUser.viewID = viewId;
@@ -45,7 +46,7 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
         }
       });
 
-  final Widget _remoteVideoView = TUIVideoView(
+  final Widget _remoteVideoView = CallVideoView(
       key: CallState.instance.remoteUserList.isEmpty
           ? GlobalKey()
           : CallState.instance.remoteUserList[0].key,
@@ -81,12 +82,16 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
             fit: StackFit.expand,
             children: [
               _buildBackground(),
+
               _buildBigVideoWidget(),
               _isOnlyShowBigVideoView ? const SizedBox() : _buildSmallVideoWidget(),
+
               _isOnlyShowBigVideoView ? const SizedBox() : _buildFloatingWindowBtnWidget(),
               _isOnlyShowBigVideoView ? const SizedBox() : _buildTimerWidget(),
+
               _isOnlyShowBigVideoView ? const SizedBox() : _buildUserInfoWidget(),
               _isOnlyShowBigVideoView ? const SizedBox() : _buildHintTextWidget(),
+
               _isOnlyShowBigVideoView ? const SizedBox() : _buildFunctionButtonWidget(),
             ],
           ),

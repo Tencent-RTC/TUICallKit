@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
-import 'package:tencent_calls_uikit/src/call_manager.dart';
-import 'package:tencent_calls_uikit/src/call_state.dart';
+import 'package:tencent_calls_uikit/src/call_define.dart';
+import 'package:tencent_calls_uikit/src/impl/call_manager.dart';
+import 'package:tencent_calls_uikit/src/impl/call_state.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
-import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
+import 'package:tencent_calls_uikit/src/platform/call_kit_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/utils/permission.dart';
 import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 
@@ -226,7 +226,7 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
 
   @override
   Future<bool> isScreenLocked() async {
-    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+    if (!kIsWeb && (Platform.isAndroid)) {
       return await methodChannel.invokeMethod('isScreenLocked', {});
     }
     return false;

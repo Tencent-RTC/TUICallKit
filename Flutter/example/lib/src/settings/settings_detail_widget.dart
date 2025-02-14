@@ -1,9 +1,10 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:tencent_calls_uikit/tuicall_kit.dart';
-import 'package:tuicall_kit_example/src/settings/settings_config.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tencent_calls_uikit/tencent_calls_uikit.dart';
+import 'package:tuicall_kit_example/src/settings/settings_config.dart';
+
 enum SettingWidgetType {
   avatar,
   extendInfo,
@@ -109,19 +110,23 @@ class _SettingsDetailWidgetState extends State<SettingsDetailWidget> {
     }
 
     if (offlinePushMap['androidVIVOClassification'].isNull) {
-      SettingsConfig.offlinePushInfo?.androidVIVOClassification = offlinePushMap['androidVIVOClassification'];
+      SettingsConfig.offlinePushInfo?.androidVIVOClassification =
+          offlinePushMap['androidVIVOClassification'];
     }
 
     if (offlinePushMap['androidXiaoMiChannelID'].isNull) {
-      SettingsConfig.offlinePushInfo?.androidXiaoMiChannelID = offlinePushMap['androidXiaoMiChannelID'];
+      SettingsConfig.offlinePushInfo?.androidXiaoMiChannelID =
+          offlinePushMap['androidXiaoMiChannelID'];
     }
 
     if (offlinePushMap['androidFCMChannelID'].isNull) {
-      SettingsConfig.offlinePushInfo?.androidXiaoMiChannelID = offlinePushMap['androidFCMChannelID'];
+      SettingsConfig.offlinePushInfo?.androidXiaoMiChannelID =
+          offlinePushMap['androidFCMChannelID'];
     }
 
     if (offlinePushMap['androidHuaWeiCategory'].isNull) {
-      SettingsConfig.offlinePushInfo?.androidXiaoMiChannelID = offlinePushMap['androidHuaWeiCategory'];
+      SettingsConfig.offlinePushInfo?.androidXiaoMiChannelID =
+          offlinePushMap['androidHuaWeiCategory'];
     }
 
     if (offlinePushMap['isDisablePush'].isNull) {

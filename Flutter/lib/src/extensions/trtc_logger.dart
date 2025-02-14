@@ -1,4 +1,4 @@
-import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
+import 'package:tencent_calls_uikit/src/platform/call_kit_platform_interface.dart';
 
 enum TRTCLoggerLevel { info, warning, error }
 

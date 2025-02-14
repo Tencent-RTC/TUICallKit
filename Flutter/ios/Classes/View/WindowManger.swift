@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import TUICallEngine
+import RTCRoomEngine
 
 protocol BackToFlutterWidgetDelegate: NSObject {
     func backCallingPageFromFloatWindow()
@@ -64,6 +64,10 @@ class WindowManger: NSObject, FloatWindowViewDelegate, IncomingBannerViewDelegat
             
             if self.selfCallStatus.value == TUICallStatus.none {
                 WindowManger.instance.closeFloatWindow()
+            }
+            
+            if self.selfCallStatus.value != TUICallStatus.waiting {
+                WindowManger.instance.closeIncomingBannerView()
             }
         })
     }

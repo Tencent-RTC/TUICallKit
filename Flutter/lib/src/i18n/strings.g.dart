@@ -3,9 +3,9 @@
  * Generated file. Do not edit.
  *
  * Locales: 3
- * Strings: 318 (106.0 per locale)
+ * Strings: 321 (107.0 per locale)
  *
- * Built on 2024-08-22 at 06:27 UTC
+ * Built on 2024-12-05 at 07:55 UTC
  */
 
 import 'package:flutter/widgets.dart';
@@ -421,6 +421,7 @@ class _StringsEn {
 	String get k_0000103 => 'Show blur background';
 	String get k_0000104 => 'The other party\'s network connection is poor';
 	String get k_0000105 => 'Your network connection is poor';
+	String get k_0000106 => 'The identifier is in blacklist. Failed to send this message!';
 }
 
 // Path: <root>
@@ -545,6 +546,7 @@ class _StringsJa implements _StringsEn {
 	@override String get k_0000103 => '背景をぼかす';
 	@override String get k_0000104 => '相手のネットワーク接続が不安定です';
 	@override String get k_0000105 => 'ネットワーク接続が不安定です';
+	@override String get k_0000106 => 'ユーザーはブラックリストに登録され、通話が開始できませんでした。';
 }
 
 // Path: <root>
@@ -669,6 +671,7 @@ class _StringsZhHans implements _StringsEn {
 	@override String get k_0000103 => '显示模糊背景按钮';
 	@override String get k_0000104 => '当前通话对方网络不佳';
 	@override String get k_0000105 => '当前通话你的网络不佳';
+	@override String get k_0000106 => '发起通话失败，用户在黑名单中，禁止发起！';
 }
 
 /// Flat map(s) containing all translations.
@@ -783,6 +786,7 @@ extension on _StringsEn {
 			'k_0000103': 'Show blur background',
 			'k_0000104': 'The other party\'s network connection is poor',
 			'k_0000105': 'Your network connection is poor',
+			'k_0000106': 'The identifier is in blacklist. Failed to send this message!',
 		};
 	}
 }
@@ -896,6 +900,7 @@ extension on _StringsJa {
 			'k_0000103': '背景をぼかす',
 			'k_0000104': '相手のネットワーク接続が不安定です',
 			'k_0000105': 'ネットワーク接続が不安定です',
+			'k_0000106': 'ユーザーはブラックリストに登録され、通話が開始できませんでした。',
 		};
 	}
 }
@@ -1009,6 +1014,7 @@ extension on _StringsZhHans {
 			'k_0000103': '显示模糊背景按钮',
 			'k_0000104': '当前通话对方网络不佳',
 			'k_0000105': '当前通话你的网络不佳',
+			'k_0000106': '发起通话失败，用户在黑名单中，禁止发起！',
 		};
 	}
 }
