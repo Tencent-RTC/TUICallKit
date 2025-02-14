@@ -35,6 +35,20 @@ class VideoFactory {
         }
         return isExist
     }
+    
+    func setVideoView(user: User, videoView: VideoView) {
+        if viewMap[user.id.value] != nil {
+            viewMap[user.id.value]?.userId = user.id.value
+            viewMap[user.id.value]?.user = user
+            viewMap[user.id.value]?.videoView = videoView
+        } else {
+            let entity = UserVideoEntity()
+            entity.userId = user.id.value
+            entity.videoView = videoView
+            entity.user = user
+            viewMap[user.id.value] = entity
+        }
+    }
 }
 
 class UserVideoEntity {

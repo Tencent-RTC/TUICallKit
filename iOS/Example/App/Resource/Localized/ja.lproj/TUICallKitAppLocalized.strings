@@ -9,6 +9,7 @@
 "TUICallKitApp.Call" = "発信";
 "TUICallKitApp.SingleCall" = "1v1通話";
 "TUICallKitApp.GroupCall" = "グループ通話";
+"TUICallKitApp.MultiCall" = "複数人での通話";
 "TUICallKitApp.UseGroupCall" = "グループ通話を体験する";
 "TUICallKitApp.JoinGroupCall" = "グループ通話に参加する";
 "TUICallKitApp.MediaType" = "メディアタイプ";
@@ -22,11 +23,12 @@
 "TUICallKitApp.Call.UserId" = "ユーザーID";
 "TUICallKitApp.Call.InputUserId" = "発信するUser IDを入力してください";
 "TUICallKitApp.Call.GroupId" = "グループID";
-"TUICallKitApp.Call.InputGroupId" = "Group IDを入力してください";
+"TUICallKitApp.Call.InputGroupId" = "ChatGroup IDを入力してください";
 "TUICallKitApp.Call.InputUserIds" = "User IDを入力してください。\",\"で区切ります";
 "TUICallKitApp.Call.RoomIdInt" = "ルームId(数字)";
 "TUICallKitApp.Call.RoomIdString" = "ルームId(文字列)";
 "TUICallKitApp.Call.InputRoomId" = "Room IDを入力してください";
+"TUICallKitApp.Call.OptionalParameters" = "オプションのパラメータ";
 
 "TUICallKitApp.Login.Product" = "Tencent RTC";
 "TUICallKitApp.Login.EnterUserId" = "ユーザーIDを入力してください";

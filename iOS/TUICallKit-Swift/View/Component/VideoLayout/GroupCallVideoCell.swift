@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import TUICallEngine
+import RTCRoomEngine
 import SnapKit
 
 class GroupCallVideoCell: UICollectionViewCell {
@@ -28,7 +28,12 @@ class GroupCallVideoCell: UICollectionViewCell {
     private var user: User = User()
     private var isSelf: Bool = false
     
-    private var renderView = VideoView()
+    private var renderView: VideoView {
+        if VideoFactory.instance.viewMap[user.id.value] == nil {
+            let _ = VideoFactory.instance.createVideoView(userId: user.id.value, frame: CGRect.zero)
+        }
+        return VideoFactory.instance.viewMap[user.id.value]?.videoView ?? VideoView(frame: CGRect.zero)
+    }
     
     private let titleLabel = {
         let titleLabel = UILabel(frame: CGRect.zero)
@@ -98,17 +103,7 @@ class GroupCallVideoCell: UICollectionViewCell {
         btn.addTarget(self, action: #selector(virtualBackgroundTouchEvent(sender: )), for: .touchUpInside)
         return btn
     }()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        constructViewHierarchy()
-        activateConstraints()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+        
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -140,9 +135,20 @@ class GroupCallVideoCell: UICollectionViewCell {
         }
     }
     
+    // MARK: Init Cell Data
+    func initCell(user: User) {
+        self.user = user
+        viewModel = GroupCallVideoCellViewModel(remote: user)
+        isSelf = TUICallState.instance.selfUser.value.id.value == user.id.value ? true : false
+        
+        setupView()
+        initWaitingUI()
+        registerObserveState()
+    }
+    
     // MARK: UI Specification Processing
     private var isViewReady: Bool = false
-    override func didMoveToWindow() {
+    func setupView() {
         super.didMoveToWindow()
         if isViewReady { return }
         constructViewHierarchy()
@@ -246,15 +252,7 @@ class GroupCallVideoCell: UICollectionViewCell {
             make.bottom.equalTo(self.contentView).offset(-8.scaleWidth())
         }
     }
-    
-    func initCell(user: User) {
-        self.user = user
-        viewModel = GroupCallVideoCellViewModel(remote: user)
-        isSelf = TUICallState.instance.selfUser.value.id.value == user.id.value ? true : false
-        initWaitingUI()
-        registerObserveState()
-    }
-    
+        
     // MARK: Action Event
     @objc func switchCameraTouchEvent(sender: UIButton) {
         CallEngineManager.instance.switchCamera()
@@ -418,14 +416,10 @@ class GroupCallVideoCell: UICollectionViewCell {
     func initSelfUserUI() {
         hiddenAllSubView()
         micImageView.isHidden = !TUICallState.instance.isMicMute.value
-        
-        if !VideoFactory.instance.isExistVideoView(videoView: renderView) {
-            renderView = VideoFactory.instance.createVideoView(userId: TUICallState.instance.selfUser.value.id.value, frame: CGRect.zero)
-            renderView.isUserInteractionEnabled = false
-        }
-        
+                
         if TUICallState.instance.isCameraOpen.value == true {
             renderView.isHidden = false
+            renderView.isUserInteractionEnabled = false
             switchCameraBtn.isHidden = false
             CallEngineManager.instance.openCamera(videoView: renderView)
         } else {
@@ -442,6 +436,7 @@ class GroupCallVideoCell: UICollectionViewCell {
             renderView.isHidden = false
             switchCameraBtn.isHidden = false
             virtualBackgroundBtn.isHidden = !TUICallState.instance.showVirtualBackgroundButton
+            
         } else {
             switchCameraBtn.isHidden = true
             virtualBackgroundBtn.isHidden = true
@@ -462,6 +457,7 @@ class GroupCallVideoCell: UICollectionViewCell {
             if viewModel.remoteUserVideoAvailable.value == true {
                 renderView.isUserInteractionEnabled = false
                 renderView.isHidden = false
+                CallEngineManager.instance.startRemoteView(user: viewModel.remoteUser, videoView: renderView)
             } else {
                 avatarImageView.isHidden = false
             }

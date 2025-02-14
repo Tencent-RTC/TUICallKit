@@ -45,7 +45,7 @@ class LoginViewController: UIViewController {
         let userSig = TUICallKit_Swift.GenerateTestUserSig.genTestUserSig(userID: userId, sdkAppID: SDKAPPID, secretKey: SECRETKEY)
 #elseif canImport(TUICallKit)
         let userSig = GenerateTestUserSig.genTestUserSig(identifier: userId)
-#endif
+#endif      
         TUILogin.login(Int32(SDKAPPID), userID: userId, userSig: userSig) { [weak self] in
             guard let self = self else { return }
             self.loading.stopAnimating()
@@ -75,7 +75,8 @@ class LoginViewController: UIViewController {
         } else {
             self.view.makeToast(TUICallKitAppLocalize("TUICallKitApp.Login.LoginSuccess"))
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                SceneDelegate.showMainController()
+                let vc = MainViewController()
+                self.navigationController?.pushViewController(vc, animated: false)
             }
         }
     }

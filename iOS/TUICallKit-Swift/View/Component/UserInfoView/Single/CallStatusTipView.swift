@@ -100,8 +100,10 @@ class CallStatusTipView: UIView {
         case .accept:
             if isFirstShowAccept {
                 self.callStatusLabel.text = TUICallKitLocalize(key: "TUICallKit.accept") ?? ""
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                    guard let self = self else { return }
                     self.isFirstShowAccept = false
+                    self.updateStatusText()
                 }
             } else {
                 self.callStatusLabel.text = ""

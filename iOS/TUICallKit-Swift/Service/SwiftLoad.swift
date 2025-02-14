@@ -8,7 +8,8 @@
 
 import Foundation
 import TUICore
-import TUICallEngine
+import RTCRoomEngine
+
 
 extension NSObject {
     @objc class func swiftLoad() {

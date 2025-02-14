@@ -8,7 +8,7 @@
 import Foundation
 import AVFAudio
 import TUICore
-import TUICallEngine
+import RTCRoomEngine
 
 #if canImport(TXLiteAVSDK_TRTC)
 import TXLiteAVSDK_TRTC

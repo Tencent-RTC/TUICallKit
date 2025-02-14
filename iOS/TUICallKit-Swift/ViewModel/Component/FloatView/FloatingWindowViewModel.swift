@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import TUICallEngine
+import RTCRoomEngine
 
 class FloatingWindowViewModel {
     
@@ -133,7 +133,7 @@ class FloatingWindowViewModel {
         return GCDTimer.secondToHMSString(second: callTime.value)
     }
     
-    func startRemoteView(user: User, videoView: TUIVideoView){
+    func startRemoteView(user: User, videoView: UIView){
         CallEngineManager.instance.startRemoteView(user: user, videoView: videoView)
     }
     

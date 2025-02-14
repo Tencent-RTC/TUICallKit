@@ -7,7 +7,7 @@
 
 import Foundation
 import TUICore
-import TUICallEngine
+import RTCRoomEngine
 
 class TUICallKitExtension: NSObject, TUIExtensionProtocol {
     
@@ -106,7 +106,7 @@ class TUICallKitExtension: NSObject, TUIExtensionProtocol {
             return nil
         }
     }
-    
+
     func getNavigationMoreItemExtensionForMinimalistChat(param: [AnyHashable : Any]?) -> [TUIExtensionInfo]? {
         guard let param = param else { return nil }
         
@@ -303,5 +303,4 @@ class TUICallKitExtension: NSObject, TUIExtensionProtocol {
         }
         return result
     }
-    
 }

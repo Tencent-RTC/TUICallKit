@@ -7,7 +7,7 @@
 
 import Foundation
 import TUICore
-import TUICallEngine
+import RTCRoomEngine
 
 #if canImport(TXLiteAVSDK_TRTC)
 import TXLiteAVSDK_TRTC
@@ -99,6 +99,81 @@ class CallEngineManager {
                 TUICallState.instance.isCameraOpen.value = true
             }
             
+            succ()
+        } fail: { code, message in
+            fail(code, message)
+        }
+    }
+    
+    func calls(userIdList: [String],
+               callMediaType: TUICallMediaType,
+               params: TUICallParams?,
+               succ: @escaping TUICallSucc,
+               fail: @escaping TUICallFail) {
+
+        for index in 0..<userIdList.count {
+            let user = User()
+            user.id.value = userIdList[index]
+            TUICallState.instance.remoteUserList.value.append(user)
+        }
+        
+        TUICallEngine.createInstance().calls(userIdList: userIdList,
+                                             callMediaType: callMediaType,
+                                             params: params ?? TUICallParams()) {
+            
+            if let params = params {
+                TUICallState.instance.groupId.value = params.chatGroupId
+            }
+            User.getUserInfosFromIM(userIDs: userIdList) { mInviteeList in
+                TUICallState.instance.remoteUserList.value = mInviteeList
+                for index in 0..<TUICallState.instance.remoteUserList.value.count {
+                    guard index < TUICallState.instance.remoteUserList.value.count else {
+                        break
+                    }
+                    TUICallState.instance.remoteUserList.value[index].callStatus.value = TUICallStatus.waiting
+                    TUICallState.instance.remoteUserList.value[index].callRole.value = TUICallRole.called
+                }
+            }
+            
+            TUICallState.instance.mediaType.value = callMediaType
+            
+            if userIdList.count == 1 {
+                TUICallState.instance.scene.value = TUICallScene.single
+            } else {
+                TUICallState.instance.scene.value = TUICallScene.group
+            }
+                        
+            TUICallState.instance.selfUser.value.callRole.value = TUICallRole.call
+            TUICallState.instance.selfUser.value.callStatus.value = TUICallStatus.waiting
+            
+            if callMediaType == .audio {
+                TUICallState.instance.audioDevice.value = TUIAudioPlaybackDevice.earpiece
+                TUICallState.instance.isCameraOpen.value = false
+            } else if callMediaType == .video {
+                TUICallState.instance.audioDevice.value = TUIAudioPlaybackDevice.speakerphone
+                TUICallState.instance.isCameraOpen.value = true
+            }
+            
+            succ()
+        } fail: { code, message in
+            fail(code, message)
+        }
+    }
+    
+    func join(callId: String,
+              succ: @escaping TUICallSucc,
+              fail: @escaping TUICallFail) {
+        TUICallEngine.createInstance().join(callId: callId) {
+            TUICallState.instance.mediaType.value = .audio
+            TUICallState.instance.scene.value = TUICallScene.group
+            // kit3.0后可删除
+            TUICallState.instance.groupId.value = "test"
+            TUICallState.instance.selfUser.value.callRole.value = TUICallRole.called
+            TUICallState.instance.selfUser.value.callStatus.value = TUICallStatus.accept
+            TUICallState.instance.audioDevice.value = TUIAudioPlaybackDevice.earpiece
+            TUICallState.instance.isCameraOpen.value = false
+            TUICallState.instance.audioDevice.value = TUIAudioPlaybackDevice.earpiece
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: Constants.EVENT_SHOW_TUICALLKIT_VIEWCONTROLLER), object: nil)
             succ()
         } fail: { code, message in
             fail(code, message)
@@ -219,14 +294,13 @@ class CallEngineManager {
         TUICallState.instance.isCameraOpen.value = false
     }
     
-    func openCamera(videoView: TUIVideoView) {
+    func openCamera(videoView: UIView) {
         TUICallEngine.createInstance().openCamera(TUICallState.instance.isFrontCamera.value == .front ? .front : .back, videoView: videoView) {
             TUICallState.instance.isCameraOpen.value = true
         } fail: { code, message in
         }
     }
-    
-    func startRemoteView(user: User, videoView: TUIVideoView){
+    func startRemoteView(user: User, videoView: UIView){
         TUICallEngine.createInstance().startRemoteView(userId: user.id.value, videoView: videoView) { userId in
         } onLoading: { userId in
         } onError: { userId, code, message in
