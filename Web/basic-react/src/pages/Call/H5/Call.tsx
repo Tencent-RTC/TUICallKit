@@ -39,8 +39,8 @@ export default function Call() {
     });
 
     try {
-      await TUICallKitServer.call({
-        userID: calleeUserID,
+      await TUICallKitServer.calls({
+        userIDList: [calleeUserID],
         type: state.callType === 'video' ? TUICallType.VIDEO_CALL : TUICallType.AUDIO_CALL,
       })
       reportEvent({ apiName: 'call.success' });

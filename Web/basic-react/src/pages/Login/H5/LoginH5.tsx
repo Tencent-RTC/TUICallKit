@@ -3,10 +3,12 @@ import { Flex, Input, Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { TUICallKitServer } from '@tencentcloud/call-uikit-react';
 // @ts-ignore
+import TencentCloudChat from '@tencentcloud/chat';
+// @ts-ignore
 import * as GenerateTestUserSig from "../../../debug/GenerateTestUserSig-es";
 import { UserInfoContext } from '../../../context/index';
 import { useLanguage, useAegis, useMessage } from '../../../hooks';
-import { checkUserID, trim } from '../../../utils/index';
+import { checkUserID, trim, getUrlParams } from '../../../utils/index';
 import Layout from '../../../components/Layout/Layout';
 import './LoginH5.css';
 
@@ -43,7 +45,11 @@ export default function LoginH5() {
       return;
     }
     try {
-      await TUICallKitServer.init({ userID, SDKAppID, userSig });
+      const { isChatTestEnv } = getUrlParams(['isChatTestEnv']);
+      const options = { SDKAppID, testEnv: isChatTestEnv === 'true' };
+      const chat = TencentCloudChat.create(options);
+
+      await TUICallKitServer.init({ userID, SDKAppID, userSig, tim: chat });
       setUserInfo({
         ...userInfo,
         userID,

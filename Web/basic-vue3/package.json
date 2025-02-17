@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tencentcloud/call-uikit-vue": "latest",
+    "@tencentcloud/call-uikit-vue": "workspace: ^4.0.0",
     "aegis-web-sdk": "^1.39.1",
     "element-plus": "^2.7.7",
     "qrcode": "^1.5.4",
@@ -18,7 +18,8 @@
     "vite-plugin-css-injected-by-js": "^3.5.1",
     "vue": "^3.4.31",
     "vue-i18n": "^9.13.1",
-    "vue-router": "^4.4.0"
+    "vue-router": "^4.4.0",
+    "@tencentcloud/chat": "latest"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.5",

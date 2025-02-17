@@ -1,6 +1,6 @@
 import { useI18n } from "vue-i18n";
 
-export default function useLanguage() {
+export default function useLanguage(): any {
   const { t, locale } = useI18n();
 
   const changeLanguage = (value: string) => {
