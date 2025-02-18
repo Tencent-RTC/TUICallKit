@@ -7,16 +7,17 @@
     <p></p>
     <div>
       <el-tree
-        :data="treeData"
+        :data="translatedTreeData"
         node-key="id"
         :default-expanded-keys="[4, 7]"
       />
     </div>
-    
+
   </div>
 </template>
 
 <script lang='ts' setup>
+import { computed } from 'vue';
 import { useLanguage } from '../../../hooks';
 import Icon from '../../common/Icon/Icon.vue';
 import ChaSrc from '../../../assets/GroupCall/cha.svg';
@@ -26,50 +27,67 @@ const { t } = useLanguage();
 const treeData = [
   { 
     id: 1,
-    label: t('Create / Log in userID'),
+    label: 'Create / Log in userID',
   },
   {
     id: 2,
-    label: `${t('Complete Device Detection')}`,
+    label: 'Complete Device Detection',
   },
   {
     id: 3,
-    label: `${t('Choose Video Call/Voice Call')}`,
+    label: 'Choose Video Call/Voice Call',
   },
   { 
     id: 4,
-    label: `${t('Initiate One-on-One Call')}`, 
+    label: 'Initiate One-on-One Call', 
     children: [
       {
         id: 5,
-        label: `${t('Copy the link of this page to create a new user, or use your phone to scan the QR code')}`,
+        label: 'Copy the link of this page to create a new user, or use your phone to scan the QR code',
       },
       {
         id: 6,
-        label: `${t('input the userID and initiate a one-on-one call')}`,
+        label: 'input the userID and initiate a one-on-one call',
       },
     ]
   },
   { 
     id: 7,
-    label: `${t('Initiate Group Call')}`, 
+    label: 'Initiate Group Call', 
     children: [
       {
         id: 8,
-        label: `${t('Copy the link of this page to create multiple users')}`,
+        label: 'Copy the link of this page to create multiple users',
       },
       {
         id: 9,
-        label: `${t('Enter the userID and add up to 9 group members')}`,
+        label: 'Enter the userID and add up to 9 group members',
       },
       {
         id: 10,
-        label: `${t('Initiate Group Call')}`, 
+        label: 'Initiate Group Call', 
       },
     ]
   },
-];
+]
 
+const translatedTreeData = computed(() => {
+  const translateNode = (node: any) => {
+    if (node.children) {
+      return {
+        ...node,
+        label: t(node.label),
+        children: node.children.map(translateNode),
+      };
+    }
+    return {
+      ...node,
+      label: t(node.label),
+    };
+  };
+
+  return treeData.map(translateNode);
+});
 
 </script>
 

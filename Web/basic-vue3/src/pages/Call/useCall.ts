@@ -27,8 +27,8 @@ export default function useCall() {
     userInfo.isCall.value = true;
 
     try {
-      await TUICallKitServer.call({
-        userID: calleeUserID.value,
+      await TUICallKitServer.calls({
+        userIDList: [calleeUserID.value],
         type: userInfo.currentCallType.value === 'video' ? TUICallType.VIDEO_CALL : TUICallType.AUDIO_CALL,
       })
       reportEvent({ apiName: 'call.success' });

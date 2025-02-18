@@ -3,7 +3,7 @@
   "private": true,
   "homepage": "./",
   "scripts": {
-    "serve": "vite",
+    "dev": "vite",
     "build": "run-p build-only",
     "preview": "vite preview --port 4173",
     "build-only": "vite build",

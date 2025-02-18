@@ -8,7 +8,7 @@ import GroupCall from '../pages/GroupCall/GroupCall.vue';
 const routes = [
   { 
     path: '',
-    component: Home,
+    component: Login,
   },
   { 
     path: '/login',

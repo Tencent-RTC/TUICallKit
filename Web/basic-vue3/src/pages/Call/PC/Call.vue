@@ -6,7 +6,7 @@
       v-model="calleeUserID"
       :placeholder="placeholderText"
       @input="handleCallUserID"
-      @change="handleCall"
+      @keyup.enter="handleCall"
     >
       <template #append>
         <Button class="call-btn" @click="handleCall"> {{ t('Initiate Call')}} </Button>

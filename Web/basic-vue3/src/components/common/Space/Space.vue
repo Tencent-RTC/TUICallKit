@@ -13,8 +13,9 @@ const props = defineProps(SpaceProps);
 const SpaceStyle = { columnGap: `${props.size}` };
 
 const spacedChildren = computed(() => {
-  
+  // @ts-ignore
   const parent = slots.default ? slots.default() : [];
+  // @ts-ignore
   const quickLink = slots?.default?.()[0].children?.length === 4 ? slots.default()[0].children : undefined;
   // @ts-ignore
   const children: any[] = quickLink || parent;

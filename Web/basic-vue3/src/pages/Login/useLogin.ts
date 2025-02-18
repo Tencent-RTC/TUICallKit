@@ -1,9 +1,11 @@
 import { toRefs } from "vue";
 import { TUICallKitServer } from '@tencentcloud/call-uikit-vue';
 // @ts-ignore
+import TencentCloudChat from '@tencentcloud/chat';
+// @ts-ignore
 import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
 import { useMessage, useUserInfo, useMyRouter, useAegis } from "../../hooks";
-import { checkUserID } from "../../utils";
+import { checkUserID, getUrlParams } from "../../utils";
 
 
 export default function useLogin() {
@@ -33,10 +35,15 @@ export default function useLogin() {
       return;
     }
     try {
+      const { isChatTestEnv } = getUrlParams(['isChatTestEnv']);
+      const options = { SDKAppID, testEnv: isChatTestEnv === 'true' };
+      const chat = TencentCloudChat.create(options);
+
       await TUICallKitServer.init({
         userID: userID.value,
         SDKAppID,
-        userSig
+        userSig,
+        tim: chat,
       });
       userInfo.userID.value = userID.value;
       userInfo.SDKAppID.value = SDKAppID;

@@ -1,5 +1,9 @@
 <template>
-  <TUICallKit :class="callClass"/>
+  <TUICallKit
+    :class="callClass"
+    :allowedMinimized="true"
+    :allowedFullScreen="true"
+  />
   <template v-if="!isH5">
     <Layout>
       <RouterView />

@@ -57,7 +57,7 @@ If you would like to try the demo specifically fit to your usage, you can do so 
 
 4. Run the demo
   ```shell
-    npm run serve
+    npm run dev
   ```
 
 

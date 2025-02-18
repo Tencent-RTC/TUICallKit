@@ -20,6 +20,7 @@ export default function GroupCall() {
   const [inputUserID, setInputUserID] = useState('');
   const { messageApi, contextHolder, handleCallError } = useMessage();
   const { reportEvent } = useAegis();
+  // @ts-ignore
   const { createGroupID } = useChat();
 
   const handleGroupCall = async () => {
@@ -33,10 +34,9 @@ export default function GroupCall() {
       isCall: true,
     });
     try {
-      const groupID = await createGroupID(groupCallMember);
-      await TUICallKitServer.groupCall({
+      // const groupID = await createGroupID(groupCallMember);
+      await TUICallKitServer.calls({
         userIDList: groupCallMember, 
-        groupID,
         type: state?.callType === 'video' ? TUICallType.VIDEO_CALL : TUICallType.AUDIO_CALL,
       })
       reportEvent({ apiName: 'groupCall.success'});
