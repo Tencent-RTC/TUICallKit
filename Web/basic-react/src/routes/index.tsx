@@ -5,7 +5,8 @@ import Call from '../pages/Call/Call';
 import GroupCall from '../pages/GroupCall/GroupCall';
 import Error from '../pages/Error/Error';
 
-const router = createHashRouter([
+// @ts-ignore
+const router: Router = createHashRouter([
   {
     path: '/',
     element: <Login />,

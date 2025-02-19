@@ -56,7 +56,7 @@ Calls SDK for Web Vue2.6 demo 的最低要求是：
 
 4. 运行
   ```shell
-    npm run serve
+    npm run dev
   ```
 
 ## 开始您的第一次通话

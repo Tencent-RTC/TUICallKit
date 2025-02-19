@@ -1,9 +1,5 @@
 <template>
   <view class="container">
-    <TUICallKit
-      :beforeCalling="beforeCalling"
-      :afterCalling="afterCalling"
-    ></TUICallKit>
     <view class="trtc-calling-index">
       <view class="trtc-calling-index-search">
         <view class="search">
@@ -32,7 +28,6 @@
             <view class="allcheck" @click="allCancel" v-else> 取消 </view>
           </view>
         </view>
-
         <scroll-view scroll-y class="trtc-calling-group-user-list">
           <view
             class="trtc-calling-group-user-row"
@@ -82,7 +77,6 @@
 import { nextTick, shallowRef, ref, reactive } from "vue";
 import { onUnload, onLoad } from "@dcloudio/uni-app";
 import { TUICallKitServer } from "../../TUICallKit/src/index";
-import TUICallKit from "../../TUICallKit/src/Components/TUICallKit";
 import Chat from '@tencentcloud/chat';
 const data = reactive({
   searchList: [],
@@ -182,12 +176,12 @@ const groupCall = async () => {
     groupList[i] = user;
   }
   // 创建群聊
-  await createGroup(groupList);
+  // await createGroup(groupList);
   // 发起群通话
-  TUICallKitServer.groupCall({
+  TUICallKitServer.calls({
     userIDList,
     type: data.type,
-    groupID: data.groupID,
+    // groupID: data.groupID,
   });
   // 重置数据
   data.callBtn = false;
@@ -255,11 +249,6 @@ const createGroup = (userIDList) => {
 onLoad((option) => {
   data.userID = getApp().globalData.userID;
   data.type = Number(option.type);
-  TUICallKitServer.init({
-    sdkAppID: getApp().globalData.SDKAppID,
-    userID: getApp().globalData.userID,
-    userSig: getApp().globalData.userSig,
-  });
 });
 </script>
 

@@ -1,6 +1,8 @@
 <template>
   <view class="container">
     <view class='guide-box'>
+      <!-- <button @click="setCallingBell">setCallingBell</button> -->
+      <!-- <button @click="enableMuteMode">enableMuteMode</button> -->
       <view class="single-box" v-for="(item, index) in entryInfos" :key="index" :id="index" @click='handleEntry'>
         <image class="icon" mode="aspectFit" :src="item.icon" role="img"></image>
         <view class="single-content">
@@ -13,6 +15,8 @@
 </template>
 
 <script setup>
+// import { TUICallKitServer } from "../../TUICallKit/src/index";
+// import { ref } from "vue";
 const template = '1v1';
 const entryInfos = [
   {
@@ -40,6 +44,15 @@ const entryInfos = [
     navigateTo: '../calling/groupCall?type=2',
   },
 ];
+// --------铃声相关接口测试-----------------
+// let isMute = ref(false);
+// const enableMuteMode = async () => {
+//   isMute.value = !isMute.value;
+//   await TUICallKitServer.enableMuteMode(isMute.value);
+// }
+// const setCallingBell = async () => {
+//   await TUICallKitServer.setCallingBell('mp2.mp3');
+// }
 const handleEntry = (e) => {
   const url = entryInfos[e.currentTarget.id].navigateTo;
   uni.navigateTo({

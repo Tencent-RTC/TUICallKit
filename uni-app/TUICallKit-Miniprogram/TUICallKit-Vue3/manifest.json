@@ -1,6 +1,6 @@
 {
-    "name" : "TUICallKit-Vue3",
-    "appid" : "",
+    "name" : "uniapp-callkit-vue3",
+    "appid" : "__UNI__5205699",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -50,7 +50,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wxc297db62adbdb10c",
         "setting" : {
             "urlCheck" : false
         },

@@ -1,6 +1,5 @@
 <template>
   <view class="container">
-    <TUICallKit></TUICallKit>
     <view class="trtc-calling-index">
       <view class="trtc-calling-index-search">
         <view class="search">
@@ -51,7 +50,6 @@
 
 <script setup>
 import { TUICallKitServer } from "../../TUICallKit/src/index";
-import TUICallKit from "../../TUICallKit/src/Components/TUICallKit";
 import { reactive } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 const data = reactive({
@@ -95,8 +93,8 @@ const call = async () => {
     return;
   }
   try {
-    await TUICallKitServer.call({
-      userID: data.invitee.userID,
+    await TUICallKitServer.calls({
+      userIDList: [data.invitee.userID],
       type: data.type,
     });
   } catch (error) {
@@ -107,14 +105,9 @@ const call = async () => {
   }
 };
 
-onLoad(async (option) => {
+onLoad((option) => {
   data.userID = getApp().globalData.userID;
   data.type = Number(option.type);
-  await TUICallKitServer.init({
-    sdkAppID: getApp().globalData.SDKAppID,
-    userID: getApp().globalData.userID,
-    userSig: getApp().globalData.userSig,
-  });
 });
 </script>
 

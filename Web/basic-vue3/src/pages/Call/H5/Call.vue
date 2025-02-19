@@ -10,7 +10,7 @@
         v-model="calleeUserID"
         :placeholder="placeholderText"
         @input="handleCallUserID"
-        @change="handleCall"
+        @keyup.enter="handleCall"
       >
         <template #prepend> userID </template>
       </el-input>

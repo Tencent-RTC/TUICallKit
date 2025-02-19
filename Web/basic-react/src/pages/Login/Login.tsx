@@ -7,7 +7,7 @@ import LoginH5 from './H5/LoginH5';
 export default function Login() {
   const { userInfo, setUserInfo } = useContext(UserInfoContext);
   useEffect(() => {
-    const { SDKAppID, SecretKey } = getUrlParams();
+    const { SDKAppID, SecretKey } = getUrlParams(['SDKAppID', 'SecretKey']);
     setUserInfo({
       ...userInfo,
       SDKAppID: Number(SDKAppID),
