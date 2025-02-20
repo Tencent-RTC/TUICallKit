@@ -22,7 +22,6 @@ import com.tencent.qcloud.tuicore.interfaces.TUIExtensionEventListener
 import com.tencent.qcloud.tuicore.interfaces.TUIExtensionInfo
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit
-import com.tencent.qcloud.tuikit.tuicallkit.data.OfflinePushInfoConfig
 import com.tencent.qcloud.tuikit.tuicallkit.extensions.joiningroupcall.JoinInGroupCallView
 import com.tencent.qcloud.tuikit.tuicallkit.extensions.joiningroupcall.JoinInGroupCallViewModel
 import com.tencent.qcloud.tuikit.tuicallkit.extensions.recents.RecentCallsFragment
@@ -252,10 +251,6 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
         var userID: String? = null
         var groupID: String? = null
         override fun onClicked(param: Map<String, Any>?) {
-            val callParams = TUICallDefine.CallParams().apply {
-                offlinePushInfo = OfflinePushInfoConfig.createOfflinePushInfo(appContext)
-                chatGroupId = groupID
-            }
             if (!TextUtils.isEmpty(groupID)) {
                 var groupMemberSelectActivityName =
                     TUIConstants.TUIContact.StartActivity.GroupMemberSelect.CLASSIC_ACTIVITY_NAME
@@ -275,13 +270,11 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
                         val stringList: ArrayList<String>? = data.getStringArrayListExtra(
                             TUIConstants.TUIContact.StartActivity.GroupMemberSelect.DATA_LIST
                         )
-                        TUICallKit.createInstance(appContext).calls(stringList, mediaType!!, callParams, null)
+                        TUICallKit.createInstance(appContext).groupCall(groupID!!, stringList, mediaType!!)
                     }
                 }
             } else if (!TextUtils.isEmpty(userID)) {
-                val list = ArrayList<String>()
-                userID?.let { list.add(it) }
-                TUICallKit.createInstance(appContext).calls(list, mediaType!!, callParams, null)
+                TUICallKit.createInstance(appContext).call(userID!!, mediaType!!)
             } else {
                 Log.e(TAG, "onClicked event ignored, groupId is empty or userId is empty, cannot start call")
             }
@@ -455,7 +448,7 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
             val userIDs = param[TUIConstants.TUICalling.PARAM_NAME_USERIDS] as Array<String>?
             val typeString = param[TUIConstants.TUICalling.PARAM_NAME_TYPE] as String?
             val groupID = param[TUIConstants.TUICalling.PARAM_NAME_GROUPID] as String?
-            var userIdList: List<String?>? = userIDs?.toList()
+            var userIdList: List<String?>? = userIDs?.toList() ?: ArrayList()
             Logger.info(TAG, "onCall, groupID: $groupID, userIdList: $userIdList")
             userIdList = userIdList?.filterNotNull()
 
@@ -465,11 +458,14 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
             } else if (TUIConstants.TUICalling.TYPE_VIDEO == typeString) {
                 mediaType = TUICallDefine.MediaType.Video
             }
-            val callParams = TUICallDefine.CallParams().apply {
-                offlinePushInfo = OfflinePushInfoConfig.createOfflinePushInfo(appContext)
-                chatGroupId = groupID
+
+            if (!TextUtils.isEmpty(groupID)) {
+                TUICallKit.createInstance(appContext).groupCall(groupID!!, userIdList, mediaType)
+            } else if (userIdList?.size == 1) {
+                TUICallKit.createInstance(appContext).call(userIdList[0]!!, mediaType)
+            } else {
+                Log.e(TAG, "onCall ignored, groupId is empty and userList is not 1, cannot start call or groupCall")
             }
-            TUICallKit.createInstance(appContext).calls(userIdList, mediaType, callParams, null)
         }
         return null
     }
