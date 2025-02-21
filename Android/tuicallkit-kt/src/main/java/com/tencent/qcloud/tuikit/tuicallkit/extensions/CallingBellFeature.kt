@@ -10,13 +10,13 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.text.TextUtils
 import androidx.core.content.ContextCompat
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
+import com.tencent.cloud.tuikit.engine.call.TUICallEngine
 import com.tencent.liteav.audio.TXAudioEffectManager.AudioMusicParam
 import com.tencent.qcloud.tuicore.TUIConfig
 import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.util.SPUtils
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.utils.DeviceUtils
@@ -24,17 +24,16 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-
 class CallingBellFeature(context: Context) {
-    private val context: Context
+    private val context: Context = context.applicationContext
     private val mediaPlayer: MediaPlayer
     private var handler: Handler? = null
     private var bellResourceId: Int
     private var bellResourcePath: String
     private var dialPath: String? = null
 
+
     init {
-        this.context = context.applicationContext
         mediaPlayer = MediaPlayer()
         bellResourceId = -1
         bellResourcePath = ""
@@ -46,7 +45,7 @@ class CallingBellFeature(context: Context) {
         TUICallState.instance.selfUser.get().callStatus.observe {
             when (it) {
                 TUICallDefine.Status.Waiting -> {
-                    if (TUICallState.instance?.selfUser?.get()?.callRole?.get() == TUICallDefine.Role.Caller) {
+                    if (TUICallState.instance.selfUser.get().callRole.get() == TUICallDefine.Role.Caller) {
                         startDialingMusic()
                     } else {
                         if (DeviceUtils.isAppRunningForeground(TUIConfig.getAppContext()) || isFCMData()) {

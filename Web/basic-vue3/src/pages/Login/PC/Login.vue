@@ -5,7 +5,7 @@
       :placeholder=placeholderText
       v-model="userID"
       @input="handleInputUserID"
-      @change="handleLogin"
+      @keyup.enter="handleLogin"
     />
     <p class="login-tip"> {{ t('userID Limit') }}</p>
     <Button 

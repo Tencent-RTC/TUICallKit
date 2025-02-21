@@ -11,7 +11,9 @@ import SnapKit
 class VideoCallerAndCalleeAcceptedView: UIView {
     
     let isCameraOpenObserver = Observer()
-    
+    let isMicMuteObserver = Observer()
+    let audioDeviceObserver = Observer()
+
     lazy var muteMicBtn: BaseControlButton = {
         let titleKey = TUICallState.instance.isMicMute.value ? "TUICallKit.muted" : "TUICallKit.unmuted"
         let btn = BaseControlButton.create(frame: CGRect.zero,
@@ -217,5 +219,15 @@ class VideoCallerAndCalleeAcceptedView: UIView {
             guard let self = self else { return }
             self.updateCloseCameraBtn(open: TUICallState.instance.isCameraOpen.value)
         }
+        
+        TUICallState.instance.isMicMute.addObserver(isMicMuteObserver, closure: { [weak self] newValue, _ in
+            guard let self = self else { return }
+            self.updateMuteAudioBtn(mute: newValue)
+        })
+        
+        TUICallState.instance.audioDevice.addObserver(audioDeviceObserver, closure: { [weak self] newValue, _ in
+            guard let self = self else { return }
+            self.updateChangeSpeakerBtn(isSpeaker: newValue == .speakerphone)
+        })
     }
 }

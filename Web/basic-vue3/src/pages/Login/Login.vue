@@ -13,7 +13,7 @@ import LoginH5 from './H5/Login.vue';
 const userInfo = toRefs(useUserInfo());
 
 onMounted(() => {
-  const { SDKAppID, SecretKey } = getUrlParams();
+  const { SDKAppID, SecretKey } = getUrlParams(['SDKAppID', 'SecretKey']);
   userInfo.SDKAppID.value = Number(SDKAppID);
   userInfo.SecretKey.value = SecretKey;
   userInfo.currentPage.value = 'login';

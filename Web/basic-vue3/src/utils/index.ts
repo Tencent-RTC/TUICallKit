@@ -1,4 +1,3 @@
-import { IUrlPrams } from '../interface';
 import { classNames } from './class-names';
 import QuickLinkObj from './quick-link';
 
@@ -19,21 +18,16 @@ export function getUrl() {
   return window?.location.href;
 }
 
-export function getUrlParams() {
-  const search = window.location?.href?.split('?')[1]?.split('&') || [];
-  const params: IUrlPrams = {
-    SDKAppID: 0,
-    SecretKey: '',
-  };
-  search.forEach((item) => {
-    const [key, value] = item.split('=');
-    if (key === 'SDKAppID') {
-      params[key] = Number(value);  
-    }
-    // @ts-ignore
-    params[key] = value;
+export function getUrlParams(keyList: string[]) {
+  const url = window?.location?.href;
+  const params = new URLSearchParams(new URL(url).search);
+  const result: any = {};
+
+  keyList.forEach(key => {
+    result[key] = params.get(key);
   });
-  return params;
+
+  return result;
 }
 
 export function setLocalStorage(key: string, value: string) {

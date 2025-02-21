@@ -7,7 +7,7 @@
 
 import Foundation
 import TUICore
-import TUICallEngine
+import RTCRoomEngine
 import AVFoundation
 
 class TUICallState: NSObject {
@@ -96,7 +96,7 @@ extension TUICallState: TUICallObserver {
         if calleeIdList.count == 1 {
             TUICallState.instance.scene.value = .single
         } else {
-            TUICallState.instance.scene.value = .multi
+            TUICallState.instance.scene.value = .group
         }
         
         if groupId != nil {
@@ -119,10 +119,14 @@ extension TUICallState: TUICallObserver {
             }
         }
         
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            CallEngineManager.instance.updateVoIPInfo(callerId: callerId, calleeList: calleeIdList, groupId: groupId ?? "")
+        }
     }
     
     func onCallCancelled(callerId: String) {
         cleanState()
+        CallEngineManager.instance.closeVoIP()
     }
     
     func onKickedOffline() {
@@ -205,7 +209,7 @@ extension TUICallState: TUICallObserver {
             break
         }
         
-        if TUICallState.instance.remoteUserList.value.isEmpty {
+        if TUICallState.instance.remoteUserList.value.isEmpty || TUICallState.instance.selfUser.value.id.value == userId {
             cleanState()
         }
         
@@ -299,7 +303,7 @@ extension TUICallState: TUICallObserver {
     }
     
     func checkIsBadNetwork(quality: TUINetworkQuality) -> Bool {
-        return quality == .bad || quality == .vbad || quality == .down
+        return quality == .bad || quality == .veryBad || quality == .down
     }
     
     func onUserAudioAvailable(userId: String, isAudioAvailable: Bool) {
@@ -329,12 +333,14 @@ extension TUICallState: TUICallObserver {
         } else {
             CallEngineManager.instance.closeMicrophone()
         }
-        
+
         showAntiFraudReminder()
+        CallEngineManager.instance.callBegin()
     }
     
     func onCallEnd(roomId: TUIRoomId, callMediaType: TUICallMediaType, callRole: TUICallRole, totalTime: Float) {
         cleanState()
+        CallEngineManager.instance.closeVoIP()
     }
     
     func onCallMediaTypeChanged(oldCallMediaType: TUICallMediaType, newCallMediaType: TUICallMediaType) {

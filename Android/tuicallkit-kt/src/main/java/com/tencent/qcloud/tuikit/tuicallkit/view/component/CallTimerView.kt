@@ -2,11 +2,11 @@ package com.tencent.qcloud.tuikit.tuicallkit.view.component
 
 import android.content.Context
 import androidx.appcompat.widget.AppCompatTextView
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuicore.util.DateTimeUtil
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
+import com.trtc.tuikit.common.livedata.Observer
 
 class CallTimerView(context: Context) : AppCompatTextView(context) {
 

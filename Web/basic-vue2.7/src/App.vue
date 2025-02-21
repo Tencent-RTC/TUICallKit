@@ -52,6 +52,12 @@ onMounted(() => {
 });
 
 async function login() {
+  const { SDKAppID: sdkAppId, SecretKey: secretKey } = GenerateTestUserSig.genTestUserSig({
+    userID: loginUserID.value, 
+  });
+  SDKAppID.value = SDKAppID.value ? SDKAppID.value : sdkAppId;
+  SecretKey.value = SecretKey.value ? SecretKey.value : secretKey || "";
+
   if (!SDKAppID.value || SDKAppID.value === 0) {
     ElMessage.error(t("input-SDKAppID"));
     return;
@@ -112,14 +118,16 @@ async function startCall(typeString: string) {
   try {
     isCalling.value = true;
     if (callType === "call")
-      await TUICallKitServer.call({ userID: userList.value[0], type });
+      await TUICallKitServer.calls({
+        userIDList: [userList.value[0]],
+        type, 
+      });
     else {
       // you can use existing groups, no need to create a new group every time
-      groupID.value = await createGroup();
-      await TUICallKitServer.groupCall({
+      // groupID.value = await createGroup();
+      await TUICallKitServer.calls({
         userIDList: userList.value,
         type,
-        groupID: groupID.value,
       });
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

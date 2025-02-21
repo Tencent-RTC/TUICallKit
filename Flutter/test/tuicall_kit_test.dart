@@ -126,6 +126,54 @@ class MockCallsUikitPlatform
     throw UnimplementedError();
   }
 
+  @override
+  Future<bool> checkUsbCameraService() {
+    // TODO: implement checkUsbCameraService
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> closeUsbCamera() {
+    // TODO: implement closeUsbCamera
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> imSDKInitSuccessEvent() {
+    // TODO: implement imSDKInitSuccessEvent
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> loginSuccessEvent() {
+    // TODO: implement loginSuccessEvent
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> logoutSuccessEvent() {
+    // TODO: implement logoutSuccessEvent
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> openUsbCamera(int viewId) {
+    // TODO: implement openUsbCamera
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> openLockScreenApp() {
+    // TODO: implement openLockScreenApp
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> isSamsungDevice() {
+    // TODO: implement isSamsungDevice
+    throw UnimplementedError();
+  }
+
 }
 
 void main() {

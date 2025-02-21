@@ -17,6 +17,7 @@
   "common_problems": "よくある質問",
   "single_call": "シングル通話",
   "group_call": "グループ通話",
+  "multi_call": "複数人通話",
   "enter_callee_id": "呼び出すUserIdを入力してください",
   "media_type": "メディアタイプ",
   "video_call": "ビデオ通話",
@@ -28,6 +29,7 @@
   "callee_id_list": "ユーザーIDリスト",
   "separated": "IDはカンマで区切る",
   "join_group_call": "グループ通話に参加する",
+  "join_multi_call": "複数人での通話に参加する",
   "digital_room": "デジタルルーム番号",
   "string_room": "文字列ルーム番号",
   "enter_room_id": "RoomIdを入力してください",
@@ -56,5 +58,6 @@
   "offline_push_info_settings": "オフラインプッシュメッセージ設定",
   "please_enter": "入力してください",
   "show_blur_background_button": "背景をぼかす",
-  "show_incoming_banner": "着信表示バナー"
+  "show_incoming_banner": "着信表示バナー",
+  "optional_parameters": "オプションパラメータ"
 }

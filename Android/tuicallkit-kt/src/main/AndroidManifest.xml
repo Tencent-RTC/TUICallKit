@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -40,12 +41,6 @@
             android:authorities="${applicationId}.ServiceInitializer"
             android:enabled="true"
             android:exported="false" />
-
-        <service
-            android:name="com.tencent.qcloud.tuikit.tuicallkit.extensions.TUICallService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="microphone" />
 
         <service
             android:name="com.tencent.qcloud.tuikit.tuicallkit.view.component.floatview.FloatWindowService"

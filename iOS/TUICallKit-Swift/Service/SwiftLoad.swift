@@ -8,7 +8,8 @@
 
 import Foundation
 import TUICore
-import TUICallEngine
+import RTCRoomEngine
+
 
 extension NSObject {
     @objc class func swiftLoad() {
@@ -27,7 +28,7 @@ extension NSObject {
                                   object: TUICallKitExtension.instance)
         TUICore.registerExtension(TUICore_TUIContactExtension_FriendProfileActionMenu_MinimalistExtensionID,
                                   object: TUICallKitExtension.instance)
-        TUICore.registerExtension(TUICore_TUIGroupExtension_GroupInfoCardActionMenu_MinimalistExtensionID,
+        TUICore.registerExtension(TUICore_TUIContactExtension_GroupInfoCardActionMenu_MinimalistExtensionID,
                                   object: TUICallKitExtension.instance)
         
         TUICore.registerExtension(TUICore_TUIChatExtension_ChatViewTopArea_ClassicExtensionID,

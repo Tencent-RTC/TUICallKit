@@ -5,19 +5,18 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.appcompat.widget.AppCompatSpinner;
 
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine;
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
-import com.tencent.qcloud.tuikit.TUICommonDefine;
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine;
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit;
 
 public class JoinInGroupCallActivity extends BaseActivity {
 
-    private EditText                mEditGroupId;
+    private EditText                mEditId;
     private EditText                mEditRoomId;
     private AppCompatSpinner        mSpinnerRoomId;
     private TUICallDefine.MediaType mMediaType   = TUICallDefine.MediaType.Audio;
@@ -33,12 +32,11 @@ public class JoinInGroupCallActivity extends BaseActivity {
     private void initView() {
         mSpinnerRoomId = findViewById(R.id.spinner_room_id);
         mEditRoomId = findViewById(R.id.et_room_id);
-        mEditGroupId = findViewById(R.id.et_group_id);
+        mEditId = findViewById(R.id.et_group_id);
 
         findViewById(R.id.iv_back).setOnClickListener(v -> onBackPressed());
         findViewById(R.id.btn_call).setOnClickListener(v -> joinInGroupCall());
-        findViewById(R.id.rb_video).setOnClickListener(v -> ((RadioButton) v).setChecked(true));
-        findViewById(R.id.rb_video).setOnClickListener(v -> ((RadioButton) v).setChecked(true));
+
         ((RadioGroup) findViewById(R.id.rg_media_type)).setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.rb_video) {
                 mMediaType = TUICallDefine.MediaType.Video;
@@ -60,11 +58,12 @@ public class JoinInGroupCallActivity extends BaseActivity {
     }
 
     private void joinInGroupCall() {
-        String groupId = mEditGroupId.getText().toString();
+        String groupId = mEditId.getText().toString();
         if (TextUtils.isEmpty(groupId)) {
             ToastUtil.toastShortMessage(getString(R.string.app_please_input_group_id));
             return;
         }
+
         String roomId = mEditRoomId.getText().toString();
         if (TextUtils.isEmpty(roomId)) {
             ToastUtil.toastShortMessage(getString(R.string.app_please_input_room_id));

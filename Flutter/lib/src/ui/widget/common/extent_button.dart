@@ -68,6 +68,7 @@ class ExtendButton extends StatelessWidget {
             alignment: Alignment.center,
             child: Text(
               tips,
+              textScaleFactor: 1.0,
               style: TextStyle(fontSize: 12, color: textColor),
             ),
           ),

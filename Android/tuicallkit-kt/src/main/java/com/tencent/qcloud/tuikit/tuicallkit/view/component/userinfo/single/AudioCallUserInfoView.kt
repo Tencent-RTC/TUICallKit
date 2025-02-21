@@ -5,11 +5,11 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.utils.ImageLoader
 import com.tencent.qcloud.tuikit.tuicallkit.view.root.BaseCallView
+import com.trtc.tuikit.common.livedata.Observer
 
 class AudioCallUserInfoView(context: Context) : BaseCallView(context) {
     private var imageBackground: ImageView? = null

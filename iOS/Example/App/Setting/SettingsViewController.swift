@@ -8,7 +8,7 @@
 import Foundation
 import TUICore
 import UIKit
-import TUICallEngine
+import RTCRoomEngine
 
 #if canImport(TUICallKit_Swift)
 import TUICallKit_Swift
@@ -217,7 +217,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     lazy var resolutionLabel: UILabel = {
         return createLabel(textSize: 16, text: TUICallKitAppLocalize("TUICallKitApp.Setting.Resolution"))
     }()
-    let resolutionData = ["640*480","960*720","640*360","960*540","1280*720","1920*1080"]
+    let resolutionData = ["640*360","960*540","1280*720","1920*1080"]
     lazy var resolutionDropMenu: SwiftDropMenuListView = {
         let menu = SwiftDropMenuListView(frame: CGRect.zero)
         let titleStr: String = resolutionData[convertResolutionToIndex(resolution: SettingsConfig.share.resolution)] + " >"
@@ -851,36 +851,28 @@ extension SettingsViewController {
     
     func convertResolutionToIndex(resolution: TUIVideoEncoderParamsResolution) -> Int {
         switch resolution {
-        case ._640_480:
-            return 0
-        case ._960_720:
-            return 1
         case ._640_360:
-            return 2
+            return 0
         case ._960_540:
-            return 3
+            return 1
         case ._1280_720:
-            return 4
-        case ._1920_1080:
-            return 5
-        default:
             return 2
+        case ._1920_1080:
+            return 3
+        default:
+            return 0
         }
     }
     
     func convertIndexToResolution(index: Int) -> TUIVideoEncoderParamsResolution {
         switch index {
         case 0:
-            return ._640_480
-        case 1:
-            return ._960_720
-        case 2:
             return ._640_360
-        case 3:
+        case 1:
             return ._960_540
-        case 4:
+        case 2:
             return ._1280_720
-        case 5:
+        case 3:
             return ._1920_1080
         default:
             return ._640_360

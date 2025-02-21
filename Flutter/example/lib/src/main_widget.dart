@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tencent_calls_uikit/tuicall_kit.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tencent_calls_uikit/tencent_calls_uikit.dart';
 import 'package:tuicall_kit_example/src/group_call_widget.dart';
+import 'package:tuicall_kit_example/src/login_widget.dart';
 import 'package:tuicall_kit_example/src/settings/settings_config.dart';
 import 'package:tuicall_kit_example/src/single_call_widget.dart';
-import 'package:tuicall_kit_example/src/login_widget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainWidget extends StatefulWidget {
   const MainWidget({Key? key}) : super(key: key);
@@ -15,7 +15,6 @@ class MainWidget extends StatefulWidget {
 }
 
 class _MainWidgetState extends State<MainWidget> {
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -47,8 +46,9 @@ class _MainWidgetState extends State<MainWidget> {
                 ),
                 child: InkWell(
                   child: Image(
-                    image: NetworkImage(
-                        SettingsConfig.avatar.isNotEmpty ? SettingsConfig.avatar : SettingsConfig.defaultAvatar),
+                    image: NetworkImage(SettingsConfig.avatar.isNotEmpty
+                        ? SettingsConfig.avatar
+                        : SettingsConfig.defaultAvatar),
                     fit: BoxFit.cover,
                     errorBuilder: (ctx, err, stackTrace) => Image.asset('images/people.webp'),
                   ),
@@ -58,13 +58,17 @@ class _MainWidgetState extends State<MainWidget> {
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
                 SettingsConfig.nickname,
-                style: const TextStyle(fontSize: 14, fontStyle: FontStyle.normal, color: Colors.black),
+                style:
+                    const TextStyle(fontSize: 14, fontStyle: FontStyle.normal, color: Colors.black),
               ),
               const SizedBox(height: 10),
               Text(
                 'userId: ${SettingsConfig.userId}',
                 style: const TextStyle(
-                    fontSize: 12, fontStyle: FontStyle.normal, fontWeight: FontWeight.normal, color: Colors.black),
+                    fontSize: 12,
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black),
               )
             ])
           ],
@@ -88,16 +92,23 @@ class _MainWidgetState extends State<MainWidget> {
                 ),
                 const SizedBox(width: 20),
                 SizedBox(
-                    width: _calculateTextWidth(AppLocalizations.of(context)!.trtc, const TextStyle(fontSize: 32)) >
+                    width: _calculateTextWidth(
+                                AppLocalizations.of(context)!.trtc, const TextStyle(fontSize: 32)) >
                             (MediaQuery.of(context).size.width - 70 - 10)
-                        ? _calculateTextWidth(AppLocalizations.of(context)!.trtc, const TextStyle(fontSize: 32)) / 2
-                        : _calculateTextWidth(AppLocalizations.of(context)!.trtc, const TextStyle(fontSize: 32)),
+                        ? _calculateTextWidth(
+                                AppLocalizations.of(context)!.trtc, const TextStyle(fontSize: 32)) /
+                            2
+                        : _calculateTextWidth(
+                            AppLocalizations.of(context)!.trtc, const TextStyle(fontSize: 32)),
                     child: Text(
                       AppLocalizations.of(context)!.trtc,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                          fontSize: 30, fontStyle: FontStyle.normal, fontWeight: FontWeight.w400, color: Colors.black),
+                          fontSize: 30,
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black),
                     ))
               ],
             ),
@@ -120,7 +131,8 @@ class _MainWidgetState extends State<MainWidget> {
                   onPressed: () => _goSingleCallWidget(),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(const Color(0xff056DF6)),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
+                    shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -146,7 +158,8 @@ class _MainWidgetState extends State<MainWidget> {
                   onPressed: () => _goGroupCallWidget(),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(const Color(0xff056DF6)),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
+                    shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -154,7 +167,7 @@ class _MainWidgetState extends State<MainWidget> {
                       const Icon(Icons.people_outline),
                       const SizedBox(width: 10),
                       Text(
-                        AppLocalizations.of(context)!.group_call,
+                        AppLocalizations.of(context)!.multi_call,
                         style: const TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.normal,
@@ -175,7 +188,9 @@ class _MainWidgetState extends State<MainWidget> {
           return CupertinoAlertDialog(
             title: Text(AppLocalizations.of(context)!.logout),
             actions: [
-              CupertinoDialogAction(child: Text(AppLocalizations.of(context)!.cancel), onPressed: () => Navigator.of(context).pop()),
+              CupertinoDialogAction(
+                  child: Text(AppLocalizations.of(context)!.cancel),
+                  onPressed: () => Navigator.of(context).pop()),
               CupertinoDialogAction(
                   child: Text(AppLocalizations.of(context)!.confirm),
                   onPressed: () {
@@ -190,10 +205,9 @@ class _MainWidgetState extends State<MainWidget> {
   _logout() {
     TUICallKit.instance.logout();
 
-    TUICallKit.navigatorObserver.navigator?.pushAndRemoveUntil(
-        MaterialPageRoute(builder: (widget) {
-          return const LoginWidget();
-        }), (route) => false);
+    TUICallKit.navigatorObserver.navigator?.pushAndRemoveUntil(MaterialPageRoute(builder: (widget) {
+      return const LoginWidget();
+    }), (route) => false);
   }
 
   _goSingleCallWidget() async {

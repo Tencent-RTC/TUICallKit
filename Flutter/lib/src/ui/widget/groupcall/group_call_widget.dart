@@ -1,14 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
-import 'package:tencent_calls_uikit/src/call_manager.dart';
-import 'package:tencent_calls_uikit/src/call_state.dart';
+import 'package:tencent_calls_uikit/src/call_define.dart';
+import 'package:tencent_calls_uikit/src/impl/call_manager.dart';
+import 'package:tencent_calls_uikit/src/impl/call_state.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/data/user.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
-import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
-import 'package:tencent_calls_uikit/src/ui/tuicall_navigator_observer.dart';
+import 'package:tencent_calls_uikit/src/platform/call_kit_platform_interface.dart';
+import 'package:tencent_calls_uikit/src/ui/call_navigator_observer.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/common/extent_button.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/common/timing_widget.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/groupcall/group_call_user_widget_data.dart';
@@ -150,11 +150,13 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
                 User.getUserDisplayName(CallState.instance.caller),
+                textScaleFactor: 1.0,
                 style: const TextStyle(fontSize: 24, color: Colors.white),
               ),
             ),
             Text(
               CallKit_t("invitedToGroupCall"),
+              textScaleFactor: 1.0,
               style: const TextStyle(fontSize: 18, color: Colors.white),
             ),
             const SizedBox(
@@ -162,6 +164,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
             ),
             Text(
               CallKit_t("theyAreAlsoThere"),
+              textScaleFactor: 1.0,
               style: const TextStyle(color: Colors.white),
             ),
             Container(
@@ -469,6 +472,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
       CallState.instance.isMicrophoneMute = true;
       await CallManager.instance.closeMicrophone();
     }
+    TUICore.instance.notifyEvent(setStateEvent);
     setState(() {});
   }
 
@@ -507,13 +511,13 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
   }
 
   void _handleOpenCloseCamera() async {
-    CallState.instance.isCameraOpen = !CallState.instance.isCameraOpen;
-    if (CallState.instance.isCameraOpen) {
+    if (!CallState.instance.isCameraOpen) {
       await CallManager.instance
           .openCamera(CallState.instance.camera, CallState.instance.selfUser.viewID);
     } else {
       await CallManager.instance.closeCamera();
     }
+    TUICore.instance.notifyEvent(setStateEvent);
     setState(() {});
   }
 }

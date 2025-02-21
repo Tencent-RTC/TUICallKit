@@ -6,44 +6,33 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.ViewGroup
 import android.widget.ImageView
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuicore.ServiceInitializer
 import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.TUILogin
 import com.tencent.qcloud.tuicore.util.ToastUtil
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
+import com.tencent.qcloud.tuikit.tuicallkit.utils.Logger
+import com.trtc.tuikit.common.livedata.Observer
 
 @SuppressLint("AppCompatCustomView")
 class InviteUserButton(context: Context) : ImageView(context) {
 
     private var callStatusObserver = Observer<TUICallDefine.Status> {
-        visibility = if (it == TUICallDefine.Status.Accept) {
-            VISIBLE
-        } else {
-            GONE
+        if (TUICallDefine.Status.Accept == it) {
+            this.visibility = VISIBLE
         }
     }
 
     init {
         initView()
-
         addObserver()
-    }
-
-    private fun addObserver() {
-        TUICallState.instance.selfUser.get().callStatus.observe(callStatusObserver)
     }
 
     fun clear() {
         removeObserver()
-    }
-
-    private fun removeObserver() {
-        TUICallState.instance.selfUser.get().callStatus.removeObserver(callStatusObserver)
     }
 
     private fun initView() {
@@ -54,15 +43,12 @@ class InviteUserButton(context: Context) : ImageView(context) {
         )
         layoutParams = lp
 
-        visibility =
-            if (TUICallDefine.Role.Caller == TUICallState.instance.selfUser.get().callRole?.get()
-                || TUICallDefine.Status.Accept == TUICallState.instance.selfUser.get().callStatus.get()
-            ) {
-                VISIBLE
-            } else {
-                GONE
-            }
-
+        val isCaller = TUICallDefine.Role.Caller == TUICallState.instance.selfUser.get().callRole.get()
+        val isAccept = TUICallDefine.Status.Accept == TUICallState.instance.selfUser.get().callStatus.get()
+        visibility = when {
+            isCaller || isAccept -> VISIBLE
+            else -> GONE
+        }
         setOnClickListener {
             inviteUser()
         }
@@ -80,7 +66,7 @@ class InviteUserButton(context: Context) : ImageView(context) {
         if (TUICallDefine.Role.Called == TUICallState.instance.selfUser.get().callRole?.get()
             && TUICallDefine.Status.Accept != status
         ) {
-            TUILog.i(TAG, "This feature can only be used after the callee accepted the call.")
+            Logger.info(TAG, "This feature can only be used after the callee accepted the call.")
             return
         }
         val list = ArrayList<String?>()
@@ -92,11 +78,19 @@ class InviteUserButton(context: Context) : ImageView(context) {
         if (!list.contains(TUILogin.getLoginUser())) {
             list.add(TUILogin.getLoginUser())
         }
-        TUILog.i(TAG, "initInviteUserFunction, groupId: $groupId ,list: $list")
+        Logger.info(TAG, "inviteUserButtonClicked, groupId: $groupId ,list: $list")
         val bundle = Bundle()
         bundle.putString(Constants.GROUP_ID, groupId)
         bundle.putStringArrayList(Constants.SELECT_MEMBER_LIST, list)
         TUICore.startActivity("SelectGroupMemberActivity", bundle)
+    }
+
+    private fun addObserver() {
+        TUICallState.instance.selfUser.get().callStatus.observe(callStatusObserver)
+    }
+
+    private fun removeObserver() {
+        TUICallState.instance.selfUser.get().callStatus.removeObserver(callStatusObserver)
     }
 
     companion object {

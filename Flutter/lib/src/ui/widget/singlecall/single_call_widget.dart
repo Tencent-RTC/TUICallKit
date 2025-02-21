@@ -1,15 +1,17 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
-import 'package:tencent_calls_uikit/src/call_manager.dart';
-import 'package:tencent_calls_uikit/src/call_state.dart';
+import 'package:tencent_calls_uikit/src/call_define.dart';
+import 'package:tencent_calls_uikit/src/ui/widget/common/call_videoview.dart';
+import 'package:tencent_calls_uikit/src/impl/call_manager.dart';
+import 'package:tencent_calls_uikit/src/impl/call_state.dart';
 import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/data/user.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
-import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
-import 'package:tencent_calls_uikit/src/ui/tuicall_navigator_observer.dart';
+import 'package:tencent_calls_uikit/src/platform/call_kit_platform_interface.dart';
+import 'package:tencent_calls_uikit/src/ui/call_navigator_observer.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/common/timing_widget.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/singlecall/single_function_widget.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
@@ -35,7 +37,7 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
   double _smallViewRight = 20;
   bool _isOnlyShowBigVideoView = false;
 
-  final Widget _localVideoView = TUIVideoView(
+  final Widget _localVideoView = CallVideoView(
       key: CallState.instance.selfUser.key,
       onPlatformViewCreated: (viewId) {
         CallState.instance.selfUser.viewID = viewId;
@@ -44,7 +46,7 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
         }
       });
 
-  final Widget _remoteVideoView = TUIVideoView(
+  final Widget _remoteVideoView = CallVideoView(
       key: CallState.instance.remoteUserList.isEmpty
           ? GlobalKey()
           : CallState.instance.remoteUserList[0].key,
@@ -80,12 +82,16 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
             fit: StackFit.expand,
             children: [
               _buildBackground(),
+
               _buildBigVideoWidget(),
               _isOnlyShowBigVideoView ? const SizedBox() : _buildSmallVideoWidget(),
+
               _isOnlyShowBigVideoView ? const SizedBox() : _buildFloatingWindowBtnWidget(),
               _isOnlyShowBigVideoView ? const SizedBox() : _buildTimerWidget(),
+
               _isOnlyShowBigVideoView ? const SizedBox() : _buildUserInfoWidget(),
               _isOnlyShowBigVideoView ? const SizedBox() : _buildHintTextWidget(),
+
               _isOnlyShowBigVideoView ? const SizedBox() : _buildFunctionButtonWidget(),
             ],
           ),
@@ -196,6 +202,7 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
             const SizedBox(height: 20),
             Text(
               showName,
+              textScaleFactor: 1.0,
               style: TextStyle(
                 fontSize: 24,
                 color: _getTextColor(),
@@ -213,8 +220,6 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
   }
 
   _buildHintTextWidget() {
-    bool isWaiting = CallState.instance.selfUser.callStatus == TUICallStatus.waiting ? true : false;
-
     if (CallState.instance.selfUser.callRole == TUICallRole.caller &&
         CallState.instance.selfUser.callStatus == TUICallStatus.accept &&
         CallState.instance.timeCount < 1) {
@@ -229,32 +234,42 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
       }
     }
 
+    String hintText = "";
+    TextStyle textStyle;
+
+    bool isWaiting = CallState.instance.selfUser.callStatus == TUICallStatus.waiting ? true : false;
+
+    if (_isShowAcceptText) {
+      hintText = CallKit_t('connected');
+      textStyle = TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: _getTextColor());
+    } else {
+      if (isWaiting && CallState.instance.selfUser.callRole == TUICallRole.called) {
+        hintText = CallState.instance.mediaType == TUICallMediaType.audio
+            ? CallKit_t("invitedToAudioCall")
+            : CallKit_t("invitedToVideoCall");
+      } else if (NetworkQualityHint.local == CallState.instance.networkQualityReminder) {
+        hintText = CallKit_t("selfNetworkLowQuality");
+      } else if (NetworkQualityHint.remote == CallState.instance.networkQualityReminder) {
+        hintText = CallKit_t("otherPartyNetworkLowQuality");
+      } else if (isWaiting) {
+        hintText = CallKit_t("waitingForInvitationAcceptance");
+      }
+      textStyle = TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: _getTextColor());
+    }
+
     return Positioned(
         top: MediaQuery.of(context).size.height * 2 / 3,
         width: MediaQuery.of(context).size.width,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            isWaiting
-                ? Text(
-                    CallState.instance.selfUser.callRole == TUICallRole.caller
-                        ? CallKit_t("waitingForInvitationAcceptance")
-                        : CallState.instance.mediaType == TUICallMediaType.audio
-                            ? CallKit_t("invitedToAudioCall")
-                            : CallKit_t("invitedToVideoCall"),
-                    style: TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w400, color: _getTextColor()),
-                  )
-                : const SizedBox(),
-            _isShowAcceptText
-                ? Text(
-                    CallKit_t('connected'),
-                    style: TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w600, color: _getTextColor()),
-                  )
-                : const SizedBox(),
-          ],
-        ));
+        child: Center(
+          child: hintText.isNotEmpty
+              ? Text(
+            hintText,
+            textScaleFactor: 1.0,
+            style: textStyle,
+          )
+              : const SizedBox(),
+        ),
+    );
   }
 
   _buildFunctionButtonWidget() {

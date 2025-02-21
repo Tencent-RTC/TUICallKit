@@ -21,7 +21,7 @@
     <string name="app_hint_user_name">请输入用户名</string>
     <string name="app_tips_user_name">仅限中文、字母、数字和下划线，2–20个字</string>
     <string name="app_toast_register_success_and_logging_in">注册成功</string>
-    <string name="app_toast_failed_to_set">设置失败: %s</string>z
+    <string name="app_toast_failed_to_set">设置失败: %s</string>
     <string name="app_start_call">发起通话</string>
     <string name="app_login_out">退出登录</string>
 
@@ -43,7 +43,6 @@
     <string name="app_user_id_list">用户ID列表</string>
     <string name="app_join_group_call">加入群组通话</string>
     <string name="app_media_type">媒体类型</string>
-    <string name="app_group_call_button">体验群组通话</string>
     <string name="app_basic_setting">基础设置</string>
     <string name="app_user_info">用户信息</string>
     <string name="app_setting">设置</string>
@@ -73,6 +72,8 @@
     <string name="app_beauty_level">美颜等级</string>
     <string name="app_please_set_beauty_level">请设置美颜等级</string>
     <string name="app_1v1_call">1V1 通话</string>
+    <string name="app_calls">多人通话</string>
+
     <string name="app_nickname_colon">昵称：</string>
     <string name="app_user_id_colon">用户ID:</string>
     <string name="app_group_call">群组通话</string>
@@ -91,4 +92,5 @@
 
     <string name="app_version">版本:</string>
     <string name="app_not_setting">未设置</string>
+    <string name="app_optional_parameters">可选参数</string>
 </resources>

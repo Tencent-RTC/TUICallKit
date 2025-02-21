@@ -7,11 +7,12 @@ import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.transition.TransitionManager
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
 import com.tencent.qcloud.tuikit.tuicallkit.manager.EngineManager
+import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.viewmodel.component.videolayout.GroupCallVideoLayoutViewModel
+import com.trtc.tuikit.common.livedata.Observer
 
 class GroupCallVideoLayout(context: Context) : GroupCallFlowLayout(context) {
     private var viewModel = GroupCallVideoLayoutViewModel()
@@ -67,19 +68,9 @@ class GroupCallVideoLayout(context: Context) : GroupCallFlowLayout(context) {
             addView(videoView)
             initGestureListener(user)
 
-            post {
-                if (viewModel.showLargeViewUserId.get() == user.id) {
-                    setLargeViewIndex(index)
-                    viewModel.updateBottomViewExpanded(false)
-                }
-            }
-
             if (TUICallDefine.MediaType.Video == viewModel.mediaType.get()) {
                 if (index == 0) {
-                    if ((TUICallDefine.Role.Caller == user.callRole.get() && TUICallDefine.Status.Waiting == user.callStatus.get())
-                        || (TUICallDefine.Role.Called == user.callRole.get() && TUICallDefine.Status.Accept == user.callStatus.get())
-                    ) {
-                        user.videoAvailable.set(true)
+                    if (TUICallState.instance.isCameraOpen.get()) {
                         EngineManager.instance.openCamera(
                             viewModel.isFrontCamera.get(), videoView?.getVideoView(), null
                         )

@@ -1,9 +1,9 @@
 package com.tencent.qcloud.tuikit.tuicallkit.data
 
 import android.content.Context
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine.OfflinePushInfo
 import com.tencent.qcloud.tuicore.TUILogin
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine.OfflinePushInfo
 import com.tencent.qcloud.tuikit.tuicallkit.R
 
 object OfflinePushInfoConfig {

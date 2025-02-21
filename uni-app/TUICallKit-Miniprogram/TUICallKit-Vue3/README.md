@@ -1,5 +1,5 @@
 ## 简介
-本 demo 演示了如何在 uni-app 项目中集成 [TUICallKit](https://www.npmjs.com/package/@tencentcloud/call-uikit-wechat) 音视频通话组件。
+本 demo 演示了如何在 uni-app 项目中集成 [TUICallKit](https://www.npmjs.com/package/@tencentcloud/call-uikit-wx-uniapp) 音视频通话组件。
 
 
 ## 环境准备
@@ -28,12 +28,12 @@
    
    mac端
    ```
-   mkdir -p ./TUICallKit && cp -r node_modules/@tencentcloud/call-uikit-wechat/ ./TUICallKit
+   mkdir -p ./TUICallKit && cp -r node_modules/@tencentcloud/call-uikit-wx-uniapp/ ./TUICallKit
    ```
 
    windows端
    ```
-    xcopy node_modules\@tencentcloud\call-uikit-wechat\ .\TUICallKit /i /e
+    xcopy node_modules\@tencentcloud\call-uikit-wx-uniapp\ .\TUICallKit /i /e
    ```
 
 4. HBuilder 中导入项目
@@ -51,7 +51,6 @@
 7. 项目导入到微信开发者工具，目录如下图：
    
    <img src="https://qcloudimg.tencent-cloud.cn/raw/a79cd64ac5be8ee099f2d802f1c847c6.png" width="150" align="middle" />
-
 
 ## 示例体验
 > **Tips：TUICallKit 通话体验，至少需要两台设备，用户 A、B 代表使用不同的设备。**

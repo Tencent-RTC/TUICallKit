@@ -7,13 +7,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.utils.widget.ImageFilterView
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.LiveData
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.utils.ImageLoader
+import com.trtc.tuikit.common.livedata.LiveData
+import com.trtc.tuikit.common.livedata.Observer
 import java.util.concurrent.CopyOnWriteArrayList
 
 class InviteeAvatarListView(context: Context) : LinearLayout(context) {

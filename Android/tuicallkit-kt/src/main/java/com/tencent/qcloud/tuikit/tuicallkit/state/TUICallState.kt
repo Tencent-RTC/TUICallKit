@@ -3,25 +3,27 @@ package com.tencent.qcloud.tuikit.tuicallkit.state
 import android.os.Handler
 import android.os.HandlerThread
 import android.text.TextUtils
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
+import com.tencent.cloud.tuikit.engine.call.TUICallObserver
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine.AudioPlaybackDevice
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine.NetworkQuality
 import com.tencent.qcloud.tuicore.TUIConfig
 import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.TUILogin
 import com.tencent.qcloud.tuicore.util.SPUtils
 import com.tencent.qcloud.tuicore.util.ToastUtil
-import com.tencent.qcloud.tuikit.TUICommonDefine
-import com.tencent.qcloud.tuikit.TUICommonDefine.AudioPlaybackDevice
-import com.tencent.qcloud.tuikit.TUICommonDefine.NetworkQuality
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallObserver
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.LiveData
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
 import com.tencent.qcloud.tuikit.tuicallkit.extensions.CallingBellFeature
 import com.tencent.qcloud.tuikit.tuicallkit.manager.EngineManager
+import com.tencent.qcloud.tuikit.tuicallkit.utils.Logger
 import com.tencent.qcloud.tuikit.tuicallkit.utils.UserInfoUtils
+import com.trtc.tuikit.common.foregroundservice.AudioForegroundService
+import com.trtc.tuikit.common.foregroundservice.VideoForegroundService
+import com.trtc.tuikit.common.livedata.LiveData
 
 class TUICallState {
     public var selfUser = LiveData<User>()
@@ -81,12 +83,12 @@ class TUICallState {
         }
 
         override fun onCallReceived(
-            callerId: String?, calleeIdList: List<String?>?, group: String?,
+            callerId: String?, calleeIdList: List<String?>?, groupID: String?,
             callMediaType: TUICallDefine.MediaType?, userData: String?
         ) {
-            TUILog.i(
-                TAG, "onCallReceived -> {callerId: $callerId, calleeIdList: $calleeIdList, group: $group,"
-                        + "callMediaType: $callMediaType}"
+            Logger.info(
+                TAG, "onCallReceived -> {callerId: $callerId, calleeIdList: " +
+                        "$calleeIdList, groupId: $groupID, callMediaType: $callMediaType}"
             )
             if (TUICallDefine.MediaType.Unknown == callMediaType || calleeIdList.isNullOrEmpty()) {
                 return
@@ -97,17 +99,8 @@ class TUICallState {
                 return
             }
 
-            TUICore.notifyEvent(Constants.EVENT_TUICALLKIT_CHANGED, Constants.EVENT_START_FEATURE, HashMap())
-
-            groupId.set(group)
+            groupId.set(groupID)
             mediaType.set(callMediaType)
-            if (!TextUtils.isEmpty(group)) {
-                scene.set(TUICallDefine.Scene.GROUP_CALL)
-            } else if (calleeIdList.size > 1) {
-                scene.set(TUICallDefine.Scene.MULTI_CALL)
-            } else {
-                scene.set(TUICallDefine.Scene.SINGLE_CALL)
-            }
 
             if (!callerId.isNullOrEmpty()) {
                 val user = User()
@@ -128,6 +121,11 @@ class TUICallState {
                     remoteUserList.add(user)
                 }
             }
+            if (!TextUtils.isEmpty(groupID) || remoteUserList.get().size > 1) {
+                scene.set(TUICallDefine.Scene.GROUP_CALL)
+            } else {
+                scene.set(TUICallDefine.Scene.SINGLE_CALL)
+            }
 
             selfUser.get().id = TUILogin.getUserId()
             selfUser.get().avatar.set(TUILogin.getFaceUrl())
@@ -135,18 +133,26 @@ class TUICallState {
             selfUser.get().callRole.set(TUICallDefine.Role.Called)
             selfUser.get().callStatus.set(TUICallDefine.Status.Waiting)
 
-            TUICore.notifyEvent(Constants.EVENT_TUICALLKIT_CHANGED, Constants.EVENT_SHOW_INCOMING_VIEW, HashMap())
+            if (TUICallDefine.MediaType.Video == mediaType.get()) {
+                EngineManager.instance.selectAudioPlaybackDevice(AudioPlaybackDevice.Speakerphone)
+                isCameraOpen.set(true)
+            } else {
+                EngineManager.instance.selectAudioPlaybackDevice(AudioPlaybackDevice.Earpiece)
+                isCameraOpen.set(false)
+            }
+
+            TUICore.notifyEvent(Constants.EVENT_TUICALLKIT_CHANGED, Constants.EVENT_START_INCOMING_VIEW, HashMap())
         }
 
         override fun onCallCancelled(callerId: String?) {
-            TUILog.i(TAG, "onCallCancelled -> {callerId: $callerId}")
+            Logger.info(TAG, "onCallCancelled -> {callerId: $callerId}")
             resetCall()
         }
 
         override fun onCallBegin(
             room: TUICommonDefine.RoomId?, callMediaType: TUICallDefine.MediaType?, callRole: TUICallDefine.Role?
         ) {
-            TUILog.i(TAG, "onCallBegin -> {room: $room, callMediaType: $callMediaType, callRole: $callRole}")
+            Logger.info(TAG, "onCallBegin -> {room: $room, callMediaType: $callMediaType, callRole: $callRole}")
             if (TUICallDefine.Role.Called == instance.selfUser.get().callRole.get()
                 && TUICallDefine.MediaType.Audio == instance.mediaType.get()
             ) {
@@ -165,13 +171,14 @@ class TUICallState {
                 EngineManager.instance.openMicrophone(null)
             }
             startTimeCount()
+            startForegroundService()
         }
 
         override fun onCallEnd(
             room: TUICommonDefine.RoomId?, callMediaType: TUICallDefine.MediaType?,
             callRole: TUICallDefine.Role?, totalTime: Long
         ) {
-            TUILog.i(TAG, "onCallEnd -> {room: $room, callMediaType: $callMediaType, callRole: $callRole")
+            Logger.info(TAG, "onCallEnd -> {room: $room, callMediaType: $callMediaType, callRole: $callRole")
             roomId.set(room)
             resetCall()
         }
@@ -179,7 +186,7 @@ class TUICallState {
         override fun onCallMediaTypeChanged(
             oldCallMediaType: TUICallDefine.MediaType?, newCallMediaType: TUICallDefine.MediaType?
         ) {
-            TUILog.i(
+            Logger.info(
                 TAG, "onCallMediaTypeChanged -> {oldCallMediaType: $oldCallMediaType"
                         + ", newCallMediaType: $newCallMediaType}"
             )
@@ -202,14 +209,16 @@ class TUICallState {
         }
 
         override fun onUserReject(userId: String?) {
-            TUILog.i(TAG, "onUserReject -> {userId: $userId}")
+            Logger.info(TAG, "onUserReject -> {userId: $userId}")
             if (userId.isNullOrEmpty()) {
                 return
             }
 
             removeUserOnLeave(userId)
             if (TUICallDefine.Scene.SINGLE_CALL == instance.scene.get()) {
-                ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(R.string.tuicallkit_toast_callee_reject))
+                ToastUtil.toastShortMessage(
+                    TUIConfig.getAppContext().getString(R.string.tuicallkit_toast_callee_reject)
+                )
                 instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
             } else if (remoteUserList.get().isEmpty()) {
                 instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
@@ -217,14 +226,16 @@ class TUICallState {
         }
 
         override fun onUserNoResponse(userId: String?) {
-            TUILog.i(TAG, "onUserNoResponse -> {userId: $userId}")
+            Logger.info(TAG, "onUserNoResponse -> {userId: $userId}")
             if (userId.isNullOrEmpty()) {
                 return
             }
 
             removeUserOnLeave(userId)
             if (TUICallDefine.Scene.SINGLE_CALL == instance.scene.get()) {
-                ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(R.string.tuicallkit_toast_callee_no_response))
+                ToastUtil.toastShortMessage(
+                    TUIConfig.getAppContext().getString(R.string.tuicallkit_toast_callee_no_response)
+                )
                 instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
             } else if (remoteUserList.get().isEmpty()) {
                 instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
@@ -232,7 +243,7 @@ class TUICallState {
         }
 
         override fun onUserLineBusy(userId: String?) {
-            TUILog.i(TAG, "onUserLineBusy -> {userId: $userId}")
+            Logger.info(TAG, "onUserLineBusy -> {userId: $userId}")
             if (userId.isNullOrEmpty()) {
                 return
             }
@@ -246,7 +257,7 @@ class TUICallState {
         }
 
         override fun onUserJoin(userId: String?) {
-            TUILog.i(TAG, "onUserJoin -> {userId: $userId}")
+            Logger.info(TAG, "onUserJoin -> {userId: $userId}")
             if (userId.isNullOrEmpty()) {
                 return
             }
@@ -254,14 +265,16 @@ class TUICallState {
         }
 
         override fun onUserLeave(userId: String?) {
-            TUILog.i(TAG, "onUserLeave -> {userId: $userId}")
+            Logger.info(TAG, "onUserLeave -> {userId: $userId}")
             if (userId.isNullOrEmpty()) {
                 return
             }
 
             removeUserOnLeave(userId)
             if (TUICallDefine.Scene.SINGLE_CALL == instance.scene.get()) {
-                ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(R.string.tuicallkit_toast_callee_hangup))
+                ToastUtil.toastShortMessage(
+                    TUIConfig.getAppContext().getString(R.string.tuicallkit_toast_callee_hangup)
+                )
                 instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
             } else if (remoteUserList.get().isEmpty()) {
                 instance.selfUser.get().callStatus.set(TUICallDefine.Status.None)
@@ -269,7 +282,7 @@ class TUICallState {
         }
 
         override fun onUserVideoAvailable(userId: String?, isVideoAvailable: Boolean) {
-            TUILog.i(TAG, "onUserVideoAvailable -> {userId: $userId, isVideoAvailable: $isVideoAvailable}")
+            Logger.info(TAG, "onUserVideoAvailable -> {userId: $userId, isVideoAvailable: $isVideoAvailable}")
             if (userId.isNullOrEmpty()) {
                 return
             }
@@ -280,7 +293,7 @@ class TUICallState {
         }
 
         override fun onUserAudioAvailable(userId: String?, isAudioAvailable: Boolean) {
-            TUILog.i(TAG, "onUserAudioAvailable -> {userId: $userId, isAudioAvailable: $isAudioAvailable}")
+            Logger.info(TAG, "onUserAudioAvailable -> {userId: $userId, isAudioAvailable: $isAudioAvailable}")
             if (userId.isNullOrEmpty()) {
                 return
             }
@@ -316,8 +329,8 @@ class TUICallState {
                     user?.networkQualityReminder?.set(isBadNetwork(info?.quality))
                 }
             } else if (scene.get() == TUICallDefine.Scene.SINGLE_CALL) {
-                var localQuality: NetworkQuality? = NetworkQuality.Unknown
-                var remoteQuality: NetworkQuality? = NetworkQuality.Unknown
+                var localQuality: NetworkQuality? = NetworkQuality.UNKNOWN
+                var remoteQuality: NetworkQuality? = NetworkQuality.UNKNOWN
 
                 while (iterator.hasNext()) {
                     val info = iterator.next()
@@ -350,11 +363,11 @@ class TUICallState {
     }
 
     private fun isBadNetwork(quality: NetworkQuality?): Boolean {
-        return quality == NetworkQuality.Bad || quality == NetworkQuality.Vbad || quality == NetworkQuality.Down
+        return quality == NetworkQuality.BAD || quality == NetworkQuality.VERY_BAD || quality == NetworkQuality.DOWN
     }
 
     fun clear() {
-        TUILog.i(TAG, "clear")
+        Logger.info(TAG, "clear")
         reverse1v1CallRenderView = false
         isShowFullScreen.set(false)
         isBottomViewExpand.set(true)
@@ -403,6 +416,7 @@ class TUICallState {
     }
 
     private fun resetCall() {
+        stopForegroundService()
         stopTimeCount()
         clear()
     }
@@ -483,6 +497,19 @@ class TUICallState {
         if (TextUtils.isEmpty(user.nickname.get()) || TextUtils.isEmpty(user.avatar.get())) {
             UserInfoUtils.updateUserInfo(user)
         }
+    }
+
+    private fun startForegroundService() {
+        if (scene.get() == TUICallDefine.Scene.GROUP_CALL || mediaType.get() == TUICallDefine.MediaType.Video) {
+            VideoForegroundService.start(TUIConfig.getAppContext(), "", "", 0)
+        } else if (mediaType.get() == TUICallDefine.MediaType.Audio) {
+            AudioForegroundService.start(TUIConfig.getAppContext(), "", "", 0)
+        }
+    }
+
+    private fun stopForegroundService() {
+        VideoForegroundService.stop(TUIConfig.getAppContext())
+        AudioForegroundService.stop(TUIConfig.getAppContext())
     }
 
     companion object {

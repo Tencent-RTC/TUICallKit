@@ -1,10 +1,8 @@
 package com.tencent.qcloud.tuikit.tuicallkit
 
 import android.content.Context
-import com.tencent.qcloud.tuikit.TUICommonDefine
-import com.tencent.qcloud.tuikit.TUICommonDefine.RoomId
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine.CallParams
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine
 
 abstract class TUICallKit {
     companion object {
@@ -28,7 +26,9 @@ abstract class TUICallKit {
      * @param userId        callees
      * @param callMediaType Call type
      */
-    open fun call(userId: String, callMediaType: TUICallDefine.MediaType) {}
+    @Deprecated("Use NewInterface instead", ReplaceWith("calls"))
+    open fun call(userId: String, callMediaType: TUICallDefine.MediaType) {
+    }
 
     /**
      * Make a call
@@ -37,9 +37,10 @@ abstract class TUICallKit {
      * @param callMediaType Call type
      * @param params        Extension param: eg: offlinePushInfo
      */
+    @Deprecated("Use NewInterface instead", ReplaceWith("calls"))
     open fun call(
         userId: String, callMediaType: TUICallDefine.MediaType,
-        params: CallParams?, callback: TUICommonDefine.Callback?
+        params: TUICallDefine.CallParams?, callback: TUICommonDefine.Callback?
     ) {
     }
 
@@ -50,7 +51,9 @@ abstract class TUICallKit {
      * @param userIdList    List of userId
      * @param callMediaType Call type
      */
-    open fun groupCall(groupId: String, userIdList: List<String?>?, callMediaType: TUICallDefine.MediaType) {}
+    @Deprecated("Use NewInterface instead", ReplaceWith("calls"))
+    open fun groupCall(groupId: String, userIdList: List<String?>?, callMediaType: TUICallDefine.MediaType) {
+    }
 
     /**
      * Make a group call
@@ -60,9 +63,23 @@ abstract class TUICallKit {
      * @param callMediaType Call type
      * @param params        Extension param: eg: offlinePushInfo
      */
+    @Deprecated("Use NewInterface instead", ReplaceWith("calls"))
     open fun groupCall(
         groupId: String, userIdList: List<String?>?,
-        callMediaType: TUICallDefine.MediaType, params: CallParams?,
+        callMediaType: TUICallDefine.MediaType, params: TUICallDefine.CallParams?,
+        callback: TUICommonDefine.Callback?
+    ) {
+    }
+
+    /**
+     * Make a 1VN calls
+     *
+     * @param userIdList    List of userId
+     * @param mediaType     Call type
+     * @param params        Extension param: eg: offlinePushInfo
+     */
+    open fun calls(
+        userIdList: List<String?>?, mediaType: TUICallDefine.MediaType?, params: TUICallDefine.CallParams?,
         callback: TUICommonDefine.Callback?
     ) {
     }
@@ -70,10 +87,21 @@ abstract class TUICallKit {
     /**
      * Join a current call
      *
+     * @param callId current call ID
+     */
+    open fun join(callId: String?, callback: TUICommonDefine.Callback?) {}
+
+    /**
+     * Join a current call
+     *
      * @param roomId        current call room ID
      * @param callMediaType call type
      */
-    open fun joinInGroupCall(roomId: RoomId?, groupId: String?, callMediaType: TUICallDefine.MediaType?) {}
+    @Deprecated("Use NewInterface instead", ReplaceWith("join(callId,callback)"))
+    open fun joinInGroupCall(
+        roomId: TUICommonDefine.RoomId?, groupId: String?, callMediaType: TUICallDefine.MediaType?
+    ) {
+    }
 
     /**
      * Set the ringtone (preferably shorter than 30s)

@@ -8,18 +8,18 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.TUILogin
 import com.tencent.qcloud.tuicore.permission.PermissionRequester
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKitImpl
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.utils.DeviceUtils
 import com.tencent.qcloud.tuikit.tuicallkit.view.CallKitActivity
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.floatview.FloatWindowService
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.floatview.FloatingWindowGroupView
-import com.tencent.qcloud.tuikit.tuicallkit.view.floatwindow.FloatingWindowView
+import com.tencent.qcloud.tuikit.tuicallkit.view.component.floatview.FloatingWindowView
 
 /**
  * `TUICallKit` uses `ContentProvider` to be registered with `TUICore`.

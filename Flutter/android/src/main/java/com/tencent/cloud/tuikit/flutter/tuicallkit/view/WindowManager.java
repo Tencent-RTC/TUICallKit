@@ -13,10 +13,12 @@ import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Permission;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.view.floatwindow.FloatWindowService;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.view.incomingfloatwindow.IncomingFloatView;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.view.incomingfloatwindow.IncomingNotificationView;
-import com.tencent.cloud.tuikit.tuicall_engine.utils.Logger;
+import com.tencent.cloud.tuikit.flutter.tuicallkit.utils.Logger;
+import com.tencent.qcloud.tuicore.TUIConfig;
 import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.permission.PermissionRequester;
+import android.os.PowerManager;
 
 public class WindowManager {
 
@@ -44,6 +46,7 @@ public class WindowManager {
     }
 
     public static void showIncomingBanner(Context context) {
+        Logger.info(TUICallKitPlugin.TAG, "Android Native: showIncomingBanner");
         User caller = TUICallState.getInstance().mRemoteUserList.get(0);
         if (caller == null) {
             return;
@@ -56,25 +59,63 @@ public class WindowManager {
         }
     }
 
+    public static void openLockScreenApp(Context context) {
+        Logger.info(TUICallKitPlugin.TAG, "Android Native: openLockScreenApp ");
+        User caller = TUICallState.getInstance().mRemoteUserList.get(0);
+        if (caller == null) {
+            return;
+        }
+        turnOnScreen(context);
+
+        if (Devices.isSamsungDevice() && Permission.hasPermission(PermissionRequester.BG_START_PERMISSION)) {
+            Logger.info(TUICallKitPlugin.TAG, "Android Native: openLockScreenApp, try to launch MainActivity");
+            launchMainActivity(context);
+            TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_HANDLE_CALL_RECEIVED, null);
+            return;
+        }
+
+        if (!ServiceInitializer.isAppInForeground(context) && isFCMDataNotification() && Permission.isNotificationEnabled()) {
+            Logger.info(TUICallKitPlugin.TAG, "Android Native: openLockScreenApp, will open IncomingNotificationView");
+            IncomingNotificationView.getInstance(context).showNotification(caller,
+                    TUICallState.getInstance().mMediaType);
+            return;
+        }
+
+        Logger.info(TUICallKitPlugin.TAG, "Android Native: openLockScreenApp, try to launch MainActivity");
+        launchMainActivity(context);
+        TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_HANDLE_CALL_RECEIVED, null);
+    }
+
     public static void pullBackgroundApp(Context context) {
+        Logger.info(TUICallKitPlugin.TAG, "Android Native: pullBackgroundApp ");
         User caller = TUICallState.getInstance().mRemoteUserList.get(0);
         if (caller == null) {
             return;
         }
 
+        turnOnScreen(context);
+
+        if (Devices.isSamsungDevice() && Permission.hasPermission(PermissionRequester.BG_START_PERMISSION)) {
+            Logger.info(TUICallKitPlugin.TAG, "Android Native: pullBackgroundApp, try to launch MainActivity");
+            launchMainActivity(context);
+            TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_HANDLE_CALL_RECEIVED, null);
+            return;
+        }
+
         if (!ServiceInitializer.isAppInForeground(context) && isFCMDataNotification()) {
             if (Permission.hasPermission(PermissionRequester.FLOAT_PERMISSION)) {
-                Logger.info(TUICallKitPlugin.TAG, "App in background, will open IncomingFloatView");
+                Logger.info(TUICallKitPlugin.TAG, "Android Native: pullBackgroundApp, will open IncomingFloatView");
                 startIncomingFloatWindow(context, caller);
                 return;
             } else if (Permission.isNotificationEnabled()) {
-                Logger.info(TUICallKitPlugin.TAG, "App in background, will open IncomingNotificationView");
+                Logger.info(TUICallKitPlugin.TAG, "Android Native: pullBackgroundApp, will open IncomingNotificationView");
                 IncomingNotificationView.getInstance(context).showNotification(caller,
                         TUICallState.getInstance().mMediaType);
                 return;
             }
         }
 
+        Logger.info(TUICallKitPlugin.TAG, "Android Native: pullBackgroundApp, try to launch MainActivity");
         launchMainActivity(context);
         TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_HANDLE_CALL_RECEIVED, null);
     }
@@ -82,7 +123,7 @@ public class WindowManager {
     private static void incomingBannerInForeground(Context context, User caller) {
         if (Permission.hasPermission(PermissionRequester.FLOAT_PERMISSION)) {
             startIncomingFloatWindow(context, caller);
-        } else if (Permission.isNotificationEnabled()) {
+        } else if (isFCMDataNotification() && Permission.isNotificationEnabled()) {
             IncomingNotificationView.getInstance(context).showNotification(caller,
                     TUICallState.getInstance().mMediaType);
         } else {
@@ -124,15 +165,14 @@ public class WindowManager {
     }
 
     private static boolean isFCMDataNotification() {
-        if (TUICore.getService(TUIConstants.TIMPush.SERVICE_NAME) == null) {
-            return false;
-        }
-
-        int pushBrandId = (int) TUICore.callService(TUIConstants.TIMPush.SERVICE_NAME,
-                TUIConstants.TIMPush.METHOD_GET_PUSH_BRAND_ID, null);
-
-        return pushBrandId == TUIConstants.DeviceInfo.BRAND_GOOGLE_ELSE;
+        return TUICore.getService(TUIConstants.TIMPush.SERVICE_NAME) != null
+                && (int) TUIConfig.getCustomData("pushChannelId") == TUIConstants.DeviceInfo.BRAND_GOOGLE_ELSE;
     }
 
-
+    private static void turnOnScreen(Context context) {
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE, "MyApp:MyWakeLockTag" );
+        wakeLock.acquire();
+        wakeLock.release();
+    }
 }

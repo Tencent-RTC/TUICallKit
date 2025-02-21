@@ -1,11 +1,10 @@
 package com.tencent.qcloud.tuikit.tuicallkit.utils
 
 import android.text.TextUtils
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine.ValueCallback
 import com.tencent.imsdk.v2.V2TIMFriendInfoResult
 import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMValueCallback
-import com.tencent.qcloud.tuikit.TUICommonDefine.ValueCallback
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
 
 object UserInfoUtils {
@@ -14,14 +13,11 @@ object UserInfoUtils {
 
     fun updateUserInfo(user: User) {
         if (TextUtils.isEmpty(user.id)) {
-            TUILog.e(TAG, "getUsersInfo -> user.userId isEmpty")
+            Logger.error(TAG, "getUsersInfo, user.userId isEmpty")
             return
         }
         if (!TextUtils.isEmpty(user.nickname.get()) && !TextUtils.isEmpty(user.avatar.get())) {
-            TUILog.i(
-                TAG,
-                "getUsersInfo -> user.userName = ${user.nickname}, avatar = ${user.avatar}"
-            )
+            Logger.info(TAG, "getUsersInfo, user.userName = ${user.nickname}, avatar = ${user.avatar}")
             return
         }
         val userList: MutableList<String> = ArrayList()
@@ -30,14 +26,13 @@ object UserInfoUtils {
         getFriendsInfo(userList, object : ValueCallback<List<UserInfo?>?> {
             override fun onSuccess(data: List<UserInfo?>?) {
                 if (data.isNullOrEmpty() || data[0] == null) {
-                    TUILog.e(TAG, "getUserInfo result is empty")
+                    Logger.error(TAG, "getUserInfo result is empty")
                     return
                 }
                 var userInfo = data[0]
-                TUILog.i(
+                Logger.info(
                     TAG, "getUsersInfo -> userId:${user.id} onSuccess: " +
-                            "nickname:${userInfo?.nickname}" +
-                            ", avatar:${userInfo?.avatar}" +
+                            "nickname:${userInfo?.nickname}, avatar:${userInfo?.avatar}" +
                             ", friendRemark:${userInfo?.remark}"
                 )
                 if (!TextUtils.isEmpty(userInfo?.remark)) {
@@ -51,10 +46,7 @@ object UserInfoUtils {
             }
 
             override fun onError(errCode: Int, errMsg: String?) {
-                TUILog.e(
-                    TAG,
-                    "getUsersInfo -> userId:${user.id} onError errorCode = $errCode , errorMsg = $errMsg"
-                )
+                Logger.error(TAG, "getUsersInfo,userId:${user.id} error, errCode: $errCode , errMsg: $errMsg")
             }
 
         })
@@ -64,7 +56,7 @@ object UserInfoUtils {
         getFriendsInfo(userList, object : ValueCallback<List<UserInfo?>?> {
             override fun onSuccess(data: List<UserInfo?>?) {
                 if (data.isNullOrEmpty()) {
-                    TUILog.e(TAG, "getUserInfo result is empty")
+                    Logger.error(TAG, "getUserInfo result is empty")
                     return
                 }
 
@@ -84,14 +76,11 @@ object UserInfoUtils {
                     user.avatar.set(userInfo?.avatar)
                     userList.add(user)
                 }
-                callback?.onSuccess(userList)
+                callback.onSuccess(userList)
             }
 
             override fun onError(errCode: Int, errMsg: String?) {
-                TUILog.e(
-                    TAG,
-                    "getUsersInfo -> userId:${userList} onError errorCode = $errCode , errorMsg = $errMsg"
-                )
+                Logger.error(TAG, "getUsersInfo, userId:${userList} error, errCode: $errCode , errMsg: $errMsg")
                 callback.onError(errCode, errMsg)
             }
 
@@ -106,7 +95,7 @@ object UserInfoUtils {
             .getFriendsInfo(userList, object : V2TIMValueCallback<List<V2TIMFriendInfoResult?>?> {
                 override fun onSuccess(list: List<V2TIMFriendInfoResult?>?) {
                     if (list.isNullOrEmpty()) {
-                        TUILog.e(TAG, "getUserInfo result is empty")
+                        Logger.error(TAG, "getUserInfo result is empty")
                         return
                     }
 

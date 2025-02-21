@@ -1,7 +1,6 @@
 package com.tencent.qcloud.tuikit.tuicallkit.demo;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -34,7 +33,6 @@ public class LoginActivity extends BaseActivity {
 
     private void initView() {
         mEditUserId = findViewById(R.id.et_userId);
-
         findViewById(R.id.btn_login).setOnClickListener(v -> {
             String userId = mEditUserId.getText().toString().trim();
             login(userId);
@@ -47,24 +45,24 @@ public class LoginActivity extends BaseActivity {
             return;
         }
 
-        TUILogin.login(this, GenerateTestUserSig.SDKAPPID, userId, GenerateTestUserSig.genTestUserSig(userId),
-                new TUICallback() {
-                    @Override
-                    public void onSuccess() {
-                        Log.i(TAG, "login onSuccess");
-                        SettingsConfig.userId = userId;
-                        getUserInfo(userId);
-                        TUICallKit.createInstance(getApplication()).enableFloatWindow(SettingsConfig.isShowFloatingWindow);
-                        TUICallKit.createInstance(getApplication()).enableVirtualBackground(SettingsConfig.isShowBlurBackground);
-                        TUICallKit.createInstance(getApplication()).enableIncomingBanner(SettingsConfig.isIncomingBanner);
-                    }
+        String userSig = GenerateTestUserSig.genTestUserSig(userId);
+        TUILogin.login(this, GenerateTestUserSig.SDKAPPID, userId, userSig, new TUICallback() {
+            @Override
+            public void onSuccess() {
+                Log.i(TAG, "login onSuccess");
+                SettingsConfig.userId = userId;
+                getUserInfo(userId);
+                TUICallKit.createInstance(getApplication()).enableFloatWindow(SettingsConfig.isShowFloatingWindow);
+                TUICallKit.createInstance(getApplication()).enableVirtualBackground(SettingsConfig.isShowBlurBackground);
+                TUICallKit.createInstance(getApplication()).enableIncomingBanner(SettingsConfig.isIncomingBanner);
+            }
 
-                    @Override
-                    public void onError(int errorCode, String errorMessage) {
-                        ToastUtil.toastShortMessage(getString(R.string.app_toast_login_fail, errorCode, errorMessage));
-                        Log.e(TAG, "login fail errorCode: " + errorCode + " errorMessage:" + errorMessage);
-                    }
-                });
+            @Override
+            public void onError(int errorCode, String errorMessage) {
+                ToastUtil.toastShortMessage(getString(R.string.app_toast_login_fail, errorCode, errorMessage));
+                Log.e(TAG, "login fail errorCode: " + errorCode + " errorMessage:" + errorMessage);
+            }
+        });
     }
 
     private void getUserInfo(String userId) {
@@ -102,10 +100,5 @@ public class LoginActivity extends BaseActivity {
                 }
             }
         });
-    }
-
-    private void startWebPage(String url) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(browserIntent);
     }
 }

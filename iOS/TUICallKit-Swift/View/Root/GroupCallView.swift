@@ -103,7 +103,9 @@ class GroupCallView: UIView {
         addSubview(maskedView)
         addSubview(layoutView)
         addSubview(floatingWindowBtn)
-        addSubview(inviteUserButton)
+        if !TUICallState.instance.groupId.value.isEmpty {
+            addSubview(inviteUserButton)
+        }
         addSubview(inviterUserInfoView)
         addSubview(waitingHintView)
         addSubview(functionView)
@@ -130,10 +132,12 @@ class GroupCallView: UIView {
             make.leading.equalToSuperview().offset(12.scaleWidth())
             make.size.equalTo(kFloatWindowButtonSize)
         }
-        inviteUserButton.snp.makeConstraints { make in
-            make.size.equalTo(kInviteUserButtonSize)
-            make.top.equalToSuperview().offset(StatusBar_Height + 12.scaleHeight())
-            make.trailing.equalTo(snp.trailing).offset(-12.scaleWidth())
+        if !TUICallState.instance.groupId.value.isEmpty{
+            inviteUserButton.snp.makeConstraints { make in
+                make.size.equalTo(kInviteUserButtonSize)
+                make.top.equalToSuperview().offset(StatusBar_Height + 12.scaleHeight())
+                make.trailing.equalTo(snp.trailing).offset(-12.scaleWidth())
+            }
         }
         inviterUserInfoView.snp.makeConstraints { make in
             make.top.equalTo(self).offset(StatusBar_Height + 150.scaleHeight())

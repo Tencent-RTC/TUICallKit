@@ -33,10 +33,10 @@
         v-model="inputUserID"
         :placeholder="placeholderText"
         @input="handleInputUserID"
-        @change="handleAddGroupCallMember"
+        @keyup.enter="handleAddGroupCallMember"
       >
         <template #append>
-          <span class="add-btn"> {{ t('Add') }} </span>
+          <span class="add-btn" @click="handleAddGroupCallMember" > {{ t('Add') }} </span>
         </template>
       </el-input>
     </div>

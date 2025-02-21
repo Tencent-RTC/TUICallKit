@@ -5,7 +5,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState

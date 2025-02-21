@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.motion.widget.MotionLayout
-import com.tencent.qcloud.tuikit.TUICommonDefine
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.manager.EngineManager
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout.VideoViewFactory
 import com.tencent.qcloud.tuikit.tuicallkit.view.root.BaseCallView
+import com.trtc.tuikit.common.livedata.Observer
 
 class VideoCallerAndCalleeAcceptedView(context: Context) : BaseCallView(context) {
     private var rootLayout: MotionLayout? = null

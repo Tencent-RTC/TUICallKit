@@ -17,15 +17,16 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine.MediaType
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine.MediaType
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.data.User
+import com.tencent.qcloud.tuikit.tuicallkit.extensions.NotificationFeature
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
+import com.tencent.qcloud.tuikit.tuicallkit.utils.Logger
 import com.tencent.qcloud.tuikit.tuicallkit.view.CallKitActivity
+import com.trtc.tuikit.common.livedata.Observer
 
 class IncomingNotificationView(context: Context) {
     private val TAG = "IncomingViewNotification"
@@ -38,7 +39,9 @@ class IncomingNotificationView(context: Context) {
     private var notification: Notification? = null
 
     private var callStatusObserver = Observer<TUICallDefine.Status> {
-        cancelNotification()
+        if (it != TUICallDefine.Status.Waiting) {
+            cancelNotification()
+        }
     }
 
     init {
@@ -55,7 +58,7 @@ class IncomingNotificationView(context: Context) {
     }
 
     fun showNotification(user: User) {
-        TUILog.i(TAG, "showNotification, user: $user")
+        Logger.info(TAG, "showNotification, user: $user")
         addObserver()
         notification = createNotification()
 
@@ -101,13 +104,14 @@ class IncomingNotificationView(context: Context) {
     }
 
     fun cancelNotification() {
-        TUILog.i(TAG, "cancelNotification")
+        Logger.info(TAG, "cancelNotification")
         notificationManager.cancel(notificationId)
         removeObserver()
     }
 
     private fun createNotification(): Notification {
-        val builder = NotificationCompat.Builder(context, Constants.CALL_CHANNEL_ID)
+        val channelId = NotificationFeature.CALL_CHANNEL_ID
+        val builder = NotificationCompat.Builder(context, channelId)
             .setOngoing(true)
             .setWhen(System.currentTimeMillis())
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -118,7 +122,7 @@ class IncomingNotificationView(context: Context) {
             builder.priority = NotificationCompat.PRIORITY_MAX
         }
 
-        builder.setChannelId(Constants.CALL_CHANNEL_ID)
+        builder.setChannelId(channelId)
         builder.setTimeoutAfter(Constants.SIGNALING_MAX_TIME * 1000L)
         builder.setSmallIcon(R.drawable.tuicallkit_ic_avatar)
         builder.setSound(null)

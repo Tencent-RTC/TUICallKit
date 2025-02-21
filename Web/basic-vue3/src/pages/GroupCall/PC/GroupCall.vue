@@ -8,10 +8,10 @@
       :placeholder="placeholderText"
       v-model="inputUserID"
       @input="handleInputUserID"
-      @change="handleAddGroupCallMember"
+      @keyup.enter="handleAddGroupCallMember"
     >
       <template #append>
-        <Button class="btn-add" :disabled="groupCallMember.length >= 8" > {{ t('Add') }} </Button>
+        <Button class="btn-add" :disabled="groupCallMember.length >= 8" @click="handleAddGroupCallMember"> {{ t('Add') }} </Button>
       </template>
     </el-input>
     <p class="title-group-member"> {{ t('Group Members') }} {{`(${groupCallMember.length + 1} ${t('people')} / 9 ${t('people')}) `}}</p>

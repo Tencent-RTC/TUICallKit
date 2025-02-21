@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
-import com.tencent.qcloud.tuikit.TUICommonDefine;
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.BaseActivity;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.R;

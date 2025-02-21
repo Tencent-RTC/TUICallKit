@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tencent_calls_uikit/tuicall_kit.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tencent_calls_uikit/tencent_calls_uikit.dart';
 import 'package:tuicall_kit_example/src/join_group_call_widget.dart';
 import 'package:tuicall_kit_example/src/settings/settings_config.dart';
 import 'package:tuicall_kit_example/src/settings/settings_widget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class GroupCallWidget extends StatefulWidget {
   const GroupCallWidget({Key? key}) : super(key: key);
 
@@ -23,7 +23,7 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.group_call),
+        title: Text(AppLocalizations.of(context)!.multi_call),
         leading: IconButton(
             onPressed: () => _goBack(),
             icon: const Icon(
@@ -44,29 +44,6 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
         width: MediaQuery.of(context).size.width - 20,
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.group_id,
-                  style: const TextStyle(
-                      fontSize: 16,
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.normal,
-                      color: Colors.black),
-                ),
-                SizedBox(
-                    width: 200,
-                    child: TextField(
-                        autofocus: true,
-                        textAlign: TextAlign.right,
-                        decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!.enter_group_id,
-                          border: InputBorder.none,
-                        ),
-                        onChanged: ((value) => _groupId = value)))
-              ],
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -148,6 +125,41 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
                 ])
               ],
             ),
+            ExpansionTile(
+              title: Padding(
+                padding: const EdgeInsets.only(left: 0),
+                child: Text(
+                  AppLocalizations.of(context)!.optional_parameters,
+                ),
+              ),
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.group_id,
+                      style: const TextStyle(
+                          fontSize: 16,
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.black),
+                    ),
+                    SizedBox(
+                        width: 200,
+                        child: TextField(
+                            autofocus: true,
+                            textAlign: TextAlign.right,
+                            decoration: InputDecoration(
+                              hintText: _groupId.isNotEmpty
+                                  ? _groupId
+                                  : AppLocalizations.of(context)!.enter_group_id,
+                              border: InputBorder.none,
+                            ),
+                            onChanged: ((value) => _groupId = value)))
+                  ],
+                ),
+              ],
+            ),
             const SizedBox(height: 50),
             InkWell(
               onTap: () => _goSettings(),
@@ -172,15 +184,18 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            InkWell(
-              onTap: () => _joinGroupCall(),
-              child: Text(
-                AppLocalizations.of(context)!.join_group_call,
-                style: const TextStyle(
-                    fontSize: 16,
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xff056DF6)),
+            Visibility(
+              visible: false,
+              child: InkWell(
+                onTap: () => _joinGroupCall(),
+                child: Text(
+                  AppLocalizations.of(context)!.join_multi_call,
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xff056DF6)),
+                ),
               ),
             ),
             const SizedBox(height: 30),
@@ -190,10 +205,9 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
               child: ElevatedButton(
                   onPressed: () => _call(),
                   style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(const Color(0xff056DF6)),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8))),
+                    backgroundColor: MaterialStateProperty.all(const Color(0xff056DF6)),
+                    shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -221,11 +235,8 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
 
   _call() {
     _userIDs = _userIDsStr.split(',');
-    TUICallKit.instance.groupCall(
-        _groupId,
-        _userIDs,
-        _isAudioCall ? TUICallMediaType.audio : TUICallMediaType.video,
-        _createTUICallParams());
+    TUICallKit.instance.calls(_userIDs,
+        _isAudioCall ? TUICallMediaType.audio : TUICallMediaType.video, _createTUICallParams());
   }
 
   TUICallParams _createTUICallParams() {
@@ -236,26 +247,9 @@ class _GroupCallWidgetState extends State<GroupCallWidget> {
       params.roomId = TUIRoomId.strRoomId(strRoomId: SettingsConfig.strRoomId);
     }
     params.timeout = SettingsConfig.timeout;
+    params.offlinePushInfo = SettingsConfig.offlinePushInfo;
     params.userData = SettingsConfig.extendInfo;
-
-    if (SettingsConfig.offlinePushInfo == null || SettingsConfig.offlinePushInfo!.title == null ||
-        SettingsConfig.offlinePushInfo!.title!.isEmpty) {
-      TUIOfflinePushInfo offlinePushInfo = TUIOfflinePushInfo();
-      offlinePushInfo.title = "Flutter TUICallKit";
-      offlinePushInfo.desc = "This is an incoming call from Flutter TUICallkit";
-      offlinePushInfo.ignoreIOSBadge = false;
-      offlinePushInfo.iOSSound = "phone_ringing.mp3";
-      offlinePushInfo.androidSound = "phone_ringing";
-      offlinePushInfo.androidOPPOChannelID = "Flutter TUICallKit";
-      offlinePushInfo.androidVIVOClassification = 1;
-      offlinePushInfo.androidFCMChannelID = "fcm_push_channel";
-      offlinePushInfo.androidHuaWeiCategory = "Flutter TUICallKit";
-      offlinePushInfo.iOSPushType = TUICallIOSOfflinePushType.VoIP;
-      params.offlinePushInfo = offlinePushInfo;
-    } else {
-      params.offlinePushInfo = SettingsConfig.offlinePushInfo;
-    }
-
+    params.chatGroupId = _groupId;
     return params;
   }
 

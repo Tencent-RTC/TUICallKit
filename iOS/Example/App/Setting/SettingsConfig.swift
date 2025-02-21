@@ -7,7 +7,7 @@
 
 import Foundation
 import TUICore
-import TUICallEngine
+import RTCRoomEngine
 
 #if canImport(TUICallKit_Swift)
 import TUICallKit_Swift

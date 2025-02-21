@@ -8,7 +8,7 @@
 import Foundation
 import TUICore
 import UIKit
-import TUICallEngine
+import RTCRoomEngine
 
 #if canImport(TXLiteAVSDK_TRTC)
 import TXLiteAVSDK_TRTC
@@ -19,6 +19,7 @@ import TXLiteAVSDK_Professional
 class TUICallKitImpl: TUICallKit {
     static let instance = TUICallKitImpl()
     let selfUserCallStatusObserver = Observer()
+    let callingVibratorFeature = CallingVibratorFeature()
     let callingBellFeature = CallingBellFeature()
     
     override init() {
@@ -140,6 +141,62 @@ class TUICallKitImpl: TUICallKit {
             guard let self = self else { return }
             self.handleAbilityFailErrorMessage(code: code, message: message)
             fail(code,message)
+        }
+    }
+    
+    override func calls(userIdList: [String], callMediaType: TUICallMediaType, params: TUICallParams?,
+                        succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
+        if TUILogin.getUserID() == nil {
+            fail(ERROR_INIT_FAIL, "call failed, please login")
+            return
+        }
+        
+        let userIdList = userIdList.filter { $0 != TUILogin.getUserID() }
+        
+        if userIdList.isEmpty {
+            fail(ERROR_PARAM_INVALID, "call failed, invalid params 'userIdList'")
+            return
+        }
+        
+        if userIdList.count >= MAX_USER {
+            fail(ERROR_PARAM_INVALID, "groupCall failed, currently supports call with up to 9 people")
+            TUITool.makeToast(TUICallKitLocalize(key: "TUICallKit.User.Exceed.Limit"))
+            return
+        }
+        
+        if WindowManager.instance.isFloating {
+            fail(ERROR_PARAM_INVALID, "call failed, Unable to restart the call")
+            TUITool.makeToast(TUICallKitLocalize(key: "TUICallKit.UnableToRestartTheCall"))
+            return
+        }
+        
+        if callMediaType == .unknown {
+            fail(ERROR_PARAM_INVALID, "call failed, callMediaType is Unknown")
+            return
+        }
+        
+        
+        if TUICallKitCommon.checkAuthorizationStatusIsDenied(mediaType: callMediaType) {
+            showAuthorizationAlert(mediaType: callMediaType)
+            fail(ERROR_PARAM_INVALID, "call failed, authorization status is denied")
+            return
+        }
+        
+        CallEngineManager.instance.calls(userIdList: userIdList, callMediaType: callMediaType, params: params) {
+            succ()
+        } fail: { [weak self] code, message in
+            guard let self = self else { return }
+            self.handleAbilityFailErrorMessage(code: code, message: message)
+            fail(code,message)
+        }
+    }
+    
+    override public func join(callId: String) {
+      CallEngineManager.instance.join(callId: callId) {
+            
+        } fail: { [weak self] code, message in
+            guard let self = self else { return }
+            self.handleAbilityFailErrorMessage(code: code, message: message)
         }
     }
     

@@ -1,5 +1,5 @@
 {
-	"pages": [ 
+	"pages": [
 		{
 			"path": "pages/index/login",
 			"style": {
@@ -20,6 +20,12 @@
 		},
 		{
 			"path": "pages/calling/groupCall",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		},
+		{
+			"path": "TUICallKit/src/Components/TUICallKit",
 			"style": {
 				"navigationBarTitleText": "uni-app"
 			}

@@ -9,6 +9,7 @@
 "TUICallKitApp.Call" = "拨打";
 "TUICallKitApp.SingleCall" = "单人通话";
 "TUICallKitApp.GroupCall" = "群组通话";
+"TUICallKitApp.MultiCall" = "多人通话";
 "TUICallKitApp.UseGroupCall" = "使用群组通话";
 "TUICallKitApp.JoinGroupCall" = "加入群组通话";
 "TUICallKitApp.MediaType" = "媒体类型";
@@ -22,11 +23,12 @@
 "TUICallKitApp.Call.UserId" = "用户ID";
 "TUICallKitApp.Call.InputUserId" = "请输入要呼叫的User ID";
 "TUICallKitApp.Call.GroupId" = "群组ID";
-"TUICallKitApp.Call.InputGroupId" = "请输入Group ID";
+"TUICallKitApp.Call.InputGroupId" = "请输入ChatGroup ID";
 "TUICallKitApp.Call.InputUserIds" = "请输入User ID，以“，”分隔";
 "TUICallKitApp.Call.RoomIdInt" = "房间Id(数字)";
 "TUICallKitApp.Call.RoomIdString" = "房间Id(字符串)";
 "TUICallKitApp.Call.InputRoomId" = "请输入Room ID";
+"TUICallKitApp.Call.OptionalParameters" = "可选参数";
 
 "TUICallKitApp.Login.Product" = "实时音视频";
 "TUICallKitApp.Login.EnterUserId" = "请输入用户ID";

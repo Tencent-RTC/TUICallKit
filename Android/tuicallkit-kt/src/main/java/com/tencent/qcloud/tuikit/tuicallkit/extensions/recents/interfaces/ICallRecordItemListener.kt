@@ -1,7 +1,7 @@
 package com.tencent.qcloud.tuikit.tuicallkit.extensions.recents.interfaces
 
 import android.view.View
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine.CallRecords
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine.CallRecords
 
 interface ICallRecordItemListener {
     fun onItemClick(view: View?, viewType: Int, callRecords: CallRecords?)

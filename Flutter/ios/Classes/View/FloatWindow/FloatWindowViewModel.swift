@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import TUICallEngine
+import RTCRoomEngine
 
 class FloatWindowViewModel {
     
@@ -142,7 +142,7 @@ class FloatWindowViewModel {
         return GCDTimer.secondToHMSString(second: timeCount.value)
     }
     
-    func startRemoteView(userId: String, videoView: TUIVideoView){
+    func startRemoteView(userId: String, videoView: UIView){
         TUICallEngine.createInstance().startRemoteView(userId: userId, videoView: videoView) { videoId in
             
         } onLoading: { videoId in
@@ -156,7 +156,7 @@ class FloatWindowViewModel {
         TUICallEngine.createInstance().stopRemoteView(userId: userId)
     }
 
-    func openCamera(videoView: TUIVideoView) {
+    func openCamera(videoView: UIView) {
         TUICallEngine.createInstance().openCamera(TUICallState.instance.camera.value, videoView: videoView) {
             
         } fail: { code, message in

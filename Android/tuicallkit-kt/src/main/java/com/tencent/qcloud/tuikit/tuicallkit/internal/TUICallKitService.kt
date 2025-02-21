@@ -8,6 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCaller
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
+import com.tencent.cloud.tuikit.engine.call.TUICallEngine
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine
 import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUIConstants.TUICalling.ObjectFactory.RecentCalls
 import com.tencent.qcloud.tuicore.TUICore
@@ -17,15 +20,12 @@ import com.tencent.qcloud.tuicore.interfaces.ITUIObjectFactory
 import com.tencent.qcloud.tuicore.interfaces.ITUIService
 import com.tencent.qcloud.tuicore.interfaces.TUIExtensionEventListener
 import com.tencent.qcloud.tuicore.interfaces.TUIExtensionInfo
-import com.tencent.qcloud.tuikit.TUICommonDefine
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallEngine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit
 import com.tencent.qcloud.tuikit.tuicallkit.extensions.joiningroupcall.JoinInGroupCallView
 import com.tencent.qcloud.tuikit.tuicallkit.extensions.joiningroupcall.JoinInGroupCallViewModel
 import com.tencent.qcloud.tuikit.tuicallkit.extensions.recents.RecentCallsFragment
+import com.tencent.qcloud.tuikit.tuicallkit.utils.Logger
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -49,8 +49,8 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
 
         TUICore.registerExtension(TUIConstants.TUIChat.Extension.InputMore.CLASSIC_EXTENSION_ID, this)
         TUICore.registerExtension(TUIConstants.TUIChat.Extension.InputMore.MINIMALIST_EXTENSION_ID, this)
-        TUICore.registerExtension(TUIConstants.TUIGroup.Extension.GroupProfileItem.MINIMALIST_EXTENSION_ID, this)
-        TUICore.registerExtension(TUIConstants.TUIGroup.Extension.GroupProfileItem.CLASSIC_EXTENSION_ID, this)
+        TUICore.registerExtension(TUIConstants.TUIContact.Extension.GroupProfileItem.MINIMALIST_EXTENSION_ID, this)
+        TUICore.registerExtension(TUIConstants.TUIContact.Extension.GroupProfileItem.CLASSIC_EXTENSION_ID, this)
         TUICore.registerExtension(TUIConstants.TUIContact.Extension.FriendProfileItem.CLASSIC_EXTENSION_ID, this)
         TUICore.registerExtension(TUIConstants.TUIContact.Extension.FriendProfileItem.MINIMALIST_EXTENSION_ID, this)
         TUICore.registerExtension(TUIConstants.TUIChat.Extension.ChatNavigationMoreItem.CLASSIC_EXTENSION_ID, this)
@@ -177,7 +177,7 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
         if (TextUtils.equals(extensionID, TUIConstants.TUIChat.Extension.InputMore.CLASSIC_EXTENSION_ID)) {
             return getClassicChatInputMoreExtension(param)
         } else if (TextUtils.equals(
-                extensionID, TUIConstants.TUIGroup.Extension.GroupProfileItem.MINIMALIST_EXTENSION_ID
+                extensionID, TUIConstants.TUIContact.Extension.GroupProfileItem.MINIMALIST_EXTENSION_ID
             )
         ) {
             return getMinimalistGroupProfileExtension(param)
@@ -286,7 +286,7 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
         voiceCallExtension.weight = 200
         val videoCallExtension = TUIExtensionInfo()
         videoCallExtension.weight = 100
-        val groupID = getOrDefault<String?>(param, TUIConstants.TUIGroup.Extension.GroupProfileItem.GROUP_ID, null)
+        val groupID = getOrDefault<String?>(param, TUIConstants.TUIContact.Extension.GroupProfileItem.GROUP_ID, null)
         val voiceListener = ResultTUIExtensionEventListener()
         voiceListener.mediaType = TUICallDefine.MediaType.Audio
         voiceListener.groupID = groupID
@@ -300,7 +300,7 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
         voiceCallExtension.extensionListener = voiceListener
         voiceListener.activityResultCaller = getOrDefault<ActivityResultCaller?>(
             param,
-            TUIConstants.TUIGroup.Extension.GroupProfileItem.CONTEXT, null
+            TUIConstants.TUIContact.Extension.GroupProfileItem.CONTEXT, null
         )
         voiceListener.isClassicUI = false
         videoCallExtension.text = appContext.getString(R.string.tuicallkit_video_call)
@@ -309,7 +309,7 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
         videoListener.isClassicUI = false
         videoListener.activityResultCaller = getOrDefault<ActivityResultCaller?>(
             param,
-            TUIConstants.TUIGroup.Extension.GroupProfileItem.CONTEXT, null
+            TUIConstants.TUIContact.Extension.GroupProfileItem.CONTEXT, null
         )
         val extensionInfoList: MutableList<TUIExtensionInfo> = java.util.ArrayList()
         extensionInfoList.add(videoCallExtension)
@@ -448,8 +448,8 @@ class TUICallKitService private constructor(context: Context) : ITUINotification
             val userIDs = param[TUIConstants.TUICalling.PARAM_NAME_USERIDS] as Array<String>?
             val typeString = param[TUIConstants.TUICalling.PARAM_NAME_TYPE] as String?
             val groupID = param[TUIConstants.TUICalling.PARAM_NAME_GROUPID] as String?
-            var userIdList: List<String?>? = userIDs?.toList() ?: null
-            TUILog.i(TAG, "onCall, groupID: $groupID, userIdList: $userIdList")
+            var userIdList: List<String?>? = userIDs?.toList() ?: ArrayList()
+            Logger.info(TAG, "onCall, groupID: $groupID, userIdList: $userIdList")
             userIdList = userIdList?.filterNotNull()
 
             var mediaType = TUICallDefine.MediaType.Unknown

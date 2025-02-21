@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
+import 'package:tencent_calls_uikit/src/call_define.dart';
 
 class User {
   String id = '';
@@ -12,6 +12,7 @@ class User {
   bool videoAvailable = false;
   int playOutVolume = 0;
   int viewID = 0;
+  bool networkQualityReminder = false;
   var key = GlobalKey();
 
   Map<String, dynamic> toJson() {
@@ -26,6 +27,7 @@ class User {
     data['videoAvailable'] = videoAvailable;
     data['playOutVolume'] = playOutVolume;
     data['viewID'] = viewID;
+    data['networkQualityReminder'] = networkQualityReminder;
     return data;
   }
 

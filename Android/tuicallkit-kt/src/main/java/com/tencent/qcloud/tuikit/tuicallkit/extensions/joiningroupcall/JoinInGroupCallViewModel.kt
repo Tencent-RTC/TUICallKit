@@ -3,15 +3,15 @@ package com.tencent.qcloud.tuikit.tuicallkit.extensions.joiningroupcall
 import android.content.Context
 import android.view.View
 import com.google.gson.Gson
+import com.tencent.cloud.tuikit.engine.call.TUICallDefine
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine
 import com.tencent.imsdk.v2.V2TIMGroupListener
 import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMValueCallback
 import com.tencent.qcloud.tuicore.TUILogin
-import com.tencent.qcloud.tuikit.TUICommonDefine
-import com.tencent.qcloud.tuikit.tuicallengine.TUICallDefine
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.Observer
-import com.tencent.qcloud.tuikit.tuicallengine.impl.base.TUILog
 import com.tencent.qcloud.tuikit.tuicallkit.state.TUICallState
+import com.tencent.qcloud.tuikit.tuicallkit.utils.Logger
+import com.trtc.tuikit.common.livedata.Observer
 
 class JoinInGroupCallViewModel(context: Context) {
     private val appContext: Context
@@ -27,7 +27,7 @@ class JoinInGroupCallViewModel(context: Context) {
     private val groupListener: V2TIMGroupListener = object : V2TIMGroupListener() {
         override fun onGroupAttributeChanged(groupID: String?, groupAttributeMap: MutableMap<String?, String>?) {
             if (groupID.isNullOrEmpty() || currentGroupId != groupID) {
-                TUILog.w(TAG, "onGroupAttributes, not same group(current:$currentGroupId, $groupID)}, ignore")
+                Logger.warn(TAG, "onGroupAttributes, not same group(current:$currentGroupId, $groupID)}, ignore")
                 return
             }
 
@@ -47,7 +47,7 @@ class JoinInGroupCallViewModel(context: Context) {
     }
 
     fun getGroupAttributes(groupId: String) {
-        TUILog.i(TAG, "getGroupAttributes, groupId: $groupId")
+        Logger.info(TAG, "getGroupAttributes, groupId: $groupId")
         currentGroupId = groupId
 
         V2TIMManager.getGroupManager().getGroupAttributes(groupId, listOf(KEY_GROUP_ATTRIBUTE),
@@ -58,7 +58,7 @@ class JoinInGroupCallViewModel(context: Context) {
                 }
 
                 override fun onError(code: Int, desc: String) {
-                    TUILog.e(TAG, "getGroupAttributes failed, errorCode: $code , errorMsg: $desc")
+                    Logger.error(TAG, "getGroupAttributes failed, errorCode: $code , errorMsg: $desc")
                 }
             })
     }
@@ -66,31 +66,31 @@ class JoinInGroupCallViewModel(context: Context) {
     private fun parseGroupAttributes(groupId: String, map: Map<String?, String?>?) {
         if (TUICallState.instance.selfUser.get().callStatus.get() != TUICallDefine.Status.None) {
             removeCallView()
-            TUILog.w(TAG, "parseGroupAttributes, user is in the call, ignore")
+            Logger.warn(TAG, "parseGroupAttributes, user is in the call, ignore")
             return
         }
 
         if (map == null || map[KEY_GROUP_ATTRIBUTE].isNullOrEmpty()) {
-            TUILog.w(TAG, "parseGroupAttributes is empty, map: $map")
+            Logger.warn(TAG, "parseGroupAttributes is empty, map: $map")
             removeCallView()
             return
         }
 
-        TUILog.i(TAG, "parseGroupAttributes, groupId: $groupId, map: $map")
+        Logger.info(TAG, "parseGroupAttributes, groupId: $groupId, map: $map")
 
         val data: String? = map[KEY_GROUP_ATTRIBUTE]
         val extraMap: Map<String, Any> = Gson().fromJson<Map<String, Any>>(data, Map::class.java)
 
         val businessType = extraMap[KEY_BUSINESS_TYPE] as? String
         if (businessType.isNullOrEmpty() || businessType != VALUE_BUSINESS_TYPE) {
-            TUILog.w(TAG, "no user in the call")
+            Logger.warn(TAG, "no user in the call")
             removeCallView()
             return
         }
 
         val userList = parseUserList(extraMap)
         if (userList.isEmpty() || userList.contains(TUILogin.getLoginUser()) || userList.size <= 1) {
-            TUILog.w(TAG, "userList: $userList, loginUser:${TUILogin.getLoginUser()}")
+            Logger.warn(TAG, "userList: $userList, loginUser:${TUILogin.getLoginUser()}")
             removeCallView()
             return
         }
@@ -128,7 +128,7 @@ class JoinInGroupCallViewModel(context: Context) {
     private fun parseUserList(extraMap: Map<String, Any>): List<String> {
         val userIds = extraMap[KEY_USER_LIST] as? List<Map<String, String>>
         if (userIds == null) {
-            TUILog.w(TAG, "parseUserList, userList is empty, ignore")
+            Logger.warn(TAG, "parseUserList, userList is empty, ignore")
             return ArrayList<String>()
         }
         val list = ArrayList<String>()

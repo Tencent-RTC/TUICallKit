@@ -17,6 +17,7 @@
   "common_problems": "常见问题",
   "single_call": "单人通话",
   "group_call": "群组通话",
+  "multi_call": "多人通话",
   "enter_callee_id": "请输入您要呼叫的UserId",
   "media_type": "媒体类型",
   "video_call": "视频通话",
@@ -28,6 +29,7 @@
   "callee_id_list": "用户ID列表",
   "separated": "ID使用逗号隔开",
   "join_group_call": "加入群组通话",
+  "join_multi_call": "加入多人通话",
   "digital_room": "数字房间号",
   "string_room": "字符串房间号",
   "enter_room_id": "请输入RoomId",
@@ -56,5 +58,6 @@
   "offline_push_info_settings": "离线推送消息设置",
   "please_enter": "请输入",
   "show_blur_background_button": "显示模糊背景按钮",
-  "show_incoming_banner": "显示来电横幅"
+  "show_incoming_banner": "显示来电横幅",
+  "optional_parameters": "可选参数"
 }

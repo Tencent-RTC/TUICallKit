@@ -3,11 +3,11 @@ import 'package:file/local.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
-import 'package:tencent_calls_uikit/src/call_state.dart';
+import 'package:tencent_calls_uikit/src/call_define.dart';
+import 'package:tencent_calls_uikit/src/impl/call_state.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
-import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
-import 'package:tencent_calls_uikit/src/utils/preference_utils.dart';
+import 'package:tencent_calls_uikit/src/platform/call_kit_platform_interface.dart';
+import 'package:tencent_calls_uikit/src/utils/preference.dart';
 
 class CallingBellFeature {
   static FileSystem fileSystem = const LocalFileSystem();

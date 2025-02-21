@@ -7,9 +7,12 @@ import { useLanguage, useMessage, useUserInfo, useAegis, useChat } from "../../h
 export default function useGroupCall() {
   const { t } = useLanguage();
   const { reportEvent } = useAegis();
+  // @ts-ignore
   const { createGroupID } = useChat();
   const { showMessage, handleCallError } = useMessage();
   const userInfo = toRefs(useUserInfo());
+
+  TUICallKitServer.setLogLevel(0)
 
   const groupCall = async (groupCallMember: Ref<string[]>) => {
     reportEvent({ apiName: 'groupCall.start' });
@@ -22,10 +25,9 @@ export default function useGroupCall() {
     }
     userInfo.isCall.value = true;
     try {
-      const groupID = await createGroupID(groupCallMember.value);
-      await TUICallKitServer.groupCall({
+      // const groupID = await createGroupID(groupCallMember.value);
+      await TUICallKitServer.calls({
         userIDList: groupCallMember.value, 
-        groupID,
         type: userInfo?.currentCallType.value === 'video' ? TUICallType.VIDEO_CALL : TUICallType.AUDIO_CALL,
       })
       reportEvent({ apiName: 'groupCall.success'});

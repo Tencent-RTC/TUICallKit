@@ -76,12 +76,12 @@
   "k_0000074": "Logout",
   "k_0000075": "Please enter your UserId",
   "k_0000076": "List of user ids",
-  "k_0000077": "The other party has hung up, the call has ended",
-  "k_0000078": "The other party has declined the call request",
+  "k_0000077": "Other party hung up, call ended",
+  "k_0000078": "Call rejected by other party",
   "k_0000079": "The other party is busy",
   "k_0000080": "The other party did not respond",
-  "k_0000081": "Call request declined",
-  "k_0000082": "ended the call",
+  "k_0000081": "rejected call",
+  "k_0000082": "end the call",
   "k_0000083": "Anonymity",
   "k_0000084": "Apply for microphone permission",
   "k_0000085": "Apply for microphone and camera permissions",
@@ -102,5 +102,8 @@
   "k_0000100": " person is on the call",
   "k_0000101": "Switch Camera",
   "k_0000102": "Blur Background",
-  "k_0000103": "Show blur background"
+  "k_0000103": "Show blur background",
+  "k_0000104": "The other party's network connection is poor",
+  "k_0000105": "Your network connection is poor",
+  "k_0000106": "The identifier is in blacklist. Failed to send this message!"
 }
