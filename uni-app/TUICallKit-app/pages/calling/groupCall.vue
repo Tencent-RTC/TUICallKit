@@ -5,22 +5,22 @@
 				<view class="search">
 					<view class="input-box">
 						<input class="input-search-user" :value="userIDToSearch" maxlength="11" type="text"
-							v-on:input="userIDToSearchInput" placeholder="搜索用户ID" />
+							v-on:input="userIDToSearchInput" :placeholder="$t('Search User ID')" />
 					</view>
-					<view class="btn-search" @click="searchUser">搜索</view>
+					<view class="btn-search" @click="searchUser">{{ $t('Search') }}</view>
 				</view>
 				<view class="search-selfInfo">
-					<label class="search-selfInfo-label">您的ID</label>
+					<label class="search-selfInfo-label">{{ $t('Your ID') }}</label>
 					<view class="search-selfInfo-phone">
 						{{ config.userID }}
 					</view>
 
 					<view v-if="searchList.length !== 0">
 						<view class="allcheck" @click="allCheck" v-if="ischeck">
-							全选
+							{{ $t('Select All') }}
 						</view>
 						<view class="allcheck" @click="allCancel" v-else>
-							取消
+							{{ $t('Cancel') }}
 						</view>
 					</view>
 				</view>
@@ -46,13 +46,13 @@
 
 				<view v-if="callBtn && searchList.length > 0" class="trtc-calling-group-user-callbtn"
 					@click='groupCall'>
-					开始通话</view>
+					{{ $t('Start Call') }}</view>
 
 				<view v-if="!callBtn" class="search-default">
 					<view class="search-default-box">
 						<image class="search-default-img" src="../../static/search.png" lazy-load="true" />
 						<view class="search-default-message">
-							搜索添加已注册用户以发起通话
+							{{ $t('initiated a call') }}
 						</view>
 					</view>
 				</view>
@@ -87,23 +87,18 @@ export default {
 		}
 	},
 	methods: {
-		// 监听输入框
 		userIDToSearchInput(e) {
 			this.userIDToSearch = e.detail.value
 		},
-
-		// 搜索
 		searchUser() {
 			// 去掉前后空格
 			const newSearch = this.userIDToSearch.trim();
 			this.userIDToSearch = newSearch;
-
-
 			// 不能呼叫自身
 			if (this.userIDToSearch === getApp().globalData.userID) {
 				uni.showToast({
 					icon: 'none',
-					title: '不能呼叫本机',
+					title: this.$t('Do not call local'),
 				});
 				return;
 			}
@@ -111,7 +106,7 @@ export default {
 			if (this.searchList.length > 7) {
 				uni.showToast({
 					icon: 'none',
-					title: '暂支持最多9人通话。如需多人会议，请使用TUIRoom',
+					title: this.$t('Supports up to 9 calls'),
 				});
 				return;
 			}
@@ -119,7 +114,7 @@ export default {
 				if (this.searchList[i].userID === this.userIDToSearch) {
 					uni.showToast({
 						icon: 'none',
-						title: 'userId已存在,请勿重复添加',
+						title: this.$t('The userId already exists'),
 					});
 					return;
 				}
@@ -128,7 +123,7 @@ export default {
 				.then((imResponse) => {
 					if (imResponse.data.length === 0) {
 						wx.showToast({
-							title: '未查询到此用户',
+							title: this.$t('User not found'),
 							icon: 'none',
 						});
 						return;
@@ -156,44 +151,32 @@ export default {
 			if (userIDList.length === 0) {
 				uni.showToast({
 					icon: 'none',
-					title: '未选择呼叫用户',
+					title: this.$t('No call user is selected'),
 				});
 				return;
 			}
-			// 处理数据
-			const groupList = JSON.parse(JSON.stringify(userIDList));
-			// 将本机userID插入群成员中
-			groupList.unshift(getApp().globalData.userID);
-			for (let i = 0; i < groupList.length; i++) {
-				const user = {
-					userID: groupList[i],
-				};
-				groupList[i] = user;
-			}
-			// 创建群聊
-			await this.createGroup(groupList);
-			// 判断groupID是否创建成功
-			if (this.groupID) {
-				// type：通话的媒体类型，比如：语音通话(callMediaType = 1)、视频通话(callMediaType = 2)
-				uni.$TUICallKit.groupCall({
-				  groupID: this.groupID,
-				  userIDList: userIDList,
-				  callMediaType: this.config.type,
+			// type：通话的媒体类型，比如：语音通话(callMediaType = 1)、视频通话(callMediaType = 2)
+			uni.$TUICallKit.calls({
+				userIDList: userIDList,
+				callMediaType: this.config.type,
+				// callParams: {
+						// roomID: 0,
+						// timeout:30,
+						// offlinePushInfo: {
+						// 	title: "test-title",
+						// 	description: "you have a call",
+						// 	androidSound: "rain",
+						// 	iOSSound: "rain.mp3",
+						// },
+					// }
 				},
-				  res => {
-				    console.log(JSON.stringify(res));
-				  }
-				);
-				// 重置数据
-				this.ischeck= true;
-					// searchList: [],
-					
-			} else {
-				uni.showToast({
-					icon: 'none',
-					title: '群创建失败',
-				});
-			}
+				res => {
+					console.log(JSON.stringify(res));
+				}
+			);
+			// 重置数据
+			this.ischeck= true;
+			// searchList: [],
 		},
 
 		// 选中
@@ -240,22 +223,6 @@ export default {
 			this.searchList=newlist;
 				this.ischeck= true
 		},
-
-
-		// 创建IM群聊
-		createGroup(userIDList) {
-			return uni.$TUIKit.createGroup({
-				type: uni.$TIM.TYPES.GRP_MEETING,
-				name: '多人通话',
-				memberList: userIDList, // 如果填写了 memberList，则必须填写 userID
-			})
-				.then((imResponse) => { // 创建成功
-					this.groupID= imResponse.data.group.groupID
-				})
-				.catch((imError) => {
-					console.warn('createGroup error:', imError); // 创建群组失败的相关信息
-				});
-		}
 	}
 }
 </script>
