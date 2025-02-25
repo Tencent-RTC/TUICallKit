@@ -9,11 +9,13 @@
 				</view>
 			</view>
 		</view>
-		<view class="login" style="width: 70%; margin: 0 auto 0;"><button class="loginBtn"
-				@click="logoutHandler">登出</button></view>
-<!-- 		<view style="width: 70%; margin: 15px auto 0;" @click="setNickHandler">设置昵称</view>
-		<view style="width: 70%; margin: 15px auto 0;" @click="setUserAvatarHandler">设置头像</view>
-		<view style="width: 70%; margin: 15px auto 0;" @click="setCallingBellHandler">设置铃声</view> -->
+		<view class="login" style="width: 70%; margin: 0 auto 0;">
+			<button class="loginBtn" @click="logoutHandler" >{{ $t('Logout') }}</button>
+		</view>
+		<!-- <view style="width: 70%; margin: 15px auto 0;" @click="setNickHandler"> 设置昵称 </view> -->
+		<!-- <view style="width: 70%; margin: 15px auto 0;" @click="setUserAvatarHandler"> 设置头像 </view> -->
+		<!-- <view style="width: 70%; margin: 15px auto 0;" @click="setCallingBellHandler"> 设置铃声 </view> -->
+		<!-- <view style="width: 70%; margin: 15px auto 0;" @click="joinAPI"> join API </view> -->
 	</view>
 </template>
 
@@ -24,36 +26,41 @@
 				template: '1v1',
 				entryInfos: [{
 						icon: 'https://web.sdk.qcloud.com/component/miniApp/resources/audio-card.png',
-						title: '语音通话',
-						desc: '丢包率70%仍可正常语音通话',
+						title: this.$t('Voice Call'),
+						desc: this.$t('a 70% packet loss rate'),
 						navigateTo: '../calling/call?type=1',
 					},
 					{
 						icon: 'https://web.sdk.qcloud.com/component/miniApp/resources/video-card.png',
-						title: '视频通话',
-						desc: '丢包率50%仍可正常视频通话',
+						title: this.$t('Video Call'),
+						desc: this.$t('a 50% packet loss rate'),
 						navigateTo: '../calling/call?type=2',
 					},
 					{
 						icon: 'https://web.sdk.qcloud.com/component/miniApp/resources/audio-card.png',
-						title: '多人语音通话',
-						desc: '丢包率70%仍可正常语音通话',
+						title: this.$t('Multi-Person Voice Call'),
+						desc:  this.$t('a 70% packet loss rate'),
 						navigateTo: '../calling/groupCall?type=1',
 					},
 					{
 						icon: 'https://web.sdk.qcloud.com/component/miniApp/resources/video-card.png',
-						title: '多人视频通话',
-						desc: '丢包率50%仍可正常视频通话',
+						title: this.$t('Multi-Person Video Call'),
+						desc: this.$t('a 50% packet loss rat'),
 						navigateTo: '../calling/groupCall?type=2',
 					},
 				],
 			}
 		},
 		methods: {
+			joinAPI() {
+				uni.$TUICallKit.join({
+					callId: 'xxx'
+				})
+			},
 			logoutHandler() {
 				// IM 登出
 				uni.$TUIKit.logout();
-				// 登出 原生插件
+				// callkit 登出
 				uni.$TUICallKit.logout((res) => {
 					console.log('logout response = ', JSON.stringify(res));
 				});
@@ -68,7 +75,6 @@
 				});
 			},
 			setNickHandler() {
-				console.error('--linda')
 				uni.$TUICallKit.setSelfInfo({
 					nickName: '小橙子'
 				}, (res) => {
@@ -104,6 +110,7 @@
 		},
 		onLoad() {
 			uni.$TUICallKitEvent.addEventListener('onError', (code, msg) => {
+				uni.$onErrorUpload(null, msg);
 				console.log('onError', code, msg);
 			});
 			uni.$TUICallKitEvent.addEventListener('onCallReceived', (res) => {
@@ -118,8 +125,6 @@
 			uni.$TUICallKitEvent.addEventListener('onCallEnd', (res) => {
 				console.log('onCallEnd', JSON.stringify(res));
 			});
-
-
 		},
 		created() {
 
