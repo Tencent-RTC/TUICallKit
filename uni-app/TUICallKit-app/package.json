@@ -4,13 +4,15 @@
 	"description": "",
 	"main": "main.js",
 	"dependencies": {
-		"@tencentcloud/chat": "^3.3.5"
+		"@tencentcloud/chat": "^3.3.5",
+		"@tencentcloud/tui-core": "^2.1.4",
+		"aegis-weex-sdk": "^1.36.2",
+		"vue-i18n": "^9.2.2"
 	},
-	"devDependencies": {},
 	"scripts": {
-		"build:github": "node ./utils/cp-files-for-github.js",
 		"lint": "./node_modules/.bin/eslint ./",
-		"fix": "./node_modules/.bin/eslint --fix ./"
+		"fix": "./node_modules/.bin/eslint --fix ./",
+		"build:github": "rm -fr ./GitHub && node ./utils/publish.js"
 	},
 	"keywords": [],
 	"author": "",

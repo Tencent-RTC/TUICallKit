@@ -4,14 +4,14 @@
 		<view class="counter-warp">
 			<view class="header-content">
 				<image src="../../static/calling-logo.png" class="icon-box" />
-				<view class="text-header">腾讯云音视频插件</view>
+				<view class="text-header">{{ $t('Tencent Cloud Audio and Video Plugin') }}</view>
 			</view>
 			<view class="box">
 				<view class="list-item">
-					<label class="list-item-label">用户ID</label>
-					<input class="input-box" type="text" v-model="userID" placeholder="请输入用户ID" placeholder-style="color:#BBBBBB;" />
+					<label class="list-item-label">{{ $t('User ID') }}</label>
+					<input class="input-box" type="text" v-model="userID" :placeholder="$t('Please enter User ID')" placeholder-style="color:#BBBBBB;" />
 				</view>
-				<view class="login"><button class="loginBtn" @click="loginHandler">登录</button></view>
+				<view class="login"><button class="loginBtn" @click="loginHandler">{{ $t('Login') }}</button></view>
 			</view>
 		</view>
 	</view>
@@ -29,32 +29,31 @@ export default {
 		loginHandler() {
 			const userID = this.userID;
 			const userSig = genTestUserSig(userID).userSig;
-			const SDKAppID = genTestUserSig('').sdkAppID;
-			if (!SDKAppID) {
-				console.error('请检查 uni-app/debug/GenerateTestUserSig.js 文件的 sdkAppID、usersig 是否填写');
-			} else if (typeof SDKAppID !== 'number') {
-				console.error('请检查 uni-app/debug/GenerateTestUserSig.js 文件下的 sdkAppID 是否为数字number 类型');
-			}
-			uni.$TUIKit.login({
-				userID: userID,
-				userSig: userSig
-			});
+			const sdkAppId = genTestUserSig('').sdkAppID;
+			
 			uni.$TUICallKit.login({
-			  SDKAppID,
+			  SDKAppID: sdkAppId,
 			  userID: userID,
 			  userSig: userSig,
 			}, (res) => {
 			  if (res.code === 0) {
 			    // 开启悬浮窗
 			    uni.$TUICallKit.enableFloatWindow(true);
-			    uni.showToast({
-			      title: 'login success',
-			      icon: 'none'
-			    });
-			  } else {
-			    console.error('login failed, failed message = ', res.msg);
-			  }
+					// 开启虚拟背景
+					uni.$TUICallKit.enableVirtualBackground(true);
+					// 屏幕旋转 0-Portrait, 1-LandScape, 2-Auto;   default value: 0
+					uni.$TUICallKit.setScreenOrientation(2);
+					uni.showToast({
+						title: 'login success',
+						icon: 'none'
+					});
+				} else {
+					console.error('login failed, failed message = ', res.msg);
+				}
 			});
+			
+			uni.$TUIKit.login({userID, userSig });
+
 			getApp().globalData.userID = userID;
 			getApp().globalData.userSig = userSig;
 			uni.navigateTo({

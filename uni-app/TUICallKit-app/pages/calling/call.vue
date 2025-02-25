@@ -4,13 +4,13 @@
 			<view class="trtc-calling-index-search">
 				<view class="search">
 					<view class="input-box">
-						<input class="input-search-user" :value="userIDToSearch" maxlength="11" type="text"
-							v-on:input="userIDToSearchInput" placeholder="搜索用户ID" />
+						<input class="input-search-user" :value="userIDToSearch" maxlength="50" type="text"
+							v-on:input="userIDToSearchInput" :placeholder="$t('Search User ID')" />
 					</view>
-					<view class="btn-search" @click="searchUser">搜索</view>
+					<view class="btn-search" @click="searchUser">{{ $t('Search') }}</view>
 				</view>
 				<view class="search-selfInfo">
-					<label class="search-selfInfo-label">您的ID</label>
+					<label class="search-selfInfo-label">{{ $t('Your ID') }}</label>
 					<view class="search-selfInfo-phone">
 						{{config.userID}}
 					</view>
@@ -21,19 +21,20 @@
 							<image class="userInfo-avatar" :src="invitee.avatar"></image>
 							<text class="userInfo-name">{{ invitee.userID}}</text>
 						</view>
-						<view class="btn-userinfo-call" @click="call">呼叫</view>
+						<view class="btn-userinfo-call" @click="call">{{ $t('Call') }}</view>
 					</view>
-					<view v-else>未查询到此用户</view>
+					<view v-else>{{$t('User not found')}}</view>
 				</view>
 				<view v-if="!invitee.userID" class="search-default">
 					<view class="search-default-box">
 						<image class="search-default-img" src="../../static/search.png" lazy-load="true" />
 						<view class="search-default-message">
-							搜索添加已注册用户以发起通话
+							{{ $t('initiated a call') }}
 						</view>
 					</view>
 				</view>
 			</view>
+			
 		</view>
 	</view>
 
@@ -57,13 +58,13 @@
 			}
 		},
 		onLoad(option) {
-			console.log(getApp().globalData.userID, '------getApp().globalData.userID')
 			this.config = {
 				sdkAppID: getApp().globalData.SDKAppID,
 				userID: getApp().globalData.userID,
 				userSig: getApp().globalData.userSig,
 				type: Number(option.type)
 			}
+			console.log(this.config);
 		},
 		methods: {
 			userIDToSearchInput(e) {
@@ -80,7 +81,7 @@
 					.then((imResponse) => {
 						if (imResponse.data.length === 0) {
 							uni.showToast({
-								title: '未查询到此用户',
+								title: this.$t('User not found'),
 								icon: 'none',
 							});
 							return;
@@ -95,32 +96,37 @@
 				if (this.config.userID === this.invitee.userID) {
 					uni.showToast({
 						icon: 'none',
-						title: '不可呼叫本机',
+						title: this.$t('Do not call local'),
 					});
 					return;
 				}
 				try {
 					// type：通话的媒体类型，比如：语音通话(callMediaType = 1)、视频通话(callMediaType = 2)
-					uni.$TUICallKit.call({
-							userID: this.invitee.userID,
-							callMediaType: this.config.type
-						},
+					const callParams = {
+						userIDList: [this.invitee.userID],
+						callMediaType: this.config.type,
+						// callParams: {
+						// 	roomID: 0,
+						// 	timeout:30,
+						// 	offlinePushInfo: {
+						// 		title: "test-title",
+						// 		description: "you have a call",
+						// 		androidSound: "rain",
+						// 		iOSSound: "rain.mp3",
+						// 	},
+						// 	userData:'testuserData'
+						// },
+						
+					};
+					console.log('--> ', JSON.stringify(callParams));
+					uni.$TUICallKit.calls(callParams,
 						res => {
 							console.log(JSON.stringify(res));
-							// hangup、handleSetVideoRenderParams 接口测试
-							// setTimeout(() => {
-							// 	this.handleSetVideoRenderParams();
-							// }, 3000)
-							// setTimeout(() => {
-							// 	if (this.config.userID === '234') {
-							// 		this.handleHangup();	
-							// 	}
-							// }, 15000)
 						}
 					);
 				} catch (error) {
 					uni.showToast({
-						title: '呼叫失败',
+						title: this.$t('call failure'),
 						icon: "none"
 					})
 				}
@@ -129,7 +135,7 @@
 			handleHangup() {
 				uni.$TUICallEngine.hangup();
 			},
-			// 设置参数
+			// 设置渲染模式参数
 			handleSetVideoRenderParams() {
 				const params = {
 					userID: this.config.userID,
@@ -138,6 +144,16 @@
 				};
 				uni.$TUICallEngine.setVideoRenderParams(params, (res) => {
 					console.warn('渲染设置回调 = ', JSON.stringify(res));
+				});
+			},
+			// 设置采集参数
+			handleSetVideoEncoderParams() {
+				const params = {
+					resolution: 110,
+					resolutionMode: 0, // 0-Landscape(横屏)，1一Portrait(竖屏)
+				};
+				uni.$TUICallEngine.setVideoEncoderParams(params, (res) => {
+					console.warn('采集参数回调 = ', JSON.stringify(res));
 				});
 			},
 		}
