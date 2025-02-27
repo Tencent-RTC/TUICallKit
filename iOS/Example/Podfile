@@ -6,10 +6,10 @@ target 'TUICallKitApp' do
   use_frameworks!
   
   pod 'Toast-Swift'
+  pod 'SnapKit'
   pod 'Alamofire', '~> 5.6.4'
   pod 'Kingfisher', '<= 6.3.1'
-  pod 'SnapKit'
-  pod 'TIMPush'
+  pod 'TIMPush', '~> 8.4.6668'
   pod 'TUICallKit-Swift', :path => "../", :subspecs => ["Professional"]
   
 end
