@@ -9,6 +9,7 @@ _English | [简体中文](README-zh_CN.md)_
 ## Before getting started
 
 This section shows you the prerequisites you need for testing Calls for iOS example.
+[![](../Preview/youtube/ios-build-demo.png)](https://www.youtube.com/watch?v=th3PHoZkRl4)
 
 ### Requirements
 

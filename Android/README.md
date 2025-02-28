@@ -10,7 +10,9 @@ English | [简体中文](README-zh_CN.md)
 ## Before getting started
 
 This section shows you the prerequisites you need for testing tuicallkit for Android sample app.
+[![](../Preview/youtube/android-build-demo.png)](https://www.youtube.com/watch?v=rTTWpFyinTg)
 
+### Requirements
 - Android 5.0 (SDK API level 21) or later.
 - Gradle 4.2.1 or later.
 - Mobile phone on Android 5.0 or later.
