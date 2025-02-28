@@ -28,12 +28,13 @@
    
    mac端
    ```
-   mkdir -p ./TUICallKit && cp -r node_modules/@tencentcloud/call-uikit-wechat/ ./TUICallKit
+   mkdir -p ./TUICallKit && cp -r node_modules/@tencentcloud/call-uikit-wx-uniapp/ ./TUICallKit && cp node_modules/@tencentcloud/call-engine-wx/RTCCallEngine.wasm.br ./static
    ```
 
    windows端
    ```
-    xcopy node_modules\@tencentcloud\call-uikit-wechat\ .\TUICallKit /i /e
+   xcopy node_modules\@tencentcloud\call-uikit-wx-uniapp\ .\TUICallKit /i /e
+   xcopy node_modules\@tencentcloud\call-engine-wx\RTCCallEngine.wasm.br .\static
    ```
 
 4. HBuilder 中导入项目
