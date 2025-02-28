@@ -12,6 +12,7 @@
 ## Before getting started
 
 This section shows you the prerequisites you need for use Tencent Calls for Web React demo.
+[![](../../Preview/youtube/react-build-demo.png)](https://www.youtube.com/watch?v=s5XJ0j1YNL0)
 
 #### Requirements
 
