@@ -29,7 +29,7 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'TRTC' do |trtc|
     trtc.dependency 'TXLiteAVSDK_TRTC'
-    trtc.dependency 'RTCRoomEngine/TRTC', '~> 2.9.0'
+    trtc.dependency 'RTCRoomEngine/TRTC', '~> 2.9.1'
     trtc.source_files = 'TUICallKit-Swift/**/*.{h,m,mm,swift}'
     trtc.resource_bundles = {
       'TUICallKitBundle' => ['TUICallKit-Swift/Resources/**/*.strings', 'TUICallKit-Swift/Resources/AudioFile', 'TUICallKit-Swift/Resources/*.xcassets']
@@ -39,7 +39,7 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'Professional' do |professional|
     professional.dependency 'TXLiteAVSDK_Professional'
-    professional.dependency 'RTCRoomEngine/Professional', '~> 2.9.0'
+    professional.dependency 'RTCRoomEngine/Professional', '~> 2.9.1'
     professional.source_files = 'TUICallKit-Swift/**/*.{h,m,mm,swift}'
     professional.resource_bundles = {
       'TUICallKitBundle' => ['TUICallKit-Swift/Resources/**/*.strings', 'TUICallKit-Swift/Resources/AudioFile', 'TUICallKit-Swift/Resources/*.xcassets']
