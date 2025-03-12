@@ -39,6 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(configIfLoggedIn(_:)),
                                                name: Notification.Name("TUILoginSuccessNotification"),
                                                object: nil)
+        sendStopRingingToExtension()
         return true
     }
     
@@ -50,6 +51,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             TUICallKit.createInstance().enableIncomingBanner(enable: SettingsConfig.share.enableIncomingBanner)
 #endif
         }
+    }
+    
+    func sendStopRingingToExtension() {
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(),
+                                             CFNotificationName("APNsStopRinging" as CFString), nil, nil, true)
     }
 }
 

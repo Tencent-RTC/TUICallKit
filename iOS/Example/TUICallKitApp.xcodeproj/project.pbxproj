@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -34,9 +34,34 @@
 		B811E2AB2A0A5C3200E74024 /* JoinGroupCallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B811E2AA2A0A5C3200E74024 /* JoinGroupCallViewController.swift */; };
 		B81C962F2A2DC68200E3CBC6 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81C962E2A2DC68200E3CBC6 /* MainViewController.swift */; };
 		B89ECFC72A0B830500D7F0EB /* SettingsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89ECFC62A0B830500D7F0EB /* SettingsConfig.swift */; };
+		B8CE198B2D81351500EEBA51 /* APNsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B8CE19842D81351400EEBA51 /* APNsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B8D16ED72A1321F100937E40 /* DropMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8D16ED62A1321F100937E40 /* DropMenuView.swift */; };
 		B8D77D452A42E45200377391 /* SettingDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8D77D442A42E45200377391 /* SettingDetailViewController.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B8CE19892D81351500EEBA51 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 474E0FDD2644DFAE002AFADB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B8CE19832D81351400EEBA51;
+			remoteInfo = APNsExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B8CE198C2D81351500EEBA51 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				B8CE198B2D81351500EEBA51 /* APNsExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		470EB6FA266A49200072071F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen_en.storyboard; sourceTree = "<group>"; };
@@ -76,9 +101,25 @@
 		B811E2AA2A0A5C3200E74024 /* JoinGroupCallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinGroupCallViewController.swift; sourceTree = "<group>"; };
 		B81C962E2A2DC68200E3CBC6 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		B89ECFC62A0B830500D7F0EB /* SettingsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsConfig.swift; sourceTree = "<group>"; };
+		B8CE19842D81351400EEBA51 /* APNsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = APNsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B8CE19912D81353400EEBA51 /* TUICallKitAppDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TUICallKitAppDebug.entitlements; sourceTree = "<group>"; };
 		B8D16ED62A1321F100937E40 /* DropMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropMenuView.swift; sourceTree = "<group>"; };
 		B8D77D442A42E45200377391 /* SettingDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingDetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		B8CE198F2D81351500EEBA51 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = B8CE19832D81351400EEBA51 /* APNsExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		B8CE19852D81351500EEBA51 /* APNsExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (B8CE198F2D81351500EEBA51 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = APNsExtension; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		474E0FE22644DFAE002AFADB /* Frameworks */ = {
@@ -86,6 +127,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				03E4E4CA2D063EC284390048 /* Pods_TUICallKitApp.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B8CE19812D81351400EEBA51 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,9 +171,11 @@
 		474E0FDC2644DFAE002AFADB = {
 			isa = PBXGroup;
 			children = (
+				B8CE19912D81353400EEBA51 /* TUICallKitAppDebug.entitlements */,
 				4FF707AB28A9EFBE0044B20E /* TUICallKitApp.entitlements */,
 				4F3F7CB326D65DE3002912DE /* Debug */,
 				47D9D35C26521A7A0007EE1F /* App */,
+				B8CE19852D81351500EEBA51 /* APNsExtension */,
 				45BC76B78942804520FA6869 /* Frameworks */,
 				914460EA7D352CBA688E2356 /* Pods */,
 				474E0FE62644DFAE002AFADB /* Products */,
@@ -136,6 +186,7 @@
 			isa = PBXGroup;
 			children = (
 				474E0FE52644DFAE002AFADB /* TUICallKitApp.app */,
+				B8CE19842D81351400EEBA51 /* APNsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -258,15 +309,39 @@
 				474E0FE32644DFAE002AFADB /* Resources */,
 				8FE026B3F7BE01BC7F9DB305 /* [CP] Embed Pods Frameworks */,
 				0FD264A225EFBDE6F60D5FB6 /* [CP] Copy Pods Resources */,
+				B8CE198C2D81351500EEBA51 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				B8CE198A2D81351500EEBA51 /* PBXTargetDependency */,
 			);
 			name = TUICallKitApp;
 			productName = TRTCCalling;
 			productReference = 474E0FE52644DFAE002AFADB /* TUICallKitApp.app */;
 			productType = "com.apple.product-type.application";
+		};
+		B8CE19832D81351400EEBA51 /* APNsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B8CE19902D81351500EEBA51 /* Build configuration list for PBXNativeTarget "APNsExtension" */;
+			buildPhases = (
+				B8CE19802D81351400EEBA51 /* Sources */,
+				B8CE19812D81351400EEBA51 /* Frameworks */,
+				B8CE19822D81351400EEBA51 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B8CE19852D81351500EEBA51 /* APNsExtension */,
+			);
+			name = APNsExtension;
+			packageProductDependencies = (
+			);
+			productName = APNsExtension;
+			productReference = B8CE19842D81351400EEBA51 /* APNsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -274,12 +349,15 @@
 		474E0FDD2644DFAE002AFADB /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1240;
+				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1240;
 				TargetAttributes = {
 					474E0FE42644DFAE002AFADB = {
 						CreatedOnToolsVersion = 12.4;
 						LastSwiftMigration = 1250;
+					};
+					B8CE19832D81351400EEBA51 = {
+						CreatedOnToolsVersion = 16.1;
 					};
 				};
 			};
@@ -300,6 +378,7 @@
 			projectRoot = "";
 			targets = (
 				474E0FE42644DFAE002AFADB /* TUICallKitApp */,
+				B8CE19832D81351400EEBA51 /* APNsExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -317,6 +396,13 @@
 				4739C7DB2657507900CA7C45 /* TUICallKitAppLocalized.strings in Resources */,
 				4739C7DF265750A800CA7C45 /* Assets.xcassets in Resources */,
 				4FE7A785275E3A89009CCB09 /* phone_ringing.mp3 in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B8CE19822D81351400EEBA51 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -409,7 +495,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B8CE19802D81351400EEBA51 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B8CE198A2D81351500EEBA51 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B8CE19832D81351400EEBA51 /* APNsExtension */;
+			targetProxy = B8CE19892D81351500EEBA51 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		470EB6F9266A49200072071F /* LaunchScreen_en.storyboard */ = {
@@ -586,14 +687,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = TUICallKitApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = TUICallKitAppDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 860;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = F8A3GH6Q4W;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = BSAPB3K3R7;
 				ENABLE_BITCODE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -642,10 +743,10 @@
 					"\"SwiftUI\"",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS";
-				PRODUCT_BUNDLE_IDENTIFIER = com.trtc.callkit.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tencent.tuikit.tuicallkit.test.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "TUICallkit Voip Test Profile";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -738,6 +839,76 @@
 			};
 			name = Release;
 		};
+		B8CE198D2D81351500EEBA51 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = APNsExtension/APNsExtensionDebug.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = BSAPB3K3R7;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = APNsExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = APNsExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tencent.tuikit.tuicallkit.test.demo.extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "TUICallKit VoIP Extension";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B8CE198E2D81351500EEBA51 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F8A3GH6Q4W;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = APNsExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = APNsExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.trtc.callkit.demo.APNsExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -755,6 +926,15 @@
 			buildConfigurations = (
 				474E0FFA2644DFAF002AFADB /* Debug */,
 				474E0FFB2644DFAF002AFADB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B8CE19902D81351500EEBA51 /* Build configuration list for PBXNativeTarget "APNsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B8CE198D2D81351500EEBA51 /* Debug */,
+				B8CE198E2D81351500EEBA51 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
