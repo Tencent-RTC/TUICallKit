@@ -89,13 +89,14 @@ class VoIPDataSyncHandler {
                             param: nil)
     }
     
-    func updateVoIPInfo(callerId: String, calleeList: [String], groupId: String) {
+    func updateVoIPInfo(callerId: String, calleeList: [String], groupId: String, mediaType: TUICallMediaType) {
         Logger.info("VoIPDataSyncHandler - updateInfo")
         TUICore.notifyEvent(TUICore_TUIVoIPExtensionNotify,
                             subKey: TUICore_TUICore_TUIVoIPExtensionNotify_UpdateInfoSubKey,
                             object: nil,
                             param: [TUICore_TUICore_TUIVoIPExtensionNotify_UpdateInfoSubKey_InviterIdKey: callerId,
                                   TUICore_TUICore_TUIVoIPExtensionNotify_UpdateInfoSubKey_InviteeListKey: calleeList,
-                                      TUICore_TUICore_TUIVoIPExtensionNotify_UpdateInfoSubKey_GroupIDKey: groupId])
+                                      TUICore_TUICore_TUIVoIPExtensionNotify_UpdateInfoSubKey_GroupIDKey: groupId,
+                                    TUICore_TUICore_TUIVoIPExtensionNotify_UpdateInfoSubKey_MediaTypeKey: mediaType.rawValue])
     }
 }
