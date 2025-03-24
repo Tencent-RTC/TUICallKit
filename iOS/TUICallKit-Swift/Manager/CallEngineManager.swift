@@ -457,8 +457,8 @@ class CallEngineManager {
         voipDataSyncHandler.callBegin()
     }
     
-    func updateVoIPInfo(callerId: String, calleeList: [String], groupId: String) {
-        voipDataSyncHandler.updateVoIPInfo(callerId: callerId, calleeList: calleeList, groupId: groupId)
+    func updateVoIPInfo(callerId: String, calleeList: [String], groupId: String, mediaType: TUICallMediaType) {
+        voipDataSyncHandler.updateVoIPInfo(callerId: callerId, calleeList: calleeList, groupId: groupId, mediaType: mediaType)
     }
     
 }

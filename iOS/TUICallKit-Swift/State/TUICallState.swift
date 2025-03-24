@@ -120,7 +120,7 @@ extension TUICallState: TUICallObserver {
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            CallEngineManager.instance.updateVoIPInfo(callerId: callerId, calleeList: calleeIdList, groupId: groupId ?? "")
+            CallEngineManager.instance.updateVoIPInfo(callerId: callerId, calleeList: calleeIdList, groupId: groupId ?? "", mediaType: callMediaType)
         }
     }
     
