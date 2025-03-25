@@ -48,7 +48,7 @@ class CallingBellFeature(context: Context) {
                     if (TUICallState.instance.selfUser.get().callRole.get() == TUICallDefine.Role.Caller) {
                         startDialingMusic()
                     } else {
-                        if (DeviceUtils.isAppRunningForeground(TUIConfig.getAppContext()) || isFCMData()) {
+                        if (DeviceUtils.isAppRunningForeground(TUIConfig.getAppContext()) || isFCMDataNotification()) {
                             startRinging()
                         }
                     }
@@ -59,9 +59,8 @@ class CallingBellFeature(context: Context) {
         }
     }
 
-    private fun isFCMData(): Boolean {
-        val pushBrandId =
-            TUICore.callService(TUIConstants.TIMPush.SERVICE_NAME, TUIConstants.TIMPush.METHOD_GET_PUSH_BRAND_ID, null)
+    private fun isFCMDataNotification(): Boolean {
+        val pushBrandId = TUIConfig.getCustomData("pushChannelId")
         return TUICore.getService(TUIConstants.TIMPush.SERVICE_NAME) != null
                 && pushBrandId == TUIConstants.DeviceInfo.BRAND_GOOGLE_ELSE
     }
