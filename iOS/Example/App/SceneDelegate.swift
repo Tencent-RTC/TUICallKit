@@ -33,8 +33,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         UNUserNotificationCenter.current().removeAllDeliveredNotifications()
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-    }
         
+        sendStopRingingToExtension()
+    }
+     
+    func sendStopRingingToExtension() {
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(),
+                                             CFNotificationName("APNsStopRinging" as CFString), nil, nil, true)
+    }
+
     static func showLoginViewController() {
         let loginViewController = LoginViewController()
         let navigationController = UINavigationController(rootViewController: loginViewController)
