@@ -53,7 +53,7 @@ dependencies {
         api "com.tencent.liteav.tuikit:tuicore:8.4.6667"
     }
 
-    implementation 'io.trtc.uikit:common:latest.release'
+    implementation 'io.trtc.uikit:common:2.8.0.634'
 
     if (projects.contains("engine_source")) {
         api project(':engine_source')
