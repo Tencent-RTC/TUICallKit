@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -22,7 +22,7 @@
                 android:layout_width="30dp"
                 android:layout_height="38dp"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
                 android:gravity="center_vertical"
                 android:padding="10dp"
                 android:src="@drawable/app_back" />
@@ -30,10 +30,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
+                android:layout_centerInParent="true"
                 android:text="@string/app_call_setting"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </RelativeLayout>
@@ -41,7 +40,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="15dp"
             android:text="@string/app_basic_setting"
             android:textColor="#9C9C9C"
@@ -51,9 +50,9 @@
             android:id="@+id/rl_avatar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="25dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -62,17 +61,17 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="@string/app_avatar"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_avatar"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
-                android:gravity="right"
+                android:layout_marginEnd="10dp"
+                android:gravity="end"
                 android:hint="@string/app_not_setting"
                 android:maxLines="1"
                 android:singleLine="true"
@@ -83,7 +82,7 @@
             <ImageView
                 android:layout_width="5.4dp"
                 android:layout_height="9dp"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/app_right_grey" />
         </RelativeLayout>
@@ -91,9 +90,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -101,11 +100,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_nickname"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <View
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
@@ -113,15 +112,12 @@
                 android:id="@+id/et_nickname"
                 android:layout_width="200dp"
                 android:layout_height="28dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/tv_phone_number"
+                android:layout_marginEnd="10dp"
                 android:background="@android:color/transparent"
-                android:gravity="right"
+                android:gravity="end"
                 android:hint="@string/app_nickname"
                 android:imeOptions="actionDone"
                 android:maxLines="1"
-                android:paddingLeft="5dp"
                 android:singleLine="true"
                 android:textColor="@color/app_color_black"
                 android:textColorHint="@color/app_color_input_normal"
@@ -132,9 +128,9 @@
             android:id="@+id/rl_ring_path"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -143,17 +139,17 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="@string/app_set_ring"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_ring_path"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
-                android:gravity="right"
+                android:layout_marginEnd="10dp"
+                android:gravity="end"
                 android:hint="@string/app_not_setting"
                 android:maxLines="1"
                 android:singleLine="true"
@@ -164,7 +160,7 @@
             <ImageView
                 android:layout_width="5.4dp"
                 android:layout_height="9dp"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/app_right_grey" />
         </RelativeLayout>
@@ -172,9 +168,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -182,11 +178,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_mute_mode"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <View
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
@@ -194,7 +190,7 @@
                 android:id="@+id/switch_mute"
                 android:layout_width="70dp"
                 android:layout_height="25dp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:checked="false"
                 app:switchMinWidth="50dp"
                 app:thumbTint="@color/app_switch_selector"
@@ -205,9 +201,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -215,11 +211,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_show_float_button"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <View
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
@@ -237,9 +233,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -247,11 +243,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_blur_background"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <View
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
@@ -269,9 +265,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -279,11 +275,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_incoming_banner"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <View
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
@@ -301,7 +297,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
             android:layout_marginTop="25dp"
             android:text="@string/app_call_params_setting"
             android:textColor="#9C9C9C"
@@ -310,9 +306,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="25dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -321,25 +317,24 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="@string/app_int_room_id"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <EditText
                 android:id="@+id/et_room_id_num"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:gravity="right"
+                android:gravity="end"
+                android:hint="@string/app_not_setting"
                 android:imeOptions="actionDone"
                 android:maxLines="1"
-                android:paddingLeft="5dp"
+                android:paddingStart="5dp"
                 android:singleLine="true"
-                android:hint="@string/app_not_setting"
                 android:text="0"
                 android:textColor="@color/app_color_black"
                 android:textColorHint="@color/app_color_input_normal"
@@ -349,9 +344,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="25dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -360,27 +355,26 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="@string/app_string_room_id"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <EditText
                 android:id="@+id/et_room_id_str"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:gravity="right"
+                android:gravity="end"
+                android:hint="@string/app_not_setting"
                 android:imeOptions="actionDone"
                 android:maxLines="1"
-                android:paddingLeft="5dp"
+                android:paddingStart="5dp"
                 android:singleLine="true"
                 android:text="0"
                 android:textColor="@color/app_color_black"
-                android:hint="@string/app_not_setting"
                 android:textColorHint="@color/app_color_input_normal"
                 android:textSize="16sp" />
         </RelativeLayout>
@@ -388,9 +382,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="25dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -400,25 +394,24 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="@string/app_timeout"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <EditText
                 android:id="@+id/et_timeout"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:gravity="right"
+                android:gravity="end"
                 android:hint="@string/app_not_setting"
                 android:imeOptions="actionDone"
                 android:inputType="number"
                 android:maxLines="1"
-                android:paddingLeft="5dp"
+                android:paddingStart="5dp"
                 android:singleLine="true"
                 android:textColor="@color/app_color_black"
                 android:textColorHint="@color/app_color_input_normal"
@@ -429,9 +422,9 @@
             android:id="@+id/rl_user_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -440,17 +433,17 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="@string/app_user_data"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_user_data"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
-                android:gravity="right"
+                android:layout_marginEnd="10dp"
+                android:gravity="end"
                 android:hint="@string/app_not_setting"
                 android:maxLines="1"
                 android:singleLine="true"
@@ -461,7 +454,7 @@
             <ImageView
                 android:layout_width="5.4dp"
                 android:layout_height="9dp"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/app_right_grey" />
         </RelativeLayout>
@@ -470,9 +463,9 @@
             android:id="@+id/rl_offline_message"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -481,17 +474,17 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="@string/app_offline_message"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_offline_message"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
-                android:gravity="right"
+                android:layout_marginEnd="10dp"
+                android:gravity="end"
                 android:hint="@string/app_not_setting"
                 android:imeOptions="actionDone"
                 android:maxLines="1"
@@ -503,7 +496,7 @@
             <ImageView
                 android:layout_width="5.4dp"
                 android:layout_height="9dp"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/app_right_grey" />
         </RelativeLayout>
@@ -512,7 +505,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="25dp"
             android:text="@string/app_video_setting"
             android:textColor="#9C9C9C"
@@ -521,8 +514,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="25dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -530,11 +524,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_resolution"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <View
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
@@ -542,11 +536,11 @@
                 android:id="@+id/spinner_resolution"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:backgroundTint="@color/black"
+                android:layout_marginStart="10dp"
+                android:backgroundTint="@color/app_color_black"
                 android:entries="@array/app_resolution"
-                android:gravity="right"
-                android:popupBackground="@color/white"
+                android:gravity="end"
+                android:popupBackground="@color/app_color_white"
                 android:spinnerMode="dropdown"
                 android:theme="@style/AppSpinnerStyle" />
         </LinearLayout>
@@ -554,8 +548,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -563,11 +558,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_screen_orientation"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <View
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
@@ -575,11 +570,11 @@
                 android:id="@+id/spinner_resolution_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:backgroundTint="@color/black"
+                android:layout_marginStart="10dp"
+                android:backgroundTint="@color/app_color_black"
                 android:entries="@array/app_resolution_mode"
-                android:gravity="right"
-                android:popupBackground="@color/white"
+                android:gravity="end"
+                android:popupBackground="@color/app_color_white"
                 android:spinnerMode="dropdown"
                 android:theme="@style/AppSpinnerStyle" />
         </LinearLayout>
@@ -587,8 +582,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -596,11 +592,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_fit_mode"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <View
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
@@ -608,11 +604,11 @@
                 android:id="@+id/spinner_fit_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:backgroundTint="@color/black"
+                android:layout_marginStart="10dp"
+                android:backgroundTint="@color/app_color_black"
                 android:entries="@array/app_fit_mode"
-                android:gravity="right"
-                android:popupBackground="@color/white"
+                android:gravity="end"
+                android:popupBackground="@color/app_color_white"
                 android:spinnerMode="dropdown"
                 android:theme="@style/AppSpinnerStyle" />
         </LinearLayout>
@@ -620,8 +616,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -629,11 +626,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_rotation"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <View
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
@@ -641,12 +638,12 @@
                 android:id="@+id/spinner_rotation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:backgroundTint="@color/black"
+                android:layout_marginStart="10dp"
+                android:backgroundTint="@color/app_color_black"
                 android:entries="@array/app_rotation"
-                android:gravity="right"
+                android:gravity="end"
                 android:overlapAnchor="false"
-                android:popupBackground="@color/white"
+                android:popupBackground="@color/app_color_white"
                 android:spinnerMode="dropdown"
                 android:theme="@style/AppSpinnerStyle" />
         </LinearLayout>
@@ -654,9 +651,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -664,11 +661,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_beauty_level"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="16sp" />
 
             <View
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
@@ -677,16 +674,14 @@
                 android:layout_width="200dp"
                 android:layout_height="28dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_toRightOf="@+id/tv_phone_number"
+                android:layout_marginEnd="10dp"
                 android:background="@android:color/transparent"
-                android:gravity="right"
+                android:gravity="end"
                 android:hint="@string/app_not_setting"
                 android:imeOptions="actionDone"
                 android:inputType="number"
                 android:maxLines="1"
-                android:paddingLeft="5dp"
+                android:paddingStart="5dp"
                 android:singleLine="true"
                 android:textColor="@color/app_color_black"
                 android:textColorHint="@color/app_color_input_normal"

@@ -20,9 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LoginActivity extends BaseActivity {
-    private static final String TAG = "LoginActivity";
-
-    private EditText mEditUserId;
+    private static final String   TAG = "LoginActivity";
+    private              EditText mEditUserId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

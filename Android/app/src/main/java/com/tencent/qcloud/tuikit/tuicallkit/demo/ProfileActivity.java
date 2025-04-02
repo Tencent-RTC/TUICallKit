@@ -17,7 +17,7 @@ import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMUserFullInfo;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.setting.SettingsConfig;
-import com.tencent.qcloud.tuikit.tuicallkit.utils.ImageLoader;
+import com.trtc.tuikit.common.imageloader.ImageLoader;
 
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -67,7 +67,7 @@ public class ProfileActivity extends BaseActivity {
         mTvInputTips = findViewById(R.id.tv_tips_user_name);
         int index = new Random().nextInt(USER_AVATAR_ARRAY.length);
         mAvatarUrl = USER_AVATAR_ARRAY[index];
-        ImageLoader.loadImage(this, mImageAvatar, mAvatarUrl, R.drawable.app_avatar);
+        ImageLoader.load(this, mImageAvatar, mAvatarUrl, R.drawable.app_avatar);
 
         mButtonRegister.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -56,7 +56,7 @@ public class GroupCallActivity extends BaseActivity {
             }
         });
         RelativeLayout layoutChatGroupId = findViewById(R.id.rl_chat_group_id);
-        findViewById(R.id.iv_app_expand).setOnClickListener(v -> {
+        findViewById(R.id.ll_option).setOnClickListener(v -> {
             layoutChatGroupId.setVisibility(!mIsOptionalParamViewExpand ? View.VISIBLE : View.GONE);
             mIsOptionalParamViewExpand = !mIsOptionalParamViewExpand;
         });

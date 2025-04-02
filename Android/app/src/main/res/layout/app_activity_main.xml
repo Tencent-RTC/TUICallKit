@@ -26,9 +26,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="3dp"
-            android:layout_toRightOf="@+id/iv_avatar"
+            android:layout_toEndOf="@+id/iv_avatar"
             android:text="tateMin"
-            android:textColor="#000000"
+            android:textColor="@color/app_color_black"
             android:textSize="14sp" />
 
         <LinearLayout
@@ -37,14 +37,14 @@
             android:layout_below="@+id/tv_nickname"
             android:layout_marginStart="10dp"
             android:layout_marginTop="8dp"
-            android:layout_toRightOf="@+id/iv_avatar"
+            android:layout_toEndOf="@+id/iv_avatar"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_user_id_colon"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="12sp" />
 
             <TextView
@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:textColor="#000000"
+                android:textColor="@color/app_color_black"
                 android:textSize="12sp" />
         </LinearLayout>
     </RelativeLayout>
@@ -97,8 +97,8 @@
         android:textColor="@color/app_color_white"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/btn_group_call"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btn_group_call"
@@ -112,6 +112,6 @@
         android:textColor="@color/app_color_white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

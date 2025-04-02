@@ -27,7 +27,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="@string/app_group_call"
-            android:textColor="#000000"
+            android:textColor="@color/app_color_black"
             android:textSize="16sp"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -55,8 +55,10 @@
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/tv_group_call_user_id"
             android:background="@null"
-            android:gravity="right"
+            android:gravity="end"
             android:hint="@string/app_please_input_user_id_list"
+            android:maxLines="1"
+            android:singleLine="true"
             android:textColor="@color/app_color_black"
             android:textColorHint="@color/app_color_input_normal"
             android:textSize="16sp" />
@@ -125,12 +127,14 @@
         android:background="#CCCCCC" />
 
     <LinearLayout
+        android:id="@+id/ll_option"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="4dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -220,8 +224,7 @@
         android:text="@string/app_join_group_call"
         android:textColor="#0062E3"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:visibility="gone" />
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btn_call"
