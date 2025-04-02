@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
-import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.BaseActivity;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.R;
@@ -96,18 +96,18 @@ public class SettingDetailActivity extends BaseActivity {
     private void setUserAvatar(String avatar) {
         TUICallKit.createInstance(getApplicationContext()).setSelfInfo(SettingsConfig.userName, avatar,
                 new TUICommonDefine.Callback() {
-            @Override
-            public void onSuccess() {
-                SettingsConfig.userAvatar = avatar;
-                ToastUtil.toastShortMessage(getString(R.string.app_set_success));
-                finish();
-            }
+                    @Override
+                    public void onSuccess() {
+                        SettingsConfig.userAvatar = avatar;
+                        ToastUtil.toastShortMessage(getString(R.string.app_set_success));
+                        finish();
+                    }
 
-            @Override
-            public void onError(int errCode, String errMsg) {
-                ToastUtil.toastShortMessage(getString(R.string.app_set_fail));
-            }
-        });
+                    @Override
+                    public void onError(int errCode, String errMsg) {
+                        ToastUtil.toastShortMessage(getString(R.string.app_set_fail));
+                    }
+                });
     }
 
 }

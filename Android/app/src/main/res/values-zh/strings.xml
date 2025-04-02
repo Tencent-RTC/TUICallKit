@@ -10,6 +10,7 @@
     <string name="app_btn_confirm">确定</string>
     <string name="app_user_id">用户ID</string>
     <string name="app_hint_user_id">请输入用户ID</string>
+    <string name="app_hint_call_id">请输入call ID</string>
     <string name="app_call_user_id">请输入您要呼叫的用户ID</string>
     <string name="app_btn_login">登录</string>
     <string name="app_welcome_tips">欢迎使用\n腾讯云·音视频通话</string>
@@ -41,7 +42,7 @@
     <string name="app_tuicallkit_support">TUICallKit 支持离线唤醒能力，支持 Android、iOS、Web、小程序、Flutter、uni-app 等多个平台</string>
     <string name="app_group_id">群组ID</string>
     <string name="app_user_id_list">用户ID列表</string>
-    <string name="app_join_group_call">加入群组通话</string>
+    <string name="app_join_group_call">加入通话</string>
     <string name="app_media_type">媒体类型</string>
     <string name="app_basic_setting">基础设置</string>
     <string name="app_user_info">用户信息</string>
@@ -76,7 +77,7 @@
 
     <string name="app_nickname_colon">昵称：</string>
     <string name="app_user_id_colon">用户ID:</string>
-    <string name="app_group_call">群组通话</string>
+    <string name="app_group_call">多人通话</string>
     <string name="app_please_input_group_id">请输入群组ID</string>
     <string name="app_please_input_user_id_list">请输入用户ID列表</string>
     <string name="app_room_id_num">房间号（数字）</string>

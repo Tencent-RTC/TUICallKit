@@ -17,7 +17,7 @@ import com.tencent.qcloud.tuicore.interfaces.TUICallback;
 import com.tencent.qcloud.tuicore.interfaces.TUILoginListener;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.tencent.qcloud.tuikit.tuicallkit.demo.setting.SettingsConfig;
-import com.tencent.qcloud.tuikit.tuicallkit.utils.ImageLoader;
+import com.trtc.tuikit.common.imageloader.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +105,8 @@ public class MainActivity extends BaseActivity {
                 SettingsConfig.userAvatar = timUserFullInfo.getFaceUrl();
                 mTextUserId.setText(SettingsConfig.userId);
                 mTextNickname.setText(SettingsConfig.userName);
-                ImageLoader.loadImage(getApplicationContext(), mImageAvatar, SettingsConfig.userAvatar, R.drawable.app_avatar);
+                ImageLoader.load(getApplicationContext(), mImageAvatar, SettingsConfig.userAvatar,
+                        R.drawable.app_avatar);
             }
         });
     }
@@ -115,10 +116,7 @@ public class MainActivity extends BaseActivity {
         dialog.setContentView(R.layout.app_dialog_logout);
         Button btnPositive = (Button) dialog.findViewById(R.id.btn_positive);
         Button btnNegative = (Button) dialog.findViewById(R.id.btn_negative);
-        btnPositive.setOnClickListener(v -> {
-            dialog.dismiss();
-            logout();
-        });
+        btnPositive.setOnClickListener(v -> logout());
         btnNegative.setOnClickListener(v -> dialog.dismiss());
         dialog.show();
     }

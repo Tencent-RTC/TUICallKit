@@ -14,8 +14,8 @@
         android:textColor="@color/app_color_black"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -24,8 +24,8 @@
         android:layout_height="100dp"
         android:layout_marginTop="30dp"
         android:src="@drawable/app_avatar"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
     <EditText
@@ -43,7 +43,8 @@
         android:textColor="@color/app_color_black"
         android:textColorHint="#BBBBBB"
         android:textSize="16sp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_user_avatar" />
 
     <TextView
@@ -71,8 +72,8 @@
         android:text="@string/app_title_register"
         android:textColor="@color/app_color_white"
         android:textSize="16sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_tips_user_name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,6 +10,7 @@
     <string name="app_btn_confirm">Confirm</string>
     <string name="app_user_id">UserId</string>
     <string name="app_hint_user_id">Enter a userId</string>
+    <string name="app_hint_call_id">Enter callId</string>
     <string name="app_call_user_id">Enter the user ID you want to call</string>
     <string name="app_btn_login">Log In</string>
 
@@ -43,7 +44,7 @@
     <string name="app_tuicallkit_support">TUICallKit supports offline wake-up capability, and supports Android, iOS, Web, applets, Flutter, uni-app and other platforms</string>
     <string name="app_group_id">GroupId</string>
     <string name="app_user_id_list">UserIdList</string>
-    <string name="app_join_group_call">Join group call</string>
+    <string name="app_join_group_call">Join call</string>
     <string name="app_media_type">Media Type</string>
     <string name="app_basic_setting">Basic Settings</string>
     <string name="app_user_info">User Info</string>
