@@ -9,8 +9,8 @@ target 'TUICallKitApp' do
   pod 'SnapKit'
   pod 'Alamofire', '~> 5.6.4'
   pod 'Kingfisher', '<= 6.3.1'
-  pod 'TIMPush', '~> 8.4.6668'
-  pod 'TUICallKit-Swift', :path => "../", :subspecs => ["Professional"]
+  pod 'TIMPush', '~> 8.5.6864'
+  pod 'TUICallKit_Swift'
   
 end
 
@@ -23,7 +23,7 @@ post_install do |installer|
       config.build_settings['EXPANDED_CODE_SIGN_IDENTITY'] = ""
       config.build_settings['CODE_SIGNING_REQUIRED'] = "NO"
       config.build_settings['CODE_SIGNING_ALLOWED'] = "NO"
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
     end
   end
 end
