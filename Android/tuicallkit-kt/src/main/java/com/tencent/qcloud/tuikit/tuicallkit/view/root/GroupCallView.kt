@@ -167,6 +167,9 @@ class GroupCallView(context: Context) : BaseCallView(context) {
     }
 
     private fun refreshInviteUserIconView() {
+        if (TUICallState.instance.groupId.get().isNullOrEmpty()) {
+            return
+        }
         inviteUserButton = InviteUserButton(context)
         layoutInviteUserIcon?.addView(inviteUserButton)
     }
