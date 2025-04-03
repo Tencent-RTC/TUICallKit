@@ -45,6 +45,7 @@ class CallManager {
 
   Future<void> initEngine(int sdkAppID, String userId, String userSig) async {
     TRTCLogger.info('CallManager initEngine(sdkAppID:$sdkAppID, userId: $userId)');
+    CallState.instance.selfUser.id = userId;
     CallManager.instance.initResources();
     final result = await TUICallEngine.instance.init(sdkAppID, userId, userSig);
 
@@ -110,17 +111,11 @@ class CallManager {
               user.id = userId;
               user.callRole = TUICallRole.called;
               user.callStatus = TUICallStatus.waiting;
-              final imUserInfo =
-              await _im.getFriendshipManager().getFriendsInfo(userIDList: [userId]);
-              user.nickname =
-                  StringStream.makeNull(imUserInfo.data?[0].friendInfo?.userProfile?.nickName, '');
-              user.avatar = StringStream.makeNull(
-                  imUserInfo.data?[0].friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
-              user.remark = StringStream.makeNull(imUserInfo.data?[0].friendInfo?.friendRemark, '');
               CallState.instance.remoteUserList.add(user);
               CallState.instance.calleeList.add(user);
             }
           }
+          _getUserInfo();
 
           CallState.instance.mediaType = mediaType;
           CallState.instance.scene = userIdList.length > 1 ? TUICallScene.groupCall : TUICallScene.singleCall;
@@ -151,16 +146,10 @@ class CallManager {
             user.id = userId;
             user.callRole = TUICallRole.called;
             user.callStatus = TUICallStatus.waiting;
-            final imUserInfo =
-            await _im.getFriendshipManager().getFriendsInfo(userIDList: [userId]);
-            user.nickname =
-                StringStream.makeNull(imUserInfo.data?[0].friendInfo?.userProfile?.nickName, '');
-            user.avatar = StringStream.makeNull(
-                imUserInfo.data?[0].friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
-            user.remark = StringStream.makeNull(imUserInfo.data?[0].friendInfo?.friendRemark, '');
             CallState.instance.remoteUserList.add(user);
           }
         }
+        _getUserInfo();
 
         CallState.instance.mediaType = mediaType;
         CallState.instance.scene = userIdList.length > 1 ? TUICallScene.groupCall : TUICallScene.singleCall;
@@ -213,14 +202,9 @@ class CallManager {
           user.id = userId;
           user.callRole = TUICallRole.called;
           user.callStatus = TUICallStatus.waiting;
-          final imUserInfo = await _im.getFriendshipManager().getFriendsInfo(userIDList: [userId]);
-          user.nickname =
-              StringStream.makeNull(imUserInfo.data?[0].friendInfo?.userProfile?.nickName, '');
-          user.avatar = StringStream.makeNull(
-              imUserInfo.data?[0].friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
-          user.remark = StringStream.makeNull(imUserInfo.data?[0].friendInfo?.friendRemark, '');
 
           CallState.instance.remoteUserList.add(user);
+          _getUserInfo();
           CallState.instance.mediaType = callMediaType;
           CallState.instance.scene = TUICallScene.singleCall;
           CallState.instance.selfUser.callRole = TUICallRole.caller;
@@ -242,13 +226,8 @@ class CallManager {
         user.id = userId;
         user.callRole = TUICallRole.called;
         user.callStatus = TUICallStatus.waiting;
-        final imUserInfo = await _im.getFriendshipManager().getFriendsInfo(userIDList: [userId]);
-        user.nickname =
-            StringStream.makeNull(imUserInfo.data?[0].friendInfo?.userProfile?.nickName, '');
-        user.avatar = StringStream.makeNull(
-            imUserInfo.data?[0].friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
-        user.remark = StringStream.makeNull(imUserInfo.data?[0].friendInfo?.friendRemark, '');
         CallState.instance.remoteUserList.add(user);
+        _getUserInfo();
         CallState.instance.mediaType = callMediaType;
         CallState.instance.scene = TUICallScene.singleCall;
         CallState.instance.selfUser.callRole = TUICallRole.caller;
@@ -310,17 +289,12 @@ class CallManager {
               user.id = userId;
               user.callRole = TUICallRole.called;
               user.callStatus = TUICallStatus.waiting;
-              final imUserInfo =
-                  await _im.getFriendshipManager().getFriendsInfo(userIDList: [userId]);
-              user.nickname =
-                  StringStream.makeNull(imUserInfo.data?[0].friendInfo?.userProfile?.nickName, '');
-              user.avatar = StringStream.makeNull(
-                  imUserInfo.data?[0].friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
-              user.remark = StringStream.makeNull(imUserInfo.data?[0].friendInfo?.friendRemark, '');
               CallState.instance.remoteUserList.add(user);
               CallState.instance.calleeList.add(user);
             }
           }
+
+          _getUserInfo();
 
           CallState.instance.mediaType = mediaType;
           CallState.instance.scene = TUICallScene.groupCall;
@@ -348,16 +322,10 @@ class CallManager {
             user.id = userId;
             user.callRole = TUICallRole.called;
             user.callStatus = TUICallStatus.waiting;
-            final imUserInfo =
-                await _im.getFriendshipManager().getFriendsInfo(userIDList: [userId]);
-            user.nickname =
-                StringStream.makeNull(imUserInfo.data?[0].friendInfo?.userProfile?.nickName, '');
-            user.avatar = StringStream.makeNull(
-                imUserInfo.data?[0].friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
-            user.remark = StringStream.makeNull(imUserInfo.data?[0].friendInfo?.friendRemark, '');
             CallState.instance.remoteUserList.add(user);
           }
         }
+        _getUserInfo();
 
         CallState.instance.mediaType = mediaType;
         CallState.instance.scene = TUICallScene.groupCall;
@@ -732,6 +700,7 @@ class CallManager {
     TUICallEngine.instance.unInit();
     CallingBellFeature.stopRing();
     CallState.instance.cleanState();
+    CallState.instance.unRegisterEngineObserver();
     TUICallKitPlatform.instance.updateCallStateToNative();
   }
 
@@ -885,5 +854,19 @@ class CallManager {
       CallState.instance.selfUser.avatar =
           StringStream.makeNull(imInfo.data?[0].faceUrl, Constants.defaultAvatar);
     }
+  }
+
+  _getUserInfo() async {
+    final copyList = List<User>.from(CallState.instance.remoteUserList);
+    for (User user in copyList) {
+      final imUserInfo =
+      await _im.getFriendshipManager().getFriendsInfo(userIDList: [user.id]);
+      user.nickname =
+          StringStream.makeNull(imUserInfo.data?[0].friendInfo?.userProfile?.nickName, '');
+      user.avatar = StringStream.makeNull(
+          imUserInfo.data?[0].friendInfo?.userProfile?.faceUrl, Constants.defaultAvatar);
+      user.remark = StringStream.makeNull(imUserInfo.data?[0].friendInfo?.friendRemark, '');
+    }
+    TUICore.instance.notifyEvent(setStateEvent);
   }
 }

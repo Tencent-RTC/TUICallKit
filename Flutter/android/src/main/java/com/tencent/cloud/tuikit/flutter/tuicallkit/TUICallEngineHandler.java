@@ -234,18 +234,8 @@ public class TUICallEngineHandler {
     }
 
     public void reject(MethodCall call, Result result) {
-        TUICallEngine.createInstance(mApplicationContext).reject(new TUICommonDefine.Callback() {
-            @Override
-            public void onSuccess() {
-                result.success(0);
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                Logger.error(TUICallKitPlugin.TAG, "reject Error{ code:" + code + ",message:" + message + "}");
-                result.error("" + code, message, "");
-            }
-        });
+        TUICallEngine.createInstance(mApplicationContext).reject(null);
+        result.success(0);
     }
 
 
@@ -587,14 +577,20 @@ public class TUICallEngineHandler {
         }
 
         @Override
-        public void onCallReceived(String callerId, List<String> calleeIdList, String groupId,
-                                   TUICallDefine.MediaType callMediaType, String userData) {
+        public void onUserInviting(String userId) {
+            invokeObserverMethod("onUserInviting", new HashMap<String, Object>() {{
+                put("userId", userId);
+            }});
+        }
+
+        @Override
+        public void onCallReceived(String callId, String callerId, List<String> calleeIdList, TUICallDefine.MediaType mediaType, TUICallDefine.CallObserverExtraInfo info) {
             invokeObserverMethod("onCallReceived", new HashMap<String, Object>() {{
+                put("callId", callId);
                 put("callerId", callerId);
                 put("calleeIdList", calleeIdList);
-                put("groupId", groupId);
-                put("callMediaType", callMediaType.ordinal());
-                put("userData", userData);
+                put("mediaType", mediaType.ordinal());
+                put("info", ObjectParse.getCallObserverExtraInfoMap(info));
             }});
         }
 
@@ -606,36 +602,34 @@ public class TUICallEngineHandler {
         }
 
         @Override
-        public void onCallBegin(TUICommonDefine.RoomId roomId, TUICallDefine.MediaType callMediaType,
-                                TUICallDefine.Role callRole) {
-            Map roomIdMap = new HashMap() {
-                {
-                    put("intRoomId", roomId.intRoomId);
-                    put("strRoomId", roomId.strRoomId);
-                }
-            };
-            invokeObserverMethod("onCallBegin", new HashMap<String, Object>() {{
-                put("roomId", roomIdMap);
-                put("callMediaType", callMediaType.ordinal());
-                put("callRole", callRole.ordinal());
+        public void onCallNotConnected(String callId, TUICallDefine.MediaType mediaType, TUICallDefine.CallEndReason reason, String userId, TUICallDefine.CallObserverExtraInfo info) {
+            invokeObserverMethod("onCallNotConnected", new HashMap<String, Object>() {{
+                put("callId", callId);
+                put("mediaType", mediaType.getValue());
+                put("reason", reason.getValue());
+                put("userId", userId);
+                put("info", ObjectParse.getCallObserverExtraInfoMap(info));
             }});
         }
 
         @Override
-        public void onCallEnd(TUICommonDefine.RoomId roomId, TUICallDefine.MediaType callMediaType,
-                              TUICallDefine.Role callRole, long totalTime) {
+        public void onCallBegin(String callId, TUICallDefine.MediaType mediaType, TUICallDefine.CallObserverExtraInfo info) {
+            invokeObserverMethod("onCallBegin", new HashMap<String, Object>() {{
+                put("callId", callId);
+                put("mediaType", mediaType.ordinal());
+                put("info", ObjectParse.getCallObserverExtraInfoMap(info));
+            }});
+        }
 
-            Map roomIdMap = new HashMap() {
-                {
-                    put("intRoomId", roomId.intRoomId);
-                    put("strRoomId", roomId.strRoomId);
-                }
-            };
+        @Override
+        public void onCallEnd(String callId, TUICallDefine.MediaType mediaType, TUICallDefine.CallEndReason reason, String userId, long totalTime, TUICallDefine.CallObserverExtraInfo info) {
             invokeObserverMethod("onCallEnd", new HashMap<String, Object>() {{
-                put("roomId", roomIdMap);
-                put("callMediaType", callMediaType.ordinal());
-                put("callRole", callRole.ordinal());
+                put("callId", callId);
+                put("mediaType", mediaType.getValue());
+                put("reason", reason.getValue());
+                put("userId", userId);
                 put("totalTime", (double) totalTime);
+                put("info", ObjectParse.getCallObserverExtraInfoMap(info));
             }});
         }
 

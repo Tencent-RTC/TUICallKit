@@ -35,6 +35,10 @@ abstract class TUICallEnginePlatform extends PlatformInterface {
     await _instance.removeObserver(observer);
   }
 
+  Future<void> removeAllObserver() async {
+    await _instance.removeAllObserver();
+  }
+
   Future<TUIResult> setVideoEncoderParams(VideoEncoderParams params) async {
     return await _instance.setVideoEncoderParams(params);
   }

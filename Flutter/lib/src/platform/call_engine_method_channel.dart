@@ -49,6 +49,14 @@ class MethodChannelTUICallEngine extends TUICallEnginePlatform {
   }
 
   @override
+  Future<void> removeAllObserver() async {
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      _observerList.clear();
+      methodChannel.invokeMethod("removeObserver", {});
+    }
+  }
+
+  @override
   Future<TUIResult> setVideoEncoderParams(VideoEncoderParams params) async {
     try {
       if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
@@ -518,13 +526,21 @@ class MethodChannelTUICallEngine extends TUICallEnginePlatform {
             break;
           }
 
+        case "onUserInviting":
+          {
+            observer.onUserInviting != null ? observer.onUserInviting!(params['userId']) : false;
+            break;
+          }
+
         case "onCallReceived":
           {
+            final callId = params['callId'];
+            final callerId = params['callerId'];
             final calleeIdList = List<String>.from(params['calleeIdList']);
-            TUICallMediaType callMediaType = TUICallMediaType.values[params['callMediaType']];
-            final userData = params['userData'];
+            TUICallMediaType mediaType = TUICallMediaType.values[params['mediaType']];
+            CallObserverExtraInfo info = CallObserverExtraInfo.fromJson(params['info']);
             observer.onCallReceived != null
-                ? observer.onCallReceived!(params['callerId'], calleeIdList, params['groupId'], callMediaType, userData)
+                ? observer.onCallReceived!(callId, callerId, calleeIdList, mediaType, info)
                 : false;
             break;
           }
@@ -535,22 +551,35 @@ class MethodChannelTUICallEngine extends TUICallEnginePlatform {
             break;
           }
 
+        case "onCallNotConnected":
+          {
+            final callId = params['callId'];
+            TUICallMediaType mediaType = TUICallMediaType.values[params['mediaType']];
+            CallEndReason reason = CallEndReason.values[params['reason']];
+            final userId = params['userId'];
+            CallObserverExtraInfo info = CallObserverExtraInfo.fromJson(params['info']);
+            observer.onCallNotConnected != null ? observer.onCallNotConnected!(callId, mediaType, reason, userId, info) : false;
+            break;
+          }
+
         case "onCallBegin":
           {
-            TUIRoomId roomId = TUIRoomId(intRoomId: params['roomId']['intRoomId'], strRoomId: params['roomId']['strRoomId'] ?? "");
-            TUICallMediaType callMediaType = TUICallMediaType.values[params['callMediaType']];
-            TUICallRole callRole = TUICallRole.values[params['callRole']];
-            observer.onCallBegin != null ? observer.onCallBegin!(roomId, callMediaType, callRole) : false;
+            final callId = params['callId'];
+            TUICallMediaType mediaType = TUICallMediaType.values[params['mediaType']];
+            CallObserverExtraInfo info = CallObserverExtraInfo.fromJson(params['info']);
+            observer.onCallBegin != null ? observer.onCallBegin!(callId, mediaType, info) : false;
             break;
           }
 
         case "onCallEnd":
           {
-            TUIRoomId roomId = TUIRoomId(intRoomId: params['roomId']['intRoomId'], strRoomId: params['roomId']['strRoomId'] ?? "");
-            TUICallMediaType callMediaType = TUICallMediaType.values[params['callMediaType']];
-            TUICallRole callRole = TUICallRole.values[params['callRole']];
+            final callId = params['callId'];
+            TUICallMediaType mediaType = TUICallMediaType.values[params['mediaType']];
+            CallEndReason reason = CallEndReason.values[params['reason']];
+            final userId = params['userId'];
             double totalTime = params['totalTime'];
-            observer.onCallEnd != null ? observer.onCallEnd!(roomId, callMediaType, callRole, totalTime) : false;
+            CallObserverExtraInfo info = CallObserverExtraInfo.fromJson(params['info']);
+            observer.onCallEnd != null ? observer.onCallEnd!(callId, mediaType, reason, userId, totalTime, info) : false;
             break;
           }
 

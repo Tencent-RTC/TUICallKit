@@ -65,10 +65,10 @@ public class TUICallEngineHandler: NSObject {
 
         case "iniviteUser":
             iniviteUser(call: call, result: result)
-            
+
         case "join":
             join(call: call, result: result)
-
+            
         case "joinInGroupCall":
             joinInGroupCall(call: call, result: result)
 
@@ -683,8 +683,10 @@ extension TUICallEngineHandler: TUICallObserver {
     
     enum TUICallEngineObserverType: String {
       case onError
+      case onUserInviting
       case onCallReceived
       case onCallCancelled
+      case onCallNotConnected
       case onCallBegin
       case onCallEnd
       case onCallMediaTypeChanged
@@ -709,7 +711,6 @@ extension TUICallEngineHandler: TUICallObserver {
         }
         channel.invokeMethod("onTUICallObserver", arguments: arguments)
     }
-
     
     public func onError(code: Int32, message: String?) {
         invokeListener(type: .onError, params: [
@@ -718,13 +719,19 @@ extension TUICallEngineHandler: TUICallObserver {
         ])
     }
     
-    public func onCallReceived(callerId: String, calleeIdList: [String], groupId: String?, callMediaType: TUICallMediaType, userData: String?) {
+    public func onUserInviting(userId: String) {
+        invokeListener(type: .onUserInviting, params: [
+            "userId": userId
+        ])
+    }
+    
+    public func onCallReceived(_ callId: String, callerId: String, calleeIdList: [String], mediaType: TUICallMediaType, info: TUICallObserverExtraInfo) {
         invokeListener(type: .onCallReceived, params: [
+            "callId": callId,
             "callerId": callerId,
             "calleeIdList": calleeIdList as Any,
-            "groupId": groupId ?? "",
-            "callMediaType": callMediaType.rawValue,
-            "userData": userData ?? ""
+            "mediaType": mediaType.rawValue,
+            "info": getCallObserverExtraInfoMap(info: info)
         ])
     }
 
@@ -734,26 +741,32 @@ extension TUICallEngineHandler: TUICallObserver {
         ])
     }
     
-    public func onCallBegin(roomId: TUIRoomId, callMediaType: TUICallMediaType, callRole: TUICallRole) {
-        
-        let roomIdParam: [String : Any] = ["intRoomId" : roomId.intRoomId,
-                                           "strRoomId" : roomId.strRoomId]
-        invokeListener(type: .onCallBegin, params: [
-            "roomId": roomIdParam,
-            "callMediaType": callMediaType.rawValue,
-            "callRole": callRole.rawValue
+    public func onCallNotConnected(callId: String, mediaType: TUICallMediaType, reason: TUICallEndReason, userId: String, info: TUICallObserverExtraInfo) {
+        invokeListener(type: .onCallNotConnected, params: [
+            "callId": callId,
+            "mediaType": mediaType.rawValue,
+            "reason": reason.rawValue,
+            "userId": userId,
+            "info": getCallObserverExtraInfoMap(info: info)
         ])
     }
     
-    public func onCallEnd(roomId: TUIRoomId, callMediaType: TUICallMediaType, callRole: TUICallRole, totalTime: Float) {
-        
-        let roomIdParam: [String : Any] = ["intRoomId" : roomId.intRoomId,
-                                           "strRoomId" : roomId.strRoomId]
+    public func onCallBegin(callId: String, mediaType: TUICallMediaType, info: TUICallObserverExtraInfo) {
+        invokeListener(type: .onCallBegin, params: [
+            "callId": callId,
+            "mediaType": mediaType.rawValue,
+            "info": getCallObserverExtraInfoMap(info: info)
+        ])
+    }
+    
+    public func onCallEnd(callId: String, mediaType: TUICallMediaType, reason: TUICallEndReason, userId: String, totalTime: Float, info: TUICallObserverExtraInfo) {
         invokeListener(type: .onCallEnd, params: [
-            "roomId": roomIdParam,
-            "callMediaType": callMediaType.rawValue,
-            "callRole": callRole.rawValue,
-            "totalTime": totalTime
+            "callId": callId,
+            "mediaType": mediaType.rawValue,
+            "reason": reason.rawValue,
+            "userId": userId,
+            "totalTime": totalTime,
+            "info": getCallObserverExtraInfoMap(info: info)
         ])
     }
 
@@ -925,6 +938,18 @@ private extension TUICallEngineHandler {
         }
 
         return params
+    }
+    
+    func getCallObserverExtraInfoMap(info: TUICallObserverExtraInfo?) -> [String: Any] {
+        var map = [String: Any]()
+        if let info = info {
+            map["roomId"] = ["intRoomId" : info.roomId.intRoomId,
+                             "strRoomId" : info.roomId.strRoomId]
+            map["role"] = info.role.rawValue
+            map["userData"] = info.userData
+            map["chatGroupId"] = info.chatGroupId
+        }
+        return map
     }
 }
 

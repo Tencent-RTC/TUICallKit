@@ -6,8 +6,10 @@ import 'package:tencent_calls_uikit/src/call_define.dart';
 class TUICallObserver {
   const TUICallObserver({
     this.onError,
+    this.onUserInviting,
     this.onCallReceived,
     this.onCallCancelled,
+    this.onCallNotConnected,
     this.onCallBegin,
     this.onCallEnd,
     this.onCallMediaTypeChanged,
@@ -31,37 +33,55 @@ class TUICallObserver {
   ///
   final void Function(int code, String message)? onError;
 
+  final void Function(String userId)? onUserInviting;
+
   /// Callback for receiving a call request (received only by the callee)
   ///
+  /// [callId]        Unique identifier for this call
   /// [callerId]      Caller
   /// [calleeIdList]  List of callees
-  /// [groupId]      GroupID
-  /// [callMediaType] Call type，eg: audio、video
-  /// [userData]      User-defined extension fields
+  /// [mediaType]     Call type，eg: audio、video
+  /// [info]          Callback extension information
   ///
-  final void Function(String callerId, List<String> calleeIdList,
-      String groupId, TUICallMediaType callMediaType, String? userData)? onCallReceived;
+  final void Function(String callId, String callerId, List<String> calleeIdList,
+      TUICallMediaType mediaType, CallObserverExtraInfo info)? onCallReceived;
 
-  /// A user who cancel the call
+  /// A user who cancel the call (Deprecated)
+  ///
+  /// **This interface has been deprecated. Please use onCallEnd instead.**
+  ///
   /// [callerId]  User who cancel the call request
+  ///
+  @Deprecated('This interface has been deprecated. Please use onCallNotConnected instead.')
   final void Function(String callerId)? onCallCancelled;
+
+  /// The call was not connected on the current device
+  ///
+  /// [callId]        Unique identifier for this call
+  /// [mediaType]     Call type，eg: audio、video
+  /// [reason]        Call end reason.
+  /// [userId]        Which user ended the call
+  /// [info]          Callback extension information
+  final void Function(String callId, TUICallMediaType mediaType, CallEndReason reason,
+      String userId, CallObserverExtraInfo info)? onCallNotConnected;
 
   /// Call start(received by both caller and callee)
   ///
-  /// [roomId]        Current call room ID
-  /// [callMediaType] Call type，eg: audio、video
-  /// [callRole]      Call role
-  final void Function(TUIRoomId roomId, TUICallMediaType callMediaType,
-      TUICallRole callRole)? onCallBegin;
+  /// [callId]        Unique identifier for this call
+  /// [mediaType]     Call type，eg: audio、video
+  /// [info]          Callback extension information
+  final void Function(String callId, TUICallMediaType mediaType, CallObserverExtraInfo info)? onCallBegin;
 
   /// Call end(received by both caller and callee)
   ///
-  /// [roomId]       Current call room ID
-  /// [callMediaType] Call type，eg: audio、video
-  /// [callRole ]     Call role
+  /// [callId]        Unique identifier for this call
+  /// [mediaType]     Call type，eg: audio、video
+  /// [reason]        Call end reason.
+  /// [userId]        Which user ended the call
   /// [totalTime ]    Total time of the call
-  final void Function(TUIRoomId roomId, TUICallMediaType callMediaType,
-      TUICallRole callRole, double totalTime)? onCallEnd;
+  /// [info]          Callback extension information
+  final void Function(String callId, TUICallMediaType mediaType, CallEndReason reason,
+      String userId, double totalTime, CallObserverExtraInfo info)? onCallEnd;
 
   /// call type change
   ///

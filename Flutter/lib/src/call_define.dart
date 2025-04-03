@@ -309,3 +309,42 @@ class TUICallRecentCallsFilter {
     return data;
   }
 }
+
+class CallObserverExtraInfo {
+  TUIRoomId roomId = TUIRoomId(intRoomId: 0, strRoomId: "");
+  TUICallRole role = TUICallRole.none;
+  String userData = "";
+  String chatGroupId = "";
+
+  static CallObserverExtraInfo fromJson(Map data) {
+    CallObserverExtraInfo info = CallObserverExtraInfo();
+    TUIRoomId roomId = TUIRoomId(intRoomId: data['roomId']['intRoomId'] ?? 0, strRoomId: data['roomId']['strRoomId'] ?? "");
+    info.roomId = roomId;
+    info.role = TUICallRole.values[data['role'] ?? 0];
+    info.userData = data['userData'] ?? "";
+    info.chatGroupId = data['chatGroupId'] ?? "";
+    return info;
+  }
+
+  @override
+  String toString() {
+    return ' {'
+        ' roomId: {int:${roomId.intRoomId} str:${roomId.strRoomId}}'
+        ' role: $role'
+        ' userData: $userData'
+        ' chatGroupId: $chatGroupId';
+  }
+}
+
+enum CallEndReason {
+  unknown,
+  hangup,
+  reject,
+  noResponse,
+  offline,
+  lineBusy,
+  canceled,
+  otherDeviceAccepted,
+  otherDeviceReject,
+  endByServer,
+}
