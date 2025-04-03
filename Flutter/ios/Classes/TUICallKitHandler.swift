@@ -207,6 +207,18 @@ extension TUICallKitHandler {
             }
         }
         
+        if let remark = dic["remark"] as? String {
+            if isSelfUser {
+                TUICallState.instance.selfUser.value.remark.value = remark
+            } else {
+                if remoteIndex == -1 {
+                    remoteUser.remark.value = remark
+                } else {
+                    TUICallState.instance.remoteUserList.value[remoteIndex].remark.value = remark
+                }
+            }
+        }
+        
         if let callRole = dic["callRole"] as? UInt {
             if isSelfUser {
                 TUICallState.instance.selfUser.value.callRole.value = TUICallRole(rawValue: callRole) ?? .none

@@ -11,6 +11,7 @@ import RTCRoomEngine
 class User {
     let id: Observable<String> = Observable("")
     let nickname: Observable<String> = Observable("")
+    let remark: Observable<String> = Observable("")
     let avatar: Observable<String> = Observable("")
     
     let callRole: Observable<TUICallRole> = Observable(.none)
@@ -22,6 +23,9 @@ class User {
     var viewID: Observable<Int> = Observable(0)
     
     static func getUserDisplayName(user: User) -> String {
+        if !user.remark.value.isEmpty {
+            return user.remark.value
+        }
         if !user.nickname.value.isEmpty {
             return user.nickname.value
         }

@@ -81,20 +81,21 @@ class VoIPDataSyncHandler: NSObject,TUICallObserver {
                             param: nil)
     }
     
-    func updateVoIPInfo(callerId: String, calleeList: [String], groupId: String) {
+    func updateVoIPInfo(callerId: String, calleeList: [String], groupId: String, mediaType: TUICallMediaType) {
         TUICore.notifyEvent(TUICore_TUIVoIPExtensionNotify,
                             subKey: TUICore_TUICore_TUIVoIPExtensionNotify_UpdateInfoSubKey,
                             object: nil,
                             param: [TUICore_TUICore_TUIVoIPExtensionNotify_UpdateInfoSubKey_InviterIdKey: callerId,
                                   TUICore_TUICore_TUIVoIPExtensionNotify_UpdateInfoSubKey_InviteeListKey: calleeList,
-                                      TUICore_TUICore_TUIVoIPExtensionNotify_UpdateInfoSubKey_GroupIDKey: groupId])
+                                      TUICore_TUICore_TUIVoIPExtensionNotify_UpdateInfoSubKey_GroupIDKey: groupId,
+                                    TUICore_TUICore_TUIVoIPExtensionNotify_UpdateInfoSubKey_MediaTypeKey: mediaType.rawValue])
     }
     
 //     MARK: TUIObserver
     func onCallReceived(callerId: String, calleeIdList: [String], groupId: String?, callMediaType: TUICallMediaType, userData: String?) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             guard let self = self else { return }
-            self.updateVoIPInfo(callerId: callerId, calleeList: calleeIdList, groupId: groupId ?? "")
+            self.updateVoIPInfo(callerId: callerId, calleeList: calleeIdList, groupId: groupId ?? "", mediaType: callMediaType)
         }
     }
     

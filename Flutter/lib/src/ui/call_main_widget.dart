@@ -7,8 +7,6 @@ import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/calls/calls_widget.dart';
-import 'package:tencent_calls_uikit/src/ui/widget/groupcall/group_call_widget.dart';
-import 'package:tencent_calls_uikit/src/ui/widget/singlecall/single_call_widget.dart';
 import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 
 class TUICallKitWidget extends StatefulWidget {

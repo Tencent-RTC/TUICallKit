@@ -4,9 +4,12 @@ import androidx.annotation.NonNull;
 
 import com.tencent.cloud.tuikit.engine.call.TUICallDefine;
 
+import java.util.Objects;
+
 public class User {
     public String               id             = "";
     public String               avatar         = "";
+    public String               remark         = "";
     public String               nickname   = "";
     public TUICallDefine.Role   callRole   = TUICallDefine.Role.Caller;
     public TUICallDefine.Status callStatus = TUICallDefine.Status.None;
@@ -26,6 +29,16 @@ public class User {
             return false;
         }
         return true;
+    }
+
+    public String getUserDisplayName() {
+        if (!Objects.equals(remark, "")) {
+            return remark;
+        }
+        if (!Objects.equals(nickname, "")) {
+            return nickname;
+        }
+        return id;
     }
 
     @NonNull

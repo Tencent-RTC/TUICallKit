@@ -75,7 +75,7 @@ public class IncomingFloatView {
             Glide.with(context).load(avatarUri).error(R.drawable.tuicallkit_ic_avatar).into(imageFloatAvatar);
         }
 
-        textFloatTitle.setText(user.nickname);
+        textFloatTitle.setText(user.getUserDisplayName());
         if (mediaType == TUICallDefine.MediaType.Video) {
             String str =
                     (String) TUICallState.getInstance().mResourceMap.get(TUICallState.getInstance().mScene == TUICallDefine.Scene.SINGLE_CALL ? "k_0000002_1" : "k_0000003");

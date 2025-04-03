@@ -183,6 +183,9 @@ public class ObjectParse {
         if (map.get("avatar") != null) {
             user.avatar = (String) map.get("avatar");
         }
+        if (map.get("remark") != null) {
+            user.remark = (String) map.get("remark");
+        }
         if (map.get("nickname") != null) {
             user.nickname = (String) map.get("nickname");
         }
@@ -351,6 +354,24 @@ public class ObjectParse {
             map.put("result", record.result.ordinal());
             map.put("beginTime", record.beginTime);
             map.put("totalTime", record.totalTime);
+        }
+        return map;
+    }
+
+    public static Map<String, Object> getRoomIdMap(TUICommonDefine.RoomId roomId) {
+        Map<String, Object> roomIdMap = new HashMap<>();
+        roomIdMap.put("intRoomId", roomId.intRoomId);
+        roomIdMap.put("strRoomId", roomId.strRoomId);
+        return roomIdMap;
+    }
+
+    public static Map<String, Object> getCallObserverExtraInfoMap(TUICallDefine.CallObserverExtraInfo info) {
+        Map<String, Object> map = new HashMap<>();
+        if (info != null) {
+            map.put("roomId", getRoomIdMap(info.roomId));
+            map.put("role", info.role.getValue());
+            map.put("userData", info.userData);
+            map.put("chatGroupId", info.chatGroupId);
         }
         return map;
     }
