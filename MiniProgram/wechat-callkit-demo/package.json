@@ -5,6 +5,6 @@
     "publish:github-min": "npm run build && node build/createGitHubCode.js"
   },
   "dependencies": {
-    "@tencentcloud/call-uikit-wechat": "^2.0.0"
+    "@tencentcloud/call-uikit-wx": "latest"
   }
 }

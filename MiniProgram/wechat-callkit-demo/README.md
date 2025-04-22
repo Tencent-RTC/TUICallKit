@@ -21,7 +21,7 @@
    ```
 2. 进入 demo 目录
    ```
-   cd ./TUICallKit/MiniProgram
+   cd ./TUICallKit/MiniProgram/wechat-callkit-demo
    ```
 3. 安装依赖
    ```
@@ -30,12 +30,14 @@
    
    mac端
    ```
-   mkdir -p ./TUICallKit && cp -r node_modules/@tencentcloud/call-uikit-wechat/ ./TUICallKit
+   mkdir -p ./TUICallKit && cp -r node_modules/@tencentcloud/call-uikit-wx/ ./TUICallKit && cp node_modules/@tencentcloud/call-engine-wx/RTCCallEngine.wasm.br ./static/
    ```
 
    windows端
    ```
-   xcopy node_modules\@tencentcloud\call-uikit-wechat .\TUICallKit /i /e
+   xcopy node_modules\@tencentcloud\call-uikit-wx\ .\TUICallKit /i /e
+   xcopy node_modules\@tencentcloud\call-engine-wx\RTCCallEngine.wasm.br .\static\
+
    ```
 
 4. 项目导入到微信开发者工具，构建 npm。微信开发者工具【工具】->【构建 npm】。具体如下图：
