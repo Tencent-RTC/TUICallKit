@@ -1,4 +1,4 @@
-import { MEDIA_TYPE } from "tuicall-engine-wx";
+import { MEDIA_TYPE } from "@tencentcloud/call-engine-wx";
 import { TUICallKitServer } from "../../TUICallKit/TUICallService/index";
 
 Page({
