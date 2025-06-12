@@ -110,7 +110,7 @@ class CallMainActivity : FullScreenActivity() {
             if (CallManager.instance.callState.mediaType.get() == TUICallDefine.MediaType.Video) {
                 val videoView = VideoFactory.instance.createVideoView(application, selfUser)
                 val camera = CallManager.instance.mediaState.isFrontCamera.get()
-                CallManager.instance.openCamera(camera, videoView?.getVideoView(), null)
+                CallManager.instance.openCamera(camera, videoView, null)
             }
         }
     }

@@ -40,7 +40,8 @@ class Initializer : ServiceInitializer() {
                     foregroundActivities++
                     if (foregroundActivities == 1 && !isChangingConfiguration) {
                         //  The Call page exits the background and re-enters without repeatedly pulling up the page.
-                        if (TUILogin.isUserLogined() && activity !is CallMainActivity) {
+                        if (Constants.CALL_FRAMEWORK_NATIVE == Constants.framework &&
+                            TUILogin.isUserLogined() && activity !is CallMainActivity) {
                             TUICallKitImpl.createInstance(context).queryOfflineCall()
                         }
                     }

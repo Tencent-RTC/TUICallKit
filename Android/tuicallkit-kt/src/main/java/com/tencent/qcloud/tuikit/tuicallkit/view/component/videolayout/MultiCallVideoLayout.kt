@@ -138,11 +138,11 @@ class MultiCallVideoLayout(context: Context) : ConstraintLayout(context) {
             val isCameraOpen = CallManager.instance.mediaState.isCameraOpened.get()
             val isFrontCamera = CallManager.instance.mediaState.isFrontCamera.get()
             if (isCameraOpen) {
-                CallManager.instance.openCamera(isFrontCamera, videoView?.getVideoView(), null)
+                CallManager.instance.openCamera(isFrontCamera, videoView, null)
                 updateShowLargeViewUserId(user.id)
             }
         } else {
-            CallManager.instance.startRemoteView(user.id, videoView?.getVideoView(), null)
+            CallManager.instance.startRemoteView(user.id, videoView, null)
         }
     }
 

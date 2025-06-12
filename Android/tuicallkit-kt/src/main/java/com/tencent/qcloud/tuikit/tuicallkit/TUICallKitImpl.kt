@@ -2,7 +2,6 @@ package com.tencent.qcloud.tuikit.tuicallkit
 
 import android.content.Context
 import android.content.Intent
-import android.text.TextUtils
 import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.cloud.tuikit.engine.call.TUICallDefine.CallParams
 import com.tencent.cloud.tuikit.engine.call.TUICallEngine
@@ -10,7 +9,6 @@ import com.tencent.cloud.tuikit.engine.call.TUICallObserver
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine.Callback
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine.RoomId
-import com.tencent.qcloud.tuicore.TUIConfig
 import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.permission.PermissionCallback
@@ -22,6 +20,7 @@ import com.tencent.qcloud.tuikit.tuicallkit.common.data.Logger
 import com.tencent.qcloud.tuikit.tuicallkit.common.utils.DeviceUtils
 import com.tencent.qcloud.tuikit.tuicallkit.common.utils.PermissionRequest
 import com.tencent.qcloud.tuikit.tuicallkit.manager.CallManager
+import com.tencent.qcloud.tuikit.tuicallkit.manager.PushManager
 import com.tencent.qcloud.tuikit.tuicallkit.manager.UserManager
 import com.tencent.qcloud.tuikit.tuicallkit.state.GlobalState
 import com.tencent.qcloud.tuikit.tuicallkit.state.UserState
@@ -33,7 +32,6 @@ import com.tencent.qcloud.tuikit.tuicallkit.view.component.incomingbanner.Incomi
 import com.trtc.tuikit.common.livedata.Observer
 import com.trtc.tuikit.common.ui.floatwindow.FloatWindowManager
 import com.trtc.tuikit.common.ui.floatwindow.FloatWindowObserver
-import org.json.JSONObject
 
 
 class TUICallKitImpl private constructor(context: Context) : TUICallKit() {
@@ -136,38 +134,8 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit() {
     }
 
     override fun callExperimentalAPI(jsonStr: String) {
-        if (TextUtils.isEmpty(jsonStr)) {
-            Logger.e(TAG, "callExperimentalAPI, jsonStr is empty")
-            return
-        }
-
-        try {
-            val json = JSONObject(jsonStr)
-            if (!json.has("api")) {
-                Logger.e(TAG, "callExperimentalAPI[lack api]: $jsonStr")
-                return
-            }
-            if (!json.has("params")) {
-                Logger.e(TAG, "callExperimentalAPI[lack params]: $jsonStr")
-                return
-            }
-
-            val api = json.getString("api")
-            val params = json.getJSONObject("params")
-
-            when (api) {
-                "forceUseV2API" -> {
-                    if (params.has("enable")) {
-                        GlobalState.instance.enableForceUseV2API = params.getBoolean("enable")
-                    }
-                }
-                else -> Logger.w(TAG, "callExperimentalAPI unknown api: $api")
-            }
-        } catch (e: Exception) {
-            Logger.e(TAG, "callExperimentalAPI json parse fail，json: $jsonStr, error: $e")
-        }
+        CallManager.instance.callExperimentalAPI(jsonStr)
     }
-
 
     override fun setCallingBell(filePath: String?) {
         CallManager.instance.setCallingBell(filePath)
@@ -311,22 +279,22 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit() {
         val notificationPermission = PermissionRequest.isNotificationEnabled()
 
         val enableIncomingBanner = GlobalState.instance.enableIncomingBanner
-        val isFCMData = TUICore.getService(TUIConstants.TIMPush.SERVICE_NAME) != null
-                && TUIConfig.getCustomData("pushChannelId") == TUIConstants.DeviceInfo.BRAND_GOOGLE_ELSE
+        val pushData = PushManager.getPushData()
+        val isFCMDataChannel = pushData.channelId == TUIConstants.DeviceInfo.BRAND_GOOGLE_ELSE
 
         Logger.i(
             TAG, "handleNewCall, isAppInBackground: $isAppInBackground, floatPermission: $floatPermission" +
                     ", backgroundStartPermission: $bgPermission, notificationPermission: $notificationPermission , " +
-                    "isFCMData: $isFCMData, enableIncomingBanner:$enableIncomingBanner"
+                    "pushData: $pushData, enableIncomingBanner:$enableIncomingBanner"
         )
 
         if (DeviceUtils.isScreenLocked(context)) {
-            handleScreenLocked(isAppInBackground, isFCMData, notificationPermission)
+            handleScreenLocked(isAppInBackground, isFCMDataChannel, notificationPermission)
             return
         }
 
         if (isAppInBackground) {
-            handleAppInBackground(floatPermission, isFCMData, notificationPermission, bgPermission)
+            handleAppInBackground(floatPermission, isFCMDataChannel, notificationPermission, bgPermission)
             return
         }
 

@@ -86,6 +86,8 @@ class GridImageSynthesizer(context: Context, view: ImageView) {
                     val bitmap = asyncLoadImage(it[i] ?: "", imageData.targetImageSize)
                     if (bitmap != null) {
                         imageData.putBitmap(bitmap, i)
+                    } else {
+                        imageData.putBitmap(defaultIcon, i)
                     }
                 } catch (e: InterruptedException) {
                     e.printStackTrace()
@@ -349,8 +351,8 @@ class GridImageSynthesizer(context: Context, view: ImageView) {
         var defaultImageResId: Int = 0
         var bgColor: Int = Color.parseColor("#cfd3d8")
         var targetImageSize: Int = 0
-        var maxWidth: Int = 0
-        var maxHeight: Int = 0
+        var maxWidth: Int = 100
+        var maxHeight: Int = 100
         var rowCount: Int = 0
         var columnCount: Int = 0
         var gap: Int = 6

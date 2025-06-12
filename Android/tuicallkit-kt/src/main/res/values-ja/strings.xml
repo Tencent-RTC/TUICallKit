@@ -66,7 +66,7 @@
     <string name="tuicallkit_error_request_repeated">現在実行中のメソッドを呼び出すことはできません</string>
     <string name="tuicallkit_error_scene_not_support">現在の通話シーンでは、この機能はサポートしていません</string>
     <string name="tuicallkit_join_group_call">参加</string>
-    <string name="tuicallkit_join_group_call_users">%d人が%sをしています</string>
+    <string name="tuicallkit_join_group_call_users">%d人が通話中です</string>
 
     <string name="tuicallkit_blur_background">背景をぼかす</string>
     <string name="tuicallkit_notification_channel_group_id">つうわかんり</string>

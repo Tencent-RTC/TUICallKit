@@ -15,6 +15,9 @@ class CallingVibratorFeature(context: Context) {
     private val vibrator: Vibrator
 
     private var callStatusObserver = Observer<TUICallDefine.Status> {
+        if (CallManager.instance.userState.selfUser.get().callRole == TUICallDefine.Role.Caller) {
+            return@Observer
+        }
         when (it) {
             TUICallDefine.Status.Waiting -> startVibrating()
             else -> stopVibrating()

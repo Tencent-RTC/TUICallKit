@@ -99,6 +99,26 @@ class UserManager {
             })
     }
 
+    fun getUserDisplayName(userId: String, callback: TUICommonDefine.ValueCallback<String>) {
+        var displayUser: UserState.User? = UserState.User()
+        if (userId == CallManager.instance.userState.selfUser.get().id) {
+            displayUser = CallManager.instance.userState.selfUser.get()
+        }
+
+        for (user in CallManager.instance.userState.remoteUserList.get()) {
+            if (user.id == userId) {
+                displayUser = user
+                break
+            }
+        }
+
+        if (!displayUser?.nickname?.get().isNullOrEmpty()) {
+            callback.onSuccess(displayUser?.nickname?.get())
+            return
+        }
+        callback.onSuccess(userId)
+    }
+
     internal class UserInfo {
         var id: String = ""
         var avatar: String = ""

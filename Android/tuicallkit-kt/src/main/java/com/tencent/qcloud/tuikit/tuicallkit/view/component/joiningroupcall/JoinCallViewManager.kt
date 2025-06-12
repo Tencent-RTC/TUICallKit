@@ -12,8 +12,8 @@ import com.tencent.qcloud.tuikit.tuicallkit.common.data.Logger
 import com.tencent.qcloud.tuikit.tuicallkit.manager.CallManager
 import com.trtc.tuikit.common.livedata.Observer
 
-class JoinInGroupCallManager() {
-    private var callView: JoinInGroupCallView? = null
+class JoinCallViewManager() {
+    private var callView: JoinCallView? = null
     private var currentGroupId: String? = null
 
     private var callStatusObserver = Observer<TUICallDefine.Status> {
@@ -38,8 +38,8 @@ class JoinInGroupCallManager() {
         CallManager.instance.userState.selfUser.get().callStatus.observe(callStatusObserver)
     }
 
-    fun setJoinInGroupCallView(joinInGroupCallView: JoinInGroupCallView) {
-        callView = joinInGroupCallView
+    fun setJoinCallView(joinCallView: JoinCallView) {
+        callView = joinCallView
         callView?.visibility = View.GONE
     }
 
@@ -80,26 +80,31 @@ class JoinInGroupCallManager() {
 
         val businessType = extraMap[KEY_BUSINESS_TYPE] as? String
         if (businessType.isNullOrEmpty() || businessType != VALUE_BUSINESS_TYPE) {
-            Logger.w(TAG, "no user in the call")
+            Logger.w(TAG, "this is not callkit, ignore")
             removeCallView()
             return
         }
-
         val userList = parseUserList(extraMap)
         if (userList.isEmpty() || userList.contains(TUILogin.getLoginUser()) || userList.size <= 1) {
-            Logger.w(TAG, "userList: $userList, loginUser:${TUILogin.getLoginUser()}")
+            Logger.w(TAG, "userList is empty or current user is in the call, ignore")
             removeCallView()
             return
         }
 
-        val mediaType = if (extraMap[KEY_CALL_MEDIA_TYPE] == VALUE_MEDIA_TYPE_VIDEO) {
-            TUICallDefine.MediaType.Video
-        } else {
-            TUICallDefine.MediaType.Audio
+        val callId = extraMap[KEY_CALL_ID] as? String
+        if (!callId.isNullOrEmpty()) {
+            callView?.updateView(TUICallDefine.MediaType.Audio, userList, callId = callId)
+            callView?.visibility = View.VISIBLE
+            return
+        }
+
+        var mediaType = TUICallDefine.MediaType.Audio
+        if (extraMap[KEY_CALL_MEDIA_TYPE] == VALUE_MEDIA_TYPE_VIDEO) {
+            mediaType = TUICallDefine.MediaType.Video
         }
 
         val roomId = parseRoomId(extraMap)
-        callView?.updateView(groupId, roomId, mediaType, userList)
+        callView?.updateView(mediaType, userList, groupId = groupId, roomId = roomId)
         callView?.visibility = View.VISIBLE
     }
 
@@ -126,7 +131,7 @@ class JoinInGroupCallManager() {
         val userIds = extraMap[KEY_USER_LIST] as? List<Map<String, String>>
         if (userIds == null) {
             Logger.w(TAG, "parseUserList, userList is empty, ignore")
-            return ArrayList<String>()
+            return ArrayList()
         }
         val list = ArrayList<String>()
 
@@ -144,12 +149,13 @@ class JoinInGroupCallManager() {
     }
 
     companion object {
-        private const val TAG = "JoinInGroupCall"
+        private const val TAG = "JoinCallViewManager"
 
         //Do not change these items
         private const val KEY_GROUP_ATTRIBUTE = "inner_attr_kit_info"
         private const val KEY_BUSINESS_TYPE = "business_type"
         private const val KEY_ROOM_ID_TYPE = "room_id_type"
+        private const val KEY_CALL_ID = "call_id"
         private const val KEY_ROOM_ID = "room_id"
         private const val KEY_GROUP_ID = "group_id"
         private const val KEY_CALL_MEDIA_TYPE = "call_media_type"

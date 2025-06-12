@@ -17,6 +17,7 @@ import com.tencent.qcloud.tuicore.util.ScreenUtil
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.common.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.manager.CallManager
+import com.tencent.qcloud.tuikit.tuicallkit.state.GlobalState
 import com.tencent.qcloud.tuikit.tuicallkit.state.UserState
 import com.tencent.qcloud.tuikit.tuicallkit.state.ViewState
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout.multicall.MultiCallLoadingView
@@ -157,7 +158,7 @@ class VideoView(context: Context, userInfo: UserState.User) : RelativeLayout(con
 
     private fun updateVideoView() {
         if (user.videoAvailable.get()) {
-            CallManager.instance.startRemoteView(user.id, getVideoView(), null)
+            CallManager.instance.startRemoteView(user.id, this, null)
             videoView.visibility = View.VISIBLE
         } else {
             videoView.visibility = View.GONE
@@ -176,7 +177,7 @@ class VideoView(context: Context, userInfo: UserState.User) : RelativeLayout(con
     }
 
     private fun updateAudioInputIcon() {
-        if (TUICallDefine.Scene.SINGLE_CALL == CallManager.instance.callState.scene.get() || isShowFloatWindow) {
+        if (isShowFloatWindow || CallManager.instance.callState.scene.get() == TUICallDefine.Scene.SINGLE_CALL) {
             imageAudioInput.visibility = View.GONE
             return
         }
@@ -195,19 +196,18 @@ class VideoView(context: Context, userInfo: UserState.User) : RelativeLayout(con
     }
 
     private fun updateNetworkHint() {
-        if (isShowFloatWindow) {
+        if (isShowFloatWindow || CallManager.instance.callState.scene.get() == TUICallDefine.Scene.SINGLE_CALL) {
             imageNetworkBad.visibility = View.GONE
             return
         }
-        val isGroupCall = CallManager.instance.callState.scene.get() == TUICallDefine.Scene.GROUP_CALL
         when {
-            user.networkQualityReminder.get() && isGroupCall -> imageNetworkBad.visibility = View.VISIBLE
+            user.networkQualityReminder.get() -> imageNetworkBad.visibility = View.VISIBLE
             else -> imageNetworkBad.visibility = View.GONE
         }
     }
 
     private fun updateSwitchCameraButton() {
-        if (isShowFloatWindow) {
+        if (isShowFloatWindow || CallManager.instance.callState.scene.get() == TUICallDefine.Scene.SINGLE_CALL) {
             buttonSwitchCamera.visibility = View.GONE
             return
         }
@@ -222,7 +222,11 @@ class VideoView(context: Context, userInfo: UserState.User) : RelativeLayout(con
     }
 
     private fun updateBlurButton() {
-        if (isShowFloatWindow) {
+        if (!GlobalState.instance.enableVirtualBackground) {
+            buttonBlur.visibility = View.GONE
+            return
+        }
+        if (isShowFloatWindow || CallManager.instance.callState.scene.get() == TUICallDefine.Scene.SINGLE_CALL) {
             buttonBlur.visibility = View.GONE
             return
         }
@@ -266,14 +270,13 @@ class VideoView(context: Context, userInfo: UserState.User) : RelativeLayout(con
     }
 
     private fun updateUserNameView() {
-        if (isShowFloatWindow) {
+        if (isShowFloatWindow || CallManager.instance.callState.scene.get() == TUICallDefine.Scene.SINGLE_CALL) {
             textUserName.visibility = View.GONE
             return
         }
-        val isGroupCall = TUICallDefine.Scene.GROUP_CALL == CallManager.instance.callState.scene.get()
         val shouldShowUserId = CallManager.instance.viewState.showLargeViewUserId.get() == user.id
 
-        textUserName.visibility = if (isGroupCall && shouldShowUserId) View.VISIBLE else View.GONE
+        textUserName.visibility = if (shouldShowUserId) View.VISIBLE else View.GONE
         textUserName.text = user.nickname.get()
     }
 

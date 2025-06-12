@@ -25,11 +25,13 @@ class CallEngineObserver : TUICallObserver() {
     }
 
     override fun onCallReceived(
-        callerId: String?, calleeIdList: MutableList<String>?, groupId: String?,
-        mediaType: TUICallDefine.MediaType?, userData: String?
+        callId: String?, callerId: String?, calleeIdList: MutableList<String>?, mediaType: TUICallDefine.MediaType?,
+        info: TUICallDefine.CallObserverExtraInfo?
     ) {
+        super.onCallReceived(callId, callerId, calleeIdList, mediaType, info)
         Logger.i(
-            TAG, "onCallReceived,callerId:$callerId, calleeIdList:$calleeIdList, group:$groupId, mediaType:$mediaType"
+            TAG, "onCallReceived, callId: $callId, callerId: $callerId, calleeIdList: $calleeIdList," +
+                    " mediaType: $mediaType, info: $info"
         )
         if (TUICallDefine.MediaType.Unknown == mediaType || calleeIdList.isNullOrEmpty()) {
             Logger.e(TAG, "mediaType is unknown or calleeIdList is empty")
@@ -40,13 +42,14 @@ class CallEngineObserver : TUICallObserver() {
             Logger.w(TAG, "The users is limited to 9. For larger conference calls,try using TUIRoomKit")
             return
         }
-
+        val groupId = info?.chatGroupId
         if (!groupId.isNullOrEmpty() || calleeIdList.size > 1) {
             CallManager.instance.callState.scene.set(TUICallDefine.Scene.GROUP_CALL)
         } else {
             CallManager.instance.callState.scene.set(TUICallDefine.Scene.SINGLE_CALL)
         }
-        CallManager.instance.callState.groupId = groupId
+        CallManager.instance.callState.callId = callId ?: ""
+        CallManager.instance.callState.chatGroupId = groupId
         CallManager.instance.callState.mediaType.set(mediaType)
 
         if (!callerId.isNullOrEmpty()) {
@@ -85,16 +88,26 @@ class CallEngineObserver : TUICallObserver() {
         }
     }
 
-    override fun onCallCancelled(callerId: String?) {
-        Logger.i(TAG, "onCallCancelled, callerId: $callerId")
+    override fun onCallNotConnected(
+        callId: String?, mediaType: TUICallDefine.MediaType?, reason: TUICallDefine.CallEndReason?, userId: String?,
+        info: TUICallDefine.CallObserverExtraInfo?
+    ) {
+        super.onCallNotConnected(callId, mediaType, reason, userId, info)
+        Logger.i(
+            TAG, "onCallNotConnected, callId: $callId, mediaType: $mediaType," +
+                    " reason: $reason, userId: $userId, info: $info"
+        )
         CallManager.instance.reset()
     }
 
     override fun onCallBegin(
-        roomId: TUICommonDefine.RoomId?, mediaType: TUICallDefine.MediaType?, callRole: TUICallDefine.Role?
+        callId: String?, mediaType: TUICallDefine.MediaType?, info: TUICallDefine.CallObserverExtraInfo?
     ) {
-        Logger.i(TAG, "onCallBegin, roomId: $roomId, mediaType: $mediaType, callRole: $callRole")
-        CallManager.instance.callState.roomId = roomId
+        super.onCallBegin(callId, mediaType, info)
+        Logger.i(TAG, "onCallBegin, callId: $callId, mediaType: $mediaType, info: $info")
+        CallManager.instance.callState.callId = callId ?: ""
+        CallManager.instance.callState.roomId = info?.roomId
+        CallManager.instance.callState.chatGroupId = info?.chatGroupId
 
         val selfUser = CallManager.instance.userState.selfUser.get()
         if (selfUser.callStatus.get() != TUICallDefine.Status.Accept) {
@@ -110,10 +123,14 @@ class CallEngineObserver : TUICallObserver() {
     }
 
     override fun onCallEnd(
-        roomId: TUICommonDefine.RoomId?, mediaType: TUICallDefine.MediaType?,
-        callRole: TUICallDefine.Role?, totalTime: Long
+        callId: String?, mediaType: TUICallDefine.MediaType?, reason: TUICallDefine.CallEndReason?, userId: String?,
+        totalTime: Long, info: TUICallDefine.CallObserverExtraInfo?
     ) {
-        Logger.i(TAG, "onCallEnd, room: $roomId, mediaType: $mediaType, callRole: $callRole, totalTime: $totalTime")
+        super.onCallEnd(callId, mediaType, reason, userId, totalTime, info)
+        Logger.i(
+            TAG, "onCallEnd, callId: $callId, mediaType: $mediaType," +
+                    " reason: $reason, userId: $userId, totalTime: $totalTime, info: $info"
+        )
         resetCall()
     }
 
@@ -140,7 +157,7 @@ class CallEngineObserver : TUICallObserver() {
 
     override fun onUserJoin(userId: String?) {
         Logger.i(TAG, "onUserJoin, userId: $userId")
-        if (userId.isNullOrEmpty()) {
+        if (userId.isNullOrEmpty() || userId.contains(Constants.AI_TRANSLATION_ROBOT)) {
             return
         }
 
@@ -150,14 +167,10 @@ class CallEngineObserver : TUICallObserver() {
             user.id = userId
         }
 
-        val selfUser = CallManager.instance.userState.selfUser.get()
-        if (selfUser.callStatus.get() != TUICallDefine.Status.Accept) {
-            selfUser.callStatus.set(TUICallDefine.Status.Accept)
-        }
-
         user.callStatus.set(TUICallDefine.Status.Accept)
 
         val remoteUserList = CallManager.instance.userState.remoteUserList.get()
+        val selfUser = CallManager.instance.userState.selfUser.get()
         if (remoteUserList != null && !remoteUserList.contains(user) && user.id != selfUser.id) {
             CallManager.instance.userState.remoteUserList.add(user)
         }

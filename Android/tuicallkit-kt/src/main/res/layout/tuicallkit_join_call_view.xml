@@ -15,13 +15,13 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/img_join_group_call_icon"
+            android:id="@+id/img_join_call_icon"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:src="@drawable/tuicallkit_ic_join_group_call"
+            android:src="@drawable/tuicallkit_ic_join_call"
             app:layout_constraintBottom_toTopOf="@+id/cl_expand_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -33,9 +33,9 @@
             android:layout_marginStart="10dp"
             android:textColor="@color/tuicallkit_color_gray"
             android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/img_join_group_call_icon"
-            app:layout_constraintStart_toEndOf="@+id/img_join_group_call_icon"
-            app:layout_constraintTop_toTopOf="@+id/img_join_group_call_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/img_join_call_icon"
+            app:layout_constraintStart_toEndOf="@+id/img_join_call_icon"
+            app:layout_constraintTop_toTopOf="@+id/img_join_call_icon"
             tools:hint="two people is in voice call" />
 
         <ImageView
@@ -44,9 +44,9 @@
             android:layout_height="21dp"
             android:layout_marginEnd="16dp"
             android:padding="10dp"
-            app:layout_constraintBottom_toBottomOf="@+id/img_join_group_call_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/img_join_call_icon"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/img_join_group_call_icon" />
+            app:layout_constraintTop_toTopOf="@+id/img_join_call_icon" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_expand_view"
@@ -60,7 +60,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/img_join_group_call_icon">
+            app:layout_constraintTop_toBottomOf="@+id/img_join_call_icon">
 
             <HorizontalScrollView
                 android:id="@+id/scroll_view"

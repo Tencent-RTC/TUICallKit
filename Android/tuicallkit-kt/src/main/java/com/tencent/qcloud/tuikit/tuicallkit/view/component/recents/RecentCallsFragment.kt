@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
@@ -17,12 +18,14 @@ import com.tencent.cloud.tuikit.engine.call.TUICallDefine.RecentCallsFilter
 import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUIConstants.TUICalling.ObjectFactory.RecentCalls
 import com.tencent.qcloud.tuicore.TUICore
-import com.tencent.qcloud.tuicore.util.ToastUtil
+import com.tencent.qcloud.tuicore.TUILogin
 import com.tencent.qcloud.tuikit.tuicallkit.R
-import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit.Companion.createInstance
+import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit
+import com.tencent.qcloud.tuikit.tuicallkit.state.GlobalState
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.recents.interfaces.ICallRecordItemListener
 import com.trtc.tuikit.common.livedata.LiveListObserver
 import com.trtc.tuikit.common.ui.PopupDialog
+import com.trtc.tuikit.common.util.ToastUtil
 
 class RecentCallsFragment(style: String) : Fragment() {
     private lateinit var buttonEdit: Button
@@ -40,7 +43,16 @@ class RecentCallsFragment(style: String) : Fragment() {
 
     private val callHistoryObserver = object : LiveListObserver<CallRecords>() {
         override fun onDataChanged(list: List<CallRecords>) {
-            listAdapter.onDataSourceChanged(list)
+            if (listAdapter != null && TYPE_ALL == type) {
+                listAdapter.onDataSourceChanged(list)
+            }
+        }
+    }
+    private val callMissObserver = object : LiveListObserver<CallRecords>() {
+        override fun onDataChanged(list: List<CallRecords>) {
+            if (listAdapter != null && TYPE_MISS == type) {
+                listAdapter.onDataSourceChanged(list)
+            }
         }
     }
 
@@ -63,12 +75,12 @@ class RecentCallsFragment(style: String) : Fragment() {
     }
 
     private fun registerObserver() {
-        recentCallsManager.callMissedList.observe(callHistoryObserver)
+        recentCallsManager.callMissedList.observe(callMissObserver)
         recentCallsManager.callHistoryList.observe(callHistoryObserver)
     }
 
     private fun unregisterObserver() {
-        recentCallsManager.callMissedList.removeObserver(callHistoryObserver)
+        recentCallsManager.callMissedList.removeObserver(callMissObserver)
         recentCallsManager.callHistoryList.removeObserver(callHistoryObserver)
     }
 
@@ -81,7 +93,7 @@ class RecentCallsFragment(style: String) : Fragment() {
         val layoutTab: TabLayout = rootView.findViewById(R.id.tab_layout)
         val layoutTitle: ConstraintLayout = rootView.findViewById(R.id.cl_record_title)
         if (RecentCalls.UI_STYLE_MINIMALIST == chatViewStyle) {
-            layoutTitle.setBackgroundColor(resources.getColor(R.color.tuicallkit_color_white))
+            layoutTitle.setBackgroundColor(ContextCompat.getColor(context!!, R.color.tuicallkit_color_white))
         }
 
         buttonEdit.setOnClickListener {
@@ -157,15 +169,24 @@ class RecentCallsFragment(style: String) : Fragment() {
                 if (listAdapter.isMultiSelectMode) {
                     return
                 }
-                if (callRecords.scene == TUICallDefine.Scene.GROUP_CALL) {
+                if (!callRecords.groupId.isNullOrEmpty()) {
                     startGroupInfoActivity(callRecords)
                     ToastUtil.toastLongMessage(getString(R.string.tuicallkit_group_recall_unsupport))
                     return
                 }
-                if (TUICallDefine.Role.Caller == callRecords.role) {
-                    createInstance(context!!).call(callRecords.inviteList[0], callRecords.mediaType)
+                if (GlobalState.instance.enableForceUseV2API) {
+                    var user = callRecords.inviter
+                    if (TUICallDefine.Role.Caller == callRecords.role) {
+                        user = callRecords.inviteList[0]
+                    }
+                    TUICallKit.createInstance(context!!).call(user, callRecords.mediaType)
                 } else {
-                    createInstance(context!!).call(callRecords.inviter, callRecords.mediaType)
+                    val userList = ArrayList<String>()
+                    userList.add(callRecords.inviter)
+                    userList.addAll(callRecords.inviteList)
+                    userList.remove(TUILogin.getLoginUser())
+
+                    TUICallKit.createInstance(context!!).calls(userList, callRecords.mediaType, null, null)
                 }
             }
 
@@ -182,10 +203,13 @@ class RecentCallsFragment(style: String) : Fragment() {
                 if (records == null) {
                     return
                 }
-                if (TUICallDefine.Scene.SINGLE_CALL == records.scene) {
-                    startFriendProfileActivity(records)
-                } else if (TUICallDefine.Scene.GROUP_CALL == records.scene) {
+                if (!records.groupId.isNullOrEmpty()) {
                     startGroupInfoActivity(records)
+                    return
+                }
+
+                if (records.inviteList.size <= 1) {
+                    startFriendProfileActivity(records)
                 }
             }
         })
@@ -266,9 +290,8 @@ class RecentCallsFragment(style: String) : Fragment() {
         }
         val view = LayoutInflater.from(activity).inflate(R.layout.tuicallkit_record_dialog, null)
         bottomDialog!!.setView(view)
-        bottomDialog?.setCanceledOnTouchOutside(false)
-        val textPositive = bottomDialog?.findViewById<TextView>(R.id.tv_clear_call_history)
-        val textCancel = bottomDialog?.findViewById<TextView>(R.id.tv_clear_cancel)
+        val textPositive = view.findViewById<TextView>(R.id.tv_clear_call_history)
+        val textCancel = view.findViewById<TextView>(R.id.tv_clear_cancel)
         textPositive?.setOnClickListener {
             clearRecentCalls()
             bottomDialog?.dismiss()

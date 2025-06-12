@@ -34,8 +34,7 @@ class InviteUserButton(context: Context) : ImageView(context) {
     }
 
     private fun inviteUser() {
-        // TODO: 3.0 上这里不止是groupId
-        val groupId = CallManager.instance.callState.groupId
+        val groupId = CallManager.instance.callState.chatGroupId
         if (groupId.isNullOrEmpty()) {
             ToastUtil.toastShortMessage(context.getString(R.string.tuicallkit_group_id_is_empty))
             return

@@ -5,6 +5,7 @@ import com.tencent.qcloud.tuikit.tuicallkit.common.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.manager.feature.CallingBellFeature
 
 class GlobalState private constructor() {
+    var enableMultiDevice: Boolean = false
     var enableMuteMode: Boolean = SPUtils.getInstance(CallingBellFeature.PROFILE_TUICALLKIT)
         .getBoolean(CallingBellFeature.PROFILE_MUTE_MODE, false)
     var enableFloatWindow: Boolean = true

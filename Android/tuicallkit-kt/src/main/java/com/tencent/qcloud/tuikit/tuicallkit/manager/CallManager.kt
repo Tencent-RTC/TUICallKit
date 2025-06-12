@@ -4,7 +4,6 @@ import android.content.Context
 import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.cloud.tuikit.engine.call.TUICallEngine
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine
-import com.tencent.cloud.tuikit.engine.common.TUIVideoView
 import com.tencent.imsdk.BaseConstants
 import com.tencent.qcloud.tuicore.TUIConfig
 import com.tencent.qcloud.tuicore.TUIConstants
@@ -29,6 +28,10 @@ import com.tencent.qcloud.tuikit.tuicallkit.state.GlobalState
 import com.tencent.qcloud.tuikit.tuicallkit.state.MediaState
 import com.tencent.qcloud.tuikit.tuicallkit.state.UserState
 import com.tencent.qcloud.tuikit.tuicallkit.state.ViewState
+import com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout.VideoFactory
+import com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout.VideoView
+import com.tencent.trtc.TRTCCloud
+import org.json.JSONObject
 import java.util.Collections
 
 class CallManager private constructor(context: Context) : ITUINotification {
@@ -49,6 +52,7 @@ class CallManager private constructor(context: Context) : ITUINotification {
         callState.reset()
         mediaState.reset()
         viewState.reset()
+        VideoFactory.instance.clearVideoView()
     }
 
     fun call(
@@ -145,7 +149,7 @@ class CallManager private constructor(context: Context) : ITUINotification {
                     userState.selfUser.get().callStatus.set(TUICallDefine.Status.Waiting)
 
                     callState.scene.set(TUICallDefine.Scene.GROUP_CALL)
-                    callState.groupId = groupId
+                    callState.chatGroupId = groupId
                     callState.mediaType.set(mediaType)
 
                     initAudioPlayDevice()
@@ -210,7 +214,7 @@ class CallManager private constructor(context: Context) : ITUINotification {
                     scene = TUICallDefine.Scene.GROUP_CALL
                 }
                 callState.scene.set(scene)
-                callState.groupId = params?.chatGroupId
+                callState.chatGroupId = params?.chatGroupId
                 callState.mediaType.set(mediaType)
 
                 initAudioPlayDevice()
@@ -233,7 +237,7 @@ class CallManager private constructor(context: Context) : ITUINotification {
             callback?.onError(TUICallDefine.ERROR_PARAM_INVALID, "join failed, callId is empty")
             return
         }
-        Logger.i(TAG, "join callId: $callId")
+
         userState.selfUser.get().id = TUILogin.getLoginUser() ?: ""
         userState.selfUser.get().avatar.set(TUILogin.getFaceUrl())
         userState.selfUser.get().nickname.set(TUILogin.getNickName())
@@ -241,8 +245,6 @@ class CallManager private constructor(context: Context) : ITUINotification {
         TUICallEngine.createInstance(context).join(callId, object : TUICommonDefine.Callback {
             override fun onSuccess() {
                 userState.selfUser.get().callRole = TUICallDefine.Role.Called
-                // TODO: 关注这里是否能拉起界面
-                userState.selfUser.get().callStatus.set(TUICallDefine.Status.Accept)
 
                 callState.scene.set(TUICallDefine.Scene.GROUP_CALL)
                 callState.mediaType.set(TUICallDefine.MediaType.Audio)
@@ -252,6 +254,7 @@ class CallManager private constructor(context: Context) : ITUINotification {
             }
 
             override fun onError(errCode: Int, errMsg: String) {
+                Logger.e(TAG, "join failed callId: $callId, errCode: $errCode, errMsg: $errMsg")
                 ToastUtil.toastLongMessage(convertErrorMsg(errCode, errMsg))
                 callback?.onError(errCode, errMsg)
             }
@@ -292,7 +295,7 @@ class CallManager private constructor(context: Context) : ITUINotification {
                     userState.selfUser.get().callStatus.set(TUICallDefine.Status.Accept)
 
                     callState.scene.set(TUICallDefine.Scene.GROUP_CALL)
-                    callState.groupId = groupId
+                    callState.chatGroupId = groupId
                     callState.roomId = roomId
                     callState.mediaType.set(mediaType)
 
@@ -307,7 +310,7 @@ class CallManager private constructor(context: Context) : ITUINotification {
             })
     }
 
-    fun inviteUser(userIdList: List<String?>?) {
+    fun inviteUser(userIdList: List<String?>?, callback: TUICommonDefine.Callback?) {
         Logger.i(TAG, "inviteUser, userIdList: $userIdList")
         val params = TUICallDefine.CallParams()
         params.offlinePushInfo = OfflinePushInfoConfig.createOfflinePushInfo(context)
@@ -315,15 +318,19 @@ class CallManager private constructor(context: Context) : ITUINotification {
         TUICallEngine.createInstance(context)
             .inviteUser(userIdList, params, object : TUICommonDefine.ValueCallback<List<String>> {
                 override fun onSuccess(data: List<String>?) {
-                    Logger.i(TAG, "inviteUser success, list: $data")
                     if (data.isNullOrEmpty()) {
+                        Logger.e(TAG, "inviteUser failed, list: $data")
+                        callback?.onError(TUICommonDefine.Error.FAILED.value, "inviteUser failed, userList is empty")
                         return
                     }
+                    Logger.i(TAG, "inviteUser success, userList: $data")
                     callState.scene.set(TUICallDefine.Scene.GROUP_CALL)
+                    callback?.onSuccess()
                 }
 
                 override fun onError(errCode: Int, errMsg: String) {
                     Logger.e(TAG, "inviteUser failed, errCode: $errCode, errMsg: $errMsg")
+                    callback?.onError(errCode, errMsg)
                 }
             })
     }
@@ -375,27 +382,28 @@ class CallManager private constructor(context: Context) : ITUINotification {
         })
     }
 
-    fun openCamera(camera: TUICommonDefine.Camera, videoView: TUIVideoView?, callback: TUICommonDefine.Callback?) {
+    fun openCamera(camera: TUICommonDefine.Camera, videoView: VideoView?, callback: TUICommonDefine.Callback?) {
         Logger.i(TAG, "openCamera, camera: $camera, videoView: $videoView")
         PermissionRequest.requestCameraPermission(context, object : PermissionCallback() {
             override fun onGranted() {
-                TUICallEngine.createInstance(context).openCamera(camera, videoView, object : TUICommonDefine.Callback {
-                    override fun onSuccess() {
-                        val status: TUICallDefine.Status = userState.selfUser.get().callStatus.get()
-                        Logger.i(TAG, "openCamera success, current callStatus: $status")
-                        if (TUICallDefine.Status.None != status) {
-                            userState.selfUser.get().videoAvailable.set(true)
-                            mediaState.isCameraOpened.set(true)
-                            mediaState.isFrontCamera.set(camera)
+                TUICallEngine.createInstance(context)
+                    .openCamera(camera, videoView?.getVideoView(), object : TUICommonDefine.Callback {
+                        override fun onSuccess() {
+                            val status: TUICallDefine.Status = userState.selfUser.get().callStatus.get()
+                            Logger.i(TAG, "openCamera success, current callStatus: $status")
+                            if (TUICallDefine.Status.None != status) {
+                                userState.selfUser.get().videoAvailable.set(true)
+                                mediaState.isCameraOpened.set(true)
+                                mediaState.isFrontCamera.set(camera)
+                            }
+                            callback?.onSuccess()
                         }
-                        callback?.onSuccess()
-                    }
 
-                    override fun onError(errCode: Int, errMsg: String) {
-                        Logger.e(TAG, "openCamera failed, errorCode: $errCode, errMsg: $errMsg")
-                        callback?.onError(errCode, errMsg)
-                    }
-                })
+                        override fun onError(errCode: Int, errMsg: String) {
+                            Logger.e(TAG, "openCamera failed, errorCode: $errCode, errMsg: $errMsg")
+                            callback?.onError(errCode, errMsg)
+                        }
+                    })
             }
 
             override fun onDenied() {
@@ -446,13 +454,18 @@ class CallManager private constructor(context: Context) : ITUINotification {
         mediaState.audioPlayoutDevice.set(device)
     }
 
-    fun startRemoteView(userId: String, videoView: TUIVideoView?, callback: TUICommonDefine.PlayCallback?) {
+    fun startRemoteView(userId: String, videoView: VideoView?, callback: TUICommonDefine.PlayCallback?) {
         Logger.i(TAG, "startRemoteView, userId: $userId, videoView: $videoView")
-        TUICallEngine.createInstance(context).startRemoteView(userId, videoView, callback)
+        TUICallEngine.createInstance(context).startRemoteView(userId, videoView?.getVideoView(), callback)
     }
 
     fun stopRemoteView(userId: String) {
         TUICallEngine.createInstance(context).stopRemoteView(userId)
+    }
+
+    fun enableMultiDeviceAbility(enable: Boolean, callback: TUICommonDefine.Callback?) {
+        Logger.i(TAG, "enableMultiDeviceAbility, enable: $enable")
+        TUICallEngine.createInstance(context).enableMultiDeviceAbility(enable, callback)
     }
 
     fun setSelfInfo(nickname: String?, avatar: String?, callback: TUICommonDefine.Callback?) {
@@ -506,10 +519,12 @@ class CallManager private constructor(context: Context) : ITUINotification {
 
         TUICallEngine.createInstance(context).setBlurBackground(level, object : TUICommonDefine.Callback {
             override fun onSuccess() {
+                Logger.i(TAG, "setBlurBackground success.")
             }
 
             override fun onError(errCode: Int, errMsg: String?) {
                 viewState.isVirtualBackgroundOpened.set(false)
+                Logger.e(TAG, "setBlurBackground failed, errCode: $errCode, errMsg: $errMsg")
             }
         })
     }
@@ -520,6 +535,54 @@ class CallManager private constructor(context: Context) : ITUINotification {
 
     fun setGroupLargeViewUserId(userId: String?) {
         viewState.showLargeViewUserId.set(userId)
+    }
+
+    fun getTRTCCloudInstance(): TRTCCloud {
+        return TUICallEngine.createInstance(context).trtcCloudInstance
+    }
+
+    fun callExperimentalAPI(jsonStr: String) {
+        if (jsonStr.isNullOrEmpty()) {
+            Logger.w(TAG, "callExperimentalAPI, jsonStr is empty");
+            return
+        }
+        try {
+            val json = JSONObject(jsonStr)
+            if (!json.has("api") || !json.has("params")) {
+                Logger.e(TAG, "callExperimentalAPI[lack api or illegal params]: $jsonStr")
+                return
+            }
+            val api = json.getString("api")
+            val params = json.getJSONObject("params")
+            Logger.i(TAG, "callExperimentalAPI, api: $api, params: $params")
+            if (api == "forceUseV2API") {
+                if (params.has("enable")) {
+                    GlobalState.instance.enableForceUseV2API = params.getBoolean("enable")
+                }
+            }
+            if (api == "setFramework") {
+                if (params.has("framework")) {
+                    Constants.framework = params.getInt("framework")
+                }
+                if (params.has("component")) {
+                    Constants.component = params.getInt("component")
+                }
+                if (params.has("language")) {
+                    Constants.language = params.getInt("language")
+                }
+                val params = JSONObject()
+                params.put("framework", Constants.framework)
+                params.put("component", Constants.component)
+                params.put("language", Constants.language)
+
+                val jsonObject = JSONObject()
+                jsonObject.put("api", "setFramework")
+                jsonObject.put("params", params)
+                TUICallEngine.createInstance(context).callExperimentalAPI(jsonObject.toString())
+            }
+        } catch (e: Exception) {
+            Logger.e(TAG, "callExperimentalAPI json parse fail，json: $jsonStr, error: $e")
+        }
     }
 
     private fun registerCallEvent() {
@@ -552,13 +615,19 @@ class CallManager private constructor(context: Context) : ITUINotification {
                 override fun onSuccess() {
                     TUICallEngine.createInstance(context).addObserver(callEngineObserver)
 
+                    if (GlobalState.instance.enableMultiDevice) {
+                        TUICallEngine.createInstance(context).enableMultiDeviceAbility(true, null)
+                    }
+
                     val notificationFeature = NotificationFeature(context)
                     notificationFeature.registerNotificationBannerChannel()
                     CallingBellFeature(context)
                     CallingVibratorFeature(context)
                 }
 
-                override fun onError(errCode: Int, errMsg: String) {}
+                override fun onError(errCode: Int, errMsg: String) {
+                    Logger.e(TAG, "callEngine init failed, errCode: $errCode, errMsg: $errMsg")
+                }
             })
     }
 

@@ -118,7 +118,7 @@ class VideoCallerWaitingView(context: Context) : RelativeLayout(context) {
             } else {
                 val camera = CallManager.instance.mediaState.isFrontCamera.get()
                 val videoView = VideoFactory.instance.findVideoView(CallManager.instance.userState.selfUser.get().id)
-                CallManager.instance.openCamera(camera, videoView?.getVideoView(), null)
+                CallManager.instance.openCamera(camera, videoView, null)
                 textCamera.text = context.resources.getString(R.string.tuicallkit_toast_enable_camera)
             }
         }
