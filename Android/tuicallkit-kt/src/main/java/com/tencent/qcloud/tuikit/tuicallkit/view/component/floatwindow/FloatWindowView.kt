@@ -141,7 +141,7 @@ class FloatWindowView(context: Context) : RelativeLayout(context) {
         if (selfUser.callStatus.get() == TUICallDefine.Status.Accept) {
             val videoView = VideoFactory.instance.createVideoView(context, remoteUser)
             resetView(videoView)
-            CallManager.instance.startRemoteView(remoteUser.id, videoView?.getVideoView(), null)
+            CallManager.instance.startRemoteView(remoteUser.id, videoView, null)
             layoutVideoView.addView(videoView)
         } else {
             val videoView = VideoFactory.instance.createVideoView(context, selfUser)
@@ -172,9 +172,13 @@ class FloatWindowView(context: Context) : RelativeLayout(context) {
                 textCallStatus.visibility = GONE
                 layoutVideoView.visibility = VISIBLE
 
-                val videoView = VideoFactory.instance.createVideoView(context, user)
+                var videoView = VideoFactory.instance.findVideoView(user.id)
                 resetView(videoView)
-                CallManager.instance.startRemoteView(user.id, videoView?.getVideoView(), null)
+                if (videoView == null) {
+                    videoView = VideoFactory.instance.createVideoView(context, user)
+                    CallManager.instance.startRemoteView(user.id, videoView, null)
+                }
+
                 layoutVideoView.removeAllViews()
                 layoutVideoView.addView(videoView)
                 return

@@ -15,12 +15,11 @@ import com.tencent.cloud.tuikit.engine.common.TUICommonDefine.ValueCallback
 import com.tencent.qcloud.tuicore.util.ScreenUtil
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit
-import com.tencent.qcloud.tuikit.tuicallkit.common.data.Logger
 import com.tencent.qcloud.tuikit.tuicallkit.manager.UserManager
 import com.tencent.qcloud.tuikit.tuicallkit.state.UserState
 import com.trtc.tuikit.common.imageloader.ImageLoader
 
-class JoinInGroupCallView(context: Context) : FrameLayout(context) {
+class JoinCallView(context: Context) : FrameLayout(context) {
     private lateinit var layoutExpand: ConstraintLayout
     private lateinit var layoutUserListView: LinearLayout
     private lateinit var imageIconExpand: ImageView
@@ -35,20 +34,21 @@ class JoinInGroupCallView(context: Context) : FrameLayout(context) {
     }
 
     private fun initView() {
-        val view = LayoutInflater.from(context).inflate(R.layout.tuicallkit_join_group_call_expand_view, this)
+        val view = LayoutInflater.from(context).inflate(R.layout.tuicallkit_join_call_view, this)
         textUserHint = view.findViewById(R.id.tv_user_hint)
         imageIconExpand = view.findViewById(R.id.img_ic_expand)
         btnJoinCall = view.findViewById(R.id.btn_join_call)
         layoutUserListView = view.findViewById(R.id.ll_layout_avatar)
         layoutExpand = view.findViewById(R.id.cl_expand_view)
 
-        imageIconExpand.setBackgroundResource(R.drawable.tuicallkit_ic_join_group_expand)
+        imageIconExpand.setBackgroundResource(R.drawable.tuicallkit_ic_join_expand)
         layoutExpand.visibility = LinearLayout.GONE
     }
 
-    fun updateView(groupId: String?, roomId: TUICommonDefine.RoomId, mediaType: MediaType, userList: List<String>?) {
-        Logger.i(TAG, "updateView groupId: $groupId, roomId: $roomId, mediaType: $mediaType, userList: $userList")
-
+    fun updateView(
+        mediaType: MediaType, userList: List<String>?,
+        callId: String = "", groupId: String? = "", roomId: TUICommonDefine.RoomId? = null,
+    ) {
         btnJoinCall.text = context.resources.getString(R.string.tuicallkit_join_group_call)
 
         if (userList.isNullOrEmpty()) {
@@ -56,16 +56,14 @@ class JoinInGroupCallView(context: Context) : FrameLayout(context) {
         }
         updateUserAvatarView(userList)
 
-        val hint = context.resources.getString(R.string.tuicallkit_join_group_call_users)
-        val type = if (mediaType == MediaType.Video) {
-            R.string.tuicallkit_video_call
-        } else {
-            R.string.tuicallkit_audio_call
-        }
-        textUserHint.text = String.format(hint, userList.size, context.resources.getString(type))
+        textUserHint.text = context.resources.getString(R.string.tuicallkit_join_group_call_users, userList.size)
 
         btnJoinCall.setOnClickListener {
-            TUICallKit.createInstance(context).joinInGroupCall(roomId, groupId, mediaType)
+            if (!callId.isNullOrEmpty()) {
+                TUICallKit.createInstance(context).join(callId, null)
+            } else {
+                TUICallKit.createInstance(context).joinInGroupCall(roomId, groupId, mediaType)
+            }
         }
 
         imageIconExpand.setOnClickListener {
@@ -110,15 +108,11 @@ class JoinInGroupCallView(context: Context) : FrameLayout(context) {
 
     private fun displayExpandView() {
         val resId = when {
-            isViewExpand -> R.drawable.tuicallkit_ic_join_group_expand
-            else -> R.drawable.tuicallkit_ic_join_group_compress
+            isViewExpand -> R.drawable.tuicallkit_ic_join_expand
+            else -> R.drawable.tuicallkit_ic_join_compress
         }
         imageIconExpand.setBackgroundResource(resId)
         layoutExpand.visibility = if (isViewExpand) LinearLayout.GONE else LinearLayout.VISIBLE
         isViewExpand = !isViewExpand
-    }
-
-    companion object {
-        private const val TAG = "JoinInGroupCall"
     }
 }

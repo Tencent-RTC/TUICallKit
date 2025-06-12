@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.cloud.tuikit.engine.call.TUICallDefine.CallRecords
@@ -53,12 +54,12 @@ class RecentCallsItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
             records.result -> R.color.tuicallkit_record_text_red
             else -> R.color.tuicallkit_color_black
         }
-        textUserTitle.setTextColor(context.resources.getColor(colorId))
+        textUserTitle.setTextColor(ContextCompat.getColor(context, colorId))
         val imageId = when (TUICallDefine.MediaType.Video) {
             records.mediaType -> R.drawable.tuicallkit_record_ic_video_call
             else -> R.drawable.tuicallkit_record_ic_audio_call
         }
-        imageMediaType.setImageDrawable(context.resources.getDrawable(imageId))
+        imageMediaType.setImageDrawable(ContextCompat.getDrawable(context, imageId))
         var resultMsg = context.getString(R.string.tuicallkit_record_result_unknown)
         if (CallRecords.Result.Missed == records.result) {
             resultMsg = context.getString(R.string.tuicallkit_record_result_missed)
@@ -89,7 +90,9 @@ class RecentCallsItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
                     newUserList.add(userFullInfoList[i].id)
                     nameList.add(userFullInfoList[i].nickname.get())
                 }
-                if (!records.groupId.isNullOrEmpty()) {
+
+                if (!records.groupId.isNullOrEmpty()
+                    || (records.scene == TUICallDefine.Scene.MULTI_CALL && records.inviteList.size > 1)) {
                     avatarList.add(TUILogin.getFaceUrl())
                 }
                 val oldUserList: List<String> = ArrayList(

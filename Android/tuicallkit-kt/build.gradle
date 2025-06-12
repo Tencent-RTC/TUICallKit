@@ -10,7 +10,7 @@ android {
     namespace "com.tencent.qcloud.tuikit.tuicallkit"
 
     defaultConfig {
-        versionName "3.0.0"
+        versionName "3.1.0"
         versionCode 1
         minSdkVersion 19
         targetSdkVersion 34
@@ -48,18 +48,18 @@ dependencies {
     if (projects.contains("tuicore")) {
         api project(':tuicore')
     } else {
-        api "com.tencent.imsdk:imsdk-plus:8.5.6864"
-        api "com.tencent.liteav.tuikit:tuicore:8.5.6864"
+        api "com.tencent.imsdk:imsdk-plus:8.6.7019"
+        api "com.tencent.liteav.tuikit:tuicore:8.6.7020"
     }
     if (projects.contains("engine_source")) {
         api project(':engine_source')
     } else {
         api rootProject.getProperties().containsKey("liteavSdk") ? rootProject.ext.liteavSdk : "com.tencent.liteav:LiteAVSDK_Professional:12.4+"
-        api rootProject.getProperties().containsKey("roomEngineSdk") ? rootProject.ext.roomEngineSdk : "io.trtc.uikit:rtc_room_engine:3.0+"
+        api rootProject.getProperties().containsKey("roomEngineSdk") ? rootProject.ext.roomEngineSdk : "io.trtc.uikit:rtc_room_engine:3.1.+"
     }
     if (projects.contains("common")) {
         api project(':common')
     } else {
-        api 'io.trtc.uikit:common:3.0.0.801'
+        api 'io.trtc.uikit:common:3.1.0.946'
     }
 }

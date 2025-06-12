@@ -49,6 +49,6 @@ dependencies {
 
     // Optional, if you use support library fragments:
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
-    implementation 'com.tencent.timpush:timpush:8.5+'
-    implementation 'com.tencent.timpush:fcm:8.5+'
+    implementation 'com.tencent.timpush:timpush:8.6+'
+    implementation 'com.tencent.timpush:fcm:8.6+'
 }

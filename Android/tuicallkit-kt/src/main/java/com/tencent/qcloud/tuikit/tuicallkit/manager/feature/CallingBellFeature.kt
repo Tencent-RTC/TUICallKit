@@ -15,12 +15,14 @@ import com.tencent.cloud.tuikit.engine.call.TUICallEngine
 import com.tencent.liteav.audio.TXAudioEffectManager.AudioMusicParam
 import com.tencent.qcloud.tuicore.TUIConfig
 import com.tencent.qcloud.tuicore.TUIConstants
-import com.tencent.qcloud.tuicore.TUICore
 import com.tencent.qcloud.tuicore.util.SPUtils
 import com.tencent.qcloud.tuicore.util.TUIBuild
 import com.tencent.qcloud.tuikit.tuicallkit.R
+import com.tencent.qcloud.tuikit.tuicallkit.common.data.Logger
 import com.tencent.qcloud.tuikit.tuicallkit.common.utils.DeviceUtils
+import com.tencent.qcloud.tuikit.tuicallkit.common.utils.PermissionRequest
 import com.tencent.qcloud.tuikit.tuicallkit.manager.CallManager
+import com.tencent.qcloud.tuikit.tuicallkit.manager.PushManager
 import com.tencent.qcloud.tuikit.tuicallkit.state.GlobalState
 import com.trtc.tuikit.common.livedata.Observer
 import java.io.File
@@ -42,7 +44,9 @@ class CallingBellFeature(context: Context) {
         }
         if (CallManager.instance.userState.selfUser.get().callRole == TUICallDefine.Role.Caller) {
             startDialingMusic()
-        } else if (DeviceUtils.isAppRunningForeground(TUIConfig.getAppContext()) || isFCMData()) {
+            return@Observer
+        }
+        if (isLocalRingtonePlaybackNeeded()) {
             startRinging()
         }
     }
@@ -57,9 +61,27 @@ class CallingBellFeature(context: Context) {
         CallManager.instance.userState.selfUser.get().callStatus.observe(callStatusObserver)
     }
 
-    private fun isFCMData(): Boolean {
-        return TUICore.getService(TUIConstants.TIMPush.SERVICE_NAME) != null
-                && TUIConfig.getCustomData("pushChannelId") == TUIConstants.DeviceInfo.BRAND_GOOGLE_ELSE
+    private fun isLocalRingtonePlaybackNeeded(): Boolean {
+        if (DeviceUtils.isAppRunningForeground(TUIConfig.getAppContext())) {
+            Logger.i(TAG, "isLocalRingtonePlaybackNeeded, appRunningForeground, play local ringtone")
+            return true
+        }
+        val notificationPermission = PermissionRequest.isNotificationEnabled()
+        if (!notificationPermission) {
+            Logger.w(TAG, "isLocalRingtonePlaybackNeeded, call has no notification permission, play local ringtone")
+            return true
+        }
+        val pushData = PushManager.getPushData()
+        val isFCMDataChannel = pushData.channelId == TUIConstants.DeviceInfo.BRAND_GOOGLE_ELSE
+        val isPushRegisterSuccess = pushData.status == PushManager.PUSH_REGISTER_SUCCESS
+
+        val hint = if (isFCMDataChannel || !isPushRegisterSuccess) "local" else "push"
+        Logger.i(
+            TAG, "isLocalRingtonePlaybackNeeded, pushData:$pushData, play $hint ringtone" +
+                    "(only when channel is Google or register failed, play local ringtone)"
+        )
+
+        return isFCMDataChannel || !isPushRegisterSuccess
     }
 
     private fun startRinging() {
@@ -209,6 +231,7 @@ class CallingBellFeature(context: Context) {
     }
 
     companion object {
+        private const val TAG = "CallingBellFeature"
         const val PROFILE_TUICALLKIT = "per_profile_tuicallkit"
         const val PROFILE_CALL_BELL = "per_call_bell"
         const val PROFILE_MUTE_MODE = "per_mute_mode"

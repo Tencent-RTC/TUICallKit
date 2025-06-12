@@ -82,7 +82,7 @@ class GroupCallView(context: Context) : ConstraintLayout(context) {
     }
 
     private fun addInviteUserButton() {
-        if (CallManager.instance.callState.groupId.isNullOrEmpty()) {
+        if (CallManager.instance.callState.chatGroupId.isNullOrEmpty()) {
             return
         }
         val inviteUserButton: FrameLayout = findViewById(R.id.rl_layout_invite_user)

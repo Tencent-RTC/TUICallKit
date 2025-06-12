@@ -66,7 +66,7 @@
     <string name="tuicallkit_error_request_repeated">The current status is waiting/accept, please do not call it repeatedly</string>
     <string name="tuicallkit_error_scene_not_support">The current scene does not support this function</string>
     <string name="tuicallkit_join_group_call">Join</string>
-    <string name="tuicallkit_join_group_call_users">%d member(s) in %s</string>
+    <string name="tuicallkit_join_group_call_users">%d people are on the call</string>
 
     <string name="tuicallkit_blur_background">Blur Background</string>
     <string name="tuicallkit_notification_channel_group_id">Call Manager</string>

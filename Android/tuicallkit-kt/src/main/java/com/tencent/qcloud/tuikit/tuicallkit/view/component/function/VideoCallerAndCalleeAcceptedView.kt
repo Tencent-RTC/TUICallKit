@@ -166,7 +166,7 @@ class VideoCallerAndCalleeAcceptedView(context: Context) : RelativeLayout(contex
                 val camera: TUICommonDefine.Camera = CallManager.instance.mediaState.isFrontCamera.get()
                 val videoView = VideoFactory.instance.findVideoView(selfUser.id)
 
-                CallManager.instance.openCamera(camera, videoView?.getVideoView(), null)
+                CallManager.instance.openCamera(camera, videoView, null)
                 if (CallManager.instance.callState.scene.get() == TUICallDefine.Scene.GROUP_CALL) {
                     if (CallManager.instance.viewState.showLargeViewUserId.get() != selfUser.id) {
                         CallManager.instance.viewState.showLargeViewUserId.set(selfUser.id)

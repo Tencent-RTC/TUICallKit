@@ -10,7 +10,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCaller
 import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.cloud.tuikit.engine.call.TUICallEngine
-import com.tencent.cloud.tuikit.engine.common.TUICommonDefine
 import com.tencent.qcloud.tuicore.TUIConstants
 import com.tencent.qcloud.tuicore.TUIConstants.TUICalling.ObjectFactory.RecentCalls
 import com.tencent.qcloud.tuicore.TUICore
@@ -25,9 +24,10 @@ import com.tencent.qcloud.tuikit.tuicallkit.TUICallKit
 import com.tencent.qcloud.tuikit.tuicallkit.common.config.OfflinePushInfoConfig
 import com.tencent.qcloud.tuikit.tuicallkit.common.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.common.data.Logger
+import com.tencent.qcloud.tuikit.tuicallkit.manager.CallManager
 import com.tencent.qcloud.tuikit.tuicallkit.state.GlobalState
-import com.tencent.qcloud.tuikit.tuicallkit.view.component.joiningroupcall.JoinInGroupCallManager
-import com.tencent.qcloud.tuikit.tuicallkit.view.component.joiningroupcall.JoinInGroupCallView
+import com.tencent.qcloud.tuikit.tuicallkit.view.component.joiningroupcall.JoinCallView
+import com.tencent.qcloud.tuikit.tuicallkit.view.component.joiningroupcall.JoinCallViewManager
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.recents.RecentCallsFragment
 import org.json.JSONException
 import org.json.JSONObject
@@ -35,7 +35,7 @@ import org.json.JSONObject
 class CallKitService private constructor(context: Context) : ITUINotification, ITUIService, ITUIExtension,
     ITUIObjectFactory {
     private var appContext: Context = context.applicationContext
-    private var joinInGroupCallManager: JoinInGroupCallManager? = null
+    private var joinCallViewManager: JoinCallViewManager? = null
 
     init {
         TUICore.registerEvent(
@@ -67,9 +67,13 @@ class CallKitService private constructor(context: Context) : ITUINotification, I
             return
         }
         if (TUIConstants.TUILogin.EVENT_IMSDK_INIT_STATE_CHANGED == key
-            && TUIConstants.TUILogin.EVENT_SUB_KEY_START_INIT == subKey) {
-            TUICallKit.createInstance(appContext)
-            adaptiveComponentReport()
+            && TUIConstants.TUILogin.EVENT_SUB_KEY_START_INIT == subKey
+        ) {
+            Logger.i(TAG, "onNotifyEvent, start, framework: " + Constants.framework)
+            if (Constants.framework == Constants.CALL_FRAMEWORK_NATIVE) {
+                TUICallKit.createInstance(appContext)
+                adaptiveComponentReport()
+            }
             setExcludeFromHistoryMessage()
         }
         if (TUIConstants.TIMPush.EVENT_IM_LOGIN_AFTER_APP_WAKEUP_KEY == key
@@ -91,21 +95,21 @@ class CallKitService private constructor(context: Context) : ITUINotification, I
     }
 
     private fun adaptiveComponentReport() {
-        val service = TUICore.getService(TUIConstants.TUIChat.SERVICE_NAME)
         try {
             val params = JSONObject()
             params.put("framework", 1)
-            if (service == null) {
-                params.put("component", 14)
-            } else {
-                params.put("component", 15)
+            when {
+                TUICore.getService(TUIConstants.TUIChat.SERVICE_NAME) != null ->
+                    params.put("component", Constants.CALL_COMPONENT_CHAT)
+
+                else -> params.put("component", Constants.CALL_COMPONENT)
             }
-            params.put("language", 2)
+            params.put("language", Constants.CALL_LANGUAGE_KOTLIN)
 
             val jsonObject = JSONObject()
             jsonObject.put("api", "setFramework")
             jsonObject.put("params", params)
-            TUICallEngine.createInstance(appContext).callExperimentalAPI(jsonObject.toString())
+            CallManager.instance.callExperimentalAPI(jsonObject.toString())
         } catch (e: JSONException) {
             e.printStackTrace()
         }
@@ -125,45 +129,6 @@ class CallKitService private constructor(context: Context) : ITUINotification, I
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }
-
-    private fun startCall(param: Map<String?, Any?>) {
-        val userIDs = param[TUIConstants.TUICalling.PARAM_NAME_USERIDS] as Array<String>?
-        val typeString = param[TUIConstants.TUICalling.PARAM_NAME_TYPE] as String?
-        val groupID = param[TUIConstants.TUICalling.PARAM_NAME_GROUPID] as String?
-        var userIdList: List<String?>? = userIDs?.toList() ?: ArrayList()
-        Logger.i(TAG, "onCall, groupID: $groupID, userIdList: $userIdList")
-        userIdList = userIdList?.filterNotNull()
-
-        var mediaType = TUICallDefine.MediaType.Unknown
-        if (TUIConstants.TUICalling.TYPE_AUDIO == typeString) {
-            mediaType = TUICallDefine.MediaType.Audio
-        } else if (TUIConstants.TUICalling.TYPE_VIDEO == typeString) {
-            mediaType = TUICallDefine.MediaType.Video
-        }
-
-        // TODO: 继续保持 call/groupcall 接口，等跟 Chat 版本发布的时候修改这个判断条件
-        if (!GlobalState.instance.enableForceUseV2API) {
-            if (!TextUtils.isEmpty(groupID)) {
-                TUICallKit.createInstance(appContext).groupCall(groupID!!, userIdList, mediaType)
-            } else if (userIdList?.size == 1) {
-                TUICallKit.createInstance(appContext).call(userIdList[0], mediaType)
-            } else {
-                Logger.e(
-                    TAG, "onCall ignored, groupId is empty and userList is not 1, " +
-                            "cannot start call or groupCall"
-                )
-            }
-            return
-        }
-
-        val params = TUICallDefine.CallParams()
-        params.offlinePushInfo = OfflinePushInfoConfig.createOfflinePushInfo(appContext)
-        params.timeout = Constants.CALL_WAITING_MAX_TIME
-        if (!TextUtils.isEmpty(groupID)) {
-            params.chatGroupId = groupID;
-        }
-        TUICallKit.createInstance(appContext).calls(userIdList, mediaType, params, null)
     }
 
     companion object {
@@ -197,20 +162,20 @@ class CallKitService private constructor(context: Context) : ITUINotification, I
 
         Log.i(TAG, "JoinInGroupCall, groupId: $groupId")
 
-        val manager = getJoinInGroupCallManager()
-        val callView = JoinInGroupCallView(appContext)
-        manager.setJoinInGroupCallView(callView)
+        val manager = getJoinCallViewManager()
+        val callView = JoinCallView(appContext)
+        manager.setJoinCallView(callView)
         manager.getGroupAttributes(groupId)
         parentView.addView(callView)
         parentView.visibility = View.VISIBLE
         return true
     }
 
-    private fun getJoinInGroupCallManager(): JoinInGroupCallManager {
-        if (joinInGroupCallManager == null) {
-            joinInGroupCallManager = JoinInGroupCallManager()
+    private fun getJoinCallViewManager(): JoinCallViewManager {
+        if (joinCallViewManager == null) {
+            joinCallViewManager = JoinCallViewManager()
         }
-        return joinInGroupCallManager as JoinInGroupCallManager
+        return joinCallViewManager as JoinCallViewManager
     }
 
     override fun onGetExtension(extensionID: String?, param: Map<String?, Any?>?): List<TUIExtensionInfo?>? {
@@ -283,12 +248,12 @@ class CallKitService private constructor(context: Context) : ITUINotification, I
 
     inner class ResultTUIExtensionEventListener : TUIExtensionEventListener() {
         var activityResultCaller: ActivityResultCaller? = null
-        var mediaType: TUICallDefine.MediaType? = null
+        var mediaType: TUICallDefine.MediaType = TUICallDefine.MediaType.Audio
         var isClassicUI = true
         var userID: String? = null
         var groupID: String? = null
         override fun onClicked(param: Map<String, Any>?) {
-            if (!TextUtils.isEmpty(groupID)) {
+            if (!groupID.isNullOrEmpty()) {
                 var groupMemberSelectActivityName =
                     TUIConstants.TUIContact.StartActivity.GroupMemberSelect.CLASSIC_ACTIVITY_NAME
                 if (!isClassicUI) {
@@ -302,18 +267,15 @@ class CallKitService private constructor(context: Context) : ITUINotification, I
                 TUICore.startActivityForResult(
                     activityResultCaller, groupMemberSelectActivityName, bundle
                 ) { result: ActivityResult ->
-                    val data = result.data
-                    if (data != null) {
-                        val stringList: ArrayList<String>? = data.getStringArrayListExtra(
-                            TUIConstants.TUIContact.StartActivity.GroupMemberSelect.DATA_LIST
-                        )
-                        TUICallKit.createInstance(appContext).groupCall(groupID!!, stringList, mediaType!!)
-                    }
+                    val stringList: ArrayList<String>? = result.data?.getStringArrayListExtra(
+                        TUIConstants.TUIContact.StartActivity.GroupMemberSelect.DATA_LIST
+                    )
+                    startCall(groupID, stringList, mediaType)
                 }
-            } else if (!TextUtils.isEmpty(userID)) {
-                TUICallKit.createInstance(appContext).call(userID!!, mediaType!!)
-            } else {
-                Log.e(TAG, "onClicked event ignored, groupId is empty or userId is empty, cannot start call")
+            } else if (!userID.isNullOrEmpty()) {
+                val userList = mutableListOf<String>()
+                userList.add(userID!!)
+                startCall(groupID, userList, mediaType)
             }
         }
     }
@@ -460,11 +422,7 @@ class CallKitService private constructor(context: Context) : ITUINotification, I
         if (null != param && TextUtils.equals(TUIConstants.TUICalling.METHOD_NAME_ENABLE_MULTI_DEVICE, method)) {
             val enable = param[TUIConstants.TUICalling.PARAM_NAME_ENABLE_MULTI_DEVICE] as Boolean
             Log.i(TAG, "onCall, enableMultiDevice: $enable")
-            TUICallEngine.createInstance(appContext)
-                .enableMultiDeviceAbility(enable, object : TUICommonDefine.Callback {
-                    override fun onSuccess() {}
-                    override fun onError(errCode: Int, errMsg: String) {}
-                })
+            GlobalState.instance.enableMultiDevice = enable
             return null
         }
         if (param != null && TextUtils.equals(TUIConstants.TUICalling.METHOD_NAME_ENABLE_INCOMING_BANNER, method)) {
@@ -478,9 +436,45 @@ class CallKitService private constructor(context: Context) : ITUINotification, I
             return null
         }
         if (null != param && TextUtils.equals(TUIConstants.TUICalling.METHOD_NAME_CALL, method)) {
-            startCall(param)
+            val userIDs = getOrDefault<Array<String>>(param, TUIConstants.TUICalling.PARAM_NAME_USERIDS, null)
+            val typeString = getOrDefault<String>(param, TUIConstants.TUICalling.PARAM_NAME_TYPE, "")
+            val groupID = getOrDefault<String>(param, TUIConstants.TUICalling.PARAM_NAME_GROUPID, "")
+
+            var userIdList: List<String?>? = userIDs?.toList() ?: ArrayList()
+            Logger.i(TAG, "onCall, groupID: $groupID, userIdList: $userIdList")
+            userIdList = userIdList?.filterNotNull()
+
+            var mediaType = TUICallDefine.MediaType.Unknown
+            if (TUIConstants.TUICalling.TYPE_AUDIO == typeString) {
+                mediaType = TUICallDefine.MediaType.Audio
+            } else if (TUIConstants.TUICalling.TYPE_VIDEO == typeString) {
+                mediaType = TUICallDefine.MediaType.Video
+            }
+            startCall(groupID, userIdList, mediaType)
         }
         return null
+    }
+
+    private fun startCall(groupID: String?, userIdList: List<String>?, mediaType: TUICallDefine.MediaType) {
+        if (GlobalState.instance.enableForceUseV2API) {
+            Logger.w(TAG, "startCall, enableForceUseV2API is true, use deprecated api")
+            if (!groupID.isNullOrEmpty()) {
+                TUICallKit.createInstance(appContext).groupCall(groupID, userIdList, mediaType)
+            } else if (userIdList?.size == 1) {
+                TUICallKit.createInstance(appContext).call(userIdList[0], mediaType)
+            } else {
+                Logger.e(TAG, "startCall ignored, enableForceUseV2API and groupId is empty and userList is not 1")
+            }
+            return
+        }
+
+        val params = TUICallDefine.CallParams()
+        params.offlinePushInfo = OfflinePushInfoConfig.createOfflinePushInfo(appContext)
+        params.timeout = Constants.CALL_WAITING_MAX_TIME
+        if (!groupID.isNullOrEmpty()) {
+            params.chatGroupId = groupID
+        }
+        TUICallKit.createInstance(appContext).calls(userIdList, mediaType, params, null)
     }
 
     override fun onCreateObject(objectName: String?, param: MutableMap<String?, Any?>?): Any? {

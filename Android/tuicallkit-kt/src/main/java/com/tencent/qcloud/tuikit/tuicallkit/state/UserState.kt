@@ -39,21 +39,21 @@ class UserState {
             networkQualityReminder.set(false)
         }
 
-        override fun equals(obj: Any?): Boolean {
-            if (obj == null || this.javaClass != obj.javaClass) {
+        override fun equals(other: Any?): Boolean {
+            if (other == null || this.javaClass != other.javaClass) {
                 return false
             }
-            if (this === obj) {
+            if (this === other) {
                 return true
             }
-            val model = obj as User
+            val model = other as User
             return id == model.id
         }
 
         override fun toString(): String {
             return "User {id: $id, avatar: ${avatar.get()}, nickname: ${nickname.get()}, " +
                     "callRole: $callRole, callStatus: ${callStatus.get()}, " +
-                    "audioAvailable: ${audioAvailable.get()}, videoAvailable: ${videoAvailable.get()}," +
+                    "audioAvailable: ${audioAvailable.get()}, videoAvailable: ${videoAvailable.get()}, " +
                     "playoutVolume: ${playoutVolume.get()}, networkQualityReminder: ${networkQualityReminder.get()}}"
         }
     }

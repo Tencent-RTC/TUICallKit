@@ -66,7 +66,7 @@
     <string name="tuicallkit_error_request_repeated">当前方法正在执行中，请勿重复调用</string>
     <string name="tuicallkit_error_scene_not_support">当前通话场景，不支持该功能</string>
     <string name="tuicallkit_join_group_call">加入</string>
-    <string name="tuicallkit_join_group_call_users">%d人正在%s</string>
+    <string name="tuicallkit_join_group_call_users">%d人正在通话中</string>
 
     <string name="tuicallkit_blur_background">模糊背景</string>
     <string name="tuicallkit_notification_channel_group_id">通话管理</string>

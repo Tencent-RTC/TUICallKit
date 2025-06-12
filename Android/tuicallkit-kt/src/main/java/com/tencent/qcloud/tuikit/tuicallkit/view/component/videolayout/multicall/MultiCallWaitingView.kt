@@ -99,7 +99,7 @@ class MultiCallWaitingView(context: Context) : LinearLayout(context) {
 
     private fun updateAvatarListView() {
         layoutAvatarList.removeAllViews()
-        val list = mutableListOf<UserState.User>()
+        val list = HashSet<UserState.User>()
         list.add(CallManager.instance.userState.selfUser.get())
         list.addAll(CallManager.instance.userState.remoteUserList.get() - caller)
 

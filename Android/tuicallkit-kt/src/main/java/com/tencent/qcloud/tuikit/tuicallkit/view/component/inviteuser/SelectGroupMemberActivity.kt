@@ -51,7 +51,7 @@ class SelectGroupMemberActivity : FullScreenActivity() {
                 }
             }
             if (selectUsers.isNotEmpty()) {
-                CallManager.instance.inviteUser(selectUsers)
+                CallManager.instance.inviteUser(selectUsers, null)
             }
             finish()
         }

@@ -150,7 +150,10 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
     }
 
     private fun initBigVideoView() {
-        videoViewBig = VideoFactory.instance.createVideoView(context, CallManager.instance.userState.selfUser.get())
+        videoViewBig = VideoFactory.instance.createVideoView(
+            context,
+            CallManager.instance.userState.selfUser.get()
+        )
         resetView(videoViewBig)
         layoutRenderBig.removeAllViews()
         layoutRenderBig.addView(videoViewBig)
@@ -158,7 +161,7 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
         val isCameraOpen = CallManager.instance.mediaState.isCameraOpened.get()
         val isFrontCamera = CallManager.instance.mediaState.isFrontCamera.get()
         if (isCameraOpen) {
-            CallManager.instance.openCamera(isFrontCamera, videoViewBig?.getVideoView(), null)
+            CallManager.instance.openCamera(isFrontCamera, videoViewBig, null)
         }
     }
 
@@ -170,7 +173,7 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
         layoutRenderSmall.addView(videoViewSmall)
         layoutRenderSmall.visibility = VISIBLE
 
-        CallManager.instance.startRemoteView(remoteUser.id, videoViewSmall?.getVideoView(), null)
+        CallManager.instance.startRemoteView(remoteUser.id, videoViewSmall, null)
     }
 
     private fun switchRenderLayout() {
