@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>NSCameraUsageDescription</key>
+  <string>TUICallKitApp needs access to your camera, and it can be used for functions such as Video Call, Group Video Call.</string>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>TUICallKitApp needs access to your microphone，and it can be used for functions such as Audio Call, Group Audio Call, Video Call, Group Video Call.</string>
+  </dict>
+</plist>

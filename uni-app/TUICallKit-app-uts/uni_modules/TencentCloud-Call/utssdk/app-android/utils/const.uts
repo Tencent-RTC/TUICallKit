@@ -1,0 +1,9 @@
+export const LOG_PREFIX: string = "【CallEngine】【Android】";
+
+export const NAME = {
+  PREFIX: "【CallEngine】【Android】",
+  STRING: "string",
+  NUMBER: "number",
+  MIC: "mic",
+  CAMERA: "camera",
+};

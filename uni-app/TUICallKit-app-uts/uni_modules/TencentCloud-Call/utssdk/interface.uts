@@ -1,0 +1,122 @@
+export enum TUICallEvent {
+  ERROR = "onError",
+  CALL_RECEIVED = "onCallReceived",
+  CALL_BEGIN = "onCallBegin",
+  CALL_END = "onCallEnd",
+  CALL_NOT_CONNECTED = "onCallNotConnected",
+  USER_REJECT = "onUserReject",
+  USER_NO_RESPONSE = "onUserNoResponse",
+  USER_LINE_BUSY = "onUserLineBusy",
+  USER_INVITING = "onUserInviting",
+  USER_JOIN = "onUserJoin",
+  USER_LEAVE = "onUserLeave",
+  USER_VIDEO_AVAILABLE = "onUserVideoAvailable",
+  USER_AUDIO_AVAILABLE = "onUserAudioAvailable",
+  USER_VOICE_VOLUME = "onUserVoiceVolumeChanged",
+  USER_NETWORK_QUALITY_CHANGED = "onUserNetworkQualityChanged",
+  USER_SIG_EXPIRED = "onUserSigExpired",
+  KICKED_OFFLINE = "onKickedOffLine",
+}
+
+export enum CallEndReason {
+  UnKnown = 0,
+  Hangup = 1,
+  Reject = 2,
+  NoResponse = 3,
+  Offline = 4,
+  LineBusy = 5,
+  Canceled = 6,
+  OtherDeviceAccepted = 7,
+  OtherDeviceReject = 8,
+  EndByServer = 9,
+}
+
+export enum MediaType {
+  Unknown = 0,
+  Audio = 1,
+  Video = 2,
+}
+
+export enum Camera {
+  Front = 0,
+  Back = 1,
+}
+
+export enum AudioPlaybackDevice {
+  Speakerphone = 0,
+  Earpiece = 1,
+}
+
+export type OfflinePushInfo = {
+  title: string;
+  description: string;
+  androidSound?: string;
+  androidOPPOChannelID?: string;
+  androidXiaoMiChannelID?: string;
+  androidFCMChannelID?: string;
+  androidHuaWeiCategory?: string;
+  iOSSound?: string;
+  ignoreIOSBadge?: boolean;
+  isDisablePush?: boolean;
+};
+
+export type CallParams = {
+  strRoomID?: string;
+  intRoomID?: number;
+  chatGroupID?: string;
+  offlinePushInfo?: OfflinePushInfo;
+  timeout?: number;
+  userData?: string;
+};
+
+export type LoginOptions = {
+  SDKAppID: number;
+  userID: string;
+  userSig: string;
+  success?: () => void;
+  fail?: (errCode: number, errMsg: string) => void;
+};
+
+export type CallsOptions = {
+  userIDList: string[];
+  mediaType: number;
+  callParams?: UTSJSONObject;
+  success?: () => void;
+  fail?: (errCode: number, errMsg: string) => void;
+};
+
+export type InviteUserOptions = {
+  userIDList: string[];
+  success?: () => void;
+  fail?: (errCode: number, errMsg: string) => void;
+};
+
+export type JoinOptions = {
+  callID: string;
+  success?: () => void;
+  fail?: (errCode: number, errMsg: string) => void;
+};
+
+export type CallbackOptions = {
+  success?: () => void;
+  fail?: (errCode: number, errMsg: string) => void;
+};
+
+export type SelfInfoOptions = {
+  nickName: string;
+  avatar: string;
+  success?: () => void;
+  fail?: (errCode: number, errMsg: string) => void;
+};
+
+export type MultiDeviceOptions = {
+  enable: boolean;
+  success: () => void;
+  fail: (errCode: number, errMsg: string) => void;
+};
+
+export type PermissionOptions = {
+  type: number;
+  success: () => void;
+  fail: (errCode: number, errMsg: string) => void;
+};

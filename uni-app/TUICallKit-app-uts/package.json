@@ -1,0 +1,17 @@
+{
+  "name": "callkit_example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@tencentcloud/chat": "^3.3.5",
+    "@tencentcloud/tui-core": "^2.1.4",
+    "vue-i18n": "^9.2.2"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

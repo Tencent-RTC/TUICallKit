@@ -1,0 +1,90 @@
+{
+  "name": "@tencentcloud/uni-app-push",
+  "id": "TencentCloud-Push",
+  "main": "index.js",
+  "displayName": "【官方】uni-app 腾讯云推送服务（Push）",
+  "version": "1.2.0",
+  "description": "使用 uts 开发，基于腾讯云推送服务（Push），支持 iOS 和 Android 推送，同时适配各大厂商推送。",
+  "license": "ISC",
+  "keywords": [
+    "腾讯云",
+    "Push",
+    "推送",
+    "Android/iOS",
+    "谷歌FCM"
+],
+  "repository": "",
+  "engines": {
+    "HBuilderX": "^3.6.8"
+  },
+  "dcloudext": {
+    "type": "uts",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "腾讯云即时通信IM隐私保护指引: https://web.sdk.qcloud.com/document/Tencent-IM-Privacy-Protection-Guidelines.html\n移动推送隐私保护指引: https://privacy.qq.com/document/preview/8565a4a2d26e480187ed86b0cc81d727",
+      "permissions": "本地存储空间"
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "y",
+        "aliyun": "y",
+        "alipay": "y"
+      },
+      "client": {
+        "Vue": {
+          "vue2": "y",
+          "vue3": "y"
+        },
+        "App": {
+            "app-android": "y",
+            "app-ios": "y",
+            "app-harmony": "u"
+        },
+        "H5-mobile": {
+          "Safari": "u",
+          "Android Browser": "u",
+          "微信浏览器(Android)": "u",
+          "QQ浏览器(Android)": "u"
+        },
+        "H5-pc": {
+          "Chrome": "u",
+          "IE": "u",
+          "Edge": "u",
+          "Firefox": "u",
+          "Safari": "u"
+        },
+        "小程序": {
+          "微信": "u",
+          "阿里": "u",
+          "百度": "u",
+          "字节跳动": "u",
+          "QQ": "u",
+          "钉钉": "u",
+          "快手": "u",
+          "飞书": "u",
+          "京东": "u"
+        },
+        "快应用": {
+          "华为": "u",
+          "联盟": "u"
+        }
+      }
+    }
+  }
+}

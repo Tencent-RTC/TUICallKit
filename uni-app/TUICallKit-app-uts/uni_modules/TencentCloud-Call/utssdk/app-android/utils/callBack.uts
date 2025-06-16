@@ -1,0 +1,29 @@
+import TUICommonDefine from 'com.tencent.cloud.tuikit.engine.common.TUICommonDefine';
+import { NAME } from './const.uts';
+
+export type ICallback = {
+  apiName : string,
+  success : () => void,
+  fail : (errCode : number, errMsg : string) => void,
+}
+
+export class Callback implements TUICommonDefine.Callback {
+  private apiName : string;
+  private success : () => void;
+  private fail : (errCode : number, errMsg : string) => void;
+  constructor(options : ICallback) {
+    this.apiName = options.apiName;
+    this.success = options.success;
+    this.fail = options.fail;
+  }
+
+  override onSuccess() : void {
+    console.log(`${NAME.PREFIX} ${this.apiName} success, data:`);
+    this.success?.();
+  }
+
+  override onError(errCode : Int, errMsg : string) : void {
+    console.error(`${NAME.PREFIX} ${this.apiName} fail, data:`, errCode, errMsg);
+    this.fail?.(errCode as number, errMsg);
+  }
+}

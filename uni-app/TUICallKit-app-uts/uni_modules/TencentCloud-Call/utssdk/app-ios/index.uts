@@ -1,0 +1,394 @@
+import { CallBridge } from "TUICallKit_Swift";
+import {
+  TUICallEngine,
+  TUICallObserver,
+  TUICallMediaType,
+  TUICallParams,
+} from "RTCRoomEngine";
+import {
+  MediaType,
+  LoginOptions,
+  CallsOptions,
+  InviteUserOptions,
+  JoinOptions,
+  CallbackOptions,
+  SelfInfoOptions,
+  MultiDeviceOptions,
+  PermissionOptions,
+} from "../interface.uts";
+import {
+  ParamsCovert,
+  NAME,
+  ICallObserve,
+  TCallObserver,
+  TFloatWindowObserver,
+} from "./utils/index.uts";
+
+const listenerMap = new Map<string, Array<(res: any) => void>>();
+
+export class CallEngine {
+  callBridge: CallBridge;
+  callObserver: TUICallObserver;
+  floatWindowObserver: TFloatWindowObserver;
+
+  constructor() {
+    console.log(`${NAME.PREFIX} constructor.start`);
+    const callObserve: ICallObserve = {
+      listener: (eventName: string, data: any) => {
+        listenerMap.get(eventName)?.forEach((cb) => {
+          cb(data);
+        });
+      },
+    };
+    this.callBridge = new CallBridge();
+    console.log(`${NAME.PREFIX} constructor.start ${this.callBridge}`);
+    this.callObserver = new TCallObserver(callObserve);
+    this.floatWindowObserver = new TFloatWindowObserver(callObserve);
+  }
+
+  public login(options: LoginOptions) {
+    console.log(`${NAME.PREFIX} login.start, data: ${JSON.stringify(options)}`);
+    const { success, fail } = options;
+    this.callBridge.login(
+      (sdkAppId = options.SDKAppID.toInt32()),
+      (userId = options.userID),
+      (userSig = options.userSig),
+      (frameWork = 11),
+      (component = 14),
+      (language = 10),
+      (succ = (): void => {
+        console.log(`${NAME.PREFIX} login success`);
+        success?.();
+      }),
+      (fail = (errCode: Int32, errMsg?: String): void => {
+        console.error(
+          `${NAME.PREFIX} login fail, errCode = ${errCode}, errMsg = ${errMsg}`
+        );
+        fail?.(errCode as number, errMsg as string);
+      })
+    );
+  }
+
+  public logout(options: CallbackOptions) {
+    console.log(
+      `${NAME.PREFIX} logout.start, data: ${JSON.stringify(options)}`
+    );
+    const { success, fail } = options;
+    this.callBridge.logout(
+      (succ = (): void => {
+        console.log(`${NAME.PREFIX} logout success`);
+        success?.();
+      }),
+      (fail = (errCode: Int32, errMsg?: String): void => {
+        console.error(
+          `${NAME.PREFIX} logout fail, errCode = ${errCode}, errMsg = ${errMsg}`
+        );
+        fail?.(errCode as number, errMsg as string);
+      })
+    );
+  }
+
+  public calls(options: CallsOptions) {
+    console.log(`${NAME.PREFIX} calls.start, data: ${JSON.stringify(options)}`);
+    const { success, fail } = options;
+    this.callBridge.calls(
+      (userIdList = options.userIDList),
+      (mediaType = ParamsCovert.covertMediaType(options.mediaType)),
+      (params = ParamsCovert.covertCallPrams(options.callParams)),
+      (succ = (): void => {
+        console.log(`${NAME.PREFIX} calls success`);
+        success?.();
+      }),
+      (fail = (errCode: Int32, errMsg?: String): void => {
+        console.error(
+          `${NAME.PREFIX} calls fail, errCode = ${errCode}, errMsg = ${errMsg}`
+        );
+        fail?.(errCode as number, errMsg as string);
+      })
+    );
+  }
+
+  public inviteUser(options: InviteUserOptions) {
+    console.log(`${NAME.PREFIX} inviteUser.start, data: ${options}`);
+    const { success, fail } = options;
+
+    this.callBridge.inviteUser(
+      (userIds = options.userIDList),
+      (succ = (): void => {
+        console.log(`${NAME.PREFIX} inviteUser success`);
+        success?.();
+      }),
+      (fail = (errCode: Int32, errMsg?: String): void => {
+        console.error(
+          `${NAME.PREFIX} inviteUser fail, errCode = ${errCode}, errMsg = ${errMsg}`
+        );
+        fail?.(errCode as number, errMsg as string);
+      })
+    );
+  }
+
+  public join(options: JoinOptions) {
+    console.log(`${NAME.PREFIX} join.start, data: ${options}`);
+    const { success, fail } = options;
+    this.callBridge.join(
+      (callId = options.callID),
+      (succ = (): void => {
+        console.log(`${NAME.PREFIX} join success`);
+        success?.();
+      }),
+      (fail = (errCode: Int32, errMsg?: String): void => {
+        console.error(
+          `${NAME.PREFIX} join fail, errCode = ${errCode}, errMsg = ${errMsg}`
+        );
+        fail?.(errCode as number, errMsg as string);
+      })
+    );
+  }
+
+  public accept(options: CallbackOptions) {
+    console.log(`${NAME.PREFIX} accept.start, data: ${options}`);
+    const { success, fail } = options;
+    this.callBridge.accept(
+      (succ = (): void => {
+        console.log(`${NAME.PREFIX} accept success`);
+        success?.();
+      }),
+      (fail = (errCode: Int32, errMsg?: String): void => {
+        console.error(
+          `${NAME.PREFIX} accept fail, errCode = ${errCode}, errMsg = ${errMsg}`
+        );
+        fail?.(errCode as number, errMsg as string);
+      })
+    );
+  }
+
+  public hangup(options: CallbackOptions) {
+    console.log(`${NAME.PREFIX} hangup.start, data: ${options}`);
+
+    const { success, fail } = options;
+
+    this.callBridge.hangup(
+      (succ = (): void => {
+        console.log(`${NAME.PREFIX} hangup success`);
+        success?.();
+      }),
+      (fail = (errCode: Int32, errMsg?: String): void => {
+        console.error(
+          `${NAME.PREFIX} hangup fail, errCode = ${errCode}, errMsg = ${errMsg}`
+        );
+        fail?.(errCode as number, errMsg as string);
+      })
+    );
+  }
+
+  public reject(options: CallbackOptions) {
+    console.log(`${NAME.PREFIX} reject.start, data: ${options}`);
+    const { success, fail } = options;
+
+    this.callBridge.reject(
+      (succ = (): void => {
+        console.log(`${NAME.PREFIX} reject success`);
+        success?.();
+      }),
+      (fail = (errCode: Int32, errMsg?: String): void => {
+        console.error(
+          `${NAME.PREFIX} reject fail, errCode = ${errCode}, errMsg = ${errMsg}`
+        );
+        fail?.(errCode as number, errMsg as string);
+      })
+    );
+  }
+
+  public openCamera(options: CallbackOptions) {
+    console.log(`${NAME.PREFIX} openCamera.start, data: ${options}`);
+
+    const { success, fail } = options;
+
+    this.callBridge.openCamera(
+      (succ = (): void => {
+        console.log(`${NAME.PREFIX} openCamera success`);
+        success?.();
+      }),
+      (fail = (errCode: Int32, errMsg?: String): void => {
+        console.error(
+          `${NAME.PREFIX} openCamera fail, errCode = ${errCode}, errMsg = ${errMsg}`
+        );
+        fail?.(errCode as number, errMsg as string);
+      })
+    );
+  }
+
+  public closeCamera() {
+    console.log(`${NAME.PREFIX} closeCamera.start`);
+    this.callBridge.closeCamera();
+  }
+
+  public switchCamera(camera: number) {
+    console.log(`${NAME.PREFIX} switchCamera.start, data: ${camera}`);
+    this.callBridge.switchCamera(
+      (camera = ParamsCovert.covertCameraType(camera))
+    );
+  }
+
+  public openMicrophone(options: CallbackOptions) {
+    console.log(`${NAME.PREFIX} openMicrophone.start, data: ${options}`);
+    const { success, fail } = options;
+    this.callBridge.openMicrophone(
+      (succ = (): void => {
+        console.log(`${NAME.PREFIX} openMicrophone success`);
+        success?.();
+      }),
+      (fail = (errCode: Int32, errMsg?: String): void => {
+        console.error(
+          `${NAME.PREFIX} openMicrophone fail, errCode = ${errCode}, errMsg = ${errMsg}`
+        );
+        fail?.(errCode as number, errMsg as string);
+      })
+    );
+  }
+
+  public closeMicrophone() {
+    console.log(`${NAME.PREFIX} closeMicrophone.start`);
+    this.callBridge.closeMicrophone();
+  }
+
+  public selectAudioPlaybackDevice(device: number) {
+    console.log(
+      `${NAME.PREFIX} selectAudioPlaybackDevice.start, data: ${device}`
+    );
+    this.callBridge.selectAudioPlaybackDevice(
+      (device = ParamsCovert.covertAudioPlaybackDevice(device))
+    );
+  }
+
+  public setSelfInfo(options: SelfInfoOptions) {
+    console.log(
+      `${NAME.PREFIX} setSelfInfo.start, data: ${JSON.stringify(options)}`
+    );
+    const { success, fail } = options;
+
+    this.callBridge.setSelfInfo(
+      (nickName = options.nickName),
+      (avatar = options.avatar),
+      (succ = (): void => {
+        console.log(`${NAME.PREFIX} setSelfInfo success`);
+        success?.();
+      }),
+      (fail = (errCode: Int32, errMsg?: String): void => {
+        console.error(
+          `${NAME.PREFIX} setSelfInfo fail, errCode = ${errCode}, errMsg = ${errMsg}`
+        );
+        fail?.(errCode as number, errMsg as string);
+      })
+    );
+  }
+
+  public setCallingBell(filePath: string) {
+    console.log(`${NAME.PREFIX} setCallingBell.start, data: ${filePath}`);
+    this.callBridge.setCallingBell((filePath = filePath));
+  }
+
+  public enableMuteMode(enable: boolean) {
+    console.log(`${NAME.PREFIX} enableMuteMode.start, data: ${enable}`);
+    this.callBridge.enableMuteMode((enable = enable));
+  }
+
+  public enableFloatWindow(enable: boolean) {
+    console.log(`${NAME.PREFIX} enableFloatWindow.start, data: ${enable}`);
+    this.callBridge.enableFloatWindow((enable = enable));
+  }
+
+  public enableVirtualBackground(enable: boolean) {
+    console.log(
+      `${NAME.PREFIX} enableVirtualBackground.start, data: ${enable}`
+    );
+    this.callBridge.enableVirtualBackground((enable = enable));
+  }
+
+  public setScreenOrientation(orientation: number) {
+    console.log(
+      `${NAME.PREFIX} setScreenOrientation.start, data: ${orientation}`
+    );
+    // this.callBridge.setScreenOrientation(orientation.toInt());
+  }
+
+  // only support 0-close 3-high
+  public setBlurBackground(level: number) {
+    console.log(`${NAME.PREFIX} setBlurBackground.start, data: ${level}`);
+    this.callBridge.setBlurBackground((level = level.toInt()));
+  }
+
+  public startFloatWindow(options: CallbackOptions) {
+    const { success, fail } = options;
+    console.log(`${NAME.PREFIX} startFloatWindow.start, fail = ${fail}`);
+    this.callBridge.startFloatWindow();
+    success?.();
+    this.callBridge.addFloatWindowObserver(
+      (observer = this.floatWindowObserver)
+    );
+  }
+
+  public stopFloatWindow() {
+    console.log(`${NAME.PREFIX} stopFloatWindow.start`);
+    this.callBridge.stopFloatWindow();
+    this.callBridge.removeFloatWindowObserver(
+      (observer = this.floatWindowObserver)
+    );
+  }
+
+  public enableMultiDeviceAbility(options: MultiDeviceOptions) {
+    console.log(
+      `${NAME.PREFIX} enableMultiDeviceAbility.start, data: ${options}`
+    );
+    const { success, fail } = options;
+    this.callBridge.enableMultiDeviceAbility(
+      (enable = options.enable),
+      (succ = (): void => {
+        console.log(`${NAME.PREFIX} enableMultiDeviceAbility success`);
+        success?.();
+      }),
+      (fail = (errCode: Int32, errMsg?: String): void => {
+        console.error(
+          `${NAME.PREFIX} enableMultiDeviceAbility fail, errCode = ${errCode}, errMsg = ${errMsg}`
+        );
+        fail?.(errCode as number, errMsg as string);
+      })
+    );
+  }
+
+  public hasPermission(options: PermissionOptions): void {
+    console.log(
+      `${NAME.PREFIX} hasPermission.start, data: ${JSON.stringify(options)}`
+    );
+    const hasGranted = this.callBridge.hasPermission(
+      (mediaType = ParamsCovert.covertMediaType(options.type))
+    );
+    console.log(
+      `${NAME.PREFIX} hasPermission.start hasGranted, hasGranted = ${hasGranted}`
+    );
+    if (hasGranted) {
+      options.success();
+    } else {
+      options.fail(0, "no permission");
+    }
+  }
+
+  @UTSJS.keepAlive
+  public on(eventName: string, listener: (res: any) => void): void {
+    if (listenerMap.size === 0) {
+      TUICallEngine.createInstance().addObserver(this.callObserver);
+    }
+    const listeners: Array<(res: any) => void> = [listener];
+    listenerMap.get(eventName)?.forEach((item) => {
+      listeners.push(item);
+    });
+    listenerMap.set(eventName, listeners);
+  }
+
+  public off(eventName: string): void {
+    listenerMap.delete(eventName);
+    if (listenerMap.size === 0) {
+      TUICallEngine.createInstance().removeObserver(this.callObserver);
+    }
+  }
+}
