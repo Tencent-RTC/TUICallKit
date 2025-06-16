@@ -1,0 +1,173 @@
+import {
+  TUICallMediaType,
+  TUIRoomId,
+  TUIOfflinePushInfo,
+  TUICallIOSOfflinePushType,
+  TUICallParams,
+  TUICamera,
+  TUIAudioPlaybackDevice,
+} from "RTCRoomEngine";
+import { NAME } from "./const.uts";
+
+export class ParamsCovert {
+  public static covertMediaType(mediaType: number): TUICallMediaType {
+    switch (mediaType) {
+      case 0:
+        return TUICallMediaType.unknown;
+      case 2:
+        return TUICallMediaType.video;
+      default:
+        return TUICallMediaType.audio;
+    }
+  }
+
+  public static covertRoomID(
+    intRoomID: number | null,
+    strRoomID: string | null
+  ): TUIRoomId {
+    const roomID: TUIRoomId = new TUIRoomId();
+
+    if (intRoomID == null && strRoomID == null) return roomID;
+
+    if (intRoomID != null && typeof intRoomID == (NAME["NUMBER"] as string)) {
+      roomID.intRoomId = intRoomID!.toUInt32(); // value of optional type 'NSNumber?' must be unwrapped to refer to member 'toUInt32' of wrapped base type 'NSNumber'
+    }
+    if (strRoomID != null && typeof strRoomID == (NAME["STRING"] as string)) {
+      roomID.strRoomId = strRoomID as string;
+    }
+
+    return roomID;
+  }
+
+  public static covertOfflinePushInfo(
+    options: UTSJSONObject
+  ): TUIOfflinePushInfo {
+    console.log(
+      `${NAME.PREFIX} covertOfflinePushInfo.start, data: ${JSON.stringify(
+        options
+      )}`
+    );
+
+    const offlinePushInfo: TUIOfflinePushInfo = new TUIOfflinePushInfo();
+
+    if (offlinePushInfo == null) return offlinePushInfo;
+
+    if (options.getString("title") != null) {
+      offlinePushInfo.title = options.getString("title")!;
+    }
+    if (options.getString("description") != null) {
+      offlinePushInfo.desc = options.getString("description")!;
+    }
+    if (options.getString("androidSound") != null) {
+      offlinePushInfo.androidSound = options.getString("androidSound")!;
+    }
+    if (options.getString("androidOPPOChannelID") != null) {
+      offlinePushInfo.androidOPPOChannelID = options.getString(
+        "androidOPPOChannelID"
+      )!;
+    }
+    if (options.getString("androidXiaoMiChannelID") != null) {
+      offlinePushInfo.androidXiaoMiChannelID = options.getString(
+        "androidXiaoMiChannelID"
+      )!;
+    }
+    if (options.getString("androidFCMChannelID") != null) {
+      offlinePushInfo.androidFCMChannelID = options.getString(
+        "androidFCMChannelID"
+      )!;
+    }
+    if (options.getString("androidHuaWeiCategory") != null) {
+      offlinePushInfo.androidHuaWeiCategory = options.getString(
+        "androidHuaWeiCategory"
+      )!;
+    }
+    if (options.getString("iOSSound") != null) {
+      offlinePushInfo.iOSSound = options.getString("iOSSound")!;
+    }
+    if (options.getBoolean("ignoreIOSBadge") != null) {
+      offlinePushInfo.ignoreIOSBadge = options.getBoolean(
+        "ignoreIOSBadge"
+      ) as boolean;
+    }
+    if (options.getBoolean("isDisablePush") != null) {
+      offlinePushInfo.isDisablePush = options.getBoolean(
+        "isDisablePush"
+      ) as boolean;
+    }
+    if (options.getNumber("iOSPushType") != null) {
+      offlinePushInfo.iOSPushType = ParamsCovert.covertIOSPushType(
+        options.getNumber("iOSPushType")!
+      );
+    }
+
+    console.log(
+      `${NAME.PREFIX} covertOfflinePushInfo.end, data: ${offlinePushInfo}`
+    );
+    return offlinePushInfo;
+  }
+
+  public static covertIOSPushType(type: number): TUICallIOSOfflinePushType {
+    if (type == 0) {
+      return TUICallIOSOfflinePushType.apns;
+    }
+    return TUICallIOSOfflinePushType.voIP;
+  }
+
+  public static covertCallPrams(options: UTSJSONObject | null): TUICallParams {
+    console.log(
+      `${NAME.PREFIX} covertCallPrams.start, data: ${JSON.stringify(options)}`
+    );
+
+    const callParams: TUICallParams = new TUICallParams();
+
+    if (options == null) return callParams;
+
+    if (
+      options!.getString("strRoomID") != null ||
+      options!.getNumber("intRoomID") != null
+    ) {
+      callParams.roomId = ParamsCovert.covertRoomID(
+        options!.getNumber("intRoomID"),
+        options!.getString("strRoomID")
+      );
+    }
+    if (options!.getJSON("offlinePushInfo") != null) {
+      callParams.offlinePushInfo = ParamsCovert.covertOfflinePushInfo(
+        options!.getJSON("offlinePushInfo")!
+      );
+    }
+    if (options!.getNumber("timeout") != null) {
+      callParams.timeout = options!.getNumber("timeout")!.toInt32();
+    }
+    if (options!.getString("chatGroupID") != null) {
+      callParams.chatGroupId = options!.getString("chatGroupID")!;
+    }
+    if (options!.getString("userData") != null) {
+      callParams.userData = options!.getString("userData")!;
+    }
+
+    console.log(`${NAME.PREFIX} covertCallPrams.end, data: ${callParams}`);
+
+    return callParams;
+  }
+
+  public static covertCameraType(cameraType: number): TUICamera {
+    switch (cameraType) {
+      case 1:
+        return TUICamera.back;
+      default:
+        return TUICamera.front;
+    }
+  }
+
+  public static covertAudioPlaybackDevice(
+    device: number
+  ): TUIAudioPlaybackDevice {
+    switch (device) {
+      case 0:
+        return TUIAudioPlaybackDevice.speakerphone;
+      default:
+        return TUIAudioPlaybackDevice.earpiece;
+    }
+  }
+}

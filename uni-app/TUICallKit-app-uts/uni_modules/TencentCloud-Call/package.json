@@ -1,0 +1,91 @@
+{
+  "id": "TencentCloud-Call",
+  "displayName": "【官方】腾讯云音视频通话插件 TencentCloud-Call",
+  "version": "1.0.0",
+  "description": "TUICallKit 是腾讯云官方推出的音视频通话 UTS 插件，支持 1v1 通话和群组通话，并提供“类微信\"的 UI 交互，开发者也可以根据自己的业务需求进行 UI 定制。",
+  "keywords": [
+    "Call",
+    "视频通话",
+    "音视频",
+    "APP",
+    "UTS"
+],
+  "repository": "https://github.com/tencentyun/TUICallKit/tree/main/uni-app",
+  "engines": {
+    "HBuilderX": "^4.53"
+  },
+  "dcloudext": {
+    "type": "component-uts",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": "2751391760"
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "插件使用的 TRTC SDK会采集数据，详情可参考：https://www.qcloud.com",
+      "permissions": "安卓：摄像头，语音，本地存储空间 IOS：摄像头，语音，本地存储空间"
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "y",
+        "aliyun": "y",
+        "alipay": "y"
+      },
+      "client": {
+        "Vue": {
+          "vue2": "u",
+          "vue3": "y"
+        },
+        "App": {
+            "app-android": {
+                "minVersion": "21"
+            },
+            "app-ios": {
+                "minVersion": "13"
+            },
+            "app-harmony": "u"
+        },
+        "H5-mobile": {
+          "Safari": "u",
+          "Android Browser": "u",
+          "微信浏览器(Android)": "u",
+          "QQ浏览器(Android)": "u"
+        },
+        "H5-pc": {
+          "Chrome": "u",
+          "IE": "u",
+          "Edge": "u",
+          "Firefox": "u",
+          "Safari": "u"
+        },
+        "小程序": {
+          "微信": "u",
+          "阿里": "u",
+          "百度": "u",
+          "字节跳动": "u",
+          "QQ": "u",
+          "钉钉": "u",
+          "快手": "u",
+          "飞书": "u",
+          "京东": "u"
+        },
+        "快应用": {
+          "华为": "u",
+          "联盟": "u"
+        }
+      }
+    }
+  }
+}

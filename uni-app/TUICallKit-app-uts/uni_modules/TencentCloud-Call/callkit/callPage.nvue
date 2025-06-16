@@ -1,0 +1,100 @@
+<template>
+  <view :style="callKitStyle" class="call-kit">
+    <call-view :style="callViewStyle" />
+    <topBar class="call-top" />
+    <call-tip class="call-tip" :call-tips="callTips" :is-group-call="isGroupCall" />
+    <button-panel class="call-panel" :call-status="callStatus" :call-role="callRole" :media-type="mediaType"
+      :is-group-call="isGroupCall" />
+  </view>
+</template>
+
+<script setup lang="ts">
+  import { computed, onMounted, ref, onUnmounted } from 'vue';
+  import { CallRole, CallStatus, MediaType, NAME, StoreName } from './callServices/const';
+  import topBar from './components/topBar/topBar.vue';
+  import callTip from './components/callTip/callTip.vue';
+  import buttonPanel from './components/buttonPanel/buttonPanel.vue';
+
+  const viewWidth = ref<number>(360);
+  const viewHeight = ref<number>(700);
+  const callStatus = ref<CallStatus>(uni.$TUIStore.getData(StoreName.CALL, NAME.CALL_STATUS));
+  const callRole = ref<CallRole>(uni.$TUIStore.getData(StoreName.CALL, NAME.CALL_ROLE));
+  const mediaType = ref<MediaType>(uni.$TUIStore.getData(StoreName.CALL, NAME.MEDIA_TYPE));
+  const isGroupCall = ref<Boolean>(uni.$TUIStore.getData(StoreName.CALL, NAME.IS_GROUP_CALL));
+  const callTips = ref<string>(uni.$TUIStore.getData(StoreName.CALL, NAME.CALL_TIPS));
+
+  const watchOptions = {
+    [NAME.CALL_STATUS]: (res : CallStatus) => {
+      callStatus.value = res;
+    },
+    [NAME.CALL_ROLE]: (res : CallRole) => {
+      callRole.value = res;
+    },
+    [NAME.MEDIA_TYPE]: (res : MediaType) => {
+      mediaType.value = res;
+    },
+    [NAME.IS_GROUP_CALL]: (res : boolean) => {
+      isGroupCall.value = res;
+    },
+    [NAME.CALL_TIPS]: (res) => {
+      callTips.value = res;
+    },
+  }
+
+  onMounted(() => {
+    viewWidth.value = uni.getWindowInfo().windowWidth;
+    viewHeight.value = uni.getWindowInfo().windowHeight;
+    uni.$TUIStore.watch(StoreName.CALL, watchOptions);
+  })
+
+  const callViewStyle = computed(() => {
+    let marginTop = '0px';
+    if (isGroupCall.value) {
+    if (callRole.value == CallRole.CALLER || callStatus.value == CallStatus.CONNECTED) {
+      marginTop = '80px';
+    }
+    }
+    return {
+      width: viewWidth.value + 'px',
+      height: viewHeight.value + 'px',
+      marginTop,
+    }
+  })
+
+  const callKitStyle = computed(() => {
+    return {
+      width: viewWidth.value + 'px',
+      height: viewHeight.value + 'px',
+    }
+  })
+
+  onUnmounted(() => {
+    const enableFloatWindow = uni.$TUIStore.getData(StoreName.CALL, NAME.ENABLE_FLOAT_WINDOW);
+    if (callStatus.value != CallStatus.IDLE) {
+      !enableFloatWindow && uni.$TUICallKit.handleExceptionExit();
+    }
+    uni.$TUIStore.unwatch(StoreName.CALL, watchOptions);
+  })
+</script>
+
+<style>
+  .call-kit {
+    background-color: rgba(34, 38, 46, 0.85);
+  }
+
+  .call-top {
+    position: absolute;
+  }
+  .call-tip {
+    text-align: center;
+    position: absolute;
+    bottom: 200px;
+    left: 0;
+    right: 0;
+  }
+
+  .call-panel {
+    position: absolute;
+    bottom: 10px;
+  }
+</style>

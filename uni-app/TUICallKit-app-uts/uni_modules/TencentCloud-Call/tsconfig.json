@@ -1,0 +1,6 @@
+{
+	"compilerOptions": {
+		"experimentalDecorators": true, // 开启装饰器语法支持
+		"emitDecoratorMetadata": true, // 启用装饰器元数据
+	}
+}

@@ -1,0 +1,160 @@
+import TUICallDefine from "com.tencent.cloud.tuikit.engine.call.TUICallDefine";
+import TUICommonDefine from "com.tencent.cloud.tuikit.engine.common.TUICommonDefine";
+import { AudioPlaybackDevice, Camera, MediaType } from "../../interface.uts";
+import { NAME } from "./const.uts";
+
+export class ParamsCovert {
+  public static covertMediaType(mediaType: number): TUICallDefine.MediaType {
+    switch (mediaType) {
+      case 0:
+        return TUICallDefine.MediaType.Unknown;
+      case 2:
+        return TUICallDefine.MediaType.Video;
+      default:
+        return TUICallDefine.MediaType.Audio;
+    }
+  }
+
+  public static covertRoomID(
+    intRoomID: number | null,
+    strRoomID: string | null
+  ): TUICommonDefine.RoomId | null {
+    if (intRoomID == null && strRoomID == null) return null;
+
+    const roomID: TUICommonDefine.RoomId = new TUICommonDefine.RoomId();
+
+    if (intRoomID != null && typeof intRoomID == NAME.NUMBER) {
+      roomID.intRoomId = intRoomID.toInt();
+    }
+    if (strRoomID != null && typeof strRoomID == NAME.STRING) {
+      roomID.strRoomId = strRoomID;
+    }
+
+    return roomID;
+  }
+
+  public static covertOfflinePushInfo(
+    options: UTSJSONObject | null
+  ): TUICallDefine.OfflinePushInfo | null {
+    console.log(
+      `${NAME.PREFIX} covertOfflinePushInfo.start, data: ${JSON.stringify(
+        options
+      )}`
+    );
+
+    if (options == null) return null;
+
+    const offlinePushInfo: TUICallDefine.OfflinePushInfo =
+      new TUICallDefine.OfflinePushInfo();
+
+    offlinePushInfo.setIOSPushType(TUICallDefine.IOSOfflinePushType.APNs);
+
+    if (options.getString("title") != null) {
+      offlinePushInfo.setTitle(options.getString("title"));
+    }
+    if (options.getString("description") != null) {
+      offlinePushInfo.setDesc(options.getString("description"));
+    }
+    if (options.getString("androidSound") != null) {
+      offlinePushInfo.setAndroidSound(options.getString("androidSound"));
+    }
+    if (options.getString("androidOPPOChannelID") != null) {
+      offlinePushInfo.setAndroidOPPOChannelID(
+        options.getString("androidOPPOChannelID")
+      );
+    }
+    if (options.getString("androidXiaoMiChannelID") != null) {
+      offlinePushInfo.setAndroidXiaoMiChannelID(
+        options.getString("androidXiaoMiChannelID")
+      );
+    }
+    if (options.getString("androidFCMChannelID") != null) {
+      offlinePushInfo.setAndroidFCMChannelID(
+        options.getString("androidFCMChannelID")
+      );
+    }
+    if (options.getString("androidHuaWeiCategory") != null) {
+      offlinePushInfo.setAndroidHuaWeiCategory(
+        options.getString("androidHuaWeiCategory")
+      );
+    }
+    if (options.getString("iOSSound") != null) {
+      offlinePushInfo.setIOSSound(options.getString("iOSSound"));
+    }
+    if (options.getBoolean("ignoreIOSBadge") != null) {
+      offlinePushInfo.setIgnoreIOSBadge(
+        options.getBoolean("ignoreIOSBadge") as boolean
+      );
+    }
+    if (options.getBoolean("isDisablePush") != null) {
+      offlinePushInfo.setDisablePush(
+        options.getBoolean("isDisablePush") as boolean
+      );
+    }
+
+    console.log(
+      `${NAME.PREFIX} covertOfflinePushInfo.end, data: ${offlinePushInfo}`
+    );
+    return offlinePushInfo;
+  }
+
+  public static covertCallPrams(
+    options: UTSJSONObject | null
+  ): TUICallDefine.CallParams | null {
+    console.log(
+      `${NAME.PREFIX} covertCallPrams.start, data: ${JSON.stringify(options)}`
+    );
+
+    if (options == null) return null;
+
+    const callParams: TUICallDefine.CallParams = new TUICallDefine.CallParams();
+
+    if (
+      options.getString("strRoomID") != null ||
+      options.getNumber("intRoomID") != null
+    ) {
+      callParams.roomId = ParamsCovert.covertRoomID(
+        options.getNumber("intRoomID"),
+        options.getString("strRoomID")
+      );
+    }
+    if (options.getJSON("offlinePushInfo") != null) {
+      callParams.offlinePushInfo = ParamsCovert.covertOfflinePushInfo(
+        options.getJSON("offlinePushInfo")
+      );
+    }
+    if (options.getNumber("timeout") != null) {
+      callParams.timeout = options.getNumber("timeout")!.toInt();
+    }
+    if (options.getString("chatGroupID") != null) {
+      callParams.chatGroupId = options.getString("chatGroupID");
+    }
+    if (options.getString("userData") != null) {
+      callParams.userData = options.getString("userData");
+    }
+
+    console.log(`${NAME.PREFIX} covertCallPrams.end, data: ${callParams}`);
+
+    return callParams;
+  }
+
+  public static covertCameraType(cameraType: number): TUICommonDefine.Camera {
+    switch (cameraType) {
+      case 1:
+        return TUICommonDefine.Camera.Back;
+      default:
+        return TUICommonDefine.Camera.Front;
+    }
+  }
+
+  public static covertAudioPlaybackDevice(
+    device: number
+  ): TUICommonDefine.AudioPlaybackDevice {
+    switch (device) {
+      case 1:
+        return TUICommonDefine.AudioPlaybackDevice.Earpiece;
+      default:
+        return TUICommonDefine.AudioPlaybackDevice.Speakerphone;
+    }
+  }
+}

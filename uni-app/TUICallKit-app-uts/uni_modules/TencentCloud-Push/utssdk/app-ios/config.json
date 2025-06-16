@@ -1,0 +1,11 @@
+{
+	"deploymentTarget": "9.0",
+	"dependencies-pods": [
+    {
+		"name": "TXIMSDK_Plus_iOS_XCFramework",
+		"version": "8.5.6864"
+	}, {
+		"name": "TIMPush",
+		"version": "8.5.6864"
+	}]
+}

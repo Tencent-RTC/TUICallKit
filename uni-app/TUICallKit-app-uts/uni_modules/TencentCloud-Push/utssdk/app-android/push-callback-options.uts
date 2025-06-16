@@ -1,0 +1,5 @@
+export type PushCallbackOptions = {
+    apiName: string
+    success: (res?: any) => void
+    fail: (errCode: number, errMsg: string) => void
+}

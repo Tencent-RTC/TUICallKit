@@ -1,0 +1,9 @@
+{
+  "deploymentTarget": "13", // ios 系统版本 13.0
+  "dependencies-pods": [
+    {
+      "name": "TUICallKit_Swift",
+      "version": "3.1.0.824"
+    }
+  ]
+}

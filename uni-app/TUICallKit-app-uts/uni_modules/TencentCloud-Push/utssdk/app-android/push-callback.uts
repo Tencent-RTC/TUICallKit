@@ -1,0 +1,28 @@
+import TIMPushCallback from 'com.tencent.qcloud.tim.push.TIMPushCallback';
+import { PushCallbackOptions } from './push-callback-options.uts';
+
+const LOG_PREFIX: string = 'Push |';
+export default class PushCallback implements TIMPushCallback<any> {
+    private apiName: string;
+    private success: (data?: any) => void;
+    private fail: (errCode: number, errMsg: string) => void;
+    
+    constructor(options: PushCallbackOptions) {
+        this.apiName = options.apiName;
+        this.success = options.success;
+        this.fail = options.fail;
+    }
+    
+    override onSuccess(data?: any) {
+        console.log(`${LOG_PREFIX} ${this.apiName} ok, data:`, data);
+        if (data == null) {
+            this.success?.('');
+        } else {
+            this.success?.(data);
+        }
+    }
+    
+    override onError(errCode: Int, errMsg: string, data?: any) {
+        this.fail?.(errCode as number, errMsg);
+    }
+}

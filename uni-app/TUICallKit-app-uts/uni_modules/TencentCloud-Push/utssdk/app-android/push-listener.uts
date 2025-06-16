@@ -1,0 +1,25 @@
+import TIMPushListener from 'com.tencent.qcloud.tim.push.TIMPushListener';
+import TIMPushMessage from 'com.tencent.qcloud.tim.push.TIMPushMessage';
+import { PushListenerOptions } from './push-listener-options.uts';
+
+const LOG_PREFIX: string = 'Push | PushListener';
+export default class PushListener implements TIMPushListener {
+    private listener: (eventType: string, data: any) => void;
+    
+    constructor(options: PushListenerOptions) {
+		this.listener = options.listener;
+		console.log(`${LOG_PREFIX} ok`);
+    }
+    
+    override onRecvPushMessage(message: TIMPushMessage) {
+		this.listener('message_received', { data: message });
+    }
+    
+    override onRevokePushMessage(messageID: string) {
+		this.listener('message_revoked', { data: messageID });
+    }
+	
+	override onNotificationClicked(ext: string) {
+		this.listener('notification_clicked', { data: ext });
+	}
+}

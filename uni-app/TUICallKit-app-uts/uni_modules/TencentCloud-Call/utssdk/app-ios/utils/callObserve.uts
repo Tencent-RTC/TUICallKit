@@ -1,0 +1,226 @@
+import {
+  TUICallObserver,
+  TUICallMediaType,
+  TUICallObserverExtraInfo,
+  TUICallEndReason,
+  TUINetworkQualityInfo,
+} from "RTCRoomEngine";
+import { FloatWindowObserver } from "TUICallKit_Swift";
+import { NAME } from "./const.uts";
+
+function covertMediaType(mediaType: TUICallMediaType): number {
+  switch (mediaType) {
+    case TUICallMediaType.video:
+      return 2;
+    case TUICallMediaType.audio:
+      return 1;
+    default:
+      return 0;
+  }
+}
+
+export type ICallObserve = {
+  listener: (eventType: string, data: any) => void;
+};
+export class TCallObserver implements TUICallObserver {
+  private listener: (eventType: string, data: any) => void;
+
+  constructor(options: ICallObserve) {
+    this.listener = options.listener;
+    console.log(`${NAME.PREFIX} TCallObserver ok`);
+  }
+
+  onError(code: Int32, message: string | null) {
+    console.error(
+      `${NAME.PREFIX} onError ${JSON.stringify({ code, message })}`
+    );
+    this.listener("onError", { code, message });
+  }
+
+  onCallReceived(
+    callId: string,
+    @argumentLabel("") callerId: string,
+    @argumentLabel("") calleeIdList: string[],
+    @argumentLabel("") mediaType: TUICallMediaType,
+    @argumentLabel("") info: TUICallObserverExtraInfo
+  ) {
+    console.log(
+      `${NAME.PREFIX} onCallReceived ${JSON.stringify({
+        callID: callId,
+        callerID: callerId,
+        calleeIDList: calleeIdList,
+        mediaType: covertMediaType(mediaType),
+        info,
+      })}`
+    );
+    this.listener("onCallReceived", {
+      callID: callId,
+      callerID: callerId,
+      calleeIDList: calleeIdList,
+      mediaType: covertMediaType(mediaType),
+      info,
+    });
+  }
+
+  onCallBegin(
+    @argumentLabel("") callId: string,
+    @argumentLabel("") mediaType: TUICallMediaType,
+    @argumentLabel("") info: TUICallObserverExtraInfo
+  ) {
+    console.log(
+      `${NAME.PREFIX} onCallBegin ${JSON.stringify({
+        callID: callId,
+        mediaType: covertMediaType(mediaType),
+        info,
+      })}`
+    );
+    this.listener("onCallBegin", {
+      callID: callId,
+      mediaType: covertMediaType(mediaType),
+      info,
+    });
+  }
+
+  onCallEnd(
+    @argumentLabel("") callId: string,
+    @argumentLabel("") mediaType: TUICallMediaType,
+    @argumentLabel("") reason: TUICallEndReason,
+    @argumentLabel("") userId: string,
+    @argumentLabel("") totalTime: Float,
+    @argumentLabel("") info: TUICallObserverExtraInfo
+  ) {
+    console.log(
+      `${NAME.PREFIX} onCallEnd ${JSON.stringify({
+        callID: callId,
+        mediaType: covertMediaType(mediaType),
+        reason,
+        userID: userId,
+        totalTime,
+        info,
+      })}`
+    );
+    this.listener("onCallEnd", {
+      callID: callId,
+      mediaType: covertMediaType(mediaType),
+      reason,
+      userID: userId,
+      totalTime,
+      info,
+    });
+  }
+
+  onCallNotConnected(
+    @argumentLabel("") callId: string,
+    @argumentLabel("") mediaType: TUICallMediaType,
+    @argumentLabel("") reason: TUICallEndReason,
+    @argumentLabel("") userId: string,
+    @argumentLabel("") info: TUICallObserverExtraInfo
+  ) {
+    console.log(
+      `${NAME.PREFIX} onCallNotConnected ${JSON.stringify({
+        callID: callId,
+        mediaType: covertMediaType(mediaType),
+        reason,
+        userID: userId,
+        info,
+      })}`
+    );
+    this.listener("onCallNotConnected", {
+      callID: callId,
+      mediaType: covertMediaType(mediaType),
+      reason,
+      userID: userId,
+      info,
+    });
+  }
+
+  onUserReject(@argumentLabel("") userId: string) {
+    console.log(
+      `${NAME.PREFIX} onUserReject ${JSON.stringify({ userID: userId })}`
+    );
+    this.listener("onUserReject", { userID: userId });
+  }
+
+  onUserNoResponse(@argumentLabel("") userId: string) {
+    console.log(
+      `${NAME.PREFIX} onUserNoResponse ${JSON.stringify({ userID: userId })}`
+    );
+    this.listener("onUserNoResponse", { userID: userId });
+  }
+
+  onUserLineBusy(@argumentLabel("") userId: string) {
+    console.log(
+      `${NAME.PREFIX} onUserLineBusy ${JSON.stringify({ userID: userId })}`
+    );
+    this.listener("onUserLineBusy", { userID: userId });
+  }
+
+  onUserInviting(@argumentLabel("") userId: string) {
+    console.log(
+      `${NAME.PREFIX} onCallBegin ${JSON.stringify({ userID: userId })}`
+    );
+    this.listener("onUserInviting", { userID: userId });
+  }
+
+  onUserJoin(@argumentLabel("") userId: string) {
+    console.log(
+      `${NAME.PREFIX} onUserJoin ${JSON.stringify({ userID: userId })}`
+    );
+    this.listener("onUserJoin", { userID: userId });
+  }
+
+  onUserLeave(@argumentLabel("") userId: string) {
+    console.log(
+      `${NAME.PREFIX} onUserLeave ${JSON.stringify({ userID: userId })}`
+    );
+    this.listener("onUserLeave", { userID: userId });
+  }
+
+  onUserVideoAvailable(
+    @argumentLabel("") userId: string,
+    @argumentLabel("") isVideoAvailable: boolean
+  ) {
+    this.listener("onUserVideoAvailable", { userID: userId, isVideoAvailable });
+  }
+
+  onUserAudioAvailable(
+    @argumentLabel("") userId: string,
+    @argumentLabel("") isAudioAvailable: boolean
+  ) {
+    this.listener("onUserAudioAvailable", { userID: userId, isAudioAvailable });
+  }
+
+  onUserVoiceVolumeChanged(@argumentLabel("") volumeMap: Map<string, number>) {
+    this.listener("onUserVoiceVolumeChanged", { volumeMap });
+  }
+
+  onUserNetworkQualityChanged(
+    @argumentLabel("") networkQualityList: TUINetworkQualityInfo[]
+  ) {
+    this.listener("onUserNetworkQualityChanged", { networkQualityList });
+  }
+
+  onKickedOffline() {
+    console.log(`${NAME.PREFIX} onKickedOfflines`);
+    this.listener("onKickedOffline", {});
+  }
+
+  onUserSigExpired() {
+    console.log(`${NAME.PREFIX} onUserSigExpired`);
+    this.listener("onUserSigExpired", {});
+  }
+}
+
+export class TFloatWindowObserver implements FloatWindowObserver {
+  private listener: (eventType: string, data: any) => void;
+
+  constructor(options: ICallObserve) {
+    this.listener = options.listener;
+    console.log(`${NAME.PREFIX} TFloatWindowObserver ok`);
+  }
+
+  tapFloatWindow() {
+    console.log(`${NAME.PREFIX} tapFloatWindow`);
+    this.listener("onFloatWindowClick", {});
+  }
+}
