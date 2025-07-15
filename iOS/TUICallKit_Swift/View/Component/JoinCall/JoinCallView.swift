@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SnapKit
 import TUICore
 import RTCRoomEngine
 
@@ -128,50 +127,79 @@ class JoinCallView: UIView, UICollectionViewDelegate, UICollectionViewDataSource
     }
     
     func activateConstraints() {
-        bottomContainerView.snp.makeConstraints { make in
-            make.top.equalTo(self).offset(8)
-            make.leading.equalTo(self).offset(16)
-            make.center.equalTo(self)
+        bottomContainerView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            bottomContainerView.topAnchor.constraint(equalTo: self.topAnchor, constant: 8),
+            bottomContainerView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+            bottomContainerView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            bottomContainerView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+        ])
+
+        titleIcon.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = titleIcon.superview {
+            NSLayoutConstraint.activate([
+                titleIcon.topAnchor.constraint(equalTo: bottomContainerView.topAnchor, constant: 8),
+                titleIcon.leadingAnchor.constraint(equalTo: bottomContainerView.leadingAnchor, constant: 16),
+                titleIcon.widthAnchor.constraint(equalToConstant: 20),
+                titleIcon.heightAnchor.constraint(equalToConstant: 20)
+            ])
         }
-        titleIcon.snp.makeConstraints { make in
-            make.top.equalTo(bottomContainerView).offset(8)
-            make.leading.equalTo(bottomContainerView).offset(16)
-            make.width.height.equalTo(20)
+
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = titleLabel.superview {
+            NSLayoutConstraint.activate([
+                titleLabel.centerYAnchor.constraint(equalTo: titleIcon.centerYAnchor),
+                titleLabel.leadingAnchor.constraint(equalTo: titleIcon.trailingAnchor, constant: 10),
+                titleLabel.widthAnchor.constraint(equalToConstant: 200),
+                titleLabel.heightAnchor.constraint(equalToConstant: 20)
+            ])
         }
-        titleLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(titleIcon)
-            make.leading.equalTo(titleIcon.snp.trailing).offset(10)
-            make.width.equalTo(200)
-            make.height.equalTo(20)
+
+        expandButton.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = expandButton.superview {
+            NSLayoutConstraint.activate([
+                expandButton.centerYAnchor.constraint(equalTo: titleIcon.centerYAnchor),
+                expandButton.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 10),
+                expandButton.trailingAnchor.constraint(equalTo: bottomContainerView.trailingAnchor, constant: -16),
+                expandButton.widthAnchor.constraint(equalToConstant: 30),
+                expandButton.heightAnchor.constraint(equalToConstant: 30)
+            ])
         }
-        expandButton.snp.makeConstraints { make in
-            make.centerY.equalTo(titleIcon)
-            make.leading.equalTo(titleLabel.snp.trailing).offset(10)
-            make.trailing.equalTo(bottomContainerView).offset(-16)
-            make.width.height.equalTo(30)
+
+        expandView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = expandView.superview {
+            NSLayoutConstraint.activate([
+                expandView.topAnchor.constraint(equalTo: bottomContainerView.topAnchor, constant: 36),
+                expandView.leadingAnchor.constraint(equalTo: bottomContainerView.leadingAnchor, constant: 16),
+                expandView.trailingAnchor.constraint(equalTo: bottomContainerView.trailingAnchor, constant: -16),
+                expandView.heightAnchor.constraint(equalToConstant: 157)
+            ])
         }
-        expandView.snp.makeConstraints { make in
-            make.top.equalTo(bottomContainerView).offset(36)
-            make.leading.equalTo(bottomContainerView).offset(16)
-            make.trailing.equalTo(bottomContainerView).offset(-16)
-            make.height.equalTo(157)
-        }
-        collectionView.snp.makeConstraints { make in
-            make.top.equalTo(expandView).offset(37)
-            make.leading.equalTo(expandView).offset(10)
-            make.trailing.equalTo(expandView).offset(-10)
-            make.height.equalTo(kJoinGroupCallItemWidth)
-        }
-        lineView.snp.makeConstraints { make in
-            make.top.equalTo(expandView).offset(117)
-            make.leading.trailing.equalTo(self.expandView)
-            make.height.equalTo(1)
-        }
-        joinButton.snp.makeConstraints { make in
-            make.top.equalTo(lineView.snp.bottom).offset(5)
-            make.centerX.equalTo(self.expandView)
-            make.width.equalTo(100)
-            make.height.equalTo(30)
+
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: expandView.topAnchor, constant: 37),
+            collectionView.leadingAnchor.constraint(equalTo: expandView.leadingAnchor, constant: 10),
+            collectionView.trailingAnchor.constraint(equalTo: expandView.trailingAnchor, constant: -10),
+            collectionView.heightAnchor.constraint(equalToConstant: kJoinGroupCallItemWidth)
+        ])
+
+        lineView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            lineView.topAnchor.constraint(equalTo: expandView.topAnchor, constant: 117),
+            lineView.leadingAnchor.constraint(equalTo: expandView.leadingAnchor),
+            lineView.trailingAnchor.constraint(equalTo: expandView.trailingAnchor),
+            lineView.heightAnchor.constraint(equalToConstant: 1)
+        ])
+
+        joinButton.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = joinButton.superview, let expandSuperview = expandView.superview {
+            NSLayoutConstraint.activate([
+                joinButton.topAnchor.constraint(equalTo: lineView.bottomAnchor, constant: 5),
+                joinButton.centerXAnchor.constraint(equalTo: expandSuperview.centerXAnchor),
+                joinButton.widthAnchor.constraint(equalTo: expandSuperview.widthAnchor),
+                joinButton.heightAnchor.constraint(equalToConstant: 30)
+            ])
         }
     }
     
@@ -199,8 +227,7 @@ class JoinCallView: UIView, UICollectionViewDelegate, UICollectionViewDataSource
             obj in if obj.id.value != TUILogin.getUserID() { listDate.append(obj) } }
         titleLabel.isHidden = listDate.isEmpty
         titleLabel.text = String(format: TUICallKitLocalize(key: "TUICallKit.JoinGroupView.title") ?? "",
-                                 listDate.count,
-                                 getCallMediaTypeStr(with: callMediaType))
+                                 listDate.count)
         titleLabel.textAlignment = TUICoreDefineConvert.getIsRTL() ? .right : .left
         collectionView.reloadData()
     }

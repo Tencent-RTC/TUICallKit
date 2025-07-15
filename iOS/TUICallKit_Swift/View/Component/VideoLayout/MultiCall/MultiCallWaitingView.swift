@@ -99,28 +99,35 @@ class MultiCallWaitingView: UIView, UICollectionViewDelegate, UICollectionViewDa
     }
     
     func activateConstraints() {
-        describeLabel.snp.makeConstraints { make in
-            make.bottom.equalTo(calleeCollectionView.snp.top).offset(-5.scale375Width())
-            make.centerX.equalTo(self)
-            make.width.equalTo(Screen_Width)
-            make.height.equalTo(20)
-        }
-        calleeCollectionView.snp.makeConstraints { make in
-            make.centerX.equalTo(self)
-            make.width.equalTo(Screen_Width)
-            make.height.equalTo(40)
-        }
-        
-        callerNameLabel.snp.makeConstraints { make in
-            make.bottom.equalTo(describeLabel.snp.top).offset(-20.scale375Height())
-            make.centerX.equalToSuperview()
-            make.height.equalTo(30)
-        }
-        callerHeadImageView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalTo(callerNameLabel.snp.top).offset(-10.scale375Height())
-            make.height.width.equalTo(100.scale375Width())
-        }
+        describeLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            describeLabel.bottomAnchor.constraint(equalTo: calleeCollectionView.topAnchor, constant: -5.scale375Width()),
+            describeLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            describeLabel.widthAnchor.constraint(equalToConstant: Screen_Width),
+            describeLabel.heightAnchor.constraint(equalToConstant: 20)
+        ])
+
+        calleeCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            calleeCollectionView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            calleeCollectionView.widthAnchor.constraint(equalToConstant: Screen_Width),
+            calleeCollectionView.heightAnchor.constraint(equalToConstant: 40)
+        ])
+
+        callerNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            callerNameLabel.bottomAnchor.constraint(equalTo: describeLabel.topAnchor, constant: -20.scale375Height()),
+            callerNameLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            callerNameLabel.heightAnchor.constraint(equalToConstant: 30)
+        ])
+
+        callerHeadImageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            callerHeadImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            callerHeadImageView.bottomAnchor.constraint(equalTo: callerNameLabel.topAnchor, constant: -10.scale375Height()),
+            callerHeadImageView.widthAnchor.constraint(equalToConstant: 100.scale375Width()),
+            callerHeadImageView.heightAnchor.constraint(equalToConstant: 100.scale375Width())
+        ])
     }
     
     func bindInteraction() {

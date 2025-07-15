@@ -90,24 +90,37 @@ class RecentCallsViewModel {
         missedDataSource.removeAll() { $0.callRecord.callId == callId }
     }
     
-    
     func repeatCall(_ indexPath: IndexPath) {
-        let cellViewModel = dataSource.value[indexPath.row]
+        let callRecord = dataSource.value[indexPath.row].callRecord
+        guard var userIds = callRecord.inviteList as? [String] else { return }
+        userIds.append(callRecord.inviter)
+        let selfUserId = CallManager.shared.userState.selfUser.id.value
+        userIds = userIds.filter { $0 != selfUserId }
         
-        if cellViewModel.callRecord.scene == .single {
-            repeatSingleCall(cellViewModel.callRecord)
+        if (callRecord.groupId.isEmpty && userIds.count <= 1) {
+            repeatSingleCall(callRecord, userIds)
         }
     }
     
-    func repeatSingleCall(_ callRecord: TUICallRecords) {
-        var userId = callRecord.inviteList.first
+    func repeatSingleCall(_ callRecord: TUICallRecords, _ otherUserIds: [String]) {
+        let targetUserId:String
         if callRecord.role == .called {
-            userId = callRecord.inviter
+            guard let inviter = callRecord.inviter as? String else {
+                return
+            }
+            targetUserId = inviter
+        } else {
+            guard let userid = otherUserIds.first as? String else {
+                return
+            }
+            targetUserId = userid
         }
         
-        guard let userId = userId as? String else { return }
-        
-        TUICallKit.createInstance().call(userId: userId, callMediaType: callRecord.mediaType)
+        if CallManager.shared.globalState.enableForceUseV2API {
+            TUICallKit.createInstance().call(userId: targetUserId, callMediaType: callRecord.mediaType)
+        } else {
+            TUICallKit.createInstance().calls(userIdList: [targetUserId], callMediaType: callRecord.mediaType, params: nil) { } fail: { _, _ in }
+        }
     }
     
     func deleteAllRecordCalls() {

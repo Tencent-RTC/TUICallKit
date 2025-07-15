@@ -6,7 +6,6 @@
 //
 
 import RTCCommon
-import SnapKit
 
 class IncomingBannerViewController: UIViewController {
     private var isViewReady: Bool = false
@@ -89,28 +88,50 @@ class IncomingBannerViewController: UIViewController {
     }
     
     private func activateConstraints() {
-        userHeadImageView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16.scale375Width())
-            make.centerY.equalTo(self.view)
-            make.width.height.equalTo(60.scale375Width())
+        userHeadImageView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = userHeadImageView.superview, let parentView = self.view {
+            NSLayoutConstraint.activate([
+                userHeadImageView.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: 16.scale375Width()),
+                userHeadImageView.centerYAnchor.constraint(equalTo: parentView.centerYAnchor),
+                userHeadImageView.widthAnchor.constraint(equalToConstant: 60.scale375Width()),
+                userHeadImageView.heightAnchor.constraint(equalToConstant: 60.scale375Width())
+            ])
         }
-        userNameLabel.snp.makeConstraints { make in
-            make.top.equalTo(userHeadImageView).offset(10.scale375Width())
-            make.leading.equalTo(userHeadImageView.snp.trailing).offset(12.scale375Width())
+        
+        userNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = userNameLabel.superview {
+            NSLayoutConstraint.activate([
+                userNameLabel.topAnchor.constraint(equalTo: userHeadImageView.topAnchor, constant: 10.scale375Width()),
+                userNameLabel.leadingAnchor.constraint(equalTo: userHeadImageView.trailingAnchor, constant: 12.scale375Width())
+            ])
         }
-        callStatusTipView.snp.makeConstraints { make in
-            make.leading.equalTo(userHeadImageView.snp.trailing).offset(12.scale375Width())
-            make.bottom.equalTo(userHeadImageView).offset(-10.scale375Width())
+        
+        callStatusTipView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = callStatusTipView.superview {
+            NSLayoutConstraint.activate([
+                callStatusTipView.leadingAnchor.constraint(equalTo: userHeadImageView.trailingAnchor, constant: 12.scale375Width()),
+                callStatusTipView.bottomAnchor.constraint(equalTo: userHeadImageView.bottomAnchor, constant: -10.scale375Width())
+            ])
         }
-        rejectBtn.snp.makeConstraints { make in
-            make.trailing.equalTo(acceptBtn.snp.leading).offset(-22.scale375Width())
-            make.centerY.equalTo(self.view)
-            make.width.height.equalTo(36.scale375Width())
+        
+        rejectBtn.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = rejectBtn.superview, let parentView = self.view {
+            NSLayoutConstraint.activate([
+                rejectBtn.trailingAnchor.constraint(equalTo: acceptBtn.leadingAnchor, constant: -22.scale375Width()),
+                rejectBtn.centerYAnchor.constraint(equalTo: parentView.centerYAnchor),
+                rejectBtn.widthAnchor.constraint(equalToConstant: 36.scale375Width()),
+                rejectBtn.heightAnchor.constraint(equalToConstant: 36.scale375Width())
+            ])
         }
-        acceptBtn.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-16.scale375Width())
-            make.centerY.equalTo(self.view)
-            make.width.height.equalTo(36.scale375Width())
+        
+        acceptBtn.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = acceptBtn.superview, let parentView = self.view {
+            NSLayoutConstraint.activate([
+                acceptBtn.trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: -16.scale375Width()),
+                acceptBtn.centerYAnchor.constraint(equalTo: parentView.centerYAnchor),
+                acceptBtn.widthAnchor.constraint(equalToConstant: 36.scale375Width()),
+                acceptBtn.heightAnchor.constraint(equalToConstant: 36.scale375Width())
+            ])
         }
     }
     
@@ -122,13 +143,13 @@ class IncomingBannerViewController: UIViewController {
     
     @objc func rejectTouchEvent(sender: UIButton) {
         view.removeFromSuperview()
-        CallManager.shared.reject()
+        CallManager.shared.reject() { } fail: { code, message in }
         WindowManager.shared.closeWindow()
     }
     
     @objc func acceptTouchEvent(sender: UIButton) {
         view.removeFromSuperview()
-        CallManager.shared.accept()
+        CallManager.shared.accept() { } fail: { code, message in }
         WindowManager.shared.showCallingWindow()
     }
     

@@ -38,19 +38,19 @@ class VoIPDataSyncHandler {
                 CallManager.shared.closeMicrophone(false)
             } else {
                 TRTCLog.info("VoIPDataSyncHandler - onCall - openMicrophone")
-                CallManager.shared.openMicrophone(false)
+                CallManager.shared.openMicrophone(false) { } fail: { code, message in }
             }
         } else if method == TUICore_TUICallingService_HangupMethod {
             if CallManager.shared.userState.selfUser.callStatus.value == .accept {
                 TRTCLog.info("VoIPDataSyncHandler - onCall - hangup")
-                CallManager.shared.hangup()
+                CallManager.shared.hangup() { } fail: { code, message in }
             } else {
                 TRTCLog.info("VoIPDataSyncHandler - onCall - reject")
-                CallManager.shared.reject()
+                CallManager.shared.reject() { } fail: { code, message in }
             }
         } else if  method == TUICore_TUICallingService_AcceptMethod {
             TRTCLog.info("VoIPDataSyncHandler - onCall - accept")
-            CallManager.shared.accept()
+            CallManager.shared.accept() { } fail: { code, message in }
         }
     }
         

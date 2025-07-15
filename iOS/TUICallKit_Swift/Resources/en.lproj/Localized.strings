@@ -73,7 +73,10 @@
 "TUICallKit.cameraOn" = "Camera On";
 "TUICallKit.cameraOff" = "Camera Off";
 
-"TUICallKit.JoinGroupView.title" = "%d people are having a %@";
+"TUICallKit.AVRoutePickerView.speakerPhone" = "Speaker";
+"TUICallKit.AVRoutePickerView.earpiece" = "Earpiece";
+
+"TUICallKit.JoinGroupView.title" = "\%d people are on the call";
 "TUICallKit.JoinGroupView.join" = "Join";
 "TUICallKit.JoinGroupView.audioCall" = "Voice Call";
 "TUICallKit.JoinGroupView.videoCall" = "Video Call";

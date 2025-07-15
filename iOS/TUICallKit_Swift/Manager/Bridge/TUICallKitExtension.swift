@@ -36,12 +36,20 @@ class TUICallKitExtension: NSObject, TUIExtensionProtocol {
             TUICallEngine.createInstance().perform(selector, with: 0)
         }
         
-        if groupID.isEmpty {
-            guard let userID = userIDs.first else { return }
-            TUICallKit.createInstance().call(userId: userID, callMediaType: callingType)
-        } else {
-            TUICallKit.createInstance().groupCall(groupId: groupID, userIdList: userIDs, callMediaType: callingType)
+        if CallManager.shared.globalState.enableForceUseV2API {
+            if groupID.isEmpty {
+                guard let userID = userIDs.first else { return }
+                TUICallKit.createInstance().call(userId: userID, callMediaType: callingType)
+            } else {
+                TUICallKit.createInstance().groupCall(groupId: groupID, userIdList: userIDs, callMediaType: callingType)
+            }
+            return
         }
+        
+        let params = TUICallParams()
+        params.chatGroupId = groupID
+        params.offlinePushInfo = OfflinePushInfoConfig.createOfflinePushInfo()
+        TUICallKit.createInstance().calls(userIdList: userIDs, callMediaType: callingType, params: params) {} fail: { _, _ in }
     }
     
     func doResponseInputViewExtension(param: [String: Any], type: TUICallMediaType, isClassic: Bool) {

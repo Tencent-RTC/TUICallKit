@@ -69,7 +69,7 @@ class VideoCallerWaitingView: UIView {
     }
     
     deinit {
-        if CallManager.shared.globalState.enableVirtualBackgroud {
+        if CallManager.shared.globalState.enableVirtualBackground {
             CallManager.shared.viewState.isVirtualBackgroundOpened.removeObserver(enableBlurBackgroundObserver)
         }
     }
@@ -88,36 +88,52 @@ class VideoCallerWaitingView: UIView {
         addSubview(switchCameraBtn)
         addSubview(closeCameraBtn)
         addSubview(hangupBtn)
-        if CallManager.shared.globalState.enableVirtualBackgroud {
+        if CallManager.shared.globalState.enableVirtualBackground {
             addSubview(virtualBackgroundButton)
         }
     }
     
     func activateConstraints() {
-        if CallManager.shared.globalState.enableVirtualBackgroud {
-            virtualBackgroundButton.snp.makeConstraints { make in
-                make.top.centerX.equalTo(self)
-                make.bottom.equalTo(hangupBtn.snp.top).offset(-8.scale375Width())
-                make.size.equalTo(kControlBtnSize)
+        if CallManager.shared.globalState.enableVirtualBackground {
+            virtualBackgroundButton.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                virtualBackgroundButton.topAnchor.constraint(equalTo: self.topAnchor),
+                virtualBackgroundButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+                virtualBackgroundButton.bottomAnchor.constraint(equalTo: hangupBtn.topAnchor, constant: -8.scale375Width()),
+                virtualBackgroundButton.widthAnchor.constraint(equalToConstant: kControlBtnSize.width),
+                virtualBackgroundButton.heightAnchor.constraint(equalToConstant: kControlBtnSize.height)
+            ])
+        }
+
+        switchCameraBtn.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            switchCameraBtn.centerYAnchor.constraint(equalTo: (CallManager.shared.globalState.enableVirtualBackground ? virtualBackgroundButton : hangupBtn).centerYAnchor),
+            switchCameraBtn.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: TUICoreDefineConvert.getIsRTL() ? 110.scale375Width() : -110.scale375Width()),
+            switchCameraBtn.widthAnchor.constraint(equalToConstant: kControlBtnSize.width),
+            switchCameraBtn.heightAnchor.constraint(equalToConstant: kControlBtnSize.height)
+        ])
+
+        hangupBtn.translatesAutoresizingMaskIntoConstraints = false
+        if !CallManager.shared.globalState.enableVirtualBackground {
+                NSLayoutConstraint.activate([
+                    hangupBtn.topAnchor.constraint(equalTo: self.topAnchor)
+                ])
             }
-        }
-        switchCameraBtn.snp.makeConstraints { make in
-            make.centerY.equalTo(CallManager.shared.globalState.enableVirtualBackgroud ? virtualBackgroundButton : hangupBtn)
-            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? 110.scale375Width() : -110.scale375Width())
-            make.size.equalTo(kControlBtnSize)
-        }
-        hangupBtn.snp.makeConstraints { make in
-            if !CallManager.shared.globalState.enableVirtualBackgroud {
-                make.top.equalTo(self)
-            }
-            make.centerX.bottom.equalTo(self)
-            make.size.equalTo(kControlBtnSize)
-        }
-        closeCameraBtn.snp.makeConstraints { make in
-            make.centerY.equalTo(CallManager.shared.globalState.enableVirtualBackgroud ? virtualBackgroundButton : hangupBtn)
-            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? -110.scale375Width() : 110.scale375Width())
-            make.size.equalTo(kControlBtnSize)
-        }
+        NSLayoutConstraint.activate([
+            hangupBtn.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            hangupBtn.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            hangupBtn.widthAnchor.constraint(equalToConstant: kControlBtnSize.width),
+            hangupBtn.heightAnchor.constraint(equalToConstant: kControlBtnSize.height)
+        ])
+        
+
+        closeCameraBtn.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            closeCameraBtn.centerYAnchor.constraint(equalTo: (CallManager.shared.globalState.enableVirtualBackground ? virtualBackgroundButton : hangupBtn).centerYAnchor),
+            closeCameraBtn.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: TUICoreDefineConvert.getIsRTL() ? -110.scale375Width() : 110.scale375Width()),
+            closeCameraBtn.widthAnchor.constraint(equalToConstant: kControlBtnSize.width),
+            closeCameraBtn.heightAnchor.constraint(equalToConstant: kControlBtnSize.height)
+        ])
     }
     
     // MARK: Action Event
@@ -133,7 +149,7 @@ class VideoCallerWaitingView: UIView {
             guard let videoViewEntity = VideoFactory.shared.createVideoView(user: CallManager.shared.userState.selfUser, isShowFloatWindow: false) else {
                 return
             }
-            CallManager.shared.openCamera(videoView: videoViewEntity.getVideoView())
+            CallManager.shared.openCamera(videoView: videoViewEntity.getVideoView()) { } fail: { code, message in }
             
             (virtualBackgroundButton as? FeatureButton)?.button.isEnabled = true
             (switchCameraBtn as? FeatureButton)?.button.isEnabled = true
@@ -149,7 +165,7 @@ class VideoCallerWaitingView: UIView {
     }
     
     func hangupTouchEvent(sender: UIButton) {
-        CallManager.shared.hangup()
+        CallManager.shared.hangup() { } fail: { code, message in }
     }
     
     func switchCameraTouchEvent(sender: UIButton) {
@@ -157,13 +173,13 @@ class VideoCallerWaitingView: UIView {
     }
     
     func virtualBackgroundTouchEvent(sender: UIButton) {
-        CallManager.shared.setBlurBackground()
+        CallManager.shared.setBlurBackground(enable: CallManager.shared.viewState.isVirtualBackgroundOpened.value ? false : true) 
     }
     
     // MARK: Register TUICallState Observer && Update UI
 
     func registerObserveState() {
-        if CallManager.shared.globalState.enableVirtualBackgroud {
+        if CallManager.shared.globalState.enableVirtualBackground {
             CallManager.shared.viewState.isVirtualBackgroundOpened.addObserver(enableBlurBackgroundObserver, closure: { [weak self] _, _ in
                 guard let self = self else { return }
                 self.updateVirtualBackgroundButton()

@@ -8,7 +8,6 @@
 import Foundation
 import UIKit
 import TUICore
-import SnapKit
 
 class CallMainViewController: UIViewController {
         
@@ -18,8 +17,14 @@ class CallMainViewController: UIViewController {
         super.viewDidLoad()
         
         view.addSubview(mainView)
-        mainView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        mainView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = mainView.superview {
+            NSLayoutConstraint.activate([
+                mainView.topAnchor.constraint(equalTo: superview.topAnchor),
+                mainView.leadingAnchor.constraint(equalTo: superview.leadingAnchor),
+                mainView.trailingAnchor.constraint(equalTo: superview.trailingAnchor),
+                mainView.bottomAnchor.constraint(equalTo: superview.bottomAnchor)
+            ])
         }
     }
 }

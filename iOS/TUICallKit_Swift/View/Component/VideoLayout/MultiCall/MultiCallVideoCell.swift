@@ -6,7 +6,6 @@
 //
 
 import RTCCommon
-import SnapKit
 
 class MultiCallVideoCell: UICollectionViewCell {
     private var user: User?
@@ -18,7 +17,7 @@ class MultiCallVideoCell: UICollectionViewCell {
                 return videoView
             }
         }
-        TRTCLog.error("TUICallKit - MultiCallVideoCell::videoView, create video view failed")
+        Logger.error("MultiCallVideoCell->videoView, create video view failed")
         return VideoView(user: User(), isShowFloatWindow: false)
     }
     
@@ -26,6 +25,7 @@ class MultiCallVideoCell: UICollectionViewCell {
         super.init(frame: frame)
         CallManager.shared.userState.selfUser.callStatus.addObserver(callStatusObserver) { [weak self] newValue, _ in
             guard let self = self else { return }
+            if newValue == .none { return }
             self.setRender()
         }
     }
@@ -45,9 +45,16 @@ class MultiCallVideoCell: UICollectionViewCell {
     
     // MARK: UI Specification Processing
     private func setupView() {
+        if CallManager.shared.userState.selfUser.callStatus.value == .none { return }
         contentView.addSubview(videoView)
-        videoView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        videoView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = videoView.superview {
+            NSLayoutConstraint.activate([
+                videoView.topAnchor.constraint(equalTo: superview.topAnchor),
+                videoView.leadingAnchor.constraint(equalTo: superview.leadingAnchor),
+                videoView.trailingAnchor.constraint(equalTo: superview.trailingAnchor),
+                videoView.bottomAnchor.constraint(equalTo: superview.bottomAnchor)
+            ])
         }
         setRender()
     }
@@ -59,7 +66,7 @@ class MultiCallVideoCell: UICollectionViewCell {
                 CallManager.shared.userState.selfUser.callRole.value == .called) ||
                 (CallManager.shared.mediaState.isCameraOpened.value == true &&
                  CallManager.shared.userState.selfUser.callRole.value == .call) {
-                CallManager.shared.openCamera(videoView: videoView.getVideoView())
+                CallManager.shared.openCamera(videoView: videoView.getVideoView()) { } fail: { code, message in }
             }
             return
         }

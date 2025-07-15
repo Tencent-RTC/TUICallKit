@@ -24,13 +24,26 @@ class FloatWindowViewController: UIViewController{
         view.addSubview(floatWindowView)
         view.addSubview(gestureView)
 
-        floatWindowView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-        gestureView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        floatWindowView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = floatWindowView.superview {
+            NSLayoutConstraint.activate([
+                floatWindowView.topAnchor.constraint(equalTo: superview.topAnchor),
+                floatWindowView.leadingAnchor.constraint(equalTo: superview.leadingAnchor),
+                floatWindowView.trailingAnchor.constraint(equalTo: superview.trailingAnchor),
+                floatWindowView.bottomAnchor.constraint(equalTo: superview.bottomAnchor)
+            ])
         }
 
+        gestureView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = gestureView.superview {
+            NSLayoutConstraint.activate([
+                gestureView.topAnchor.constraint(equalTo: superview.topAnchor),
+                gestureView.leadingAnchor.constraint(equalTo: superview.leadingAnchor),
+                gestureView.trailingAnchor.constraint(equalTo: superview.trailingAnchor),
+                gestureView.bottomAnchor.constraint(equalTo: superview.bottomAnchor)
+            ])
+        }
+        
         gestureView.backgroundColor = UIColor.clear
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapGesture(tapGesture: )))
         let pan = UIPanGestureRecognizer(target: self, action: #selector(panGesture(panGesture: )))
@@ -44,6 +57,7 @@ class FloatWindowViewController: UIViewController{
         if self.delegate != nil && ((self.delegate?.responds(to: Selector(("tapGestureAction")))) != nil) {
             self.delegate?.tapGestureAction?(tapGesture: tapGesture)
         }
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: EVENT_TAP_FLOATWINDOW), object: nil)
     }
     
     @objc func panGesture(panGesture: UIPanGestureRecognizer) {

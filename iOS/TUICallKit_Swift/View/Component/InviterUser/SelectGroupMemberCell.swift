@@ -53,21 +53,34 @@ class SelectGroupMemberCell: UITableViewCell {
     }
     
     func activateConstraints() {
-        selectImageView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(12)
-            make.width.height.equalTo(20)
-            make.centerY.equalToSuperview()
+        selectImageView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = selectImageView.superview {
+            NSLayoutConstraint.activate([
+                selectImageView.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: 12),
+                selectImageView.widthAnchor.constraint(equalToConstant: 20),
+                selectImageView.heightAnchor.constraint(equalToConstant: 20),
+                selectImageView.centerYAnchor.constraint(equalTo: superview.centerYAnchor)
+            ])
         }
-        userImageView.snp.makeConstraints { make in
-            make.leading.equalTo(selectImageView.snp.trailing).offset(12)
-            make.width.height.equalTo(30)
-            make.centerY.equalToSuperview()
+        
+        userImageView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = userImageView.superview {
+            NSLayoutConstraint.activate([
+                userImageView.leadingAnchor.constraint(equalTo: selectImageView.trailingAnchor, constant: 12),
+                userImageView.widthAnchor.constraint(equalToConstant: 30),
+                userImageView.heightAnchor.constraint(equalToConstant: 30),
+                userImageView.centerYAnchor.constraint(equalTo: superview.centerYAnchor)
+            ])
         }
-        nameLabel.snp.makeConstraints { make in
-            make.leading.equalTo(self.userImageView.snp.trailing).offset(12)
-            make.trailing.equalToSuperview().offset(-12)
-            make.height.equalTo(40)
-            make.centerY.equalToSuperview()
+        
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = nameLabel.superview {
+            NSLayoutConstraint.activate([
+                nameLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: 12),
+                nameLabel.trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: -12),
+                nameLabel.heightAnchor.constraint(equalToConstant: 40),
+                nameLabel.centerYAnchor.constraint(equalTo: superview.centerYAnchor)
+            ])
         }
     }
     

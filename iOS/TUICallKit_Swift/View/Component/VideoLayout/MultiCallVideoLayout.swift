@@ -6,7 +6,6 @@
 //
 
 import RTCCommon
-import SnapKit
 
 class MultiCallVideoLayout: UIView, UICollectionViewDelegate, UICollectionViewDataSource {
     
@@ -62,18 +61,24 @@ class MultiCallVideoLayout: UIView, UICollectionViewDelegate, UICollectionViewDa
     }
     
     func activateConstraints() {
-        videoCollectionView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.width.equalToSuperview()
-            make.bottom.equalToSuperview()
-            make.top.equalToSuperview().offset(StatusBar_Height + 40.scale375Height())
+        videoCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = videoCollectionView.superview {
+            NSLayoutConstraint.activate([
+                videoCollectionView.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
+                videoCollectionView.widthAnchor.constraint(equalTo: superview.widthAnchor),
+                videoCollectionView.bottomAnchor.constraint(equalTo: superview.bottomAnchor),
+                videoCollectionView.topAnchor.constraint(equalTo: superview.topAnchor, constant: StatusBar_Height + 40.scale375Height())
+            ])
         }
-        
-        inviteeAvatarListView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.width.equalToSuperview()
-            make.height.equalTo(65.scale375Width())
-            make.centerY.equalToSuperview()
+
+        inviteeAvatarListView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = inviteeAvatarListView.superview {
+            NSLayoutConstraint.activate([
+                inviteeAvatarListView.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
+                inviteeAvatarListView.widthAnchor.constraint(equalTo: superview.widthAnchor),
+                inviteeAvatarListView.heightAnchor.constraint(equalToConstant: 65.scale375Width()),
+                inviteeAvatarListView.centerYAnchor.constraint(equalTo: superview.centerYAnchor)
+            ])
         }
     }
     
@@ -93,6 +98,7 @@ class MultiCallVideoLayout: UIView, UICollectionViewDelegate, UICollectionViewDa
         
         CallManager.shared.userState.selfUser.callStatus.addObserver(callStatusObserver) { [weak self] newValue, _ in
             guard let self = self else { return }
+            if newValue == .none { return }
             self.updateMultiCallWaitingView()
         }
     }
@@ -146,16 +152,16 @@ class MultiCallVideoLayout: UIView, UICollectionViewDelegate, UICollectionViewDa
         let remoteUpdates = getRemoteUpdates(indexPath: indexPath)
         
         var firstBigFlag = false
-        if count >= 2 && count <= 4 && indexPath.row != showLargeViewIndex {
+        if count >= 2 && count <= 4 && indexPath.row != CallManager.shared.viewState.multiCallLargeViewIndex {
             firstBigFlag = true
         }
         
-        showLargeViewIndex = (showLargeViewIndex == indexPath.row) ? -1 : indexPath.row
+        CallManager.shared.viewState.multiCallLargeViewIndex = (CallManager.shared.viewState.multiCallLargeViewIndex  == indexPath.row) ? -1 : indexPath.row
         if firstBigFlag {
-            showLargeViewIndex = 0
+            CallManager.shared.viewState.multiCallLargeViewIndex  = 0
         }
         
-        setShowLargeViewUserId(userId: (showLargeViewIndex >= 0) ? userList[indexPath.row].id.value : "")
+        setShowLargeViewUserId(userId: (CallManager.shared.viewState.multiCallLargeViewIndex >= 0) ? userList[indexPath.row].id.value : "")
         
         videoCollectionView.cancelInteractiveMovement()
         videoCollectionView.performBatchUpdates({
@@ -210,7 +216,7 @@ class MultiCallVideoLayout: UIView, UICollectionViewDelegate, UICollectionViewDa
             return [UserUpdate]()
         }
         
-        if indexPath.row == showLargeViewIndex {
+        if indexPath.row == CallManager.shared.viewState.multiCallLargeViewIndex  {
             return [
                 UserUpdate.move(0, userList[indexPath.row].multiCallCellViewIndex)
             ]

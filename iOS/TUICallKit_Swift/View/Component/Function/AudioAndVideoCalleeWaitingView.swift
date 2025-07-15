@@ -49,24 +49,32 @@ class AudioAndVideoCalleeWaitingView: UIView {
     }
     
     func activateConstraints() {
-        rejectBtn.snp.makeConstraints { make in
-            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? 80.scale375Width() : -80.scale375Width())
-            make.top.bottom.equalTo(self)
-            make.size.equalTo(kControlBtnSize)
-        }
-        acceptBtn.snp.makeConstraints { make in
-            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? -80.scale375Width() : 80.scale375Width())
-            make.top.bottom.equalTo(self)
-            make.size.equalTo(kControlBtnSize)
-        }
+        rejectBtn.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            rejectBtn.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: TUICoreDefineConvert.getIsRTL() ? 80.scale375Width() : -80.scale375Width()),
+            rejectBtn.topAnchor.constraint(equalTo: self.topAnchor),
+            rejectBtn.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            rejectBtn.widthAnchor.constraint(equalToConstant: kControlBtnSize.width),
+            rejectBtn.heightAnchor.constraint(equalToConstant: kControlBtnSize.height)
+        ])
+
+        acceptBtn.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            acceptBtn.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: TUICoreDefineConvert.getIsRTL() ? -80.scale375Width() : 80.scale375Width()),
+            acceptBtn.topAnchor.constraint(equalTo: self.topAnchor),
+            acceptBtn.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            acceptBtn.widthAnchor.constraint(equalToConstant: kControlBtnSize.width),
+            acceptBtn.heightAnchor.constraint(equalToConstant: kControlBtnSize.height)
+        ])
+
     }
     
     // MARK: Event Action
     func rejectTouchEvent(sender: UIButton) {
-        CallManager.shared.reject()
+        CallManager.shared.reject() { } fail: { code, message in }
     }
     
     func acceptTouchEvent(sender: UIButton) {
-        CallManager.shared.accept()
+        CallManager.shared.accept() { } fail: { code, message in }
     }
 }

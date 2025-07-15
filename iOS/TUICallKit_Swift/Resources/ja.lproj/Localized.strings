@@ -73,7 +73,10 @@
 "TUICallKit.cameraOn" = "カメラオン";
 "TUICallKit.cameraOff" = "カメラオフ";
 
-"TUICallKit.JoinGroupView.title" = "%d人が%@中です";
+"TUICallKit.AVRoutePickerView.speakerPhone" = "スピーカー";
+"TUICallKit.AVRoutePickerView.earpiece" = "イヤホン";
+
+"TUICallKit.JoinGroupView.title" = "%d人が通話中です";
 "TUICallKit.JoinGroupView.join" = "参加する";
 "TUICallKit.JoinGroupView.audioCall" = "音声通話";
 "TUICallKit.JoinGroupView.videoCall" = "ビデオ通話";

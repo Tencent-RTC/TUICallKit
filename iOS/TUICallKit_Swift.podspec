@@ -15,7 +15,6 @@ Pod::Spec.new do |spec|
   spec.xcconfig     = { 'VALID_ARCHS' => 'armv7 arm64 x86_64' }
   
   spec.dependency 'TUICore'
-  spec.dependency 'SnapKit'
   spec.dependency 'RTCCommon'
 
   spec.requires_arc = true

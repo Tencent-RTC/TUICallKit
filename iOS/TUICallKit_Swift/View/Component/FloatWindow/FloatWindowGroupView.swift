@@ -112,44 +112,73 @@ class FloatWindowGroupView: UIView {
     }
     
     func activateConstraints() {
-        containerView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.leading.top.equalTo(8.scale375Width())
-        }
-        shadowView.snp.makeConstraints { make in
-            make.edges.equalTo(containerView)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = containerView.superview {
+            NSLayoutConstraint.activate([
+                containerView.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
+                containerView.centerYAnchor.constraint(equalTo: superview.centerYAnchor),
+                containerView.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: 8.scale375Width()),
+                containerView.topAnchor.constraint(equalTo: superview.topAnchor, constant: 8.scale375Width())
+            ])
         }
 
-        callStateView.snp.makeConstraints { make in
-            make.top.centerX.equalTo(containerView)
-            make.width.height.equalTo(72.scale375Width())
+        shadowView.translatesAutoresizingMaskIntoConstraints = false
+        if let containerSuperview = containerView.superview, let superview = shadowView.superview, superview == containerSuperview {
+            NSLayoutConstraint.activate([
+                shadowView.topAnchor.constraint(equalTo: containerView.topAnchor),
+                shadowView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+                shadowView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+                shadowView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+            ])
         }
-        imageView.snp.makeConstraints { make in
-            make.top.equalTo(callStateView).offset(8.scale375Width())
-            make.centerX.equalTo(callStateView)
-            make.width.height.equalTo(36.scale375Width())
-        }
-        describeLabel.snp.makeConstraints { make in
-            make.centerX.width.equalTo(callStateView)
-            make.top.equalTo(imageView.snp.bottom).offset(4.scale375Width())
-            make.height.equalTo(20.scale375Width())
-        }
-        
-        mediaStatusView.snp.makeConstraints { make in
-            make.centerX.width.equalTo(containerView)
-            make.bottom.equalTo(containerView)
-            make.height.equalTo(20.scale375Width())
-        }
-        videoImageView.snp.makeConstraints { make in
-            make.centerY.equalTo(mediaStatusView)
-            make.leading.equalTo(mediaStatusView).offset(14.scale375Width())
-            make.width.height.equalTo(16.scale375Width())
-        }
-        audioImageView.snp.makeConstraints { make in
-            make.centerY.equalTo(mediaStatusView)
-            make.trailing.equalTo(mediaStatusView).offset(-14.scale375Width())
-            make.width.height.equalTo(16.scale375Width())
-        }
+
+        callStateView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            callStateView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            callStateView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            callStateView.widthAnchor.constraint(equalToConstant: 72.scale375Width()),
+            callStateView.heightAnchor.constraint(equalToConstant: 72.scale375Width())
+        ])
+
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.topAnchor.constraint(equalTo: callStateView.topAnchor, constant: 8.scale375Width()),
+            imageView.centerXAnchor.constraint(equalTo: callStateView.centerXAnchor),
+            imageView.widthAnchor.constraint(equalToConstant: 36.scale375Width()),
+            imageView.heightAnchor.constraint(equalToConstant: 36.scale375Width())
+        ])
+
+        describeLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            describeLabel.centerXAnchor.constraint(equalTo: callStateView.centerXAnchor),
+            describeLabel.widthAnchor.constraint(equalTo: callStateView.widthAnchor),
+            describeLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 4.scale375Width()),
+            describeLabel.heightAnchor.constraint(equalToConstant: 20.scale375Width())
+        ])
+
+        mediaStatusView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            mediaStatusView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            mediaStatusView.widthAnchor.constraint(equalTo: containerView.widthAnchor),
+            mediaStatusView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            mediaStatusView.heightAnchor.constraint(equalToConstant: 20.scale375Width())
+        ])
+
+        videoImageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            videoImageView.centerYAnchor.constraint(equalTo: mediaStatusView.centerYAnchor),
+            videoImageView.leadingAnchor.constraint(equalTo: mediaStatusView.leadingAnchor, constant: 14.scale375Width()),
+            videoImageView.widthAnchor.constraint(equalToConstant: 16.scale375Width()),
+            videoImageView.heightAnchor.constraint(equalToConstant: 16.scale375Width())
+        ])
+
+        audioImageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            audioImageView.centerYAnchor.constraint(equalTo: mediaStatusView.centerYAnchor),
+            audioImageView.trailingAnchor.constraint(equalTo: mediaStatusView.trailingAnchor, constant: -14.scale375Width()),
+            audioImageView.widthAnchor.constraint(equalToConstant: 16.scale375Width()),
+            audioImageView.heightAnchor.constraint(equalToConstant: 16.scale375Width())
+        ])
     }
         
     // MARK: Register TUICallState Observer && Update UI
@@ -188,11 +217,13 @@ class FloatWindowGroupView: UIView {
         guard let videoView = VideoFactory.shared.createVideoView(user: user, isShowFloatWindow: true) else { return }
         remoteUserVideoView = videoView
         addSubview(videoView)
-        videoView.snp.makeConstraints { make in
-            make.top.centerX.equalTo(containerView)
-            make.width.height.equalTo(72.scale375Width())
-        }
-        
+        videoView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            videoView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            videoView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            videoView.widthAnchor.constraint(equalToConstant: 72.scale375Width()),
+            videoView.heightAnchor.constraint(equalToConstant: 72.scale375Width())
+        ])
         if user.id.value != CallManager.shared.userState.selfUser.id.value {
             CallManager.shared.startRemoteView(user: user, videoView: videoView.getVideoView())
         }

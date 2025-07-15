@@ -22,13 +22,14 @@ class VideoFactory {
     private var videoEntityMap : [String: UserVideoEntity] = [:]
     private let callStatusObserver = Observer()
             
-    func createVideoView(user: User, isShowFloatWindow: Bool) -> VideoView? {
+    func createVideoView(user: User, isShowFloatWindow: Bool = false) -> VideoView? {
         if user.id.value.isEmpty {
-            TRTCLog.error("TUICallKit - VideoFactory::createVideoView, user id is empty")
+            Logger.error("VideoFactory - createVideoView. userId is empty.")
             return nil
         }
         
         if let videoView = getVideoView(user: user) {
+            Logger.info("VideoFactory - createVideoView. Get an existing Videoview. userId:\(user.id.value), videoView:\(videoView)")
             videoView.setIsShowFloatWindow(isShowFloatWindow: isShowFloatWindow)
             return videoView
         }
@@ -36,6 +37,7 @@ class VideoFactory {
         let videoView = VideoView(user: user, isShowFloatWindow: isShowFloatWindow)
         let videoEntity = UserVideoEntity(user: user, videoView: videoView)
         videoEntityMap[user.id.value] = videoEntity
+        Logger.info("VideoFactory - createVideoView. Create a new Videoview. userId:\(user.id.value), videoView:\(videoView)")
         return videoView
     }
     
@@ -47,10 +49,12 @@ class VideoFactory {
     }
     
     func removeVideoView(user: User) {
+        Logger.info("VideoFactory - removeVideoView. userId:\(user.id.value)")
         videoEntityMap.removeValue(forKey: user.id.value)
     }
     
     func removeAllVideoView() {
+        Logger.info("VideoFactory - removeAllVideoView.")
         videoEntityMap.removeAll()
     }
 }

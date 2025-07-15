@@ -19,7 +19,7 @@ class WindowManager: NSObject, GestureViewDelegate {
     
     // MARK: show calling Window
     func showCallingWindow() {
-        Permission.hasPermissison(callMediaType: CallManager.shared.callState.mediaType.value, fail: nil)
+        Permission.hasPermission(callMediaType: CallManager.shared.callState.mediaType.value, fail: nil)
         CallManager.shared.viewState.router.value = .fullView
         window.rootViewController = CallKitNavigationController(rootViewController: CallMainViewController())
         window.frame = CGRect(x: 0, y: 0, width: Screen_Width, height: Screen_Height)
@@ -63,6 +63,7 @@ class WindowManager: NSObject, GestureViewDelegate {
     
     // MARK: GestureViewDelegate
     func tapGestureAction(tapGesture: UITapGestureRecognizer) {
+        guard FrameworkConstants.framework == FrameworkConstants.callFrameworkNative else { return }
         WindowManager.shared.showCallingWindow()
     }
     

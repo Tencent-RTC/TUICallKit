@@ -23,8 +23,14 @@ class CallTimerView: UIView {
         super.init(frame: frame)
         
         addSubview(timerLabel)
-        timerLabel.snp.makeConstraints { make in
-            make.edges.equalTo(self)
+        timerLabel.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = timerLabel.superview {
+            NSLayoutConstraint.activate([
+                timerLabel.topAnchor.constraint(equalTo: superview.topAnchor),
+                timerLabel.leadingAnchor.constraint(equalTo: superview.leadingAnchor),
+                timerLabel.trailingAnchor.constraint(equalTo: superview.trailingAnchor),
+                timerLabel.bottomAnchor.constraint(equalTo: superview.bottomAnchor)
+            ])
         }
         
         updateTimerView()

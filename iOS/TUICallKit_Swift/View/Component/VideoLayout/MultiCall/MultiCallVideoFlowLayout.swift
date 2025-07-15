@@ -7,8 +7,6 @@
 import Foundation
 import UIKit
 
-public var showLargeViewIndex: Int = -1
-
 enum MosaicSegmentStyle {
     case fullWidth
     case fiftyFifty
@@ -25,7 +23,7 @@ class MultiCallVideoFlowLayout: UICollectionViewFlowLayout {
     
     private var contentBounds = CGRect.zero
     private var cachedAttributes = [UICollectionViewLayoutAttributes]()
-    
+        
     override func prepare() {
         super.prepare()
         
@@ -38,7 +36,7 @@ class MultiCallVideoFlowLayout: UICollectionViewFlowLayout {
         var currentIndex = 0
         var segment: MosaicSegmentStyle = getSegment(count: count, currentIndex: currentIndex)
         let cvWidth = collectionView.bounds.size.width
-        var lastFrame: CGRect = (count != 2 || showLargeViewIndex >= 0) ? .zero : CGRect(x: 0, y: cvWidth / 5, width: 0, height: 0)
+        var lastFrame: CGRect = (count != 2 || CallManager.shared.viewState.multiCallLargeViewIndex >= 0) ? .zero : CGRect(x: 0, y: cvWidth / 5, width: 0, height: 0)
         
         while currentIndex < count {
             var segmentRects = [CGRect]()
@@ -105,16 +103,16 @@ class MultiCallVideoFlowLayout: UICollectionViewFlowLayout {
             if count == 1 {
                 segment = .fullWidth
             } else if count >= 2 && count <= 4 {
-                if showLargeViewIndex >= 0  {
+                if CallManager.shared.viewState.multiCallLargeViewIndex  >= 0  {
                     segment = .fullWidth
                 } else {
                     segment = .fiftyFifty
                 }
-            } else if showLargeViewIndex == 0 {
+            } else if CallManager.shared.viewState.multiCallLargeViewIndex  == 0 {
                 segment = .oneThirdTwoThirds
-            } else if showLargeViewIndex == 1 {
+            } else if CallManager.shared.viewState.multiCallLargeViewIndex  == 1 {
                 segment = .twoThirdsOneThirdCenter
-            } else if showLargeViewIndex == 2 {
+            } else if CallManager.shared.viewState.multiCallLargeViewIndex  == 2 {
                 segment = .twoThirdsOneThirdRight
             }
             
@@ -126,7 +124,7 @@ class MultiCallVideoFlowLayout: UICollectionViewFlowLayout {
         case 1:
             if count == 3 {
                 segment = .oneThird
-            } else if count > 4 && showLargeViewIndex == (count - 1) {
+            } else if count > 4 && CallManager.shared.viewState.multiCallLargeViewIndex  == (count - 1) {
                 segment = .oneThirdTwoThirds
             } else {
                 segment = .threeOneThirds
@@ -134,21 +132,21 @@ class MultiCallVideoFlowLayout: UICollectionViewFlowLayout {
         case 2:
             if count == 4 {
                 segment = .fiftyFifty
-            } else if count > 4 && showLargeViewIndex == currentIndex {
+            } else if count > 4 && CallManager.shared.viewState.multiCallLargeViewIndex  == currentIndex {
                 segment = .oneThirdTwoThirds
-            } else if count > 4 && (showLargeViewIndex == currentIndex + 1) {
+            } else if count > 4 && (CallManager.shared.viewState.multiCallLargeViewIndex  == currentIndex + 1) {
                 segment = .twoThirdsOneThirdCenter
-            } else if count > 4 && (showLargeViewIndex == currentIndex + 2) {
+            } else if count > 4 && (CallManager.shared.viewState.multiCallLargeViewIndex  == currentIndex + 2) {
                 segment = .twoThirdsOneThirdRight
             } else {
                 segment = .threeOneThirds
             }
         default:
-            if count > 4 && showLargeViewIndex == currentIndex {
+            if count > 4 && CallManager.shared.viewState.multiCallLargeViewIndex  == currentIndex {
                 segment = .oneThirdTwoThirds
-            } else if count > 4 && (showLargeViewIndex == currentIndex + 1) {
+            } else if count > 4 && (CallManager.shared.viewState.multiCallLargeViewIndex  == currentIndex + 1) {
                 segment = .twoThirdsOneThirdCenter
-            } else if count > 4 && (showLargeViewIndex == currentIndex + 2) {
+            } else if count > 4 && (CallManager.shared.viewState.multiCallLargeViewIndex  == currentIndex + 2) {
                 segment = .twoThirdsOneThirdRight
             } else {
                 segment = .threeOneThirds

@@ -18,14 +18,16 @@ class CallEngineObserver: NSObject, TUICallObserver {
     var timer: String?
     
     func onError(code: Int32, message: String?) {
+        Logger.info("CallEngineObserver->onError. code:\(code), message:\(message ?? "")")
         if let message = message {
-            Toast.showToast("code:\(code), message:\(message)")
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: EVENT_SHOW_TOAST), object: "code:\(code), message:\(message)")
         } else {
-            Toast.showToast("code:\(code)")
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: EVENT_SHOW_TOAST), object: "code:\(code)")
         }
     }
     
     func onCallReceived(_ callId: String, callerId: String, calleeIdList: [String], mediaType: TUICallMediaType, info: TUICallObserverExtraInfo) {
+        Logger.info("CallEngineObserver->onCallReceived. callId:\(callId), callerId:\(callerId), calleeIdList:\(calleeIdList), mediaType:\(mediaType), info:\(info)")
         if (mediaType == .unknown || calleeIdList.isEmpty) {
             return
         }
@@ -42,16 +44,21 @@ class CallEngineObserver: NSObject, TUICallObserver {
         
         if !info.chatGroupId.isEmpty {
             CallManager.shared.viewState.callingViewType.value = .multi
-            CallManager.shared.callState.groupId = info.chatGroupId
+            CallManager.shared.callState.chatGroupId.value = info.chatGroupId
         }
+        
+        if CallManager.shared.viewState.callingViewType.value == .multi {
+            CallManager.shared.viewState.showLargeViewUserId.value = CallManager.shared.userState.selfUser.id.value
+        }
+
         CallManager.shared.callState.mediaType.value = mediaType
         CallManager.shared.userState.selfUser.callRole.value = TUICallRole.called
         CallManager.shared.userState.selfUser.callStatus.value = TUICallStatus.waiting
         if mediaType == .audio {
-            CallManager.shared.mediaState.audioPlayoutDevice.value = TUIAudioPlaybackDevice.earpiece
+            CallManager.shared.mediaState.audioPlayoutDevice.value = .earpiece
             CallManager.shared.mediaState.isCameraOpened.value = false
         } else if mediaType == .video {
-            CallManager.shared.mediaState.audioPlayoutDevice.value = TUIAudioPlaybackDevice.speakerphone
+            CallManager.shared.mediaState.audioPlayoutDevice.value = .speakerphone
             CallManager.shared.mediaState.isCameraOpened.value = true
         }
         
@@ -96,11 +103,13 @@ class CallEngineObserver: NSObject, TUICallObserver {
     }
     
     func onCallNotConnected(callId: String, mediaType: TUICallMediaType, reason: TUICallEndReason, userId: String, info: TUICallObserverExtraInfo) {
-        CallManager.shared.resetState()
+        Logger.info("CallEngineObserver->onCallNotConnected. callId:\(callId), mediaType:\(mediaType), reason:\(reason), userId:\(userId), info:\(info)")
+        cleanupCallingState()
         CallManager.shared.closeVoIP()
     }
     
     func onUserInviting(userId: String) {
+        Logger.info("CallEngineObserver->onUserInviting. userId:\(userId)")
         if CallManager.shared.userState.selfUser.id.value == userId  { return }
 
         guard !CallManager.shared.userState.remoteUserList.value.contains(where: { $0.id.value == userId }) else {
@@ -123,16 +132,20 @@ class CallEngineObserver: NSObject, TUICallObserver {
     }
     
     func onKickedOffline() {
-        CallManager.shared.hangup()
-        CallManager.shared.resetState()
+        Logger.info("CallEngineObserver->onKickedOffline")
+        CallManager.shared.hangup() { } fail: { code, message in }
+        cleanupCallingState()
     }
     
     func onUserSigExpired() {
-        CallManager.shared.hangup()
-        CallManager.shared.resetState()
+        Logger.info("CallEngineObserver->onUserSigExpired")
+        CallManager.shared.hangup() { } fail: { code, message in }
+        cleanupCallingState()
     }
     
     func onUserJoin(userId: String) {
+        Logger.info("CallEngineObserver->onUserJoin. userId:\(userId)")
+        guard !userId.contains(AI_TRANSLATION_ROBOT) else { return }
         for user in CallManager.shared.userState.remoteUserList.value where user.id.value == userId {
             user.callStatus.value = TUICallStatus.accept
             return
@@ -154,8 +167,9 @@ class CallEngineObserver: NSObject, TUICallObserver {
     }
     
     func onUserLeave(userId: String) {
+        Logger.info("CallEngineObserver->onUserLeave. userId:\(userId)")
         if CallManager.shared.viewState.callingViewType.value == .one2one {
-            Toast.showToast(TUICallKitLocalize(key: "TUICallKit.otherPartyHangup") ?? "")
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: EVENT_SHOW_TOAST), object: TUICallKitLocalize(key: "TUICallKit.otherPartyHangup") ?? "")
         }
         
         for index in 0 ..< CallManager.shared.userState.remoteUserList.value.count
@@ -166,13 +180,14 @@ class CallEngineObserver: NSObject, TUICallObserver {
         }
         
         if CallManager.shared.userState.remoteUserList.value.isEmpty {
-            CallManager.shared.resetState()
+            cleanupCallingState()
         }
     }
     
     func onUserReject(userId: String) {
+        Logger.info("CallEngineObserver->onUserReject. userId:\(userId)")
         if CallManager.shared.viewState.callingViewType.value == .one2one {
-            Toast.showToast(TUICallKitLocalize(key: "TUICallKit.otherPartyReject") ?? "")
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: EVENT_SHOW_TOAST), object: TUICallKitLocalize(key: "TUICallKit.otherPartyReject") ?? "")
         }
         
         for index in 0 ..< CallManager.shared.userState.remoteUserList.value.count
@@ -183,13 +198,14 @@ class CallEngineObserver: NSObject, TUICallObserver {
         }
         
         if CallManager.shared.userState.remoteUserList.value.isEmpty {
-            CallManager.shared.resetState()
+            cleanupCallingState()
         }
     }
     
     func onUserLineBusy(userId: String) {
+        Logger.info("CallEngineObserver->onUserLineBusy. userId:\(userId)")
         if CallManager.shared.viewState.callingViewType.value == .one2one {
-            Toast.showToast(TUICallKitLocalize(key: "TUICallKit.lineBusy") ?? "")
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: EVENT_SHOW_TOAST), object: TUICallKitLocalize(key: "TUICallKit.lineBusy") ?? "")
         }
         
         for index in 0 ..< CallManager.shared.userState.remoteUserList.value.count
@@ -200,13 +216,14 @@ class CallEngineObserver: NSObject, TUICallObserver {
         }
         
         if CallManager.shared.userState.remoteUserList.value.isEmpty {
-            CallManager.shared.resetState()
+            cleanupCallingState()
         }
     }
     
     func onUserNoResponse(userId: String) {
+        Logger.info("CallEngineObserver->onUserNoResponse. userId:\(userId)")
         if CallManager.shared.viewState.callingViewType.value == .one2one {
-            Toast.showToast(TUICallKitLocalize(key: "TUICallKit.otherPartyNoResponse") ?? "")
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: EVENT_SHOW_TOAST), object: TUICallKitLocalize(key: "TUICallKit.otherPartyNoResponse") ?? "")
         }
         
         for index in 0 ..< CallManager.shared.userState.remoteUserList.value.count
@@ -286,29 +303,37 @@ class CallEngineObserver: NSObject, TUICallObserver {
     }
     
     func onUserAudioAvailable(userId: String, isAudioAvailable: Bool) {
+        Logger.info("CallEngineObserver->onUserAudioAvailable. userId:\(userId), isAudioAvailable:\(isAudioAvailable)")
         for user in CallManager.shared.userState.remoteUserList.value where user.id.value == userId {
             user.audioAvailable.value = isAudioAvailable
         }
     }
     
     func onUserVideoAvailable(userId: String, isVideoAvailable: Bool) {
+        Logger.info("CallEngineObserver->onUserVideoAvailable. userId:\(userId), isVideoAvailable:\(isVideoAvailable)")
         for user in CallManager.shared.userState.remoteUserList.value where user.id.value == userId {
             user.videoAvailable.value = isVideoAvailable
         }
     }
     
     func onCallBegin(callId: String, mediaType: TUICallMediaType, info: TUICallObserverExtraInfo) {
+        Logger.info("CallEngineObserver->onCallBegin. callId:\(callId), mediaType:\(mediaType), info:\(info)")
         CallManager.shared.callState.mediaType.value = mediaType
         CallManager.shared.userState.selfUser.callRole.value = info.role
         CallManager.shared.userState.selfUser.callStatus.value = TUICallStatus.accept
+        CallManager.shared.callState.chatGroupId.value = info.chatGroupId
         
         timer = GCDTimer.start(interval: 1, repeats: true, async: true) {
             CallManager.shared.callState.callDurationCount.value += 1
         }
         
-        CallManager.shared.setAudioPlaybackDevice(device: CallManager.shared.mediaState.audioPlayoutDevice.value)
+        if AudioSessionManager.isBluetoothHeadsetActive() {
+            CallManager.shared.mediaState.audioPlayoutDevice.value = .bluetooth
+        } else {
+            CallManager.shared.selectAudioPlaybackDevice(device: TUIAudioPlaybackDevice(rawValue: CallManager.shared.mediaState.audioPlayoutDevice.value.rawValue) ?? .earpiece)
+        }
         if CallManager.shared.mediaState.isMicrophoneMuted.value == false {
-            CallManager.shared.openMicrophone()
+            CallManager.shared.openMicrophone() { } fail: { code, message in }
         } else {
             CallManager.shared.closeMicrophone()
         }
@@ -323,19 +348,27 @@ class CallEngineObserver: NSObject, TUICallObserver {
                    userId: String,
                    totalTime: Float,
                    info: TUICallObserverExtraInfo) {
-        CallManager.shared.resetState()
+        Logger.info("CallEngineObserver->onCallEnd. callId:\(callId), mediaType:\(mediaType), reason:\(reason), userId:\(userId), totalTime:\(totalTime), info:\(info)")
         GCDTimer.cancel(timerName: timer ?? "") { return }
+        cleanupCallingState()
         CallManager.shared.closeVoIP()
     }
     
     func onCallMediaTypeChanged(oldCallMediaType: TUICallMediaType, newCallMediaType: TUICallMediaType) {
+        Logger.info("CallEngineObserver->onCallMediaTypeChanged. oldCallMediaType:\(oldCallMediaType), newCallMediaType:\(newCallMediaType)")
         CallManager.shared.callState.mediaType.value = newCallMediaType
     }
     
     // MARK: private method
     private func showAntiFraudReminder() {
+        Logger.info("CallEngineObserver->showAntiFraudReminder")
         if (TUICore.getService(TUICore_PrivacyService) != nil) {
             TUICore.callService(TUICore_PrivacyService, method: TUICore_PrivacyService_CallKitAntifraudReminderMethod, param: nil)
         }
+    }
+    
+    private func cleanupCallingState() {
+        CallManager.shared.resetState()
+        AudioSessionManager.enableiOSAvroutePickerViewMode(false)
     }
 }

@@ -5,7 +5,6 @@
 //  Created by vincepzhang on 2025/2/19.
 //
 
-import SnapKit
 import UIKit
 import RTCCommon
 import RTCRoomEngine
@@ -25,6 +24,7 @@ class VideoView: UIView, GestureViewDelegate {
     private let showLargeViewUserIdObserver = Observer()
     private let callingViewTypeObserver = Observer()
     private let isVirtualBackgroundOpenedObserver = Observer()
+    private let isMicrophoneMutedObserver = Observer()
     
     weak var delegate: GestureViewDelegate?
 
@@ -47,10 +47,18 @@ class VideoView: UIView, GestureViewDelegate {
         blurEffectView.alpha = 0.85
         return blurEffectView
     }()
-    private let imageAudioInputView = {
+    private let volumeView = {
         let imageView = UIImageView(frame: CGRect.zero)
         imageView.contentMode = .scaleAspectFill
         if let image = CallKitBundle.getBundleImage(name: "icon_volume") {
+            imageView.image = image
+        }
+        return imageView
+    }()
+    private let audioMutedView = {
+        let imageView = UIImageView(frame: CGRect.zero)
+        imageView.contentMode = .scaleAspectFill
+        if let image = CallKitBundle.getBundleImage(name: "icon_mic_off") {
             imageView.image = image
         }
         return imageView
@@ -76,7 +84,6 @@ class VideoView: UIView, GestureViewDelegate {
         if let image = CallKitBundle.getBundleImage(name: "group_switch_camera") {
             btn.setBackgroundImage(image, for: .normal)
         }
-        btn.addTarget(self, action: #selector(switchCameraTouchEvent(sender:)), for: .touchUpInside)
         return btn
     }()
     private let virtualBackgroundBtn: UIButton = {
@@ -86,7 +93,6 @@ class VideoView: UIView, GestureViewDelegate {
         if let image = CallKitBundle.getBundleImage(name: imageName) {
             btn.setBackgroundImage(image, for: .normal)
         }
-        btn.addTarget(self, action: #selector(virtualBackgroundTouchEvent(sender:)), for: .touchUpInside)
         return btn
     }()
     private let loadingView = {
@@ -148,74 +154,138 @@ class VideoView: UIView, GestureViewDelegate {
         addSubview(nicknameView)
         addSubview(avatarView)
         addSubview(loadingView)
-        addSubview(imageAudioInputView)
+        addSubview(volumeView)
         addSubview(networkBadView)
         addSubview(switchCameraBtn)
         addSubview(virtualBackgroundBtn)
         addSubview(gestureView)
+        addSubview(audioMutedView)
     }
     
     private func activateConstraints() {
-        gestureView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        gestureView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = gestureView.superview {
+            NSLayoutConstraint.activate([
+                gestureView.topAnchor.constraint(equalTo: superview.topAnchor),
+                gestureView.leadingAnchor.constraint(equalTo: superview.leadingAnchor),
+                gestureView.trailingAnchor.constraint(equalTo: superview.trailingAnchor),
+                gestureView.bottomAnchor.constraint(equalTo: superview.bottomAnchor)
+            ])
         }
-        
-        backgroundAvatarView.snp.makeConstraints { make in
-            make.size.equalToSuperview()
+
+        backgroundAvatarView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = backgroundAvatarView.superview {
+            NSLayoutConstraint.activate([
+                backgroundAvatarView.widthAnchor.constraint(equalTo: superview.widthAnchor),
+                backgroundAvatarView.heightAnchor.constraint(equalTo: superview.heightAnchor)
+            ])
         }
-        
-        backgroundFilterView.snp.makeConstraints { make in
-            make.size.equalToSuperview()
+
+        backgroundFilterView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = backgroundFilterView.superview {
+            NSLayoutConstraint.activate([
+                backgroundFilterView.widthAnchor.constraint(equalTo: superview.widthAnchor),
+                backgroundFilterView.heightAnchor.constraint(equalTo: superview.heightAnchor)
+            ])
         }
-        
-        videoView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+
+        videoView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = videoView.superview {
+            NSLayoutConstraint.activate([
+                videoView.topAnchor.constraint(equalTo: superview.topAnchor),
+                videoView.leadingAnchor.constraint(equalTo: superview.leadingAnchor),
+                videoView.trailingAnchor.constraint(equalTo: superview.trailingAnchor),
+                videoView.bottomAnchor.constraint(equalTo: superview.bottomAnchor)
+            ])
         }
-                
-        if CallManager.shared.viewState.callingViewType.value == .one2one {
-            avatarView.snp.makeConstraints { make in
-                make.center.equalToSuperview()
-                make.width.height.equalTo(self.snp.width).multipliedBy(0.3)
+
+        avatarView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = avatarView.superview {
+            if CallManager.shared.viewState.callingViewType.value == .one2one {
+                NSLayoutConstraint.activate([
+                    avatarView.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
+                    avatarView.centerYAnchor.constraint(equalTo: superview.centerYAnchor),
+                    avatarView.widthAnchor.constraint(equalTo: superview.widthAnchor, multiplier: 0.3),
+                    avatarView.heightAnchor.constraint(equalTo: superview.widthAnchor, multiplier: 0.3)
+                ])
+            } else {
+                NSLayoutConstraint.activate([
+                    avatarView.topAnchor.constraint(equalTo: superview.topAnchor),
+                    avatarView.leadingAnchor.constraint(equalTo: superview.leadingAnchor),
+                    avatarView.trailingAnchor.constraint(equalTo: superview.trailingAnchor),
+                    avatarView.bottomAnchor.constraint(equalTo: superview.bottomAnchor)
+                ])
             }
-        } else {
-            avatarView.snp.makeConstraints { make in
-                make.edges.equalToSuperview()
-            }
         }
 
-        loadingView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.height.width.equalToSuperview().multipliedBy(0.5)
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = loadingView.superview {
+            NSLayoutConstraint.activate([
+                loadingView.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
+                loadingView.centerYAnchor.constraint(equalTo: superview.centerYAnchor),
+                loadingView.widthAnchor.constraint(equalTo: superview.widthAnchor, multiplier: 0.5),
+                loadingView.heightAnchor.constraint(equalTo: superview.heightAnchor, multiplier: 0.5)
+            ])
         }
 
-        imageAudioInputView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16.scale375Width())
-            make.bottom.equalToSuperview().offset(-16.scale375Width())
-            make.width.height.equalTo(24.scale375Width())
+        volumeView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = volumeView.superview {
+            NSLayoutConstraint.activate([
+                volumeView.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: 16.scale375Width()),
+                volumeView.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: -16.scale375Width()),
+                volumeView.widthAnchor.constraint(equalToConstant: 24.scale375Width()),
+                volumeView.heightAnchor.constraint(equalToConstant: 24.scale375Width())
+            ])
         }
         
-        nicknameView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16.scale375Width())
-            make.bottom.equalToSuperview().offset(-16.scale375Width())
-            make.height.equalTo(24.scale375Width())
-        }
-        
-        virtualBackgroundBtn.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-16.scale375Width())
-            make.bottom.equalToSuperview().offset(-16.scale375Width())
-            make.width.height.equalTo(24.scale375Width())
-        }
-        
-        switchCameraBtn.snp.makeConstraints { make in
-            make.trailing.equalTo(virtualBackgroundBtn.snp.leading).offset(-16.scale375Width())
-            make.bottom.equalToSuperview().offset(-16.scale375Width())
-            make.width.height.equalTo(24.scale375Width())
+        audioMutedView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = audioMutedView.superview {
+            NSLayoutConstraint.activate([
+                audioMutedView.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: 16.scale375Width()),
+                audioMutedView.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: -16.scale375Width()),
+                audioMutedView.widthAnchor.constraint(equalToConstant: 24.scale375Width()),
+                audioMutedView.heightAnchor.constraint(equalToConstant: 24.scale375Width())
+            ])
         }
 
-        networkBadView.snp.makeConstraints { make in
-            make.trailing.equalTo(switchCameraBtn.snp.leading).offset(-16.scale375Width())
-            make.bottom.equalToSuperview().offset(-16.scale375Width())
-            make.width.height.equalTo(24.scale375Width())
+
+        nicknameView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = nicknameView.superview {
+            NSLayoutConstraint.activate([
+                nicknameView.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: 16.scale375Width()),
+                nicknameView.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: -16.scale375Width()),
+                nicknameView.heightAnchor.constraint(equalToConstant: 24.scale375Width())
+            ])
+        }
+
+        virtualBackgroundBtn.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = virtualBackgroundBtn.superview {
+            NSLayoutConstraint.activate([
+                virtualBackgroundBtn.trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: -16.scale375Width()),
+                virtualBackgroundBtn.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: -16.scale375Width()),
+                virtualBackgroundBtn.widthAnchor.constraint(equalToConstant: 24.scale375Width()),
+                virtualBackgroundBtn.heightAnchor.constraint(equalToConstant: 24.scale375Width())
+            ])
+        }
+
+        switchCameraBtn.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = switchCameraBtn.superview {
+            NSLayoutConstraint.activate([
+                switchCameraBtn.trailingAnchor.constraint(equalTo: virtualBackgroundBtn.leadingAnchor, constant: -16.scale375Width()),
+                switchCameraBtn.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: -16.scale375Width()),
+                switchCameraBtn.widthAnchor.constraint(equalToConstant: 24.scale375Width()),
+                switchCameraBtn.heightAnchor.constraint(equalToConstant: 24.scale375Width())
+            ])
+        }
+
+        networkBadView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = networkBadView.superview {
+            NSLayoutConstraint.activate([
+                networkBadView.trailingAnchor.constraint(equalTo: switchCameraBtn.leadingAnchor, constant: -16.scale375Width()),
+                networkBadView.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: -16.scale375Width()),
+                networkBadView.widthAnchor.constraint(equalToConstant: 24.scale375Width()),
+                networkBadView.heightAnchor.constraint(equalToConstant: 24.scale375Width())
+            ])
         }
     }
     
@@ -226,6 +296,9 @@ class VideoView: UIView, GestureViewDelegate {
         gestureView.addGestureRecognizer(tap)
         pan.require(toFail: tap)
         gestureView.addGestureRecognizer(pan)
+        
+        switchCameraBtn.addTarget(self, action: #selector(switchCameraTouchEvent(sender:)), for: .touchUpInside)
+        virtualBackgroundBtn.addTarget(self, action: #selector(virtualBackgroundTouchEvent(sender:)), for: .touchUpInside)
     }
 
     // MARK: Action Event
@@ -234,7 +307,7 @@ class VideoView: UIView, GestureViewDelegate {
     }
     
     @objc func virtualBackgroundTouchEvent(sender: UIButton ) {
-        CallManager.shared.setBlurBackground()
+        CallManager.shared.setBlurBackground(enable: CallManager.shared.viewState.isVirtualBackgroundOpened.value ? false : true)
     }
 
     // MARK: Observer
@@ -243,6 +316,8 @@ class VideoView: UIView, GestureViewDelegate {
             guard let self = self else { return }
             self.updateVideoView()
             self.updateAvatarView()
+            self.updateVirtualBackgroundBtn()
+            self.updateSwtchCameraBtn()
         }
                 
         user.callStatus.addObserver(callStatusObserver) { [weak self] newValue, _ in
@@ -252,7 +327,7 @@ class VideoView: UIView, GestureViewDelegate {
         
         user.playoutVolume.addObserver(playoutVolumeObserver) { [weak self] newValue, _ in
             guard let self = self else { return }
-            self.updateAudioInputView()
+            self.updateVolumeView()
             self.updateNicknameView()
         }
         
@@ -276,6 +351,11 @@ class VideoView: UIView, GestureViewDelegate {
             guard let self = self else { return }
             self.updateVirtualBackgroundBtn()
         }
+        
+        CallManager.shared.mediaState.isMicrophoneMuted.addObserver(isMicrophoneMutedObserver) { [weak self] newValue, _ in
+            guard let self = self else { return }
+            self.updateAudioMutedView()
+        }
     }
     
     private func unregisterobserver() {
@@ -287,6 +367,7 @@ class VideoView: UIView, GestureViewDelegate {
         user.networkQualityReminder.removeObserver(networkQualityReminderObserver)
         CallManager.shared.viewState.showLargeViewUserId.removeObserver(showLargeViewUserIdObserver)
         CallManager.shared.viewState.callingViewType.removeObserver(callingViewTypeObserver)
+        CallManager.shared.mediaState.isMicrophoneMuted.removeObserver(isMicrophoneMutedObserver)
     }
     
     // MARK: Config View
@@ -296,7 +377,8 @@ class VideoView: UIView, GestureViewDelegate {
         updateVideoView()
         updateAvatarView()
         updateLoadingView()
-        updateAudioInputView()
+        updateVolumeView()
+        updateAudioMutedView()
         updateNicknameView()
         updateNetworkQualityView()
         updateSwtchCameraBtn()
@@ -349,12 +431,21 @@ class VideoView: UIView, GestureViewDelegate {
         }
     }
     
-    private func updateAudioInputView() {
-        imageAudioInputView.isHidden = true
+    private func updateVolumeView() {
+        volumeView.isHidden = true
         if isShowFloatWindow { return }
 
         if user.playoutVolume.value > 5 && CallManager.shared.viewState.callingViewType.value == .multi {
-            imageAudioInputView.isHidden = false
+            volumeView.isHidden = false
+        }
+    }
+    
+    private func updateAudioMutedView() {
+        audioMutedView.isHidden = true
+        if isShowFloatWindow { return }
+        if user.id.value == CallManager.shared.userState.selfUser.id.value && CallManager.shared.viewState.callingViewType.value == .multi
+            && CallManager.shared.mediaState.isMicrophoneMuted.value {
+            audioMutedView.isHidden = false
         }
     }
 
@@ -404,7 +495,7 @@ class VideoView: UIView, GestureViewDelegate {
         let largeViewUserId = CallManager.shared.viewState.showLargeViewUserId.value
         if user.videoAvailable.value && user.id.value == selfUser.id.value &&
             user.id.value == largeViewUserId && !isShowFloatWindow &&
-            CallManager.shared.globalState.enableVirtualBackgroud &&
+            CallManager.shared.globalState.enableVirtualBackground &&
             CallManager.shared.viewState.callingViewType.value == .multi{
             virtualBackgroundBtn.isHidden = false
             let imageName = CallManager.shared.viewState.isVirtualBackgroundOpened.value ? "group_virtual_background_on" : "group_virtual_background_off"
@@ -427,11 +518,12 @@ class VideoView: UIView, GestureViewDelegate {
         avatarView.isHighlighted = true
         loadingView.isHidden = true
         videoView.isHidden = true
-        imageAudioInputView.isHidden = true
+        volumeView.isHidden = true
         networkBadView.isHidden = true
         switchCameraBtn.isHidden = true
         virtualBackgroundBtn.isHidden = true
         nicknameView.isHidden = true
+        audioMutedView.isHidden = true
     }
     
     // MARK: Gesture Action

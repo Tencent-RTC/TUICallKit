@@ -14,7 +14,7 @@ import RTCCommon
 
 class RecentCallsCellViewModel {
     
-    var avatarImage: UIImage = UIImage()
+    var avatarImage: Observable<UIImage> = Observable(UIImage())
     var faceURL: Observable<String> = Observable("")
     
     var titleLabelStr: Observable<String> = Observable("")
@@ -35,23 +35,24 @@ class RecentCallsCellViewModel {
     }
     
     private func configAvatarImage(_ callRecord: TUICallRecords) {
-        if callRecord.scene == .group {
-            
+        guard var userIds = callRecord.inviteList as? [String] else { return }
+        userIds.append(callRecord.inviter)
+        let selfUserId = CallManager.shared.userState.selfUser.id.value
+        userIds = userIds.filter { $0 != selfUserId }
+        
+        if (!callRecord.groupId.isEmpty || userIds.count >= 2) {
             var inviteList = callRecord.inviteList
             inviteList.insert(callRecord.inviter, at: 0)
             guard let inviteList = inviteList as? [String] else { return }
             configGroupAvatarImage(inviteList)
-            
-        } else if callRecord.scene == .single {
-            configSingleAvatarImage(callRecord)
         } else {
-            avatarImage = TUICoreDefineConvert.getDefaultGroupAvatarImage()
+            configSingleAvatarImage(callRecord)
         }
     }
     
     private func configGroupAvatarImage(_ inviteList: [String]) {
         if inviteList.isEmpty {
-            avatarImage = TUICoreDefineConvert.getDefaultGroupAvatarImage()
+            avatarImage.value = TUICoreDefineConvert.getDefaultGroupAvatarImage()
             return
         }
         
@@ -60,9 +61,9 @@ class RecentCallsCellViewModel {
         getCacheAvatarForInviteStr(inviteStr) { [weak self] avatar in
             guard let self = self else { return }
             if let avatar = avatar {
-                self.avatarImage = avatar
+                self.avatarImage.value = avatar
             } else {
-                V2TIMManager.sharedInstance()?.getUsersInfo(inviteList, succ: { infoList in
+                V2TIMManager.sharedInstance().getUsersInfo(inviteList, succ: { infoList in
                     var avatarsList = [String]()
                     
                     infoList?.forEach { userFullInfo in
@@ -74,7 +75,7 @@ class RecentCallsCellViewModel {
                     }
                     TUIGroupAvatar.createGroupAvatar(avatarsList, finished: { [weak self] image in
                         guard let self = self else { return }
-                        self.avatarImage = image
+                        self.avatarImage.value = image
                         self.cacheGroupCallAvatar(image, inviteStr: inviteStr)
                     })
                 }, fail: nil)
@@ -83,7 +84,7 @@ class RecentCallsCellViewModel {
     }
     
     private func configSingleAvatarImage(_ callRecord: TUICallRecords) {
-        avatarImage = TUICoreDefineConvert.getDefaultAvatarImage()
+        avatarImage.value = TUICoreDefineConvert.getDefaultAvatarImage()
         var useId = callRecord.inviter
         
         if callRecord.role == .call {
@@ -92,7 +93,7 @@ class RecentCallsCellViewModel {
         }
         
         if !useId.isEmpty {
-            V2TIMManager.sharedInstance()?.getUsersInfo([useId], succ: { [weak self] infoList in
+            V2TIMManager.sharedInstance().getUsersInfo([useId], succ: { [weak self] infoList in
                 guard let self = self else { return }
                 if let userFullInfo = infoList?.first {
                     if let faceURL = userFullInfo.faceURL, !faceURL.isEmpty, faceURL.hasPrefix("http") {
@@ -127,28 +128,14 @@ class RecentCallsCellViewModel {
     }
     
     func configTitle(_ callRecord: TUICallRecords) {
+        guard var userIds = callRecord.inviteList as? [String] else { return }
+        userIds.append(callRecord.inviter)
+        
+        let selfUserId = CallManager.shared.userState.selfUser.id.value
+        userIds = userIds.filter { $0 != selfUserId }
+
         titleLabelStr.value = ""
-        var allUsers: [String] = []
-        
-        switch callRecord.scene {
-        case .single:
-            if callRecord.role == .call {
-                guard let inviteList = callRecord.inviteList as? [String] else { return }
-                allUsers = inviteList
-            } else if callRecord.role == .called {
-                let inviter = callRecord.inviter
-                allUsers.append(inviter)
-            }
-        case .group:
-            guard let inviteList = callRecord.inviteList as? [String] else { return }
-            allUsers = inviteList
-        case .multi:
-            break
-        @unknown default:
-            break
-        }
-        
-        UserManager.getUserInfosFromIM(userIDs: allUsers) { [weak self] infoList in
+        UserManager.getUserInfosFromIM(userIDs: userIds) { [weak self] infoList in
             guard let self = self else { return }
             let titleArray = infoList.map { $0.remark.value.count > 0
                 ? $0.remark.value

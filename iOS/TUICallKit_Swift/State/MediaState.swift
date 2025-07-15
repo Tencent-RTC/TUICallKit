@@ -8,6 +8,12 @@
 import RTCCommon
 import RTCRoomEngine
 
+enum AudioPlaybackDevice: UInt {
+    case speakerphone = 0
+    case earpiece = 1
+    case bluetooth = 2
+}
+
 class MediaState: NSObject {
     
     let isCameraOpened: Observable<Bool> = Observable(false)
@@ -16,7 +22,7 @@ class MediaState: NSObject {
 
     let isMicrophoneMuted: Observable<Bool> = Observable(false)
     
-    let audioPlayoutDevice: Observable<TUIAudioPlaybackDevice> = Observable(TUIAudioPlaybackDevice.earpiece)
+    let audioPlayoutDevice: Observable<AudioPlaybackDevice> = Observable(AudioPlaybackDevice.earpiece)
     
     func reset() {
         isCameraOpened.value = false

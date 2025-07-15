@@ -8,12 +8,12 @@
 
 import Foundation
 import TUICore
-import RTCRoomEngine
 
 extension NSObject {
     @objc class func swiftLoad() {
-        let _ = TUICallKit.createInstance()
-        let _ = TUICallEngine.createInstance()
+        NotificationCenter.default.addObserver(self, selector: #selector(initSdkSuccess(_:)),
+                                               name: Notification.Name.TUIInitSdkSuccess,
+                                               object: nil)
         
         TUICore.registerService(TUICore_TUICallingService, object: TUICallKitService.instance)
         
@@ -38,5 +38,14 @@ extension NSObject {
         TUICore.registerObjectFactory(TUICore_TUICallingObjectFactory, objectFactory: TUICallKitObjectFactory.instance)
         
         TUIThemeManager.share().registerThemeResourcePath(TUICoreDefineConvert.getTUICallKitThemePath(), for: .calling)
+    }
+    
+    @objc func initSdkSuccess(_ notification: Notification) {
+        if FrameworkConstants.framework != FrameworkConstants.callFrameworkNative {
+            let _ = CallManager.shared
+            return
+        }
+        
+        let _ = TUICallKit.createInstance()
     }
 }

@@ -13,7 +13,9 @@ class ViewState: NSObject {
     let isVirtualBackgroundOpened: Observable<Bool> = Observable(false)
     let router: Observable<ViewRouter> = Observable(.none)
     let callingViewType: Observable<CallingViewType> = Observable(.one2one)
-
+    let isScreenCleaned: Observable<Bool> = Observable(false)
+    var multiCallLargeViewIndex = 0
+    
     enum ViewRouter {
         case none
         case banner
@@ -30,5 +32,8 @@ class ViewState: NSObject {
         showLargeViewUserId.value = ""
         isVirtualBackgroundOpened.value = false
         router.value = .none
+        callingViewType.value = .one2one
+        isScreenCleaned.value = false
+        multiCallLargeViewIndex = 0
     }
 }

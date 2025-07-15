@@ -128,7 +128,7 @@ class CallingBellFeature: NSObject, AVAudioPlayerDelegate {
     // MARK: TRTC Audio Player
     private func startPlayMusicByTRTCPlayer(path: String, id: Int32) {
         let audioDevice: TUIAudioPlaybackDevice = CallManager.shared.callState.mediaType.value == .audio ? .earpiece : .speakerphone
-        CallManager.shared.setAudioPlaybackDevice(device: audioDevice)
+        CallManager.shared.selectAudioPlaybackDevice(device: audioDevice)
         
         let param = TXAudioMusicParam()
         param.id = id
