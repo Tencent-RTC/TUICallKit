@@ -4,8 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import androidx.constraintlayout.utils.widget.ImageFilterView
+import androidx.core.content.ContextCompat
 import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.manager.CallManager
+import com.trtc.tuikit.common.imageloader.ImageLoader
 
 class AudioAndVideoCalleeWaitingView(context: Context) : RelativeLayout(context) {
     override fun onAttachedToWindow() {
@@ -19,11 +22,20 @@ class AudioAndVideoCalleeWaitingView(context: Context) : RelativeLayout(context)
         LayoutInflater.from(context).inflate(R.layout.tuicallkit_function_view_invited_waiting, this)
         val layoutReject: LinearLayout = findViewById(R.id.ll_reject)
         val layoutDialing: LinearLayout = findViewById(R.id.ll_answer)
+        val imageViewReject: ImageFilterView = findViewById(R.id.img_reject)
 
         layoutReject.setOnClickListener {
+            imageViewReject.roundPercent = 1.0f
+            imageViewReject.setBackgroundColor(ContextCompat.getColor(context, R.color.tuicallkit_button_bg_red))
+            ImageLoader.loadGif(context, imageViewReject, R.drawable.tuicallkit_hangup_loading)
+            layoutDialing.isEnabled = false
+            layoutDialing.alpha = 0.8f
             CallManager.instance.reject(null)
         }
         layoutDialing.setOnClickListener {
+            if (!layoutDialing.isEnabled) {
+                return@setOnClickListener
+            }
             CallManager.instance.accept(null)
         }
     }

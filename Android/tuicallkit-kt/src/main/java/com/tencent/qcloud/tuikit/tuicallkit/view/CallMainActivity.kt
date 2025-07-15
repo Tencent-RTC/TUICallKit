@@ -76,24 +76,22 @@ class CallMainActivity : FullScreenActivity() {
     }
 
     private fun initView() {
-        val scene = CallManager.instance.callState.scene
+        val scene = CallManager.instance.callState.scene.get()
         val callStatus = CallManager.instance.userState.selfUser.get().callStatus.get()
-
-        Logger.i(TAG, "initView, scene: ${scene.get()} ,callStatus: $callStatus")
+        Logger.i(TAG, "initView, scene: $scene ,callStatus: $callStatus")
         if (TUICallDefine.Status.None == callStatus) {
             finish()
             return
         }
-
         callView?.removeAllViews()
-        if (scene.get() == TUICallDefine.Scene.GROUP_CALL) {
+        if (scene == TUICallDefine.Scene.GROUP_CALL || scene == TUICallDefine.Scene.MULTI_CALL) {
             callView = GroupCallView(this)
-        } else if (scene.get() == TUICallDefine.Scene.SINGLE_CALL) {
+        } else if (scene == TUICallDefine.Scene.SINGLE_CALL) {
             callView = SingleCallView(this)
         }
-
+        val view = GlobalState.instance.callAdapter?.onCreateMainView(callView!!) ?: callView
         val rootView = window.decorView.findViewById<View>(android.R.id.content) as ViewGroup
-        rootView.addView(callView)
+        rootView.addView(view)
 
         FloatWindowManager.sharedInstance().dismiss()
         CallManager.instance.viewState.router.set(ViewState.ViewRouter.FullView)

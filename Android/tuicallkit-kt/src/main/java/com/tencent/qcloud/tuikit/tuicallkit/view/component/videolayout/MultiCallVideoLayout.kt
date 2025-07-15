@@ -69,11 +69,11 @@ class MultiCallVideoLayout(context: Context) : ConstraintLayout(context) {
     init {
         userList.add(CallManager.instance.userState.selfUser.get())
         userList.addAll(CallManager.instance.userState.remoteUserList.get())
+        initView()
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        initView()
         registerObserver()
     }
 
@@ -93,7 +93,9 @@ class MultiCallVideoLayout(context: Context) : ConstraintLayout(context) {
     private fun unregisterObserver() {
         CallManager.instance.userState.selfUser.get().callStatus.removeObserver(callStatusObserver)
         CallManager.instance.userState.remoteUserList.removeObserver(remoteUserListObserver)
-        CallManager.instance.viewState.showLargeViewUserId.removeObserver(showLargeViewUserIdObserver)
+        CallManager.instance.viewState.showLargeViewUserId.removeObserver(
+            showLargeViewUserIdObserver
+        )
     }
 
     private fun initView() {
@@ -163,7 +165,8 @@ class MultiCallVideoLayout(context: Context) : ConstraintLayout(context) {
         videoView?.setOnClickListener() {
             post {
                 val index: Int = userList.indexOf(user)
-                val showLargeViewUserId = if (index != layoutVideoGrid.showLargeViewIndex) user.id else ""
+                val showLargeViewUserId =
+                    if (index != layoutVideoGrid.showLargeViewIndex) user.id else ""
                 updateShowLargeViewUserId(showLargeViewUserId)
             }
         }
@@ -178,7 +181,12 @@ class MultiCallVideoLayout(context: Context) : ConstraintLayout(context) {
                 return true
             }
 
-            override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+            override fun onScroll(
+                e1: MotionEvent?,
+                e2: MotionEvent,
+                distanceX: Float,
+                distanceY: Float
+            ): Boolean {
                 return true
             }
         })

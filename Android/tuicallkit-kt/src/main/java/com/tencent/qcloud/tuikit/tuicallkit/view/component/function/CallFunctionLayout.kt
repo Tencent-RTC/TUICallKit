@@ -45,7 +45,8 @@ class CallFunctionLayout(context: Context) : ConstraintLayout(context) {
     }
 
     private fun updateLayout() {
-        if (CallManager.instance.callState.scene.get() == TUICallDefine.Scene.GROUP_CALL) {
+        val scene = CallManager.instance.callState.scene.get()
+        if (scene == TUICallDefine.Scene.GROUP_CALL || scene == TUICallDefine.Scene.MULTI_CALL) {
             updateGroupCallLayout()
         } else {
             updateSingleCallLayout()

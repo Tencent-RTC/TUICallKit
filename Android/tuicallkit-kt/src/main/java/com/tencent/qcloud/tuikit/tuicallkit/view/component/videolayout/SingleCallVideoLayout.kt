@@ -66,11 +66,11 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
         if (remoteUserList != null && remoteUserList.size > 0) {
             remoteUser = remoteUserList.first()
         }
+        initView()
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        initView()
         registerObserver()
     }
 
@@ -150,14 +150,10 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
     }
 
     private fun initBigVideoView() {
-        videoViewBig = VideoFactory.instance.createVideoView(
-            context,
-            CallManager.instance.userState.selfUser.get()
-        )
+        videoViewBig = VideoFactory.instance.createVideoView(context, CallManager.instance.userState.selfUser.get())
         resetView(videoViewBig)
         layoutRenderBig.removeAllViews()
         layoutRenderBig.addView(videoViewBig)
-
         val isCameraOpen = CallManager.instance.mediaState.isCameraOpened.get()
         val isFrontCamera = CallManager.instance.mediaState.isFrontCamera.get()
         if (isCameraOpen) {
@@ -199,8 +195,8 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
     private fun setBackground() {
         if (CallManager.instance.callState.mediaType.get() == TUICallDefine.MediaType.Audio) {
             imageBackground.visibility = VISIBLE
-            val option =
-                ImageOptions.Builder().setPlaceImage(R.drawable.tuicallkit_ic_avatar).setBlurEffect(80f).build()
+            val option = ImageOptions.Builder().setPlaceImage(R.drawable.tuicallkit_ic_avatar)
+                .setBlurEffect(80f).build()
             ImageLoader.load(context, imageBackground, remoteUser.avatar.get(), option)
             imageBackground.setColorFilter(ContextCompat.getColor(context, R.color.tuicallkit_color_blur_mask))
         }
@@ -224,8 +220,10 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
             else -> ScreenUtil.getRealScreenWidth(context) > ScreenUtil.getRealScreenHeight(context)
         }
 
-        val wWidth = context.resources.getDimension(R.dimen.tuicallkit_video_small_view_width).toInt()
-        val hHeight = context.resources.getDimension(R.dimen.tuicallkit_video_small_view_height).toInt()
+        val wWidth =
+            context.resources.getDimension(R.dimen.tuicallkit_video_small_view_width).toInt()
+        val hHeight =
+            context.resources.getDimension(R.dimen.tuicallkit_video_small_view_height).toInt()
 
         val lp = layoutRenderSmall.layoutParams
         lp?.width = if (isLandScape) hHeight else wWidth
@@ -244,7 +242,12 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
                 return true
             }
 
-            override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+            override fun onScroll(
+                e1: MotionEvent?,
+                e2: MotionEvent,
+                distanceX: Float,
+                distanceY: Float
+            ): Boolean {
                 val offsetX = if (isRTL) (e2.x - (e1?.x ?: 0f)) else ((e1?.x ?: 0f) - e2.x)
                 val layoutParams = view.layoutParams as ConstraintLayout.LayoutParams
                 val newX = (layoutParams.marginEnd + offsetX).toInt()
@@ -260,5 +263,6 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
         view.setOnTouchListener { v, event -> detector.onTouchEvent(event) }
     }
 
-    private val isRTL: Boolean = context.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL
+    private val isRTL: Boolean =
+        context.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL
 }
