@@ -73,7 +73,10 @@
 "TUICallKit.cameraOn" = "تشغيل الكاميرا";
 "TUICallKit.cameraOff" = "إيقاف الكاميرا";
 
-"TUICallKit.JoinGroupView.title" = "يرتاد %d أشخاص %@";
+"TUICallKit.AVRoutePickerView.speakerPhone" = "المتكلم";
+"TUICallKit.AVRoutePickerView.earpiece" = "سماعة الأذن";
+
+"TUICallKit.JoinGroupView.title" = "\%d جاري المكالمة";
 "TUICallKit.JoinGroupView.join" = "الانضمام";
 "TUICallKit.JoinGroupView.audioCall" = "مكالمة صوتية";
 "TUICallKit.JoinGroupView.videoCall" = "مكالمة فيديو";

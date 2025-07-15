@@ -45,22 +45,27 @@ class FunctionView: UIView {
         let functionViewBottomOffset = -Bottom_SafeHeight - 40.scale375Height()
         let baseControlHeight = 60.scale375Width() + 5.scale375Height() + 20.scale375Height()
 
-        audioCallerWaitingAndAcceptedFunctionView.snp.makeConstraints({ make in
-            make.centerX.equalTo(self)
-            make.bottom.equalTo(self.snp.bottom).offset(functionViewBottomOffset)
-            make.height.equalTo(baseControlHeight)
-            make.width.equalTo(self.snp.width)
-        })
-        videoCallerWaitingFunctionView.snp.makeConstraints({ make in
-            make.centerX.equalTo(self)
-            make.bottom.equalTo(self.snp.bottom)
-            make.width.equalTo(self.snp.width)
-        })
-        audioAndVideoCalleeWaitingFunctionView.snp.makeConstraints({ make in
-            make.centerX.equalTo(self)
-            make.bottom.equalTo(self.snp.bottom).offset(functionViewBottomOffset)
-            make.width.equalTo(self.snp.width)
-        })
+        audioCallerWaitingAndAcceptedFunctionView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            audioCallerWaitingAndAcceptedFunctionView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            audioCallerWaitingAndAcceptedFunctionView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: functionViewBottomOffset),
+            audioCallerWaitingAndAcceptedFunctionView.heightAnchor.constraint(equalToConstant: baseControlHeight),
+            audioCallerWaitingAndAcceptedFunctionView.widthAnchor.constraint(equalTo: self.widthAnchor)
+        ])
+
+        videoCallerWaitingFunctionView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            videoCallerWaitingFunctionView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            videoCallerWaitingFunctionView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            videoCallerWaitingFunctionView.widthAnchor.constraint(equalTo: self.widthAnchor)
+        ])
+
+        audioAndVideoCalleeWaitingFunctionView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            audioAndVideoCalleeWaitingFunctionView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            audioAndVideoCalleeWaitingFunctionView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: functionViewBottomOffset),
+            audioAndVideoCalleeWaitingFunctionView.widthAnchor.constraint(equalTo: self.widthAnchor)
+        ])
     }
     
     //MARK: init,deinit

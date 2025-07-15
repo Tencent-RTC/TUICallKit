@@ -55,19 +55,34 @@ class MultiCallLoadingView: UIView {
     }
     
     private func activateConstraints() {
-        dotLeft.snp.makeConstraints { make in
-            make.centerY.equalTo(self)
-            make.centerX.equalTo(dotCenter).offset(-(dotSpacing + kMultiCallLoadingViewDotSize))
-            make.width.height.equalTo(kMultiCallLoadingViewDotSize)
+        dotLeft.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = dotLeft.superview {
+            NSLayoutConstraint.activate([
+                dotLeft.centerYAnchor.constraint(equalTo: superview.centerYAnchor),
+                dotLeft.centerXAnchor.constraint(equalTo: dotCenter.centerXAnchor, constant: -(dotSpacing + kMultiCallLoadingViewDotSize)),
+                dotLeft.widthAnchor.constraint(equalToConstant: kMultiCallLoadingViewDotSize),
+                dotLeft.heightAnchor.constraint(equalToConstant: kMultiCallLoadingViewDotSize)
+            ])
         }
-        dotCenter.snp.makeConstraints { make in
-            make.center.equalTo(self)
-            make.width.height.equalTo(kMultiCallLoadingViewDotSize)
+
+        dotCenter.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = dotCenter.superview {
+            NSLayoutConstraint.activate([
+                dotCenter.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
+                dotCenter.centerYAnchor.constraint(equalTo: superview.centerYAnchor),
+                dotCenter.widthAnchor.constraint(equalToConstant: kMultiCallLoadingViewDotSize),
+                dotCenter.heightAnchor.constraint(equalToConstant: kMultiCallLoadingViewDotSize)
+            ])
         }
-        dotRight.snp.makeConstraints { make in
-            make.centerY.equalTo(self)
-            make.centerX.equalTo(dotCenter).offset(dotSpacing + kMultiCallLoadingViewDotSize)
-            make.width.height.equalTo(kMultiCallLoadingViewDotSize)
+
+        dotRight.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = dotRight.superview {
+            NSLayoutConstraint.activate([
+                dotRight.centerYAnchor.constraint(equalTo: superview.centerYAnchor),
+                dotRight.centerXAnchor.constraint(equalTo: dotCenter.centerXAnchor, constant: dotSpacing + kMultiCallLoadingViewDotSize),
+                dotRight.widthAnchor.constraint(equalToConstant: kMultiCallLoadingViewDotSize),
+                dotRight.heightAnchor.constraint(equalToConstant: kMultiCallLoadingViewDotSize)
+            ])
         }
     }
     

@@ -7,7 +7,6 @@
 
 import Foundation
 import UIKit
-import SnapKit
 
 typealias FeatureButtonActionCallback = (_ sender: UIButton) -> Void
 
@@ -56,15 +55,23 @@ class FeatureButton: UIView {
     }
     
     private func activateConstraints() {
-        button.snp.makeConstraints { make in
-            make.top.equalTo(self)
-            make.centerX.equalTo(self)
-            make.size.equalTo(imageSize)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = button.superview {
+            NSLayoutConstraint.activate([
+                button.topAnchor.constraint(equalTo: superview.topAnchor),
+                button.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
+                button.widthAnchor.constraint(equalToConstant: imageSize.width),
+                button.heightAnchor.constraint(equalToConstant: imageSize.height)
+            ])
         }
-        titleLabel.snp.makeConstraints { make in
-            make.centerX.equalTo(self)
-            make.top.equalTo(button.snp.bottom).offset(10)
-            make.width.equalTo(100.scale375Width())
+        
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = titleLabel.superview {
+            NSLayoutConstraint.activate([
+                titleLabel.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
+                titleLabel.topAnchor.constraint(equalTo: button.bottomAnchor, constant: 10),
+                titleLabel.widthAnchor.constraint(equalToConstant: 100.scale375Width())
+            ])
         }
     }
     

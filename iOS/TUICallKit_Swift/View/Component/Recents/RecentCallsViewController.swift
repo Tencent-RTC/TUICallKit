@@ -7,7 +7,6 @@
 
 import Foundation
 import UIKit
-import SnapKit
 import TUICore
 import RTCCommon
 
@@ -86,9 +85,14 @@ import RTCCommon
         label.font = UIFont(name: "PingFangHK-Semibold", size: 34)
         label.textAlignment = TUICoreDefineConvert.getIsRTL() ? .right : .left
         tableHeaderView.addSubview(label)
-        label.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.leading.equalTo(tableHeaderView).offset(20)
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = label.superview {
+            NSLayoutConstraint.activate([
+                label.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
+                label.centerYAnchor.constraint(equalTo: superview.centerYAnchor),
+                label.leadingAnchor.constraint(equalTo: tableHeaderView.leadingAnchor, constant: 20)
+            ])
         }
         return tableHeaderView
     }()
@@ -163,37 +167,62 @@ import RTCCommon
     }
     
     func activateConstraints() {
-        containerView.snp.makeConstraints { make in
-            make.top.centerX.width.equalTo(view)
-            make.height.equalTo(StatusBar_Height + 44)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        if let view = view {
+            NSLayoutConstraint.activate([
+                containerView.topAnchor.constraint(equalTo: view.topAnchor),
+                containerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                containerView.widthAnchor.constraint(equalTo: view.widthAnchor),
+                containerView.heightAnchor.constraint(equalToConstant: StatusBar_Height + 44)
+            ])
         }
-        segmentedControl.snp.makeConstraints { make in
-            make.top.equalTo(containerView).offset(StatusBar_Height + 6.0)
-            make.centerX.equalTo(containerView)
-            make.width.equalTo(180)
-            make.height.equalTo(32)
+        
+        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            segmentedControl.topAnchor.constraint(equalTo: containerView.topAnchor, constant: StatusBar_Height + 6.0),
+            segmentedControl.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            segmentedControl.widthAnchor.constraint(equalToConstant: 180),
+            segmentedControl.heightAnchor.constraint(equalToConstant: 32)
+        ])
+        
+        editButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            editButton.centerYAnchor.constraint(equalTo: segmentedControl.centerYAnchor),
+            editButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
+            editButton.widthAnchor.constraint(equalToConstant: 32),
+            editButton.heightAnchor.constraint(equalToConstant: 32)
+        ])
+
+        clearButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            clearButton.centerYAnchor.constraint(equalTo: segmentedControl.centerYAnchor),
+            clearButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
+            clearButton.heightAnchor.constraint(equalToConstant: 32)
+        ])
+
+        doneButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            doneButton.centerYAnchor.constraint(equalTo: segmentedControl.centerYAnchor),
+            doneButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
+            doneButton.heightAnchor.constraint(equalToConstant: 32)
+        ])
+
+        recordCallsList.translatesAutoresizingMaskIntoConstraints = false
+        if let view = view {
+            NSLayoutConstraint.activate([
+                recordCallsList.topAnchor.constraint(equalTo: view.topAnchor, constant: StatusBar_Height + 44),
+                recordCallsList.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                recordCallsList.widthAnchor.constraint(equalTo: view.widthAnchor),
+                recordCallsList.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            ])
         }
-        editButton.snp.makeConstraints { make in
-            make.centerY.equalTo(segmentedControl)
-            make.trailing.equalTo(containerView).offset(-20)
-            make.width.height.equalTo(32)
-        }
-        clearButton.snp.makeConstraints { make in
-            make.centerY.equalTo(segmentedControl)
-            make.leading.equalTo(containerView).offset(20)
-            make.height.equalTo(32)
-        }
-        doneButton.snp.makeConstraints { make in
-            make.centerY.equalTo(segmentedControl)
-            make.trailing.equalTo(containerView).offset(-20)
-            make.height.equalTo(32)
-        }
-        recordCallsList.snp.makeConstraints { make in
-            make.top.equalTo(view).offset(StatusBar_Height + 44)
-            make.centerX.width.bottom.equalTo(view)
-        }
-        notRecordCallsLabel.snp.makeConstraints { make in
-            make.center.width.equalTo(view)
+        
+        notRecordCallsLabel.translatesAutoresizingMaskIntoConstraints = false
+        if let view = view {
+            NSLayoutConstraint.activate([
+                notRecordCallsLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                notRecordCallsLabel.widthAnchor.constraint(equalTo: view.widthAnchor)
+            ])
         }
     }
     

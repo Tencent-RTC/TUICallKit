@@ -7,7 +7,6 @@
 
 import Foundation
 import RTCCommon
-import SnapKit
 
 let groupFunctionAnimationDuration = 0.3
 let groupFunctionBaseControlBtnHeight = 60.scale375Width() + 5.scale375Height() + 20
@@ -23,11 +22,11 @@ class VideoCallerAndCalleeAcceptedView: UIView {
     let audioDeviceObserver = Observer()
     
     var isShowLittleContainerView  = false
-    
+    var timer = ""
+
     let containerView: UIView = {
         let containerView = UIView(frame: CGRect.zero)
         containerView.backgroundColor = UIColor(hex: "#4F586B")
-        containerView.alpha = 0.5
         containerView.isUserInteractionEnabled = true
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
         containerView.addGestureRecognizer(panGesture)
@@ -61,7 +60,8 @@ class VideoCallerAndCalleeAcceptedView: UIView {
         return btn
     }()
 
-    private lazy var changeSpeakerBtn: FeatureButton = {
+    private let audioRoutePickerView = RoutePickerView()
+    private lazy var audioRouteButton: FeatureButton = {
         let titleKey = CallManager.shared.mediaState.audioPlayoutDevice.value == .speakerphone ? "TUICallKit.speakerPhone" : "TUICallKit.earpiece"
         let imageName = CallManager.shared.mediaState.audioPlayoutDevice.value == .speakerphone ? "icon_handsfree_on" : "icon_handsfree"
 
@@ -118,6 +118,14 @@ class VideoCallerAndCalleeAcceptedView: UIView {
         
         updateViewHidden()
         registerObserve()
+        
+        timer = GCDTimer.start(interval: 1, repeats: true, async: true, task: { [weak self] in
+            guard let self = self else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.updateAudioRouteButton()
+            }
+        })
     }
     
     required init?(coder: NSCoder) {
@@ -126,6 +134,7 @@ class VideoCallerAndCalleeAcceptedView: UIView {
     
     deinit {
         unregisterObserve()
+        GCDTimer.cancel(timerName: timer) {}
     }
     
     // MARK: UI Specification Processing
@@ -142,52 +151,82 @@ class VideoCallerAndCalleeAcceptedView: UIView {
     func constructViewHierarchy() {
         addSubview(containerView)
         addSubview(muteMicBtn)
-        addSubview(changeSpeakerBtn)
+        addSubview(audioRouteButton)
         addSubview(closeCameraBtn)
         addSubview(hangupBtn)
         addSubview(matchBtn)
         addSubview(switchCameraBtn)
         addSubview(virtualBackgroundButton)
+        addSubview(audioRoutePickerView)
     }
     
     func activateConstraints() {
         let top = 22.0
         containerView.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: frame.size.width, height: groupFunctionViewHeight))
         
-        muteMicBtn.snp.makeConstraints { make in
-            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? 110.scale375Width() : -110.scale375Width())
-            make.centerY.equalTo(changeSpeakerBtn)
-            make.width.height.equalTo(60.scale375Width())
-        }
-        changeSpeakerBtn.snp.makeConstraints { make in
-            make.top.equalTo(self).offset(top)
-            make.centerX.equalTo(self)
-            make.width.height.equalTo(60.scale375Width())
-        }
-        closeCameraBtn.snp.makeConstraints { make in
-            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? -110.scale375Width() : 110.scale375Width())
-            make.centerY.equalTo(self.changeSpeakerBtn)
-            make.width.height.equalTo(60.scale375Width())
-        }
-        hangupBtn.snp.makeConstraints { make in
-            make.top.equalTo(changeSpeakerBtn.snp.bottom).offset(5.scale375Height() + 20 + 20.scale375Height())
-            make.centerX.equalTo(self)
-            make.width.height.equalTo(60.scale375Width())
-        }
-        matchBtn.snp.makeConstraints { make in
-            make.centerY.equalTo(hangupBtn)
-            make.leading.width.height.equalTo(30.scale375Width())
-        }
-        switchCameraBtn.snp.makeConstraints { make in
-            make.centerY.equalTo(hangupBtn)
-            make.leading.equalTo(hangupBtn.snp.trailing).offset(40.scale375Width())
-            make.size.equalTo(CGSize(width: 28.scale375Width(), height: 28.scale375Width()))
-        }
-        virtualBackgroundButton.snp.makeConstraints { make in
-            make.centerY.equalTo(hangupBtn)
-            make.trailing.equalTo(hangupBtn.snp.leading).offset(-40.scale375Width())
-            make.size.equalTo(CGSize(width: 28.scale375Width(), height: 28.scale375Width()))
-        }
+        muteMicBtn.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            muteMicBtn.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: TUICoreDefineConvert.getIsRTL() ? 110.scale375Width() : -110.scale375Width()),
+            muteMicBtn.centerYAnchor.constraint(equalTo: audioRouteButton.centerYAnchor),
+            muteMicBtn.widthAnchor.constraint(equalToConstant: 60.scale375Width()),
+            muteMicBtn.heightAnchor.constraint(equalToConstant: 60.scale375Width())
+        ])
+
+        audioRouteButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            audioRouteButton.topAnchor.constraint(equalTo: self.topAnchor, constant: top),
+            audioRouteButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            audioRouteButton.widthAnchor.constraint(equalToConstant: 60.scale375Width()),
+            audioRouteButton.heightAnchor.constraint(equalToConstant: 60.scale375Width())
+        ])
+        
+        audioRoutePickerView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            audioRoutePickerView.topAnchor.constraint(equalTo: self.topAnchor, constant: top),
+            audioRoutePickerView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            audioRoutePickerView.widthAnchor.constraint(equalToConstant: 60.scale375Width()),
+            audioRoutePickerView.heightAnchor.constraint(equalToConstant: 60.scale375Width())
+        ])
+
+        closeCameraBtn.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            closeCameraBtn.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: TUICoreDefineConvert.getIsRTL() ? -110.scale375Width() : 110.scale375Width()),
+            closeCameraBtn.centerYAnchor.constraint(equalTo: audioRouteButton.centerYAnchor),
+            closeCameraBtn.widthAnchor.constraint(equalToConstant: 60.scale375Width()),
+            closeCameraBtn.heightAnchor.constraint(equalToConstant: 60.scale375Width())
+        ])
+
+        hangupBtn.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            hangupBtn.topAnchor.constraint(equalTo: audioRouteButton.bottomAnchor, constant: 5.scale375Height() + 20 + 20.scale375Height()),
+            hangupBtn.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            hangupBtn.widthAnchor.constraint(equalToConstant: 60.scale375Width()),
+            hangupBtn.heightAnchor.constraint(equalToConstant: 60.scale375Width())
+        ])
+
+        matchBtn.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            matchBtn.centerYAnchor.constraint(equalTo: hangupBtn.centerYAnchor),
+            matchBtn.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 30.scale375Width()),
+            matchBtn.widthAnchor.constraint(equalToConstant: 30.scale375Width()),
+            matchBtn.heightAnchor.constraint(equalToConstant: 30.scale375Width())
+        ])
+
+        switchCameraBtn.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            switchCameraBtn.centerYAnchor.constraint(equalTo: hangupBtn.centerYAnchor),
+            switchCameraBtn.leadingAnchor.constraint(equalTo: hangupBtn.trailingAnchor, constant: 40.scale375Width()),
+            switchCameraBtn.widthAnchor.constraint(equalToConstant: 28.scale375Width()),
+            switchCameraBtn.heightAnchor.constraint(equalToConstant: 28.scale375Width())
+        ])
+        
+        virtualBackgroundButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            virtualBackgroundButton.centerYAnchor.constraint(equalTo: hangupBtn.centerYAnchor),
+            virtualBackgroundButton.trailingAnchor.constraint(equalTo: hangupBtn.leadingAnchor, constant: -40.scale375Width()),
+            virtualBackgroundButton.widthAnchor.constraint(equalToConstant: 28.scale375Width()),
+            virtualBackgroundButton.heightAnchor.constraint(equalToConstant: 28.scale375Width())
+        ])
     }
     
     // MARK: Register TUICallState Observer && Update UI
@@ -234,17 +273,22 @@ class VideoCallerAndCalleeAcceptedView: UIView {
             CallManager.shared.closeCamera()
         } else {
             guard let videoViewEntity = VideoFactory.shared.createVideoView(user: CallManager.shared.userState.selfUser, isShowFloatWindow: false) else { return }
-            CallManager.shared.openCamera(videoView: videoViewEntity.getVideoView())
+            CallManager.shared.openCamera(videoView: videoViewEntity.getVideoView()) { } fail: { code, message in }
         }
     }
     
     func changeSpeakerEvent(sender: UIButton) {
-        CallManager.shared.changeSpeaker()
+        if CallManager.shared.mediaState.audioPlayoutDevice.value == .speakerphone {
+            CallManager.shared.selectAudioPlaybackDevice(device: .earpiece)
+        } else {
+            CallManager.shared.selectAudioPlaybackDevice(device: .speakerphone)
+        }
+        
         updateChangeSpeakerBtn(isSpeaker: CallManager.shared.mediaState.audioPlayoutDevice.value == .speakerphone)
     }
     
     @objc func hangupTouchEvent(sender: UIButton) {
-        CallManager.shared.hangup()
+        CallManager.shared.hangup() { } fail: { code, message in }
     }
     
     @objc func switchCameraTouchEvent(sender: UIButton) {
@@ -252,7 +296,7 @@ class VideoCallerAndCalleeAcceptedView: UIView {
     }
         
     @objc func virtualBackgroundTouchEvent(sender: UIButton) {
-        CallManager.shared.setBlurBackground()
+        CallManager.shared.setBlurBackground(enable: CallManager.shared.viewState.isVirtualBackgroundOpened.value ? false : true)
     }
     
     @objc func matchTouchEvent(sender: UIButton) {
@@ -288,7 +332,7 @@ class VideoCallerAndCalleeAcceptedView: UIView {
     func updateViewHidden() {
         if CallManager.shared.viewState.callingViewType.value == .one2one {
             switchCameraBtn.isHidden = false
-            virtualBackgroundButton.isHidden = CallManager.shared.globalState.enableVirtualBackgroud ? false : true
+            virtualBackgroundButton.isHidden = CallManager.shared.globalState.enableVirtualBackground ? false : true
             containerView.isHidden = true
             matchBtn.isHidden = true
             return
@@ -309,10 +353,10 @@ class VideoCallerAndCalleeAcceptedView: UIView {
     }
     
     func updateChangeSpeakerBtn(isSpeaker: Bool) {
-        changeSpeakerBtn.updateTitle(title: TUICallKitLocalize(key: isSpeaker ? "TUICallKit.speakerPhone" : "TUICallKit.earpiece") ?? "")
+        audioRouteButton.updateTitle(title: TUICallKitLocalize(key: isSpeaker ? "TUICallKit.speakerPhone" : "TUICallKit.earpiece") ?? "")
         
         if let image = CallKitBundle.getBundleImage(name: isSpeaker ? "icon_handsfree_on" : "icon_handsfree") {
-            changeSpeakerBtn.updateImage(image: image)
+            audioRouteButton.updateImage(image: image)
         }
     }
     
@@ -333,6 +377,18 @@ class VideoCallerAndCalleeAcceptedView: UIView {
         containerView.layer.mask = maskLayer
     }
     
+    func updateAudioRouteButton() {
+        if AudioSessionManager.isBluetoothHeadsetConnected() {
+            audioRoutePickerView.isHidden = false
+            audioRouteButton.isHidden = true
+            AudioSessionManager.enableiOSAvroutePickerViewMode(true)
+        } else {
+            audioRoutePickerView.isHidden = true
+            audioRouteButton.isHidden = false
+            AudioSessionManager.enableiOSAvroutePickerViewMode(false)
+        }
+    }
+    
     // MARK: GroupCallerAndCalleeAcceptedViewDelegate
     func setNonExpansion() {
         if isShowLittleContainerView == true { return }
@@ -351,20 +407,23 @@ class VideoCallerAndCalleeAcceptedView: UIView {
             let titleLabelTranslationY = -12.scale375Width()
             
             self.muteMicBtn.titleLabel.alpha = alpha
-            self.changeSpeakerBtn.titleLabel.alpha = alpha
+            self.audioRouteButton.titleLabel.alpha = alpha
+            self.audioRoutePickerView.changeSpeakerBtn.titleLabel.alpha = alpha
             self.closeCameraBtn.titleLabel.alpha = alpha
             
             self.muteMicBtn.titleLabel.transform = CGAffineTransform(translationX: 0, y: titleLabelTranslationY)
-            self.changeSpeakerBtn.titleLabel.transform = CGAffineTransform(translationX: 0, y: titleLabelTranslationY)
+            self.audioRouteButton.titleLabel.transform = CGAffineTransform(translationX: 0, y: titleLabelTranslationY)
             self.closeCameraBtn.titleLabel.transform = CGAffineTransform(translationX: 0, y: titleLabelTranslationY)
             
             self.muteMicBtn.button.transform = CGAffineTransform(scaleX: scale, y: scale)
-            self.changeSpeakerBtn.button.transform = CGAffineTransform(scaleX: scale, y: scale)
+            self.audioRouteButton.button.transform = CGAffineTransform(scaleX: scale, y: scale)
+            self.audioRoutePickerView.changeSpeakerBtn.button.transform = CGAffineTransform(scaleX: scale, y: scale)
             self.closeCameraBtn.button.transform = CGAffineTransform(scaleX: scale, y: scale)
             self.hangupBtn.button.transform = CGAffineTransform(scaleX: scale, y: scale)
             
             self.muteMicBtn.transform = CGAffineTransform(translationX: muteMicX, y: -hangupTranslationY)
-            self.changeSpeakerBtn.transform = CGAffineTransform(translationX: changeSpeakerX, y: -hangupTranslationY)
+            self.audioRouteButton.transform = CGAffineTransform(translationX: changeSpeakerX, y: -hangupTranslationY)
+            self.audioRoutePickerView.transform = CGAffineTransform(translationX: changeSpeakerX, y: -hangupTranslationY)
             self.closeCameraBtn.transform = CGAffineTransform(translationX: closeCameraX, y: -hangupTranslationY)
             self.hangupBtn.transform = CGAffineTransform(translationX: hangupX, y: 0)
             self.matchBtn.transform = CGAffineTransform(translationX: 0, y: 0)
@@ -386,20 +445,23 @@ class VideoCallerAndCalleeAcceptedView: UIView {
             self.containerView.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: self.frame.size.width, height: groupFunctionViewHeight))
 
             self.muteMicBtn.titleLabel.alpha = 1
-            self.changeSpeakerBtn.titleLabel.alpha = 1
+            self.audioRouteButton.titleLabel.alpha = 1
+            self.audioRoutePickerView.changeSpeakerBtn.titleLabel.alpha = 1
             self.closeCameraBtn.titleLabel.alpha = 1
             
             self.muteMicBtn.titleLabel.transform = CGAffineTransform.identity
-            self.changeSpeakerBtn.titleLabel.transform = CGAffineTransform.identity
+            self.audioRouteButton.titleLabel.transform = CGAffineTransform.identity
             self.closeCameraBtn.titleLabel.transform = CGAffineTransform.identity
             
             self.muteMicBtn.button.transform = CGAffineTransform.identity
-            self.changeSpeakerBtn.button.transform = CGAffineTransform.identity
+            self.audioRouteButton.button.transform = CGAffineTransform.identity
+            self.audioRoutePickerView.changeSpeakerBtn.button.transform = CGAffineTransform.identity
             self.closeCameraBtn.button.transform = CGAffineTransform.identity
             self.hangupBtn.button.transform = CGAffineTransform.identity
             
             self.muteMicBtn.transform = CGAffineTransform.identity
-            self.changeSpeakerBtn.transform = CGAffineTransform.identity
+            self.audioRouteButton.transform = CGAffineTransform.identity
+            self.audioRoutePickerView.transform = CGAffineTransform.identity
             self.closeCameraBtn.transform = CGAffineTransform.identity
             self.hangupBtn.transform = CGAffineTransform.identity
             self.matchBtn.transform = CGAffineTransform.identity

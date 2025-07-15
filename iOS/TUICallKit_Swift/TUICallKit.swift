@@ -16,7 +16,7 @@ public class TUICallKit: NSObject {
      */
     @objc
     public static func createInstance() -> TUICallKit {
-        return TUICallKitImpl.instance
+        return TUICallKitImpl.shared
     }
     
     /**
@@ -28,7 +28,7 @@ public class TUICallKit: NSObject {
      */
     @objc
     public func setSelfInfo(nickname: String, avatar: String, succ:@escaping TUICallSucc, fail: @escaping TUICallFail) {
-        return TUICallKitImpl.instance.setSelfInfo(nickname: nickname, avatar: avatar, succ: succ, fail: fail)
+        return TUICallKitImpl.shared.setSelfInfo(nickname: nickname, avatar: avatar, succ: succ, fail: fail)
     }
     
     /**
@@ -40,7 +40,7 @@ public class TUICallKit: NSObject {
     @available(*, deprecated, message: "This interface has been deprecated, please use the 'calls' interface.")
     @objc
     public func call(userId: String, callMediaType: TUICallMediaType) {
-        return TUICallKitImpl.instance.call(userId: userId, callMediaType: callMediaType)
+        return TUICallKitImpl.shared.call(userId: userId, callMediaType: callMediaType)
     }
     
     /**
@@ -54,7 +54,7 @@ public class TUICallKit: NSObject {
     @objc
     public func call(userId: String, callMediaType: TUICallMediaType, params: TUICallParams,
                      succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
-        return TUICallKitImpl.instance.call(userId: userId, callMediaType: callMediaType, params: params, succ: succ, fail: fail)
+        return TUICallKitImpl.shared.call(userId: userId, callMediaType: callMediaType, params: params, succ: succ, fail: fail)
     }
     
     /**
@@ -67,7 +67,7 @@ public class TUICallKit: NSObject {
     @available(*, deprecated, message: "This interface has been deprecated, please use the 'calls' interface.")
     @objc
     public func groupCall(groupId: String, userIdList: [String], callMediaType: TUICallMediaType) {
-        return TUICallKitImpl.instance.groupCall(groupId: groupId, userIdList: userIdList, callMediaType: callMediaType)
+        return TUICallKitImpl.shared.groupCall(groupId: groupId, userIdList: userIdList, callMediaType: callMediaType)
     }
     
     /**
@@ -82,7 +82,7 @@ public class TUICallKit: NSObject {
     @objc
     public func groupCall(groupId: String, userIdList: [String], callMediaType: TUICallMediaType, params: TUICallParams,
                           succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
-        return TUICallKitImpl.instance.groupCall(groupId: groupId, userIdList: userIdList, callMediaType: callMediaType, params: params,
+        return TUICallKitImpl.shared.groupCall(groupId: groupId, userIdList: userIdList, callMediaType: callMediaType, params: params,
                                                  succ: succ, fail: fail)
     }
     
@@ -96,7 +96,7 @@ public class TUICallKit: NSObject {
     @objc
     public func calls(userIdList: [String], callMediaType: TUICallMediaType, params: TUICallParams?,
                       succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
-        return TUICallKitImpl.instance.calls(userIdList: userIdList, callMediaType: callMediaType, params: params,
+        return TUICallKitImpl.shared.calls(userIdList: userIdList, callMediaType: callMediaType, params: params,
                                              succ: succ, fail: fail)
     }
   
@@ -108,7 +108,7 @@ public class TUICallKit: NSObject {
      */
     @objc
     public func join(callId: String) {
-        return TUICallKitImpl.instance.join(callId: callId)
+        return TUICallKitImpl.shared.join(callId: callId)
     }
     
     /**
@@ -120,7 +120,7 @@ public class TUICallKit: NSObject {
     @available(*, deprecated, message: "This interface has been deprecated, please use the 'join' interface.")
     @objc
     public func joinInGroupCall(roomId: TUIRoomId, groupId: String, callMediaType: TUICallMediaType) {
-        return TUICallKitImpl.instance.joinInGroupCall(roomId: roomId, groupId: groupId, callMediaType: callMediaType)
+        return TUICallKitImpl.shared.joinInGroupCall(roomId: roomId, groupId: groupId, callMediaType: callMediaType)
     }
     
     /**
@@ -130,14 +130,14 @@ public class TUICallKit: NSObject {
      */
     @objc
     public func setCallingBell(filePath: String) {
-        return TUICallKitImpl.instance.setCallingBell(filePath: filePath)
+        return TUICallKitImpl.shared.setCallingBell(filePath: filePath)
     }
     
     /**
      * Enable the mute mode (the callee doesn't ring)
      */
     @objc public func enableMuteMode(enable: Bool) {
-        return TUICallKitImpl.instance.enableMuteMode(enable: enable)
+        return TUICallKitImpl.shared.enableMuteMode(enable: enable)
     }
     
     /**
@@ -145,7 +145,7 @@ public class TUICallKit: NSObject {
      */
     @objc
     public func enableFloatWindow(enable: Bool) {
-        return TUICallKitImpl.instance.enableFloatWindow(enable: enable)
+        return TUICallKitImpl.shared.enableFloatWindow(enable: enable)
     }
     
     /**
@@ -153,7 +153,7 @@ public class TUICallKit: NSObject {
      */
     @objc
     public func enableVirtualBackground(enable: Bool) {
-        return TUICallKitImpl.instance.enableVirtualBackground(enable: enable)
+        return TUICallKitImpl.shared.enableVirtualBackground(enable: enable)
     }
     
     /**
@@ -161,6 +161,11 @@ public class TUICallKit: NSObject {
      */
     @objc
     public func enableIncomingBanner(enable: Bool) {
-        return TUICallKitImpl.instance.enableIncomingBanner(enable: enable)
+        return TUICallKitImpl.shared.enableIncomingBanner(enable: enable)
+    }
+    
+    @objc
+    public func callExperimentalAPI(jsonStr: String) {
+        TUICallKitImpl.shared.callExperimentalAPI(jsonStr: jsonStr)
     }
 }

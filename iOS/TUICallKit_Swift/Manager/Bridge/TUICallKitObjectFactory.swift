@@ -17,8 +17,7 @@ class TUICallKitObjectFactory: NSObject, TUIObjectProtocol {
         if uiStyle == TUICore_TUICallingObjectFactory_RecordCallsVC_UIStyle_Classic {
             recordCallsUIStyle = .classic
         }
-        let vc = RecentCallsViewController(recordCallsUIStyle: recordCallsUIStyle)
-        return UIViewController()
+        return RecentCallsViewController(recordCallsUIStyle: recordCallsUIStyle)
     }
     
     // MARK: TUIObjectProtocol

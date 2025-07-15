@@ -16,7 +16,7 @@ enum NetworkQualityHint {
 
 class CallState: NSObject {
     var roomId: TUIRoomId? = nil
-    var groupId: String = ""
+    var chatGroupId:Observable<String> = Observable("")
     var scene: TUICallScene = TUICallScene.single
     let mediaType: Observable<TUICallMediaType> = Observable(TUICallMediaType.unknown)
     let callDurationCount: Observable<Int> = Observable(0)
@@ -24,7 +24,7 @@ class CallState: NSObject {
         
     func reset() {
         roomId = nil
-        groupId = ""
+        chatGroupId.value = ""
         scene = .single
         mediaType.value = .unknown
         callDurationCount.value = 0

@@ -18,18 +18,19 @@ import TXLiteAVSDK_Professional
 #endif
 
 class TUICallKitImpl: TUICallKit {
-    static let instance = TUICallKitImpl()
+    static let shared = TUICallKitImpl()
     private let callStatusObserver = Observer()
     
     override init() {
         super.init()
         registerNotifications()
+        let _ = CallManager.shared
     }
     
     deinit {
         unregisterNotifications()
     }
-    
+        
     // MARK: Implementation of external interface for TUICallKit
     override func setSelfInfo(nickname: String, avatar: String, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
         CallManager.shared.setSelfInfo(nickname: nickname, avatar: avatar) {
@@ -71,8 +72,8 @@ class TUICallKitImpl: TUICallKit {
             return
         }
         
-        if !Permission.hasPermissison(callMediaType: callMediaType, fail: fail) { return }
-
+        if !Permission.hasPermission(callMediaType: callMediaType, fail: fail) { return }
+        
         CallManager.shared.call(userId: userId, callMediaType: callMediaType, params: params) {
             succ()
         } fail: { [weak self] code, message in
@@ -107,13 +108,13 @@ class TUICallKitImpl: TUICallKit {
             Toast.showToast(TUICallKitLocalize(key: "TUICallKit.User.Exceed.Limit"))
             return
         }
-                
+        
         if callMediaType == .unknown {
             fail(ERROR_PARAM_INVALID, "call failed, callMediaType is Unknown")
             return
         }
         
-        if !Permission.hasPermissison(callMediaType: callMediaType, fail: fail) { return }
+        if !Permission.hasPermission(callMediaType: callMediaType, fail: fail) { return }
         
         CallManager.shared.calls(userIdList: userIdList, callMediaType: callMediaType, params: params ?? getCallParams()) {
             succ()
@@ -151,14 +152,14 @@ class TUICallKitImpl: TUICallKit {
             Toast.showToast(TUICallKitLocalize(key: "TUICallKit.User.Exceed.Limit"))
             return
         }
-                
+        
         if callMediaType == .unknown {
             fail(ERROR_PARAM_INVALID, "call failed, callMediaType is Unknown")
             return
         }
         
-        if !Permission.hasPermissison(callMediaType: callMediaType, fail: fail) { return }
-
+        if !Permission.hasPermission(callMediaType: callMediaType, fail: fail) { return }
+        
         CallManager.shared.groupCall(groupId: groupId, userIdList: userIdList, callMediaType: callMediaType, params: params) {
             succ()
         } fail: { [weak self] code, message in
@@ -169,8 +170,8 @@ class TUICallKitImpl: TUICallKit {
     }
     
     override func joinInGroupCall(roomId: TUIRoomId, groupId: String, callMediaType: TUICallMediaType) {
-        if !Permission.hasPermissison(callMediaType: callMediaType, fail: nil) { return }
-
+        if !Permission.hasPermission(callMediaType: callMediaType, fail: nil) { return }
+        
         CallManager.shared.joinInGroupCall(roomId: roomId, groupId: groupId, callMediaType: callMediaType) {
             
         } fail: { [weak self] code, message in
@@ -189,39 +190,7 @@ class TUICallKitImpl: TUICallKit {
     }
     
     override func setCallingBell(filePath: String) {
-        if filePath.hasPrefix("http") {
-            let session = URLSession.shared
-            guard let url = URL(string: filePath) else { return }
-            let downloadTask = session.downloadTask(with: url) { location, response, error in
-                if error != nil {
-                    return
-                }
-                
-                if location != nil {
-                    if let oldBellFilePath = UserDefaults.standard.object(forKey: TUI_CALLING_BELL_KEY) as? String {
-                        do {
-                            try FileManager.default.removeItem(atPath: oldBellFilePath)
-                        } catch let error {
-                            debugPrint("FileManager Error: \(error)")
-                        }
-                    }
-                    guard let location = location else { return }
-                    guard let dstDocPath = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).last else { return }
-                    let dstPath = dstDocPath + "/" + location.lastPathComponent
-                    do {
-                        try FileManager.default.moveItem(at: location, to: URL(fileURLWithPath: dstPath))
-                    } catch let error {
-                        debugPrint("FileManager Error: \(error)")
-                    }
-                    UserDefaults.standard.set(dstPath, forKey: TUI_CALLING_BELL_KEY)
-                    UserDefaults.standard.synchronize()
-                }
-            }
-            downloadTask.resume()
-        } else {
-            UserDefaults.standard.set(filePath, forKey: TUI_CALLING_BELL_KEY)
-            UserDefaults.standard.synchronize()
-        }
+        CallManager.shared.setCallingBell(filePath: filePath)
     }
     
     override func enableMuteMode(enable: Bool) {
@@ -231,7 +200,7 @@ class TUICallKitImpl: TUICallKit {
     override func enableFloatWindow(enable: Bool) {
         CallManager.shared.enableFloatWindow(enable: enable)
     }
-        
+    
     override func enableVirtualBackground (enable: Bool) {
         CallManager.shared.enableVirtualBackground(enable: enable)
     }
@@ -239,17 +208,14 @@ class TUICallKitImpl: TUICallKit {
     override func enableIncomingBanner (enable: Bool) {
         CallManager.shared.enableIncomingBanner(enable: enable)
     }
-
+    
+    
+    override public func callExperimentalAPI(jsonStr: String) {
+        CallManager.shared.callExperimentalAPI(jsonStr: jsonStr)
+    }
+    
     // MARK: Notifications
     func registerNotifications() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(loginSuccess),
-                                               name: NSNotification.Name.TUILoginSuccess,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(logoutSuccess),
-                                               name: NSNotification.Name.TUILogoutSuccess,
-                                               object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(showCallKitViewController),
                                                name: NSNotification.Name(EVENT_SHOW_TUICALLKIT_VIEWCONTROLLER),
@@ -258,6 +224,11 @@ class TUICallKitImpl: TUICallKit {
                                                selector: #selector(closeCallKitViewController),
                                                name: NSNotification.Name(EVENT_CLOSE_TUICALLKIT_VIEWCONTROLLER),
                                                object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleShowToast(_:)),
+                                               name: NSNotification.Name(rawValue: EVENT_SHOW_TOAST),
+                                               object: nil)
+
         
         CallManager.shared.userState.selfUser.callStatus.addObserver(callStatusObserver) { [weak self] newValue, _ in
             guard let self = self else { return }
@@ -268,34 +239,13 @@ class TUICallKitImpl: TUICallKit {
     }
     
     func unregisterNotifications() {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.TUILoginSuccess, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.TUILogoutSuccess, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(EVENT_SHOW_TUICALLKIT_VIEWCONTROLLER), object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(EVENT_CLOSE_TUICALLKIT_VIEWCONTROLLER), object: nil)
         CallManager.shared.userState.selfUser.callStatus.removeObserver(callStatusObserver)
     }
     
-    @objc func loginSuccess() {
-        CallManager.shared.initSelfUser()
-        CallManager.shared.initEngine(sdkAppId:TUILogin.getSdkAppID(),
-                                      userId: TUILogin.getUserID() ?? "",
-                                      userSig: TUILogin.getUserSig() ?? "") {
-            
-        } fail: { Int32errCode, errMessage in
-            
-        }
-        CallManager.shared.addObserver(CallEngineObserver.shared)
-        CallManager.shared.setFramework()
-        CallManager.shared.setExcludeFromHistoryMessage()
-    }
-    
-    @objc func logoutSuccess() {
-        CallManager.shared.hangup()
-        CallManager.shared.destroyInstance()
-    }
-    
     @objc func showCallKitViewController() {
-        if CallManager.shared.globalState.enableIncomingbanner == true && CallManager.shared.userState.selfUser.callRole.value == .called &&
+        if CallManager.shared.globalState.enableIncomingBanner == true && CallManager.shared.userState.selfUser.callRole.value == .called &&
             CallManager.shared.userState.selfUser.callStatus.value == .waiting {
             WindowManager.shared.showIncomingBannerWindow()
             return
@@ -305,7 +255,11 @@ class TUICallKitImpl: TUICallKit {
     
     @objc func closeCallKitViewController() {
         WindowManager.shared.closeWindow()
-        VideoFactory.shared.removeAllVideoView()
+    }
+    
+    @objc func handleShowToast(_ notification: Notification) {
+        guard let data = notification.object as? String else { return }
+        Toast.shared.showToast(message: data)
     }
     
     // MARK: other private

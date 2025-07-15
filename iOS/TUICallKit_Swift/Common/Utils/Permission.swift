@@ -14,7 +14,7 @@ enum AuthorizationDeniedType: Int {
 }
 
 class Permission: NSObject {
-    static func hasPermissison(callMediaType: TUICallMediaType, fail: TUICallFail?) -> Bool  {
+    static func hasPermission(callMediaType: TUICallMediaType, fail: TUICallFail?) -> Bool  {
         if Permission.checkAuthorizationStatusIsDenied(mediaType: .audio) {
             Permission.showAuthorizationAlert(mediaType: .audio)
             fail?(ERROR_PARAM_INVALID, "call failed, authorization status is denied")
@@ -39,9 +39,9 @@ class Permission: NSObject {
         }
         
         Permission.showAuthorizationAlert(deniedType: deniedType) {
-            CallManager.shared.hangup()
+            CallManager.shared.hangup() { } fail: { code, message in }
         } cancelHandler: {
-            CallManager.shared.hangup()
+            CallManager.shared.hangup() { } fail: { code, message in }
         }
     }
 

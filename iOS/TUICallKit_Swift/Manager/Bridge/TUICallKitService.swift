@@ -19,14 +19,19 @@ class TUICallKitService: NSObject, TUIServiceProtocol {
             TUICallEngine.createInstance().perform(selector, with: 0)
         }
         
-        if groupID.isEmpty {
-            guard let userID = userIDs.first else {
-                return
+        if CallManager.shared.globalState.enableForceUseV2API {
+            if groupID.isEmpty {
+                guard let userID = userIDs.first else { return }
+                TUICallKit.createInstance().call(userId: userID, callMediaType: callingType)
+            } else {
+                TUICallKit.createInstance().groupCall(groupId: groupID, userIdList: userIDs, callMediaType: callingType)
             }
-            TUICallKit.createInstance().call(userId: userID, callMediaType: callingType)
-        } else {
-            TUICallKit.createInstance().groupCall(groupId: groupID, userIdList: userIDs, callMediaType: callingType)
+            return
         }
+        
+        let params = TUICallParams()
+        params.chatGroupId = groupID
+        TUICallKit.createInstance().calls(userIdList: userIDs, callMediaType: callingType, params: params) {} fail: { _, _ in }
     }
 }
 
@@ -36,7 +41,7 @@ extension TUICallKitService {
         guard let param = param else {
             return nil
         }
-                
+        
         if method == TUICore_TUICallingService_EnableFloatWindowMethod {
             guard let enableFloatWindow = param[TUICore_TUICallingService_EnableFloatWindowMethod_EnableFloatWindow] as? Bool else {
                 return nil
@@ -79,6 +84,7 @@ extension TUICallKitService {
             guard let enableMultiDeviceAbility = param[key] as? Bool else {
                 return nil
             }
+            CallManager.shared.globalState.enableMultiDeviceAbility = enableMultiDeviceAbility
             TUICallEngine.createInstance().enableMultiDeviceAbility(enable: enableMultiDeviceAbility) {
                 
             } fail: { code, message in

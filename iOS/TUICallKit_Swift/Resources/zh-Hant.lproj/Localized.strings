@@ -74,7 +74,10 @@
 "TUICallKit.cameraOn" = "攝像頭已開";
 "TUICallKit.cameraOff" = "攝像頭已關";
 
-"TUICallKit.JoinGroupView.title" = "\%d人正在\%@";
+"TUICallKit.AVRoutePickerView.speakerPhone" = "揚聲器";
+"TUICallKit.AVRoutePickerView.earpiece" = "聽筒";
+
+"TUICallKit.JoinGroupView.title" = "\%d人正在通话中";
 "TUICallKit.JoinGroupView.join" = "加入";
 "TUICallKit.JoinGroupView.audioCall" = "語音通話";
 "TUICallKit.JoinGroupView.videoCall" = "視頻通話";

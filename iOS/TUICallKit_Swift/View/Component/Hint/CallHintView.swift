@@ -53,9 +53,13 @@ class CallHintView: UIView {
     }
     
     func activateConstraints() {
-        self.callStatusLabel.snp.makeConstraints { make in
-            make.edges.equalTo(self)
-        }
+        self.callStatusLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            self.callStatusLabel.topAnchor.constraint(equalTo: self.topAnchor),
+            self.callStatusLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            self.callStatusLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            self.callStatusLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+        ])
     }
     
     // MARK: Register TUICallState Observer && Update UI

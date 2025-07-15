@@ -14,6 +14,7 @@ class AudioCallerWaitingAndAcceptedView : UIView {
     
     let isMicMuteObserver = Observer()
     let audioDeviceObserver = Observer()
+    var timer = ""
     
     private lazy var muteMicBtn: UIView = {
         let titleKey = CallManager.shared.mediaState.isMicrophoneMuted.value ? "TUICallKit.muted" : "TUICallKit.unmuted"
@@ -40,7 +41,8 @@ class AudioCallerWaitingAndAcceptedView : UIView {
         return hangupBtn
     }()
     
-    private lazy var changeSpeakerBtn: UIView = {
+    private let audioRoutePickerView = RoutePickerView()
+    private lazy var audioRouteButton: UIView = {
         let titleKey = CallManager.shared.mediaState.audioPlayoutDevice.value == .speakerphone ? "TUICallKit.speakerPhone" : "TUICallKit.earpiece"
         let imageName = CallManager.shared.mediaState.audioPlayoutDevice.value == .speakerphone ? "icon_handsfree_on" : "icon_handsfree"
 
@@ -58,6 +60,15 @@ class AudioCallerWaitingAndAcceptedView : UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         registerObserveState()
+        updateAudioRouteButton()
+        
+        timer = GCDTimer.start(interval: 1, repeats: true, async: true, task: { [weak self] in
+            guard let self = self else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.updateAudioRouteButton()
+            }
+        })
     }
     
     required init?(coder: NSCoder) {
@@ -67,6 +78,7 @@ class AudioCallerWaitingAndAcceptedView : UIView {
     deinit {
         CallManager.shared.mediaState.isMicrophoneMuted.removeObserver(isMicMuteObserver)
         CallManager.shared.mediaState.audioPlayoutDevice.removeObserver(audioDeviceObserver)
+        GCDTimer.cancel(timerName: timer) {}
     }
     
     // MARK: UI Specification Processing
@@ -82,25 +94,42 @@ class AudioCallerWaitingAndAcceptedView : UIView {
     func constructViewHierarchy() {
         addSubview(muteMicBtn)
         addSubview(hangupBtn)
-        addSubview(changeSpeakerBtn)
+        addSubview(audioRoutePickerView)
+        addSubview(audioRouteButton)
     }
     
     func activateConstraints() {
-        muteMicBtn.snp.makeConstraints { make in
-            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? 110.scale375Width() : -110.scale375Width())
-            make.centerY.equalTo(hangupBtn)
-            make.size.equalTo(kControlBtnSize)
-        }
-        hangupBtn.snp.makeConstraints { make in
-            make.centerX.equalTo(self)
-            make.bottom.equalTo(self.snp.bottom)
-            make.size.equalTo(kControlBtnSize)
-        }
-        changeSpeakerBtn.snp.makeConstraints { make in
-            make.centerX.equalTo(self).offset(TUICoreDefineConvert.getIsRTL() ? -110.scale375Width() : 110.scale375Width())
-            make.centerY.equalTo(self.hangupBtn)
-            make.size.equalTo(kControlBtnSize)
-        }
+        hangupBtn.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            hangupBtn.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            hangupBtn.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            hangupBtn.widthAnchor.constraint(equalToConstant: kControlBtnSize.width),
+            hangupBtn.heightAnchor.constraint(equalToConstant: kControlBtnSize.height)
+        ])
+
+        muteMicBtn.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            muteMicBtn.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant:  TUICoreDefineConvert.getIsRTL() ? 110.scale375Width() : -110.scale375Width()),
+            muteMicBtn.centerYAnchor.constraint(equalTo: hangupBtn.centerYAnchor),
+            muteMicBtn.widthAnchor.constraint(equalToConstant: kControlBtnSize.width),
+            muteMicBtn.heightAnchor.constraint(equalToConstant: kControlBtnSize.height)
+        ])
+        
+        audioRoutePickerView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            audioRoutePickerView.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: TUICoreDefineConvert.getIsRTL() ? -110.scale375Width() : 110.scale375Width()),
+            audioRoutePickerView.centerYAnchor.constraint(equalTo: hangupBtn.centerYAnchor),
+            audioRoutePickerView.widthAnchor.constraint(equalToConstant: kControlBtnSize.width),
+            audioRoutePickerView.heightAnchor.constraint(equalToConstant: kControlBtnSize.height)
+        ])
+
+        audioRouteButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            audioRouteButton.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: TUICoreDefineConvert.getIsRTL() ? -110.scale375Width() : 110.scale375Width()),
+            audioRouteButton.centerYAnchor.constraint(equalTo: hangupBtn.centerYAnchor),
+            audioRouteButton.widthAnchor.constraint(equalToConstant: kControlBtnSize.width),
+            audioRouteButton.heightAnchor.constraint(equalToConstant: kControlBtnSize.height)
+        ])
     }
     
     // MARK: Action Event
@@ -109,11 +138,15 @@ class AudioCallerWaitingAndAcceptedView : UIView {
     }
     
     func changeSpeakerEvent(sender: UIButton) {
-        CallManager.shared.changeSpeaker()
+        if CallManager.shared.mediaState.audioPlayoutDevice.value == .speakerphone {
+            CallManager.shared.selectAudioPlaybackDevice(device: .earpiece)
+        } else {
+            CallManager.shared.selectAudioPlaybackDevice(device: .speakerphone)
+        }
     }
     
     func hangupEvent(sender: UIButton) {
-        CallManager.shared.hangup()
+        CallManager.shared.hangup() { } fail: { code, message in }
     }
     
     // MARK: Register TUICallState Observer && Update UI
@@ -138,10 +171,22 @@ class AudioCallerWaitingAndAcceptedView : UIView {
     }
     
     func updateChangeSpeakerBtn(isSpeaker: Bool) {
-        (changeSpeakerBtn as? FeatureButton)?.updateTitle(title: TUICallKitLocalize(key: isSpeaker ? "TUICallKit.speakerPhone" : "TUICallKit.earpiece") ?? "")
+        (audioRouteButton as? FeatureButton)?.updateTitle(title: TUICallKitLocalize(key: isSpeaker ? "TUICallKit.speakerPhone" : "TUICallKit.earpiece") ?? "")
         
         if let image = CallKitBundle.getBundleImage(name: isSpeaker ? "icon_handsfree_on" : "icon_handsfree") {
-            (changeSpeakerBtn as? FeatureButton)?.updateImage(image: image)
+            (audioRouteButton as? FeatureButton)?.updateImage(image: image)
+        }
+    }
+    
+    func updateAudioRouteButton() {
+        if AudioSessionManager.isBluetoothHeadsetConnected() {
+            audioRoutePickerView.isHidden = false
+            audioRouteButton.isHidden = true
+            AudioSessionManager.enableiOSAvroutePickerViewMode(true)
+        } else {
+            audioRoutePickerView.isHidden = true
+            audioRouteButton.isHidden = false
+            AudioSessionManager.enableiOSAvroutePickerViewMode(false)
         }
     }
 }

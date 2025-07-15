@@ -18,6 +18,7 @@ class JoinCallViewManager: NSObject, V2TIMGroupListener, JoinCallViewDelegate {
     private var joinGroupCallView = JoinCallView()
     private var roomId = TUIRoomId()
     private var groupId: String = ""
+    private var callId: String = ""
     private var callMediaType: TUICallMediaType = .unknown
     private var recordExpansionStatus: Bool = false
     
@@ -73,6 +74,7 @@ class JoinCallViewManager: NSObject, V2TIMGroupListener, JoinCallViewDelegate {
         
         handleRoomId(groupAttributeDic)
         handleCallMediaType(groupAttributeDic)
+        handleCallId(groupAttributeDic)
         
         guard let userIdList = getUserIdList(groupAttributeDic), userIdList.count > 0 else {
             hiddenJoinGroupCallView()
@@ -121,6 +123,13 @@ class JoinCallViewManager: NSObject, V2TIMGroupListener, JoinCallViewDelegate {
         } else if callMediaType == "video" {
             self.callMediaType = TUICallMediaType.video
         }
+    }
+    
+    private func handleCallId(_ groupAttributeValue: [String: Any]) {
+        guard let callId = groupAttributeValue["call_id"] as? String else {
+            return
+        }
+        self.callId = callId
     }
     
     private func getUserIdList(_ groupAttributeValue: [String: Any]) -> [String]? {
@@ -209,7 +218,14 @@ class JoinCallViewManager: NSObject, V2TIMGroupListener, JoinCallViewDelegate {
     
     func joinCall() {
         hiddenJoinGroupCallView()
-        TUICallKit.createInstance().joinInGroupCall(roomId: roomId, groupId: groupId, callMediaType: callMediaType)
+        
+        if CallManager.shared.globalState.enableForceUseV2API {
+            TUICallKit.createInstance().joinInGroupCall(roomId: roomId, groupId: groupId, callMediaType: callMediaType)
+            return
+        }
+        
+        guard !callId.isEmpty else { return }
+        TUICallKit.createInstance().join(callId: callId)
     }
     
     // MARK: - V2TIMGroupListener

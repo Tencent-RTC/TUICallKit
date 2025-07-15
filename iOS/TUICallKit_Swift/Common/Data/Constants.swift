@@ -73,7 +73,10 @@ let kBtnSmallSize = CGSize(width: 60.scale375Width(), height: 60.scale375Width()
 
 let EVENT_SHOW_TUICALLKIT_VIEWCONTROLLER = "eventShowTUICallKitViewController"
 let EVENT_CLOSE_TUICALLKIT_VIEWCONTROLLER = "eventCloseTUICallKitViewController"
+let EVENT_TAP_FLOATWINDOW = "eventTapFloatWindow"
+let EVENT_SHOW_TOAST = "eventShowToast"
 
+let AI_TRANSLATION_ROBOT = "TAI_Robot"
 
 // MARK: TUICore Define
 let TUICore_TUICore_TUIVoIPExtensionNotify_MuteSubKey_IsMuteKey = "TUICore_TUICore_TUIVoIPExtensionNotify_MuteSubKey_IsMuteKey"
@@ -88,3 +91,13 @@ let TUICore_TUICallingService_ShowCallingViewMethod_UserIDsKey = "TUICore_TUICal
 let TUICore_TUICallingService_ShowCallingViewMethod_CallTypeKey = "TUICore_TUICallingService_ShowCallingViewMethod_CallTypeKey"
 
 class Observer {}
+
+class FrameworkConstants{
+    static let callFrameworkNative: Int = 1
+    static let callComponent: Int = 14
+    static let callComponentChat: Int = 15
+    static let callLanguageSwift: Int = 3
+    static var framework: Int = callFrameworkNative
+    static var component: Int = callComponent
+    static var language: Int = callLanguageSwift
+}

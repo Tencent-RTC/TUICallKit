@@ -88,29 +88,53 @@ class SelectGroupMemberViewController: UIViewController, UITableViewDelegate, UI
     }
     
     func activateConstraints() {
-        navigationView.snp.makeConstraints({ make in
-            make.leading.trailing.top.equalToSuperview()
-            make.height.equalTo(StatusBar_Height + 44)
-        })
-        leftBtn.snp.makeConstraints({ make in
-            make.leading.equalToSuperview().offset(12)
-            make.centerY.equalTo(centerLabel)
-            make.width.height.equalTo(30)
-        })
-        centerLabel.snp.makeConstraints({ make in
-            make.top.equalToSuperview().offset(StatusBar_Height)
-            make.centerX.equalToSuperview()
-            make.width.equalTo(Screen_Width * 2 / 3)
-            make.height.equalTo(44)
-        })
-        rightBtn.snp.makeConstraints({ make in
-            make.trailing.equalToSuperview().offset(-12)
-            make.centerY.equalTo(centerLabel)
-        })
-        selectTableView.snp.makeConstraints({ make in
-            make.top.equalTo(centerLabel.snp.bottom)
-            make.leading.trailing.bottom.equalToSuperview()
-        })
+        navigationView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = navigationView.superview {
+            NSLayoutConstraint.activate([
+                navigationView.leadingAnchor.constraint(equalTo: superview.leadingAnchor),
+                navigationView.trailingAnchor.constraint(equalTo: superview.trailingAnchor),
+                navigationView.topAnchor.constraint(equalTo: superview.topAnchor),
+                navigationView.heightAnchor.constraint(equalToConstant: StatusBar_Height + 44)
+            ])
+        }
+        
+        leftBtn.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = leftBtn.superview {
+            NSLayoutConstraint.activate([
+                leftBtn.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: 12),
+                leftBtn.centerYAnchor.constraint(equalTo: centerLabel.centerYAnchor),
+                leftBtn.widthAnchor.constraint(equalToConstant: 30),
+                leftBtn.heightAnchor.constraint(equalToConstant: 30)
+            ])
+        }
+        
+        centerLabel.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = centerLabel.superview {
+            NSLayoutConstraint.activate([
+                centerLabel.topAnchor.constraint(equalTo: superview.topAnchor, constant: StatusBar_Height),
+                centerLabel.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
+                centerLabel.widthAnchor.constraint(equalToConstant: Screen_Width * 2 / 3),
+                centerLabel.heightAnchor.constraint(equalToConstant: 44)
+            ])
+        }
+        
+        rightBtn.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = rightBtn.superview {
+            NSLayoutConstraint.activate([
+                rightBtn.trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: -12),
+                rightBtn.centerYAnchor.constraint(equalTo: centerLabel.centerYAnchor)
+            ])
+        }
+        
+        selectTableView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = selectTableView.superview {
+            NSLayoutConstraint.activate([
+                selectTableView.topAnchor.constraint(equalTo: centerLabel.bottomAnchor),
+                selectTableView.leadingAnchor.constraint(equalTo: superview.leadingAnchor),
+                selectTableView.trailingAnchor.constraint(equalTo: superview.trailingAnchor),
+                selectTableView.bottomAnchor.constraint(equalTo: superview.bottomAnchor)
+            ])
+        }
     }
     
     func bindInteraction() {
@@ -121,7 +145,7 @@ class SelectGroupMemberViewController: UIViewController, UITableViewDelegate, UI
     
     //MARK: other private
     private func getGroupMember() {
-        V2TIMManager.sharedInstance().getGroupMemberList(CallManager.shared.callState.groupId,
+        V2TIMManager.sharedInstance().getGroupMemberList(CallManager.shared.callState.chatGroupId.value,
                                                          filter: .max,
                                                          nextSeq: 0) { [weak self] nextSeq, imUserInfoList in
             guard let self = self else { return }
@@ -167,7 +191,7 @@ class SelectGroupMemberViewController: UIViewController, UITableViewDelegate, UI
             return
         }
         
-        CallManager.shared.inviteUser(userIds: userIds)
+        CallManager.shared.inviteUser(userIds: userIds) { } fail: { code, message in }
         dismiss(animated: true)
     }
     

@@ -14,7 +14,8 @@ class RecentCallsCell: UITableViewCell {
     
     private let faceURLObserver = Observer()
     private let titleObserver = Observer()
-    
+    private let avatarImageObserver = Observer()
+
     typealias TUICallRecordCallsCellMoreBtnClickedHandler = () -> Void
     var moreBtnClickedHandler: TUICallRecordCallsCellMoreBtnClickedHandler = {}
     
@@ -107,37 +108,50 @@ class RecentCallsCell: UITableViewCell {
     }
     
     private func activateConstraints() {
-        avatarImageView.snp.makeConstraints { make in
-            make.centerY.equalTo(contentView)
-            make.leading.equalTo(contentView).offset(16)
-            make.width.height.equalTo(40)
-        }
-        titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(contentView).offset(14)
-            make.leading.equalTo(avatarImageView.snp.trailing).offset(8)
-            make.trailing.lessThanOrEqualTo(timeLabel.snp.leading).offset(-20)
-        }
-        mediaTypeImageView.snp.makeConstraints { make in
-            make.bottom.equalTo(contentView).offset(-14)
-            make.leading.equalTo(avatarImageView.snp.trailing).offset(8)
-            make.width.equalTo(19)
-            make.height.equalTo(12)
-        }
-        resultLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(mediaTypeImageView)
-            make.leading.equalTo(mediaTypeImageView.snp.trailing).offset(4)
-            make.width.equalTo(100)
-        }
-        timeLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(contentView)
-            make.trailing.equalTo(moreButton.snp.leading).offset(-4)
-            make.width.equalTo(100)
-        }
-        moreButton.snp.makeConstraints { make in
-            make.centerY.equalTo(contentView)
-            make.trailing.equalTo(-8)
-            make.width.height.equalTo(24)
-        }
+        avatarImageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            avatarImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            avatarImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            avatarImageView.widthAnchor.constraint(equalToConstant: 40),
+            avatarImageView.heightAnchor.constraint(equalToConstant: 40)
+        ])
+
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 14),
+            titleLabel.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: 8),
+            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: timeLabel.leadingAnchor, constant: -20)
+        ])
+        
+        mediaTypeImageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            mediaTypeImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -14),
+            mediaTypeImageView.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: 8),
+            mediaTypeImageView.widthAnchor.constraint(equalToConstant: 19),
+            mediaTypeImageView.heightAnchor.constraint(equalToConstant: 12)
+        ])
+
+        resultLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            resultLabel.centerYAnchor.constraint(equalTo: mediaTypeImageView.centerYAnchor),
+            resultLabel.leadingAnchor.constraint(equalTo: mediaTypeImageView.trailingAnchor, constant: 4),
+            resultLabel.widthAnchor.constraint(equalToConstant: 100)
+        ])
+
+        timeLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            timeLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            timeLabel.trailingAnchor.constraint(equalTo: moreButton.leadingAnchor, constant: -4),
+            timeLabel.widthAnchor.constraint(equalToConstant: 100)
+        ])
+
+        moreButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            moreButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            moreButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
+            moreButton.widthAnchor.constraint(equalToConstant: 24),
+            moreButton.heightAnchor.constraint(equalToConstant: 24)
+        ])
     }
     
     private func bindInteraction() {
@@ -149,7 +163,7 @@ class RecentCallsCell: UITableViewCell {
         registerObserve()
         
         titleLabel.text = viewModel.titleLabelStr.value
-        avatarImageView.sd_setImage(with: URL(string: viewModel.faceURL.value), placeholderImage: viewModel.avatarImage)
+        avatarImageView.sd_setImage(with: URL(string: viewModel.faceURL.value), placeholderImage: viewModel.avatarImage.value)
         resultLabel.text = viewModel.resultLabelStr
         timeLabel.text = viewModel.timeLabelStr
         mediaTypeImageView.image = CallKitBundle.getBundleImage(name: viewModel.mediaTypeImageStr)
@@ -166,12 +180,17 @@ class RecentCallsCell: UITableViewCell {
         viewModel.faceURL.addObserver(faceURLObserver) { [weak self] _, _ in
             guard let self = self else { return }
             self.avatarImageView.sd_setImage(with: URL(string: self.viewModel.faceURL.value),
-                                             placeholderImage: self.viewModel.avatarImage)
+                                             placeholderImage: self.viewModel.avatarImage.value)
         }
         
         viewModel.titleLabelStr.addObserver(titleObserver) { [weak self] _, _ in
             guard let self = self else { return }
             self.titleLabel.text = self.viewModel.titleLabelStr.value
+        }
+        
+        viewModel.avatarImage.addObserver(avatarImageObserver) { [weak self] new, _ in
+            guard let self = self else { return }
+            self.avatarImageView.image = new
         }
     }
     

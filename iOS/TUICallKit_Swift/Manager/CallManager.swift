@@ -18,7 +18,6 @@ import TXLiteAVSDK_Professional
 
 class CallManager {
     static let shared = CallManager()
-    private init() {}
     
     var callingVibratorFeature: CallingVibratorFeature?
     var callingBellFeature: CallingBellFeature?
@@ -28,6 +27,21 @@ class CallManager {
     let mediaState = MediaState()
     let viewState = ViewState()
     let userState = UserState()
+    let trtcObserver = TRTCObserver()
+    
+    private init() {
+        NotificationCenter.default.addObserver(self, selector: #selector(loginSuccess(_:)),
+                                               name: Notification.Name.TUILoginSuccess,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(logoutSuccess),
+                                               name: NSNotification.Name.TUILogoutSuccess,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(applicationWillTerminate),
+                                               name: UIApplication.willTerminateNotification,
+                                               object: nil)
+    }
     
     func resetState() {
         callState.reset()
@@ -35,6 +49,46 @@ class CallManager {
         viewState.reset()
         userState.reset()
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: EVENT_CLOSE_TUICALLKIT_VIEWCONTROLLER), object: nil)
+        VideoFactory.shared.removeAllVideoView()
+    }
+    
+    @objc func logoutSuccess() {
+        CallManager.shared.hangup { } fail: { code, message in }
+        TUICallEngine.createInstance().getTRTCCloudInstance().removeDelegate(trtcObserver)
+        CallManager.shared.destroyInstance()
+    }
+    
+    @objc func loginSuccess(_ notification: Notification) {
+        CallManager.shared.initSelfUser()
+        CallManager.shared.initEngine(sdkAppId:TUILogin.getSdkAppID(),
+                                      userId: TUILogin.getUserID() ?? "",
+                                      userSig: TUILogin.getUserSig() ?? "") { [weak self] in
+            guard let self = self else { return }
+            self.callingVibratorFeature = CallingVibratorFeature()
+            self.callingBellFeature = CallingBellFeature()
+        } fail: { Int32errCode, errMessage in
+        }
+        CallManager.shared.addObserver(CallEngineObserver.shared)
+        CallManager.shared.setFramework()
+        CallManager.shared.setExcludeFromHistoryMessage()
+        TUICallEngine.createInstance().getTRTCCloudInstance().addDelegate(trtcObserver)
+    }
+    
+    @objc func applicationWillTerminate() {
+        guard userState.selfUser.callStatus.value != .none else { return }
+        
+        switch userState.selfUser.callRole.value {
+        case .call:
+            hangup { } fail: { code, message in }
+        case .called:
+            if userState.selfUser.callStatus.value == .waiting {
+                reject { } fail: { code, message in }
+            } else {
+                hangup { } fail: { code, message in }
+            }
+        default:
+            break
+        }
     }
     
     func setSelfInfo(nickname: String, avatar: String, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
@@ -49,23 +103,22 @@ class CallManager {
     }
     
     func call(userId: String, callMediaType: TUICallMediaType, params: TUICallParams, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
-        
         TUICallEngine.createInstance().call(userId: userId, callMediaType: callMediaType, params: params) { [weak self] in
             guard let self = self else { return }
-
+            
             self.callState.mediaType.value = callMediaType
             CallManager.shared.viewState.callingViewType.value = .one2one
             self.userState.selfUser.callRole.value = TUICallRole.call
             self.userState.selfUser.callStatus.value = TUICallStatus.waiting
             
             if callMediaType == .audio {
-                self.mediaState.audioPlayoutDevice.value = TUIAudioPlaybackDevice.earpiece
+                self.mediaState.audioPlayoutDevice.value = .earpiece
                 self.mediaState.isCameraOpened.value = false
             } else if callMediaType == .video {
-                self.mediaState.audioPlayoutDevice.value = TUIAudioPlaybackDevice.speakerphone
+                self.mediaState.audioPlayoutDevice.value = .speakerphone
                 self.mediaState.isCameraOpened.value = true
             }
-
+            
             let remoteUser = User()
             remoteUser.id.value = userId
             remoteUser.callStatus.value = .waiting
@@ -101,10 +154,10 @@ class CallManager {
                succ: @escaping TUICallSucc,
                fail: @escaping TUICallFail) {
         TUICallEngine.createInstance().calls(userIdList: userIdList,
-                                         callMediaType: callMediaType,
-                                         params: params) { [weak self] in
+                                             callMediaType: callMediaType,
+                                             params: params) { [weak self] in
             guard let self = self else { return }
-            CallManager.shared.callState.groupId = params.chatGroupId
+            CallManager.shared.callState.chatGroupId.value = params.chatGroupId
             self.callState.mediaType.value = callMediaType
             if userIdList.count == 1 {
                 self.viewState.callingViewType.value = .one2one
@@ -114,14 +167,19 @@ class CallManager {
             if !params.chatGroupId.isEmpty {
                 self.viewState.callingViewType.value = .multi
             }
+            
+            if self.viewState.callingViewType.value == .multi {
+                self.viewState.showLargeViewUserId.value = self.userState.selfUser.id.value
+            }
+
             self.userState.selfUser.callRole.value = TUICallRole.call
             self.userState.selfUser.callStatus.value = TUICallStatus.waiting
             
             if callMediaType == .audio {
-                self.mediaState.audioPlayoutDevice.value = TUIAudioPlaybackDevice.earpiece
+                self.mediaState.audioPlayoutDevice.value = .earpiece
                 self.mediaState.isCameraOpened.value = false
             } else if callMediaType == .video {
-                self.mediaState.audioPlayoutDevice.value = TUIAudioPlaybackDevice.speakerphone
+                self.mediaState.audioPlayoutDevice.value = .speakerphone
                 self.mediaState.isCameraOpened.value = true
             }
             
@@ -154,7 +212,7 @@ class CallManager {
             fail(code, message)
         }
     }
-
+    
     func groupCall(groupId: String,
                    userIdList: [String],
                    callMediaType: TUICallMediaType,
@@ -166,19 +224,19 @@ class CallManager {
                                                  callMediaType: callMediaType,
                                                  params: params) { [weak self] in
             guard let self = self else { return }
-
-            self.callState.groupId = groupId
+            
+            self.callState.chatGroupId.value = groupId
             self.callState.mediaType.value = callMediaType
             CallManager.shared.viewState.callingViewType.value = .multi
-
+            
             self.userState.selfUser.callRole.value = TUICallRole.call
             self.userState.selfUser.callStatus.value = TUICallStatus.waiting
             
             if callMediaType == .audio {
-                self.mediaState.audioPlayoutDevice.value = TUIAudioPlaybackDevice.earpiece
+                self.mediaState.audioPlayoutDevice.value = .earpiece
                 self.mediaState.isCameraOpened.value = false
             } else if callMediaType == .video {
-                self.mediaState.audioPlayoutDevice.value = TUIAudioPlaybackDevice.speakerphone
+                self.mediaState.audioPlayoutDevice.value = .speakerphone
                 self.mediaState.isCameraOpened.value = true
             }
             
@@ -221,16 +279,16 @@ class CallManager {
             
             CallManager.shared.viewState.callingViewType.value = .multi
             self.callState.mediaType.value = callMediaType
-            self.callState.groupId = groupId
+            self.callState.chatGroupId.value = groupId
             
             self.userState.selfUser.callRole.value = TUICallRole.called
             self.userState.selfUser.callStatus.value = TUICallStatus.accept
             
             if callMediaType == .audio {
-                self.mediaState.audioPlayoutDevice.value = TUIAudioPlaybackDevice.earpiece
+                self.mediaState.audioPlayoutDevice.value = .earpiece
                 self.mediaState.isCameraOpened.value = false
             } else if callMediaType == .video {
-                self.mediaState.audioPlayoutDevice.value = TUIAudioPlaybackDevice.speakerphone
+                self.mediaState.audioPlayoutDevice.value = .speakerphone
                 self.mediaState.isCameraOpened.value = true
             }
             
@@ -249,7 +307,7 @@ class CallManager {
             CallManager.shared.viewState.callingViewType.value = .multi
             CallManager.shared.userState.selfUser.callRole.value = TUICallRole.called
             CallManager.shared.userState.selfUser.callStatus.value = TUICallStatus.accept
-            CallManager.shared.mediaState.audioPlayoutDevice.value = TUIAudioPlaybackDevice.earpiece
+            CallManager.shared.mediaState.audioPlayoutDevice.value = .earpiece
             CallManager.shared.mediaState.isCameraOpened.value = false
             
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: EVENT_SHOW_TUICALLKIT_VIEWCONTROLLER), object: nil)
@@ -259,22 +317,31 @@ class CallManager {
         }
     }
     
-    func hangup() {
+    func hangup(succ: @escaping TUICallSucc,
+                fail: @escaping TUICallFail) {
         TUICallEngine.createInstance().hangup {
+            succ()
         } fail: { code, message in
+            fail(code, message)
         }
         resetState()
     }
     
-    func accept() {
+    func accept(succ: @escaping TUICallSucc,
+                fail: @escaping TUICallFail) {
         TUICallEngine.createInstance().accept {
+            succ()
         } fail: { code, message in
+            fail(code, message)
         }
     }
     
-    func reject() {
+    func reject(succ: @escaping TUICallSucc,
+                fail: @escaping TUICallFail) {
         TUICallEngine.createInstance().reject {
+            succ()
         } fail: { code, message in
+            fail(code, message)
         }
         resetState()
     }
@@ -294,7 +361,7 @@ class CallManager {
         }
     }
     
-    func openMicrophone(_ notifyEvent: Bool = true) {
+    func openMicrophone(_ notifyEvent: Bool = true, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
         if userState.selfUser.callStatus.value != .none {
             TUICallEngine.createInstance().openMicrophone { [weak self] in
                 guard let self = self else { return }
@@ -302,7 +369,9 @@ class CallManager {
                 if (notifyEvent) {
                     self.voipDataSyncHandler.setVoIPMute(false)
                 }
+                succ()
             } fail: { code , message  in
+                fail(code, message)
             }
         }
     }
@@ -314,18 +383,10 @@ class CallManager {
             voipDataSyncHandler.setVoIPMute(true)
         }
     }
-    
-    func changeSpeaker() {
-        if mediaState.audioPlayoutDevice.value == TUIAudioPlaybackDevice.speakerphone {
-            selectAudioPlaybackDevice(device: .earpiece)
-        } else {
-            selectAudioPlaybackDevice(device: .speakerphone)
-        }
-    }
-    
+        
     func selectAudioPlaybackDevice(device: TUIAudioPlaybackDevice) {
         TUICallEngine.createInstance().selectAudioPlaybackDevice(device)
-        mediaState.audioPlayoutDevice.value = device
+        mediaState.audioPlayoutDevice.value = AudioPlaybackDevice(rawValue: device.rawValue) ?? .earpiece
     }
     
     func switchCamera() {
@@ -338,18 +399,25 @@ class CallManager {
         }
     }
     
+    func switchCamera(camera: TUICamera) {
+        TUICallEngine.createInstance().switchCamera(camera)
+        mediaState.isFrontCamera.value = camera == .front ? true : false
+    }
+    
     func closeCamera() {
         TUICallEngine.createInstance().closeCamera()
         mediaState.isCameraOpened.value = false
         userState.selfUser.videoAvailable.value = false
     }
     
-    func openCamera(videoView: UIView) {
+    func openCamera(videoView: UIView, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
         TUICallEngine.createInstance().openCamera(mediaState.isFrontCamera.value == true ? .front : .back, videoView: videoView) { [weak self] in
             guard let self = self else { return }
             self.mediaState.isCameraOpened.value = true
             self.userState.selfUser.videoAvailable.value = true
+            succ()
         } fail: { code, message in
+            fail(code, message)
         }
     }
     
@@ -363,16 +431,12 @@ class CallManager {
     func stopRemoteView(user: User) {
         TUICallEngine.createInstance().stopRemoteView(userId: user.id.value)
     }
-    
-    func setAudioPlaybackDevice(device: TUIAudioPlaybackDevice) {
-        TUICallEngine.createInstance().selectAudioPlaybackDevice(device)
-    }
-    
+        
     func switchToAudio() {
         TUICallEngine.createInstance().switchCallMediaType(.audio)
     }
     
-    func inviteUser(userIds: [String]) {
+    func inviteUser(userIds: [String], succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
         let callParams = TUICallParams()
         callParams.offlinePushInfo = OfflinePushInfoConfig.createOfflinePushInfo()
         callParams.timeout = TUI_CALLKIT_SIGNALING_MAX_TIME
@@ -385,8 +449,10 @@ class CallManager {
                     newUser.callRole.value = TUICallRole.called
                     self.userState.remoteUserList.value.append(newUser)
                 }
+                succ()
             }
         } fail: { code, message in
+            fail(code,message)
         }
     }
     
@@ -399,29 +465,49 @@ class CallManager {
     }
     
     func initEngine(sdkAppId: Int32, userId: String, userSig: String, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
-        TUICallEngine.createInstance().`init`(sdkAppId, userId: userId, userSig: userSig) { [weak self] in
-            guard let self = self else { return }
-            
-            let videoEncoderParams = TUIVideoEncoderParams()
-            videoEncoderParams.resolution = ._1280_720
-            videoEncoderParams.resolutionMode = .portrait
-            CallManager.shared.setVideoEncoderParams(params: videoEncoderParams)  {} fail: { Int32errCode, errMessage in }
-            
-            let videoRenderParams = TUIVideoRenderParams()
-            videoRenderParams.fillMode = .fill
-            videoRenderParams.rotation = ._0
-            CallManager.shared.setVideoRenderParams(userId: TUILogin.getUserID() ?? "",
-                                                            params: videoRenderParams) {} fail: { Int32errCode, errMessage in }
-            let beauty = CallManager.shared.getTRTCCloudInstance().getBeautyManager()
-            beauty.setBeautyStyle(.nature)
-            beauty.setBeautyLevel(6.0)
-            
-            self.callingVibratorFeature = self.callingVibratorFeature ?? CallingVibratorFeature()
-            self.callingBellFeature = self.callingBellFeature ?? CallingBellFeature()
-
+        TUICallEngine.createInstance().`init`(sdkAppId, userId: userId, userSig: userSig) {
+            if CallManager.shared.globalState.enableMultiDeviceAbility {
+                TUICallEngine.createInstance().enableMultiDeviceAbility(enable: true) { } fail: { _, _ in }
+            }
             succ()
         } fail: { code, message in
             fail(code, message)
+        }
+    }
+    
+    func setCallingBell(filePath: String) {
+        if filePath.hasPrefix("http") {
+            let session = URLSession.shared
+            guard let url = URL(string: filePath) else { return }
+            let downloadTask = session.downloadTask(with: url) { location, response, error in
+                if error != nil {
+                    return
+                }
+                
+                if location != nil {
+                    if let oldBellFilePath = UserDefaults.standard.object(forKey: TUI_CALLING_BELL_KEY) as? String {
+                        do {
+                            try FileManager.default.removeItem(atPath: oldBellFilePath)
+                        } catch let error {
+                            debugPrint("FileManager Error: \(error)")
+                        }
+                    }
+                    guard let location = location else { return }
+                    guard let dstDocPath = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).last else { return }
+                    let dstPath = dstDocPath + "/" + location.lastPathComponent
+                    do {
+                        try FileManager.default.moveItem(at: location, to: URL(fileURLWithPath: dstPath))
+                    } catch let error {
+                        debugPrint("FileManager Error: \(error)")
+                    }
+                    UserDefaults.standard.set(dstPath, forKey: TUI_CALLING_BELL_KEY)
+                    UserDefaults.standard.synchronize()
+                }
+            }
+            downloadTask.resume()
+        } else {
+            UserDefaults.standard.set(filePath, forKey: TUI_CALLING_BELL_KEY)
+            UserDefaults.standard.synchronize()
         }
     }
     
@@ -432,14 +518,14 @@ class CallManager {
     func enableFloatWindow(enable: Bool) {
         CallManager.shared.globalState.enableFloatWindow = enable
     }
-        
+    
     func enableVirtualBackground (enable: Bool) {
-        CallManager.shared.globalState.enableVirtualBackgroud = enable
+        CallManager.shared.globalState.enableVirtualBackground = enable
         CallManager.shared.reportOnlineLog(enable)
     }
     
     func enableIncomingBanner (enable: Bool) {
-        CallManager.shared.globalState.enableIncomingbanner = enable
+        CallManager.shared.globalState.enableIncomingBanner = enable
     }
     
     func setVideoEncoderParams(params: TUIVideoEncoderParams, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
@@ -458,20 +544,44 @@ class CallManager {
         }
     }
     
-    func getTRTCCloudInstance() -> TRTCCloud {
-        return TUICallEngine.createInstance().getTRTCCloudInstance()
+    func enableMultiDeviceAbility(enable: Bool, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
+        TUICallEngine.createInstance().enableMultiDeviceAbility(enable: enable) {
+            succ()
+        } fail: { code, message in
+            fail(code, message)
+        }
     }
     
+    func callExperimentalAPI(jsonStr: String) {
+        guard let jsonData = jsonStr.data(using: .utf8)  else { return }
+        do {
+            guard let jsonDictionary = try JSONSerialization.jsonObject(with: jsonData, options: [])  as? [String: Any] else { return }
+            guard let apiName = jsonDictionary["api"] as? String else { return }
+            
+            if apiName == "forceUseV2API" {
+                guard let params = jsonDictionary["params"] as? [String: Any] else { return }
+                guard let enableForceUseV2API = params["enable"] as? Bool else { return }
+                globalState.enableForceUseV2API = enableForceUseV2API
+                return
+            }
+            
+            TUICallEngine.createInstance().callExperimentalAPI(jsonObject: jsonStr)
+        } catch {
+        }
+    }
+        
     func setFramework() {
         var jsonParams: [String: Any]
         if TUICore.getService(TUICore_TUIChatService) == nil {
             jsonParams = ["api": "setFramework",
-                          "params": ["component": 14,
-                                     "language": 3,],]
+                          "params": ["framework": FrameworkConstants.framework,
+                                     "component": FrameworkConstants.component,
+                                     "language": FrameworkConstants.language,],]
         } else {
             jsonParams = ["api": "setFramework",
-                          "params": ["component": 15,
-                                     "language": 3,],]
+                          "params": ["framework": FrameworkConstants.framework,
+                                     "component": FrameworkConstants.callComponentChat,
+                                     "language": FrameworkConstants.language,],]
         }
         
         guard let data = try? JSONSerialization.data(withJSONObject: jsonParams,
@@ -503,10 +613,9 @@ class CallManager {
         TUICallEngine.createInstance().callExperimentalAPI(jsonObject: paramsString)
     }
     
-    func setBlurBackground() {
-        let currentEnable = viewState.isVirtualBackgroundOpened.value
-        let level = !currentEnable ? 3 : 0
-        viewState.isVirtualBackgroundOpened.value = !currentEnable
+    func setBlurBackground(enable: Bool) {
+        let level = enable ? 3 : 0
+        viewState.isVirtualBackgroundOpened.value = enable
         TUICallEngine.createInstance().setBlurBackground(level) { code, message in
         }
     }
@@ -561,12 +670,12 @@ class CallManager {
             CallManager.shared.userState.selfUser.avatar.value = selfUser.avatar.value
         })
     }
-        
+    
     func showIMErrorMessage(code: Int32, message: String?) {
         let errorMessage = TUITool.convertIMError(Int(code), msg: convertCallKitError(code: code, message: message))
         Toast.showToast(errorMessage ?? "")
     }
-        
+    
     private func convertCallKitError(code: Int32, message: String?) -> String {
         var errorMessage: String? = message
         if code == ERROR_PACKAGE_NOT_PURCHASED {

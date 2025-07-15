@@ -43,10 +43,14 @@ class MultiCallWaitingViewCell: UICollectionViewCell {
         contentView.addSubview(userIcon)
     }
     
-    private func activateConstraints() {
-        userIcon.snp.makeConstraints { make in
-            make.edges.equalTo(self.contentView)
-        }
+    private func activateConstraints() {        
+        userIcon.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            userIcon.topAnchor.constraint(equalTo: contentView.topAnchor),
+            userIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            userIcon.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            userIcon.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+        ])
     }
     
     func initCell(user: User) {

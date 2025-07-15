@@ -6,7 +6,6 @@
 //
 
 import RTCCommon
-import SnapKit
 
 class  FloatWindowSingleView: UIView {
     let selfCallStatusObserver = Observer()
@@ -134,42 +133,86 @@ class  FloatWindowSingleView: UIView {
     }
     
     func activateConstraints() {
-        shadowView.snp.makeConstraints { make in
-            make.edges.equalTo(containerView)
+        shadowView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = shadowView.superview, let containerSuperview = containerView.superview, superview == containerSuperview {
+            NSLayoutConstraint.activate([
+                shadowView.topAnchor.constraint(equalTo: containerView.topAnchor),
+                shadowView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+                shadowView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+                shadowView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+            ])
         }
-        containerView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.leading.top.equalTo(8.scale375Width())
+
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = containerView.superview {
+            NSLayoutConstraint.activate([
+                containerView.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
+                containerView.centerYAnchor.constraint(equalTo: superview.centerYAnchor),
+                containerView.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: 8.scale375Width()),
+                containerView.topAnchor.constraint(equalTo: superview.topAnchor, constant: 8.scale375Width())
+            ])
         }
-        
-        audioContainerView.snp.makeConstraints { make in
-            make.top.centerX.equalTo(containerView)
-            make.width.height.equalTo(72.scale375Width())
+
+        audioContainerView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = audioContainerView.superview {
+            NSLayoutConstraint.activate([
+                audioContainerView.topAnchor.constraint(equalTo: containerView.topAnchor),
+                audioContainerView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+                audioContainerView.widthAnchor.constraint(equalToConstant: 72.scale375Width()),
+                audioContainerView.heightAnchor.constraint(equalToConstant: 72.scale375Width())
+            ])
         }
-        imageView.snp.makeConstraints { make in
-            make.top.equalTo(audioContainerView).offset(8.scale375Width())
-            make.centerX.equalTo(audioContainerView)
-            make.width.height.equalTo(36.scale375Width())
+
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = imageView.superview {
+            NSLayoutConstraint.activate([
+                imageView.topAnchor.constraint(equalTo: audioContainerView.topAnchor, constant: 8.scale375Width()),
+                imageView.centerXAnchor.constraint(equalTo: audioContainerView.centerXAnchor),
+                imageView.widthAnchor.constraint(equalToConstant: 36.scale375Width()),
+                imageView.heightAnchor.constraint(equalToConstant: 36.scale375Width())
+            ])
         }
-        audioDescribeLabel.snp.makeConstraints { make in
-            make.centerX.width.equalTo(audioContainerView)
-            make.top.equalTo(imageView.snp.bottom).offset(4.scale375Width())
-            make.height.equalTo(20.scale375Width())
+
+        audioDescribeLabel.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = audioDescribeLabel.superview {
+            NSLayoutConstraint.activate([
+                audioDescribeLabel.centerXAnchor.constraint(equalTo: audioContainerView.centerXAnchor),
+                audioDescribeLabel.widthAnchor.constraint(equalTo: audioContainerView.widthAnchor),
+                audioDescribeLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 4.scale375Width()),
+                audioDescribeLabel.heightAnchor.constraint(equalToConstant: 20.scale375Width())
+            ])
         }
-        timerLabel.snp.makeConstraints { make in
-            make.centerX.width.equalTo(audioContainerView)
-            make.top.equalTo(imageView.snp.bottom).offset(4.scale375Width())
-            make.height.equalTo(20.scale375Width())
+
+        timerLabel.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = timerLabel.superview {
+            NSLayoutConstraint.activate([
+                timerLabel.centerXAnchor.constraint(equalTo: audioContainerView.centerXAnchor),
+                timerLabel.widthAnchor.constraint(equalTo: audioContainerView.widthAnchor),
+                timerLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 4.scale375Width()),
+                timerLabel.heightAnchor.constraint(equalToConstant: 20.scale375Width())
+            ])
         }
-        
-        videoContainerView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+
+        videoContainerView.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = videoContainerView.superview {
+            NSLayoutConstraint.activate([
+                videoContainerView.topAnchor.constraint(equalTo: superview.topAnchor),
+                videoContainerView.leadingAnchor.constraint(equalTo: superview.leadingAnchor),
+                videoContainerView.trailingAnchor.constraint(equalTo: superview.trailingAnchor),
+                videoContainerView.bottomAnchor.constraint(equalTo: superview.bottomAnchor)
+            ])
         }
-        videoDescribeLabel.snp.makeConstraints { make in
-            make.centerX.width.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-8.scale375Width())
-            make.height.equalTo(20.scale375Width())
+
+        videoDescribeLabel.translatesAutoresizingMaskIntoConstraints = false
+        if let superview = videoDescribeLabel.superview {
+            NSLayoutConstraint.activate([
+                videoDescribeLabel.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
+                videoDescribeLabel.widthAnchor.constraint(equalTo: superview.widthAnchor),
+                videoDescribeLabel.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: -8.scale375Width()),
+                videoDescribeLabel.heightAnchor.constraint(equalToConstant: 20.scale375Width())
+            ])
         }
+            
         remoteVideoView.frame = kFloatingWindowVideoViewRect
         selfVideoView.frame = kFloatingWindowVideoViewRect
     }
