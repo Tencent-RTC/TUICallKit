@@ -48,6 +48,10 @@ class CallManager private constructor(context: Context) : ITUINotification {
     }
 
     fun reset() {
+        if (mediaState.isCameraOpened.get() == true) {
+            closeCamera()
+        }
+
         userState.reset()
         callState.reset()
         mediaState.reset()
