@@ -110,4 +110,11 @@ class TUICallKit {
   void enableIncomingBanner(bool enable) {
     CallManager.instance.enableIncomingBanner(enable);
   }
+
+  /// Call experimental interface
+  ///
+  /// @param jsonObject
+  Future<void> callExperimentalAPI(String json) async {
+    await CallManager.instance.callExperimentalAPI(json);
+  }
 }

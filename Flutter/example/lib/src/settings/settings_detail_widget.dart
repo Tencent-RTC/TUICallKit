@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tuicall_kit_example/generate/app_localizations.dart';
 import 'package:tencent_calls_uikit/tencent_calls_uikit.dart';
 import 'package:tuicall_kit_example/src/settings/settings_config.dart';
 

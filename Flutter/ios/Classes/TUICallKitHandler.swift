@@ -30,8 +30,8 @@ class TUICallKitHandler {
         case apiLog
         case showIncomingBanner
         case enableWakeLock
-        case loginSuccessEvent
-        case logoutSuccessEvent
+        case loginNativeTUICore
+        case logoutNativeTUICore
     }
     
     init(registrar: FlutterPluginRegistrar) {
@@ -76,10 +76,10 @@ class TUICallKitHandler {
                 showIncomingBanner(call: call, result: result)
             case .enableWakeLock:
                 enableWakeLock(call: call, result: result)
-            case .loginSuccessEvent:
-                loginSuccessEvent(call: call, result: result)
-            case .logoutSuccessEvent:
-                logoutSuccessEvent(call: call, result: result)
+            case .loginNativeTUICore:
+                loginNativeTUICore(call: call, result: result)
+            case .logoutNativeTUICore:
+                logoutNativeTUICore(call: call, result: result)
             default:
                 break
             }
@@ -126,7 +126,7 @@ extension TUICallKitHandler {
             TUICallState.instance.scene.value = UInt(sceneIndex) == 0 ? .single : .group;
         }
         
-        if let mediaTypeIndex = MethodUtils.getMethodParams(call: call, key: "mediaType", resultType: Int.self) {
+        if let mediaTypeIndex = MethodUtils.getMethodParams(call: call, key: "mediaType", resultType: UInt.self) {
             TUICallState.instance.mediaType.value = TUICallMediaType(rawValue: mediaTypeIndex) ?? .unknown
         }
         
@@ -372,13 +372,31 @@ extension TUICallKitHandler {
         result(NSNumber(value: 0))
     }
     
-    func loginSuccessEvent(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        NotificationCenter.default.post(name: NSNotification.Name.TUILoginSuccess , object: nil)
+    func loginNativeTUICore(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let sdkAppId = MethodUtils.getMethodParams(call: call, key: "sdkAppId", resultType: Int32.self) else {
+            FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "loginNativeTUICore", paramKey: "sdkAppId", result: result)
+            result(NSNumber(value: -1))
+            return
+        }
+
+        guard let userId = MethodUtils.getMethodParams(call: call, key: "userId", resultType: String.self) else {
+            FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "loginNativeTUICore", paramKey: "userId", result: result)
+            result(NSNumber(value: -1))
+            return
+        }
+
+        guard let userSig = MethodUtils.getMethodParams(call: call, key: "userSig", resultType: String.self) else {
+            FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "loginNativeTUICore", paramKey: "userSig", result: result)
+            result(NSNumber(value: -1))
+            return
+        }
+        
+        TUILogin.login(sdkAppId, userID: userId, userSig: userSig, succ: nil, fail: nil)
         result(NSNumber(value: 0))
     }
 
-    func logoutSuccessEvent(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        NotificationCenter.default.post(name: NSNotification.Name.TUILogoutSuccess , object: nil)
+    func logoutNativeTUICore(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        TUILogin.logout(nil, fail: nil)
         result(NSNumber(value: 0))
     }
 }

@@ -273,7 +273,7 @@ extension TUICallEngineHandler {
         }
         
         let callMediaTypeKey = "mediaType"
-        guard let callMediaTypeInt = MethodUtils.getMethodParams(call: call, key: callMediaTypeKey, resultType: Int.self) else {
+        guard let callMediaTypeInt = MethodUtils.getMethodParams(call: call, key: callMediaTypeKey, resultType: UInt.self) else {
             FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "calls", paramKey: callMediaTypeKey, result: result)
             return
         }
@@ -300,7 +300,7 @@ extension TUICallEngineHandler {
             return
         }
         
-        guard let mediaType = MethodUtils.getMethodParams(call: call, key: "mediaType", resultType: Int.self) else {
+        guard let mediaType = MethodUtils.getMethodParams(call: call, key: "mediaType", resultType: UInt.self) else {
             FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "singleCall", paramKey: "mediaType", result: result)
             return
         }
@@ -334,7 +334,7 @@ extension TUICallEngineHandler {
         }
         
         let callMediaTypeKey = "mediaType"
-        guard let callMediaTypeInt = MethodUtils.getMethodParams(call: call, key: callMediaTypeKey, resultType: Int.self) else {
+        guard let callMediaTypeInt = MethodUtils.getMethodParams(call: call, key: callMediaTypeKey, resultType: UInt.self) else {
             FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "groupCall", paramKey: callMediaTypeKey, result: result)
             return
         }
@@ -430,7 +430,7 @@ extension TUICallEngineHandler {
         }
 
         let callMediaTypeKey = "mediaType"
-        guard let callMediaTypeInt = MethodUtils.getMethodParams(call: call, key: callMediaTypeKey, resultType: Int.self) else {
+        guard let callMediaTypeInt = MethodUtils.getMethodParams(call: call, key: callMediaTypeKey, resultType: UInt.self) else {
             FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "joinInGroupCall", paramKey: callMediaTypeKey, result: result)
             return
         }
@@ -445,7 +445,7 @@ extension TUICallEngineHandler {
     }
 
     func switchCallMediaType(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard let callMediaTypeInt = MethodUtils.getMethodParams(call: call, key: "mediaType", resultType: Int.self) else {
+        guard let callMediaTypeInt = MethodUtils.getMethodParams(call: call, key: "mediaType", resultType: UInt.self) else {
             FlutterResultUtils.handleMethod(code: .paramNotFound, methodName: "switchCallMediaType", paramKey: "mediaType", result: result)
             return
         }

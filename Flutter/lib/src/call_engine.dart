@@ -272,6 +272,16 @@ class TUICallEngine extends PlatformInterface {
     await TUICallEnginePlatform.instance.callExperimentalAPI(jsonMap);
   }
 
+  Future<void> queryRecentCalls(
+      TUICallRecentCallsFilter filter, TUIValueCallback callback) async {
+    await TUICallEnginePlatform.instance.queryRecentCalls(filter, callback);
+  }
+
+  Future<void> deleteRecordCalls(
+      List<String> callIdList, TUIValueCallback callback) async {
+    await TUICallEnginePlatform.instance.deleteRecordCalls(callIdList, callback);
+  }
+
   _setFramework() async {
     await callExperimentalAPI({
       "api": "setFramework",

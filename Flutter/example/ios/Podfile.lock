@@ -1,0 +1,116 @@
+PODS:
+  - Flutter (1.0.0)
+  - HydraAsync (2.0.6)
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - RTCRoomEngine/Professional (3.2.1):
+    - TXIMSDK_Plus_iOS_XCFramework (>= 8.4.6676)
+    - TXLiteAVSDK_Professional (>= 12.2.16956)
+  - SDWebImage (5.21.1):
+    - SDWebImage/Core (= 5.21.1)
+  - SDWebImage/Core (5.21.1)
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - SnapKit (5.7.1)
+  - tencent_calls_uikit (0.0.1):
+    - Flutter
+    - RTCRoomEngine/Professional (~> 3.2.0)
+    - SnapKit
+    - TUICore (>= 8.6.7019)
+  - tencent_cloud_chat_push (8.6.7019):
+    - Flutter
+    - TIMPush (= 8.6.7019)
+    - TXIMSDK_Plus_iOS_XCFramework
+  - tencent_cloud_chat_sdk (8.0.0):
+    - Flutter
+    - HydraAsync
+    - TXIMSDK_Plus_iOS_XCFramework (~> 8.6.7040)
+  - tencent_cloud_uikit_core (0.0.1):
+    - Flutter
+  - TIMPush (8.6.7019):
+    - TXIMSDK_Plus_iOS_XCFramework (>= 8.6.7019)
+  - TUICore (8.6.7019):
+    - SDWebImage
+    - TUICore/ImSDK_Plus (= 8.6.7019)
+  - TUICore/Base (8.6.7019):
+    - SDWebImage
+  - TUICore/ImSDK_Plus (8.6.7019):
+    - SDWebImage
+    - TUICore/Base
+    - TXIMSDK_Plus_iOS_XCFramework
+  - TUIVoIPExtension/Professional (3.1.0):
+    - TUICore (>= 8.6.7019)
+    - TXIMSDK_Plus_iOS_XCFramework (>= 8.6.7020)
+    - TXLiteAVSDK_Professional
+  - TXIMSDK_Plus_iOS_XCFramework (8.6.7040)
+  - TXLiteAVSDK_Professional (12.7.19272):
+    - TXLiteAVSDK_Professional/Professional (= 12.7.19272)
+  - TXLiteAVSDK_Professional/Professional (12.7.19272)
+  - url_launcher_ios (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
+  - tencent_calls_uikit (from `.symlinks/plugins/tencent_calls_uikit/ios`)
+  - tencent_cloud_chat_push (from `.symlinks/plugins/tencent_cloud_chat_push/ios`)
+  - tencent_cloud_chat_sdk (from `.symlinks/plugins/tencent_cloud_chat_sdk/ios`)
+  - tencent_cloud_uikit_core (from `.symlinks/plugins/tencent_cloud_uikit_core/ios`)
+  - TUIVoIPExtension/Professional (= 3.1.0)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+
+SPEC REPOS:
+  trunk:
+    - HydraAsync
+    - RTCRoomEngine
+    - SDWebImage
+    - SnapKit
+    - TIMPush
+    - TUICore
+    - TUIVoIPExtension
+    - TXIMSDK_Plus_iOS_XCFramework
+    - TXLiteAVSDK_Professional
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
+  tencent_calls_uikit:
+    :path: ".symlinks/plugins/tencent_calls_uikit/ios"
+  tencent_cloud_chat_push:
+    :path: ".symlinks/plugins/tencent_cloud_chat_push/ios"
+  tencent_cloud_chat_sdk:
+    :path: ".symlinks/plugins/tencent_cloud_chat_sdk/ios"
+  tencent_cloud_uikit_core:
+    :path: ".symlinks/plugins/tencent_cloud_uikit_core/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
+
+SPEC CHECKSUMS:
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  HydraAsync: 8d589bd725b0224f899afafc9a396327405f8063
+  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
+  RTCRoomEngine: c43684fed1e7424d49140ee60c173ca03fb791bc
+  SDWebImage: f29024626962457f3470184232766516dee8dfea
+  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
+  SnapKit: d612e99e678a2d3b95bf60b0705ed0a35c03484a
+  tencent_calls_uikit: cf2feaed5b5805063aa17485cc3568d71d723c45
+  tencent_cloud_chat_push: 61f6d9be208281e0ee166173877ecf74c2ba7a49
+  tencent_cloud_chat_sdk: 623578ad1b34c615e9aa1a2b67da79051f9421fe
+  tencent_cloud_uikit_core: c0140985a33df7b3948d2ebe0a0d7eeb780447f2
+  TIMPush: d0dfe96355ee413a7cacb2576f8aaa66f6073ab2
+  TUICore: 7991cb71071c1c75360d58f92250fa4db2313a76
+  TUIVoIPExtension: 159a0fa102c178747bcb4acc1c155b7f771c090d
+  TXIMSDK_Plus_iOS_XCFramework: 36ea2cdb544315d79e520cd54d0bbb1fbb1110bc
+  TXLiteAVSDK_Professional: 11c510bf9fd5bb24c8065f913ab61284bdcdf4c6
+  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
+
+PODFILE CHECKSUM: 1a2669b0ed1730b9244631be1ae70a3e73744440
+
+COCOAPODS: 1.16.2

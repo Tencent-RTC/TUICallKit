@@ -69,7 +69,7 @@ class _CallsWidgetState extends State<CallsWidget> with TickerProviderStateMixin
 
   _initAnimation() {
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 3000),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
 
@@ -82,7 +82,7 @@ class _CallsWidgetState extends State<CallsWidget> with TickerProviderStateMixin
     super.initState();
     CallsWidget.isFunctionExpand = true;
     CallsIndividualUserWidgetData.initIndividualUserWidgetData();
-    if (CallState.instance.groupId != '') {
+    if (CallState.instance.groupId != '' || CallState.instance.scene == TUICallScene.groupCall) {
       isDirectMulti = true;
       isShowInvite = true;
     }

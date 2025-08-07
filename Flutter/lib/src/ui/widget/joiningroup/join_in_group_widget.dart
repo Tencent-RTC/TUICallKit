@@ -1,21 +1,25 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tencent_calls_uikit/src/call_define.dart';
+import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
 import 'package:tencent_calls_uikit/src/impl/call_manager.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
+import 'package:tencent_calls_uikit/src/impl/call_state.dart';
 import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
 
 class JoinInGroupWidget extends StatefulWidget {
   final List<String> userIDs;
-  final TUIRoomId roomId;
+  final TUIRoomId? roomId;
   final TUICallMediaType mediaType;
   final String groupId;
+  final String? callId;
 
   const JoinInGroupWidget(
       {required this.userIDs,
       required this.roomId,
       required this.mediaType,
       required this.groupId,
+      required this.callId,
       Key? key})
       : super(key: key);
 
@@ -183,7 +187,13 @@ class _JoinInGroupWidgetState extends State<JoinInGroupWidget> {
   }
 
   _joinInGroupCallAction() {
-    CallManager.instance.joinInGroupCall(widget.roomId, widget.groupId, widget.mediaType);
+    if (CallState.instance.forceUseV2API && widget.roomId != null) {
+      CallManager.instance.joinInGroupCall(widget.roomId!, widget.groupId, widget.mediaType);
+    } else if (widget.callId != null) {
+      CallManager.instance.join(widget.callId ?? "");
+    } else {
+      TRTCLogger.error("Parameter parsing error, joinInGroupCall/join call failed");
+    }
   }
 
   _updateUserAvatars() async {

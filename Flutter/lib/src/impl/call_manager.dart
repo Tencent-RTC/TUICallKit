@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
@@ -54,7 +55,6 @@ class CallManager {
           resolution: Resolution.resolution_640_360, resolutionMode: ResolutionMode.portrait));
       TUICallEngine.instance.setVideoRenderParams(
           userId, VideoRenderParams(fillMode: FillMode.fill, rotation: Rotation.rotation_0));
-      TUICallEngine.instance.setBeautyLevel(6.0);
       _updateLocalSelfUserInfo(userId);
     } else {
       CallManager.instance.showToast('Init Engine Fail');
@@ -629,7 +629,9 @@ class CallManager {
         userId,
         userSig,
         TUICallback(
-            onSuccess: () {},
+            onSuccess: () {
+              TUICallKitPlatform.instance.loginNativeTUICore(sdkAppId, userId, userSig);
+            },
             onError: (code, message) {
               result = TUIResult(code: "$code", message: message);
             }));
@@ -638,7 +640,9 @@ class CallManager {
 
   Future<void> logout() async {
     TRTCLogger.info('CallManager logout()');
-    await TUILogin.instance.logout(TUICallback(onSuccess: () {}, onError: (code, message) {}));
+    await TUILogin.instance.logout(TUICallback(onSuccess: () {
+      TUICallKitPlatform.instance.logoutNativeTUICore();
+    }, onError: (code, message) {}));
   }
 
   Future<void> setCallingBell(String assetName) async {
@@ -776,12 +780,42 @@ class CallManager {
     TUICallKitPlatform.instance.openLockScreenApp();
   }
 
+
+  void startForegroundService() {
+    if (!CallState.instance.isStartForegroundService) {
+      TRTCLogger.info('CallManager startForegroundService');
+      TUICallKitPlatform.instance.startForegroundService();
+      CallState.instance.isStartForegroundService = true;
+    }
+  }
+
+  void stopForegroundService() {
+    if (CallState.instance.isStartForegroundService) {
+      TRTCLogger.info('CallManager stopForegroundService');
+      TUICallKitPlatform.instance.stopForegroundService();
+      CallState.instance.isStartForegroundService = false;
+    }
+  }
+
   Future<bool> isScreenLocked() async {
     return await TUICallKitPlatform.instance.isScreenLocked();
   }
 
   Future<bool> isSamsungDevice() async {
     return await TUICallKitPlatform.instance.isSamsungDevice();
+  }
+
+  Future<void> callExperimentalAPI(String jsonStr) async {
+    Map<String, dynamic> jsonMap = jsonDecode(jsonStr);
+    if (jsonMap['api'] == 'forceUseV2API' &&
+        jsonMap['params'] != null) {
+      bool? enable = jsonMap['params']['enable'];
+      if (enable != null) {
+        CallState.instance.forceUseV2API = enable;
+      }
+    } else {
+      await TUICallEngine.instance.callExperimentalAPI(jsonMap);
+    }
   }
 
   void _setExcludeFromHistoryMessage() async {

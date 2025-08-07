@@ -14,7 +14,9 @@ class CallUIExtension extends AbstractTUIExtension {
   @override
   Future<Widget> onRaiseExtension(TUIExtensionID extensionID, Map<String, dynamic> param) {
     if (extensionID == TUIExtensionID.joinInGroup) {
-      return _getGroupAttributes(param);
+      return _getGroupAttributes(param).catchError((error, stackTrace) {
+        print("onRaiseExtension error: $error");
+      });
     }
 
     return Future<Widget>.value(const SizedBox());
@@ -28,20 +30,28 @@ class CallUIExtension extends AbstractTUIExtension {
 
     final resultMap = await TencentImSDKPlugin.v2TIMManager.v2TIMGroupManager
         .getGroupAttributes(groupID: groupId);
+
+    if (resultMap.data == null || !resultMap.data!.containsKey('inner_attr_kit_info')) {
+      return Future<Widget>.value(const SizedBox());
+    }
+
     final groupAttAryString = resultMap.data!['inner_attr_kit_info'];
     final groupAttAryMap = jsonDecode(groupAttAryString!);
 
+    String? callId = groupAttAryMap['call_id'];
     final businessType = groupAttAryMap['business_type'];
     final roomIDValue = groupAttAryMap['room_id'];
     final roomIDType = groupAttAryMap['room_id_type'];
     final mediaTypeString = groupAttAryMap['call_media_type'];
     final userListMap = List<Map<String, dynamic>>.from(groupAttAryMap['user_list']);
 
-    TUIRoomId roomId;
-    if (roomIDType == 1 || roomIDType == 0) {
-      roomId = TUIRoomId.intRoomId(intRoomId: int.parse(roomIDValue));
-    } else {
-      roomId = TUIRoomId.strRoomId(strRoomId: roomIDValue);
+    TUIRoomId? roomId;
+    if (roomIDType != null && roomIDValue != null) {
+      if (roomIDType == 1 || roomIDType == 0) {
+        roomId = TUIRoomId.intRoomId(intRoomId: int.parse(roomIDValue));
+      } else {
+        roomId = TUIRoomId.strRoomId(strRoomId: roomIDValue);
+      }
     }
 
     TUICallMediaType mediaType;
@@ -57,13 +67,12 @@ class CallUIExtension extends AbstractTUIExtension {
     }
 
     if (businessType != 'callkit' ||
-        userIds.isEmpty ||
-        roomIDValue.isEmpty ||
+        userIds.length <= 1 ||
         mediaTypeString.isEmpty) {
       return Future<Widget>.value(const SizedBox());
     }
 
     return JoinInGroupWidget(
-        userIDs: userIds, roomId: roomId, mediaType: mediaType, groupId: groupId);
+        userIDs: userIds, roomId: roomId, mediaType: mediaType, groupId: groupId, callId: callId,);
   }
 }
