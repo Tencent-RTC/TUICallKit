@@ -4,10 +4,12 @@
    <application
         tools:replace="android:label"
         android:label="TUICallKit"
-        android:name="com.tencent.cloud.tuikit.flutter.tuicall_kit_example.MyApplication"
+        android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name="com.tencent.cloud.tuikit.flutter.tuicall_kit_example.MainActivity"
+            android:showOnLockScreen="true"
+            android:turnScreenOn="true"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"

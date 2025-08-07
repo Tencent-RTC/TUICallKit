@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tuicall_kit_example/generate/app_localizations.dart';
 import 'package:tencent_calls_uikit/tencent_calls_uikit.dart';
 import 'package:tencent_calls_uikit/src/impl/call_state.dart';
 import 'package:tuicall_kit_example/src/settings/settings_config.dart';
@@ -13,10 +13,10 @@ class SettingsWidget extends StatefulWidget {
 }
 
 class _SettingsWidgetState extends State<SettingsWidget> {
-  int _resolutionIndex = SettingsConfig.resolution.index;
-  int _resolutionModeIndex = SettingsConfig.resolutionMode.index;
-  int _fillModeIndex = SettingsConfig.fillMode.index;
-  int _rotationIndex = SettingsConfig.rotation.index;
+  Resolution _resolution = SettingsConfig.resolution;
+  ResolutionMode _resolutionMode = SettingsConfig.resolutionMode;
+  FillMode _fillMode = SettingsConfig.fillMode;
+  Rotation _rotation = SettingsConfig.rotation;
 
   @override
   Widget build(BuildContext context) {
@@ -423,19 +423,17 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                     color: Colors.black),
               ),
               DropdownButton(
-                value: _resolutionIndex,
+                value: _resolution,
                 items: const [
-                  DropdownMenuItem(value: 0, child: Text('640_360')),
-                  DropdownMenuItem(value: 1, child: Text('640_480')),
-                  DropdownMenuItem(value: 2, child: Text('960_540')),
-                  DropdownMenuItem(value: 3, child: Text('960_720')),
-                  DropdownMenuItem(value: 4, child: Text('1280_720')),
-                  DropdownMenuItem(value: 5, child: Text('1920_1080')),
+                  DropdownMenuItem(value: Resolution.resolution_640_360, child: Text('640_360')),
+                  DropdownMenuItem(value: Resolution.resolution_960_540, child: Text('960_540')),
+                  DropdownMenuItem(value: Resolution.resolution_1280_720, child: Text('1280_720')),
+                  DropdownMenuItem(value: Resolution.resolution_1920_1080, child: Text('1920_1080')),
                 ],
                 onChanged: (value) {
                   setState(() {
-                    _resolutionIndex = value!;
-                    _setResolution();
+                    _resolution = value!;
+                    SettingsConfig.resolution = _resolution;
                   });
 
                   VideoEncoderParams params = VideoEncoderParams(
@@ -462,15 +460,15 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                     color: Colors.black),
               ),
               DropdownButton(
-                value: _resolutionModeIndex,
+                value: _resolutionMode,
                 items: [
-                  DropdownMenuItem(value: 0, child: Text(AppLocalizations.of(context)!.horizontal)),
-                  DropdownMenuItem(value: 1, child: Text(AppLocalizations.of(context)!.vertical)),
+                  DropdownMenuItem(value: ResolutionMode.landscape, child: Text(AppLocalizations.of(context)!.horizontal)),
+                  DropdownMenuItem(value: ResolutionMode.portrait, child: Text(AppLocalizations.of(context)!.vertical)),
                 ],
                 onChanged: (value) {
                   setState(() {
-                    _resolutionModeIndex = value!;
-                    _setResolutionMode();
+                    _resolutionMode = value!;
+                    SettingsConfig.resolutionMode = _resolutionMode;
                   });
 
                   VideoEncoderParams params = VideoEncoderParams(
@@ -497,15 +495,15 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                     color: Colors.black),
               ),
               DropdownButton(
-                value: _fillModeIndex,
+                value: _fillMode,
                 items: [
-                  DropdownMenuItem(value: 0, child: Text(AppLocalizations.of(context)!.fill)),
-                  DropdownMenuItem(value: 1, child: Text(AppLocalizations.of(context)!.fit)),
+                  DropdownMenuItem(value: FillMode.fill, child: Text(AppLocalizations.of(context)!.fill)),
+                  DropdownMenuItem(value: FillMode.fit, child: Text(AppLocalizations.of(context)!.fit)),
                 ],
                 onChanged: (value) {
                   setState(() {
-                    _fillModeIndex = value!;
-                    _setFillMode();
+                    _fillMode = value!;
+                    SettingsConfig.fillMode = _fillMode;
                   });
                   _setVideoRenderParams();
                 },
@@ -528,17 +526,17 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                     color: Colors.black),
               ),
               DropdownButton(
-                value: _rotationIndex,
+                value: _rotation,
                 items: const [
-                  DropdownMenuItem(value: 0, child: Text('0')),
-                  DropdownMenuItem(value: 1, child: Text('90')),
-                  DropdownMenuItem(value: 2, child: Text('180')),
-                  DropdownMenuItem(value: 3, child: Text('270')),
+                  DropdownMenuItem(value: Rotation.rotation_0, child: Text('0')),
+                  DropdownMenuItem(value: Rotation.rotation_90, child: Text('90')),
+                  DropdownMenuItem(value: Rotation.rotation_180, child: Text('180')),
+                  DropdownMenuItem(value: Rotation.rotation_270, child: Text('270')),
                 ],
                 onChanged: (value) {
                   setState(() {
-                    _rotationIndex = value!;
-                    _setRotation();
+                    _rotation = value!;
+                    SettingsConfig.rotation = _rotation;
                   });
                   _setVideoRenderParams();
                 },
@@ -584,62 +582,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     Navigator.of(context).pop();
   }
 
-  _setResolution() {
-    switch (_resolutionIndex) {
-      case 0:
-        SettingsConfig.resolution = Resolution.resolution_640_360;
-        break;
-      case 1:
-        SettingsConfig.resolution = Resolution.resolution_960_540;
-        break;
-      case 2:
-        SettingsConfig.resolution = Resolution.resolution_1280_720;
-        break;
-      case 3:
-        SettingsConfig.resolution = Resolution.resolution_1920_1080;
-        break;
-    }
-  }
-
-  _setResolutionMode() {
-    switch (_resolutionModeIndex) {
-      case 0:
-        SettingsConfig.resolutionMode = ResolutionMode.landscape;
-        break;
-      case 1:
-        SettingsConfig.resolutionMode = ResolutionMode.portrait;
-        break;
-    }
-  }
-
-  _setFillMode() {
-    switch (_fillModeIndex) {
-      case 0:
-        SettingsConfig.fillMode = FillMode.fill;
-        break;
-      case 1:
-        SettingsConfig.fillMode = FillMode.fit;
-        break;
-    }
-  }
-
-  _setRotation() {
-    switch (_rotationIndex) {
-      case 0:
-        SettingsConfig.rotation = Rotation.rotation_0;
-        break;
-      case 1:
-        SettingsConfig.rotation = Rotation.rotation_90;
-        break;
-      case 2:
-        SettingsConfig.rotation = Rotation.rotation_180;
-        break;
-      case 3:
-        SettingsConfig.rotation = Rotation.rotation_270;
-        break;
-    }
-  }
-
   _goDetailSettings(SettingWidgetType widgetType) {
     Navigator.push(context, MaterialPageRoute(
       builder: (context) {
@@ -651,6 +593,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   _setVideoRenderParams() {
     final params =
         VideoRenderParams(fillMode: SettingsConfig.fillMode, rotation: SettingsConfig.rotation);
-    TUICallEngine.instance.setVideoRenderParams(CallState.instance.remoteUserList[0].id, params);
+    TUICallEngine.instance.setVideoRenderParams(CallState.instance.selfUser.id, params);
   }
 }

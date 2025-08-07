@@ -18,13 +18,17 @@ class TUICallKitWidget extends StatefulWidget {
   State<TUICallKitWidget> createState() => _TUICallKitWidgetState();
 }
 
-class _TUICallKitWidgetState extends State<TUICallKitWidget> {
+class _TUICallKitWidgetState extends State<TUICallKitWidget> with WidgetsBindingObserver {
   ITUINotificationCallback? onCallEndCallBack;
 
   @override
   void initState() {
     super.initState();
     TRTCLogger.info('TUICallKitWidget initState');
+    WidgetsBinding.instance.addObserver(this);
+    if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
+      CallManager.instance.startForegroundService();
+    }
     if (CallState.instance.selfUser.callStatus == TUICallStatus.none) {
       Future.microtask(() {
         widget.close();
@@ -36,6 +40,14 @@ class _TUICallKitWidgetState extends State<TUICallKitWidget> {
       }
     };
     TUICore.instance.registerEvent(setStateEventOnCallEnd, onCallEndCallBack);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && CallState.instance.selfUser.callStatus != TUICallStatus.none) {
+      CallManager.instance.startForegroundService();
+    }
+    super.didChangeAppLifecycleState(state);
   }
 
   @override
@@ -62,6 +74,7 @@ class _TUICallKitWidgetState extends State<TUICallKitWidget> {
   void dispose() {
     super.dispose();
     TRTCLogger.info('TUICallKitWidget dispose');
+    WidgetsBinding.instance.removeObserver(this);
     TUICore.instance.unregisterEvent(setStateEventOnCallEnd, onCallEndCallBack);
     CallManager.instance.enableWakeLock(false);
   }

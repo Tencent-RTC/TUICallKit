@@ -13,12 +13,10 @@ class Boot {
   }
 
   ITUINotificationCallback loginSuccessCallBack = (arg) {
-    TUICallKitPlatform.instance.loginSuccessEvent();
     CallManager.instance.handleLoginSuccess(arg['sdkAppId'], arg['userId'], arg['userSig']);
   };
 
   ITUINotificationCallback logoutSuccessCallBack = (arg) {
-    TUICallKitPlatform.instance.logoutSuccessEvent();
     CallManager.instance.handleLogoutSuccess();
   };
 

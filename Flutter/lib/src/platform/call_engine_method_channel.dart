@@ -433,7 +433,7 @@ class MethodChannelTUICallEngine extends TUICallEnginePlatform {
           record.totalTime = recordMap['totalTime'];
           callRecords.add(record);
         }
-        callback.onSuccess!(result);
+        callback.onSuccess!(callRecords);
       } else {
         callback.onError!(-1, 'This platform is not supported');
       }

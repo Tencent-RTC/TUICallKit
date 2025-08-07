@@ -80,12 +80,10 @@ enum TUICallStatus {
 
 /// Indicates the call scene, including 1v1 calls, group calls etc.
 enum TUICallScene {
-  /// 0: 1v1 calls.
-  singleCall,
-
-  /// 1: Group call.
-  /// notes: you need to create an IM group in advance
+  none,
   groupCall,
+  multiCall,
+  singleCall,
 }
 
 enum TUICamera {

@@ -345,7 +345,7 @@ public class ObjectParse {
         Map<String, Object> map = new HashMap<>();
         if (record != null) {
             map.put("callId", record.callId);
-            map.put("inviter'", record.inviter);
+            map.put("inviter", record.inviter);
             map.put("inviteList", record.inviteList);
             map.put("scene", record.scene.ordinal());
             map.put("mediaType", record.mediaType.ordinal());

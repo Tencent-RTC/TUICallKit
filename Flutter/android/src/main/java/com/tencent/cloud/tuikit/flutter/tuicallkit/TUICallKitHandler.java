@@ -163,7 +163,7 @@ public class TUICallKitHandler {
     }
 
     public void stopFloatWindow(MethodCall call, MethodChannel.Result result) {
-        WindowManager.showIncomingBanner(mApplicationContext);
+        WindowManager.closeFloatWindow(mApplicationContext);
         result.success(0);
     }
 

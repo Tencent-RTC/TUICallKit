@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/extensions/trtc_logger.dart';
-import 'package:tencent_calls_uikit/src/platform/tuicall_kit_platform_interface.dart';
+import 'package:tencent_calls_uikit/src/platform/call_kit_platform_interface.dart';
 import 'package:tencent_calls_uikit/src/utils/permission.dart';
 import 'package:tencent_calls_uikit/src/utils/string_stream.dart';
 

@@ -508,9 +508,9 @@ public class TUICallEngineHandler {
 
 
     public void setBeautyLevel(MethodCall call, Result result) {
-        float level = MethodCallUtils.getMethodParams(call, "level");
+        double level = MethodCallUtils.getMethodParams(call, "level");
 
-        TUICallEngine.createInstance(mApplicationContext).setBeautyLevel(level,
+        TUICallEngine.createInstance(mApplicationContext).setBeautyLevel((float) level,
                 new TUICommonDefine.Callback() {
 
                     @Override
