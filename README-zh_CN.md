@@ -15,7 +15,7 @@ _[English](README.md) | 简体中文_
 
 - **完善的 UI 交互**：我们提供含 UI 的开源组件 TUICallKit，可以节省您 90% 开发时间，您只需要划分20分钟就可以拥有一款类似微信、FaceTime 的视频通话应用。
 - **多平台互联互通**：我们支持Web、Android、iOS、微信小程序等各个平台，同时也支持类似uni-app等跨平台框架，您可以使用不同平台的 TUICallKit 组件支持相互呼叫、接听、挂断等，未来我们还计划支持 Flutter、MacOS、Windows等设备。
-- **移动端离线推送**：我们支持Android、iOS 的离线唤醒，当您的应用处于离线状态时，也可以及时收到来电提醒，目前已经支持Google FCM、Apple、小米、华为、OPPO、VIVO、魅族等多个推送服务
+- **移动端离线推送**：我们支持[Android](https://cloud.tencent.com/document/product/647/105230)、[iOS](https://cloud.tencent.com/document/product/647/121495)的离线唤醒，当您的应用处于离线状态时，也可以及时收到来电提醒，目前已经支持Google FCM、Apple、小米、华为、OPPO、VIVO、魅族等多个推送服务
 - **群组（多人）通话**：我们不仅仅支持1对1的视频通话，还支持在群组内发起多人视频通话，支持中途邀请群成员加入，支持群成员主动加入通话等。
 - **多设备登录**：我们也支持您可以在不同平台上登录多台设备，您可以同时在您的Pad、手机登录，更大屏幕，体验更好跟更灵活。
 - **更多特性**：我们也支持自定义铃音、自定义头像、AI降噪、弱网优化等多个Feature...
@@ -26,8 +26,8 @@ _[English](README.md) | 简体中文_
 
 这里以 含 UI 的集成（即TUICallKit）为例，这也是我们推荐的集成方式，关键步骤如下：
 
-- **Step1**：开通 [腾讯云音视频通话服务](https://console.cloud.tencent.com/vcube/project/manage)，针对开发者集成，我们也提供有免费的体验版本，[更多介绍](https://cloud.tencent.com/document/product/1640/81130#.E6.AD.A5.E9.AA.A4.E4.B8.89.EF.BC.9A.E5.BC.80.E9.80.9A.E6.9C.8D.E5.8A.A1) 
-- **Step2**：接入 TUICallKit 到您的项目中，各平台/框架详细的接入流程：[Web](https://cloud.tencent.com/document/product/1640/81132) 、[Android ](https://cloud.tencent.com/document/product/647/78729)、 [iOS](https://cloud.tencent.com/document/product/647/78730)、 [微信小程序](https://cloud.tencent.com/document/product/647/78733)、[uni-app](https://cloud.tencent.com/document/product/647/78732)
+- **Step1**：开通 [腾讯云音视频通话服务](https://console.cloud.tencent.com/vcube/project/manage)，针对开发者集成，我们也提供有免费的体验版本，[更多介绍](https://cloud.tencent.com/document/product/647/78729) 
+- **Step2**：接入 TUICallKit 到您的项目中，各平台/框架详细的接入流程：[Web](https://cloud.tencent.com/document/product/647/78731) 、[Android ](https://cloud.tencent.com/document/product/647/78729)、 [iOS](https://cloud.tencent.com/document/product/647/78730)、 [微信小程序](https://cloud.tencent.com/document/product/647/78733)、[uni-app](https://cloud.tencent.com/document/product/647/78732)
 - **Step3**：拨打您的第一个视频通话！
 
 
