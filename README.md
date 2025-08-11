@@ -15,7 +15,7 @@ _English | [简体中文](README-zh_CN.md)_
 
 - **Multi-platform interconnection**: We support various platforms such as Web, Android, iOS, WeChat applet, etc., as well as support cross-platform frameworks such as uni-app. You can use TUICallKit components from different platforms to support mutual calls and answers , hang up, etc. In the future, we also plan to support Flutter, MacOS, Windows and other devices.
 
-- **Mobile terminal offline push**: We support offline wake-up on Android and iOS. When your app is offline, you can also receive call reminders in time. Currently, Google FCM, Apple, Xiaomi, Huawei, OPPO, VIVO, Meizu and other push services
+- **Mobile terminal offline push**: We support offline wake-up on [Android](https://trtc.io/document/50999?product=call&menulabel=uikit&platform=android) and [iOS](https://trtc.io/document/54923?product=call&menulabel=uikit&platform=ios). When your app is offline, you can also receive call reminders in time. Currently, Google FCM, Apple, Xiaomi, Huawei, OPPO, VIVO, Meizu and other push services
 
 - **Group (multi-person) calls**: We not only support 1-to-1 video calls, but also support multi-person video calls within a group, inviting group members to join in the middle, and support group members to actively join the call and more.
 
