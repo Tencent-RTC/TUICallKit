@@ -32,6 +32,14 @@ class TUICallKitImpl: TUICallKit {
     }
         
     // MARK: Implementation of external interface for TUICallKit
+    override func setScreenOrientation(orientation: Int, succ:@escaping TUICallSucc, fail: @escaping TUICallFail) {
+        guard let targetOrientation = Orientation(rawValue: orientation) else {
+            fail(ERROR_PARAM_INVALID, "Invalid screen orientation value.")
+            return
+        }
+        CallManager.shared.setScreenOrientation(orientation: targetOrientation, succ: succ, fail: fail)
+    }
+    
     override func setSelfInfo(nickname: String, avatar: String, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
         CallManager.shared.setSelfInfo(nickname: nickname, avatar: avatar) {
             succ()
@@ -77,7 +85,7 @@ class TUICallKitImpl: TUICallKit {
         CallManager.shared.call(userId: userId, callMediaType: callMediaType, params: params) {
             succ()
         } fail: { [weak self] code, message in
-            guard let self = self else { return }
+            guard self != nil else { return }
             CallManager.shared.showIMErrorMessage(code: code, message: message)
             fail(code, message)
         }
@@ -232,8 +240,23 @@ class TUICallKitImpl: TUICallKit {
         
         CallManager.shared.userState.selfUser.callStatus.addObserver(callStatusObserver) { [weak self] newValue, _ in
             guard let self = self else { return }
-            if newValue == .accept && CallManager.shared.viewState.router.value == .banner {
-                self.showCallKitViewController()
+            var selfUser = CallManager.shared.userState.selfUser
+            if newValue == .accept {
+                if CallManager.shared.viewState.router.value == .banner {
+                    self.showCallKitViewController()
+                }
+                if selfUser.callRole.value == .call {
+                    TUICore.notifyEvent(TUICore_PrivacyService_ROOM_STATE_EVENT_CHANGED,
+                                        subKey: TUICore_PrivacyService_ROOM_STATE_EVENT_SUB_KEY_START,
+                                        object: nil,
+                                        param: nil)
+                }
+            }
+            if newValue == .none {
+                TUICore.notifyEvent(TUICore_PrivacyService_ROOM_STATE_EVENT_CHANGED,
+                                    subKey: TUICore_PrivacyService_ROOM_STATE_EVENT_SUB_KEY_END,
+                                    object: nil,
+                                    param: nil)
             }
         }
     }

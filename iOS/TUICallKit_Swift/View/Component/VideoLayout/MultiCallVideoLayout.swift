@@ -14,6 +14,7 @@ class MultiCallVideoLayout: UIView, UICollectionViewDelegate, UICollectionViewDa
     
     private let callStatusObserver = Observer()
     private let remoteUserListObserver = Observer()
+    private let orientationObserver = Observer()
     
     private lazy var videoCollectionView = {
         let flowLayout = MultiCallVideoFlowLayout()
@@ -53,6 +54,18 @@ class MultiCallVideoLayout: UIView, UICollectionViewDelegate, UICollectionViewDa
         constructViewHierarchy()
         activateConstraints()
         bindInteraction()
+    }
+    
+    @objc private func orientationChanged() {
+        DispatchQueue.main.async {
+            self.updateCollectionViewLayout()
+        }
+    }
+    
+    private func updateCollectionViewLayout() {
+        videoCollectionView.collectionViewLayout.invalidateLayout()
+        videoCollectionView.setNeedsLayout()
+        videoCollectionView.layoutIfNeeded()
     }
     
     func constructViewHierarchy() {
@@ -101,11 +114,19 @@ class MultiCallVideoLayout: UIView, UICollectionViewDelegate, UICollectionViewDa
             if newValue == .none { return }
             self.updateMultiCallWaitingView()
         }
+        
+        NotificationCenter.default.addObserver(self,
+                                             selector: #selector(orientationChanged),
+                                             name: UIDevice.orientationDidChangeNotification,
+                                             object: nil)
     }
     
     private func unregisterobserver() {
         CallManager.shared.userState.selfUser.callStatus.removeObserver(callStatusObserver)
         CallManager.shared.userState.remoteUserList.removeObserver(remoteUserListObserver)
+        NotificationCenter.default.removeObserver(self,
+                                               name: UIDevice.orientationDidChangeNotification,
+                                               object: nil)
     }
     
     // MARK: config view

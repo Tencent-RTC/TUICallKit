@@ -336,6 +336,11 @@ class VideoView: UIView, GestureViewDelegate {
             self.updateNetworkQualityView()
         }
         
+        user.avatar.addObserver(avatarObserver) { [weak self] newValue, _ in
+            guard let self = self else { return }
+            self.updateAvatarView()
+        }
+        
         CallManager.shared.viewState.showLargeViewUserId.addObserver(showLargeViewUserIdObserver) { [weak self] newValue, _ in
             guard let self = self else { return }
             self.updateSwtchCameraBtn()
@@ -402,6 +407,7 @@ class VideoView: UIView, GestureViewDelegate {
     
     private func updateAvatarView() {
         avatarView.isHidden = true
+        avatarView.sd_setImage(with:  URL(string: user.avatar.value), placeholderImage: CallKitBundle.getBundleImage(name: "default_user_icon"))
 
         if CallManager.shared.viewState.callingViewType.value == .multi {
             if user.videoAvailable.value == false {

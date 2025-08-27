@@ -19,11 +19,6 @@ class CallEngineObserver: NSObject, TUICallObserver {
     
     func onError(code: Int32, message: String?) {
         Logger.info("CallEngineObserver->onError. code:\(code), message:\(message ?? "")")
-        if let message = message {
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: EVENT_SHOW_TOAST), object: "code:\(code), message:\(message)")
-        } else {
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: EVENT_SHOW_TOAST), object: "code:\(code)")
-        }
     }
     
     func onCallReceived(_ callId: String, callerId: String, calleeIdList: [String], mediaType: TUICallMediaType, info: TUICallObserverExtraInfo) {
@@ -118,7 +113,7 @@ class CallEngineObserver: NSObject, TUICallObserver {
         
         let remoteUser = User()
         remoteUser.id.value = userId
-        remoteUser.callStatus.value = TUICallStatus.accept
+        remoteUser.callStatus.value = TUICallStatus.waiting
         CallManager.shared.userState.remoteUserList.value.append(remoteUser)
         
         UserManager.getUserInfosFromIM(userIDs: [userId]) { users in

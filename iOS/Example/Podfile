@@ -10,7 +10,7 @@ target 'TUICallKitApp' do
   pod 'Alamofire', '~> 5.6.4'
   pod 'Kingfisher', '<= 6.3.1'
   pod 'TIMPush', '~> 8.5.6864'
-  pod 'TUICallKit_Swift'
+  pod 'TUICallKit_Swift', :path=>"../"
   
 end
 

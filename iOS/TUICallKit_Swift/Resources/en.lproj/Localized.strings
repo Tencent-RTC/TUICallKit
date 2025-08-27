@@ -75,6 +75,7 @@
 
 "TUICallKit.AVRoutePickerView.speakerPhone" = "Speaker";
 "TUICallKit.AVRoutePickerView.earpiece" = "Earpiece";
+"TUICallKit.deviceNotSupportEarpiece" = "Current device does not support earpiece playback";
 
 "TUICallKit.JoinGroupView.title" = "\%d people are on the call";
 "TUICallKit.JoinGroupView.join" = "Join";

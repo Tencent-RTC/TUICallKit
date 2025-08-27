@@ -441,16 +441,8 @@ class CallManager {
         callParams.offlinePushInfo = OfflinePushInfoConfig.createOfflinePushInfo()
         callParams.timeout = TUI_CALLKIT_SIGNALING_MAX_TIME
         
-        TUICallEngine.createInstance().inviteUser(userIdList: userIds, params: callParams) { userIds in
-            UserManager.getUserInfosFromIM(userIDs: userIds) { [weak self] newRemoteUsers in
-                guard let self = self else { return }
-                for newUser in newRemoteUsers {
-                    newUser.callStatus.value = TUICallStatus.waiting
-                    newUser.callRole.value = TUICallRole.called
-                    self.userState.remoteUserList.value.append(newUser)
-                }
-                succ()
-            }
+        TUICallEngine.createInstance().inviteUser(userIdList: userIds, params: callParams) { userIds in            
+            succ()
         } fail: { code, message in
             fail(code,message)
         }
@@ -618,6 +610,12 @@ class CallManager {
         viewState.isVirtualBackgroundOpened.value = enable
         TUICallEngine.createInstance().setBlurBackground(level) { code, message in
         }
+    }
+    
+
+    func setScreenOrientation(orientation: Orientation, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
+        CallManager.shared.globalState.orientation = orientation
+        succ()
     }
     
     func reportOnlineLog(_ enableVirtualBackground: Bool) {

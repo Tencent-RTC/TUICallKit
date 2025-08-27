@@ -15,7 +15,7 @@ class FunctionView: UIView {
         return AudioCallerWaitingAndAcceptedView(frame: CGRect.zero)
     }()
     private let videoCallerAndCalleeAcceptedFunctionView =  {
-        return VideoCallerAndCalleeAcceptedView(frame: CGRect(x: 0, y: 0, width: CGFloat(Int(375.scale375Width())), height: 220.scale375Height()))
+        return VideoCallerAndCalleeAcceptedView(frame: CGRect.zero)
     }()
     private let videoCallerWaitingFunctionView = {
         return VideoCallerWaitingView(frame: CGRect.zero)
@@ -59,7 +59,15 @@ class FunctionView: UIView {
             videoCallerWaitingFunctionView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
             videoCallerWaitingFunctionView.widthAnchor.constraint(equalTo: self.widthAnchor)
         ])
-
+        
+        videoCallerAndCalleeAcceptedFunctionView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            videoCallerAndCalleeAcceptedFunctionView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            videoCallerAndCalleeAcceptedFunctionView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            videoCallerAndCalleeAcceptedFunctionView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            videoCallerAndCalleeAcceptedFunctionView.heightAnchor.constraint(equalToConstant: 220.scale375Height())
+        ])
+        
         audioAndVideoCalleeWaitingFunctionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             audioAndVideoCalleeWaitingFunctionView.centerXAnchor.constraint(equalTo: self.centerXAnchor),

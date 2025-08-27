@@ -72,23 +72,39 @@ class  FloatWindowSingleView: UIView {
         return timerLabel
     }()
     
-    private let videoContainerView: UIView = UIView()
+    private let videoContainerView: UIView = {
+           let view = UIView()
+           view.backgroundColor = .black
+           view.layer.cornerRadius = 12.scale375Width()
+           view.clipsToBounds = true
+           return view
+       }()
     private var selfVideoView: VideoView {
-        guard let videoView = VideoFactory.shared.createVideoView(user: CallManager.shared.userState.selfUser, isShowFloatWindow: false) else {
-            TRTCLog.error("TUICallKit - FloatWindowSingleView::selfVideoView, create video view failed")
-            return VideoView(user: CallManager.shared.userState.selfUser, isShowFloatWindow: true)
-        }
-        return videoView
-    }
-    private var remoteVideoView: VideoView {
-        if let remoteUser = CallManager.shared.userState.remoteUserList.value.first {
-            if let videoView = VideoFactory.shared.createVideoView(user: remoteUser, isShowFloatWindow: true) {
-                return videoView
+            guard let videoView = VideoFactory.shared.createVideoView(user: CallManager.shared.userState.selfUser, isShowFloatWindow: false) else {
+                let view = VideoView(user: CallManager.shared.userState.selfUser, isShowFloatWindow: true)
+                view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+                view.backgroundColor = .black
+                return view
             }
+            videoView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            videoView.backgroundColor = .black
+            return videoView
         }
-        TRTCLog.error("TUICallKit - FloatWindowSingleView::selfVideoView, create video view failed")
-        return VideoView(user: User(), isShowFloatWindow: false)
-    }
+        
+        private var remoteVideoView: VideoView {
+            if let remoteUser = CallManager.shared.userState.remoteUserList.value.first {
+                if let videoView = VideoFactory.shared.createVideoView(user: remoteUser, isShowFloatWindow: true) {
+                    videoView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+                    videoView.backgroundColor = .black
+                    return videoView
+                }
+            }
+            let view = VideoView(user: User(), isShowFloatWindow: false)
+            view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            view.backgroundColor = .black
+            return view
+        }
+    
     let videoDescribeLabel: UILabel = {
         let describeLabel = UILabel()
         describeLabel.font = UIFont.systemFont(ofSize: 12.0)
@@ -202,19 +218,6 @@ class  FloatWindowSingleView: UIView {
                 videoContainerView.bottomAnchor.constraint(equalTo: superview.bottomAnchor)
             ])
         }
-
-        videoDescribeLabel.translatesAutoresizingMaskIntoConstraints = false
-        if let superview = videoDescribeLabel.superview {
-            NSLayoutConstraint.activate([
-                videoDescribeLabel.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
-                videoDescribeLabel.widthAnchor.constraint(equalTo: superview.widthAnchor),
-                videoDescribeLabel.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: -8.scale375Width()),
-                videoDescribeLabel.heightAnchor.constraint(equalToConstant: 20.scale375Width())
-            ])
-        }
-            
-        remoteVideoView.frame = kFloatingWindowVideoViewRect
-        selfVideoView.frame = kFloatingWindowVideoViewRect
     }
         
     // MARK: Register TUICallState Observer && Update UI
@@ -272,12 +275,18 @@ class  FloatWindowSingleView: UIView {
             videoContainerView.isHidden = false
             selfVideoView.isHidden = false
             videoDescribeLabel.isHidden = false
+            selfVideoView.frame = videoContainerView.bounds
+            CallManager.shared.startRemoteView(user: CallManager.shared.userState.selfUser,
+                                                 videoView: selfVideoView.getVideoView())
+                
         } else if CallManager.shared.userState.selfUser.callStatus.value == .accept {
             videoContainerView.isHidden = false
             remoteVideoView.isHidden = false
-            
-            guard let remoteUser = CallManager.shared.userState.remoteUserList.value.first else { return }
-            CallManager.shared.startRemoteView(user: remoteUser, videoView: remoteVideoView.getVideoView())
+            remoteVideoView.frame = videoContainerView.bounds
+            if let remoteUser = CallManager.shared.userState.remoteUserList.value.first {
+                CallManager.shared.startRemoteView(user: remoteUser,
+                                                    videoView: remoteVideoView.getVideoView())
+            }
         }
     }
     
@@ -291,4 +300,10 @@ class  FloatWindowSingleView: UIView {
         remoteVideoView.isHidden = true
         videoDescribeLabel.isHidden = true
     }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        remoteVideoView.frame = videoContainerView.bounds
+        selfVideoView.frame = videoContainerView.bounds
+        }
 }
