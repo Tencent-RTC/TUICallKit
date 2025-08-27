@@ -10,11 +10,6 @@ import RTCCommon
 import RTCRoomEngine
 
 private let kCallKitSingleSmallVideoViewWidth = 100.0
-private let kCallKitSingleSmallVideoViewFrame = CGRect(x: ScreenSize.width - kCallKitSingleSmallVideoViewWidth,
-                                                       y: StatusBar_Height + 40,
-                                                       width: kCallKitSingleSmallVideoViewWidth,
-                                                       height: kCallKitSingleSmallVideoViewWidth / 9.0 * 16.0)
-private let kCallKitSingleLargeVideoViewFrame = CGRect(x: 0, y: 0, width: ScreenSize.width, height: ScreenSize.height)
 
 class SingleCallVideoLayout: UIView, GestureViewDelegate {
     private let callStatusObserver = Observer()
@@ -30,6 +25,7 @@ class SingleCallVideoLayout: UIView, GestureViewDelegate {
         }
         return videoView
     }
+    
     private var remoteVideoView: VideoView {
         if let remoteUser = CallManager.shared.userState.remoteUserList.value.first {
             if let videoView = VideoFactory.shared.createVideoView(user: remoteUser, isShowFloatWindow: false) {
@@ -49,6 +45,7 @@ class SingleCallVideoLayout: UIView, GestureViewDelegate {
         }
         return userHeadImageView
     }()
+    
     private let userNameLabel: UILabel = {
         let userNameLabel = UILabel(frame: CGRect.zero)
         userNameLabel.textColor = UIColor(hex: "#D5E0F2")
@@ -64,19 +61,18 @@ class SingleCallVideoLayout: UIView, GestureViewDelegate {
     // MARK: Init, deinit
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         updateView()
         registerObserver()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     deinit {
         unregisterobserver()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    // MARK: UI Specification Processing
     override func didMoveToWindow() {
         super.didMoveToWindow()
         if isViewReady { return }
@@ -86,68 +82,96 @@ class SingleCallVideoLayout: UIView, GestureViewDelegate {
         bindInteraction()
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateVideoFrames()
+    }
+    
+    @objc private func orientationChanged() {
+        DispatchQueue.main.async {
+            self.setNeedsLayout()
+        }
+    }
+        
     private func constructViewHierarchy() {
         if CallManager.shared.callState.mediaType.value == .video {
             addSubview(selfVideoView)
         }
         addSubview(remoteVideoView)
-        
         addSubview(userHeadImageView)
         addSubview(userNameLabel)
     }
     
     private func activateConstraints() {
-        userHeadImageView.translatesAutoresizingMaskIntoConstraints = false
-        if let superview = userHeadImageView.superview {
-            NSLayoutConstraint.activate([
-                userHeadImageView.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
-                userHeadImageView.centerYAnchor.constraint(equalTo: superview.centerYAnchor, constant: -100.scale375Width()),
-                userHeadImageView.widthAnchor.constraint(equalToConstant: 100.scale375Width()),
-                userHeadImageView.heightAnchor.constraint(equalToConstant: 100.scale375Width())
-            ])
-        }
-
+        userHeadImageView.translatesAutoresizingMaskIntoConstraints = false 
         userNameLabel.translatesAutoresizingMaskIntoConstraints = false
-        if let superview = userNameLabel.superview {
-            NSLayoutConstraint.activate([
-                userNameLabel.topAnchor.constraint(equalTo: userHeadImageView.bottomAnchor, constant: 10.scale375Height()),
-                userNameLabel.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
-                userNameLabel.widthAnchor.constraint(equalTo: superview.widthAnchor),
-                userNameLabel.heightAnchor.constraint(equalToConstant: 30)
-            ])
-        }
         
-        if CallManager.shared.callState.mediaType.value == .video {
-            selfVideoView.frame = kCallKitSingleLargeVideoViewFrame
-            remoteVideoView.frame = kCallKitSingleSmallVideoViewFrame
-        } else if CallManager.shared.callState.mediaType.value == .audio {
+        NSLayoutConstraint.activate([
+            userHeadImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            userHeadImageView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -100.scale375Width()),
+            userHeadImageView.widthAnchor.constraint(equalToConstant: 100.scale375Width()),
+            userHeadImageView.heightAnchor.constraint(equalToConstant: 100.scale375Width()),
+            
+            userNameLabel.topAnchor.constraint(equalTo: userHeadImageView.bottomAnchor, constant: 10.scale375Height()),
+            userNameLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            userNameLabel.widthAnchor.constraint(equalTo: widthAnchor),
+            userNameLabel.heightAnchor.constraint(equalToConstant: 30)
+        ])
+        
+        if CallManager.shared.callState.mediaType.value == .audio {
             remoteVideoView.translatesAutoresizingMaskIntoConstraints = false
-            if let superview = remoteVideoView.superview {
-                NSLayoutConstraint.activate([
-                    remoteVideoView.topAnchor.constraint(equalTo: superview.topAnchor),
-                    remoteVideoView.leadingAnchor.constraint(equalTo: superview.leadingAnchor),
-                    remoteVideoView.trailingAnchor.constraint(equalTo: superview.trailingAnchor),
-                    remoteVideoView.bottomAnchor.constraint(equalTo: superview.bottomAnchor)
-                ])
-            }
+            NSLayoutConstraint.activate([
+                remoteVideoView.topAnchor.constraint(equalTo: topAnchor),
+                remoteVideoView.leadingAnchor.constraint(equalTo: leadingAnchor),
+                remoteVideoView.trailingAnchor.constraint(equalTo: trailingAnchor),
+                remoteVideoView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            ])
+        } else {
+            remoteVideoView.translatesAutoresizingMaskIntoConstraints = true
+            selfVideoView.translatesAutoresizingMaskIntoConstraints = true
+            updateVideoFrames()
         }
     }
+    
+    private func updateVideoFrames() {
+        guard CallManager.shared.callState.mediaType.value == .video else { return }
+        
+        let isLandscape = !WindowUtils.isPortrait
+        let smallWidth = kCallKitSingleSmallVideoViewWidth
+        let smallHeight = smallWidth / 9.0 * 16.0
+        
+        let smallFrame: CGRect = isLandscape ?
+            CGRect(x: bounds.width - smallWidth - 20,
+                   y: StatusBar_Height + 20,
+                   width: smallWidth,
+                   height: smallHeight) :
+            CGRect(x: bounds.width - smallWidth - 10,
+                   y: StatusBar_Height + 40,
+                   width: smallWidth,
+                   height: smallHeight)
+        
+        let largeFrame = bounds
+        
+        selfVideoView.frame = selfUserIsLarge ? largeFrame : smallFrame
+        remoteVideoView.frame = selfUserIsLarge ? smallFrame : largeFrame
+        bringSubviewToFront(selfUserIsLarge ? remoteVideoView : selfVideoView)
+    }
+    
     
     private func bindInteraction() {
         if CallManager.shared.callState.mediaType.value == .video {
             selfVideoView.delegate = self
         }
-        
         remoteVideoView.delegate = self
     }
-
+    
     // MARK: Observer
     private func registerObserver() {
         CallManager.shared.userState.selfUser.callStatus.addObserver(callStatusObserver) { [weak self] newValue, _ in
             guard let self = self else { return }
             if newValue == .none { return }
-            updateView()
-            switchPreview()
+            self.updateView()
+            self.switchPreview()
         }
         
         CallManager.shared.viewState.isVirtualBackgroundOpened.addObserver(isVirtualBackgroundOpenedObserver) { [weak self] newValue, _ in
@@ -156,14 +180,21 @@ class SingleCallVideoLayout: UIView, GestureViewDelegate {
                 self.switchPreview()
             }
         }
+        
+        NotificationCenter.default.addObserver(self,
+                                             selector: #selector(orientationChanged),
+                                             name: UIDevice.orientationDidChangeNotification,
+                                             object: nil)
     }
     
     private func unregisterobserver() {
         CallManager.shared.userState.selfUser.callStatus.removeObserver(callStatusObserver)
         CallManager.shared.viewState.isVirtualBackgroundOpened.removeObserver(isVirtualBackgroundOpenedObserver)
+        NotificationCenter.default.removeObserver(self,
+                                               name: UIDevice.orientationDidChangeNotification,
+                                               object: nil)
     }
-
-    // MARK: Config View
+    
     private func updateView() {
         updateUserInfo()
         
@@ -172,20 +203,22 @@ class SingleCallVideoLayout: UIView, GestureViewDelegate {
             return
         }
         
-        if CallManager.shared.userState.selfUser.videoAvailable.value == false && CallManager.shared.mediaState.isCameraOpened.value == true {
-            CallManager.shared.openCamera(videoView: selfVideoView.getVideoView()) { } fail: { code, message in }
+        if CallManager.shared.userState.selfUser.videoAvailable.value == false &&
+           CallManager.shared.mediaState.isCameraOpened.value == true {
+            CallManager.shared.openCamera(videoView: selfVideoView.getVideoView()) { }
+            fail: { code, message in }
         }
 
-        if  CallManager.shared.userState.selfUser.callStatus.value == .waiting {
+        if CallManager.shared.userState.selfUser.callStatus.value == .waiting {
             remoteVideoView.isHidden = true
             selfVideoView.isHidden = false
         }
         
-        if  CallManager.shared.userState.selfUser.callStatus.value == .accept {
+        if CallManager.shared.userState.selfUser.callStatus.value == .accept {
             remoteVideoView.isHidden = false
             selfVideoView.isHidden = false
 
-           if let remoteUser = CallManager.shared.userState.remoteUserList.value.first {
+            if let remoteUser = CallManager.shared.userState.remoteUserList.value.first {
                 CallManager.shared.startRemoteView(user: remoteUser, videoView: remoteVideoView.getVideoView())
             }
         }
@@ -193,29 +226,16 @@ class SingleCallVideoLayout: UIView, GestureViewDelegate {
     
     private func switchPreview() {
         guard CallManager.shared.callState.mediaType.value == .video else { return }
-        if selfUserIsLarge {
-            UIView.animate(withDuration: 0.3) { [weak self] in
-                guard let self = self else { return }
-                self.selfVideoView.frame = kCallKitSingleSmallVideoViewFrame
-                self.remoteVideoView.frame = kCallKitSingleLargeVideoViewFrame
-            } completion: { finished in
-                self.sendSubviewToBack(self.remoteVideoView)
-            }
-            selfUserIsLarge = false
-        } else {
-            UIView.animate(withDuration: 0.3) { [weak self] in
-                guard let self = self else { return }
-                self.selfVideoView.frame = kCallKitSingleLargeVideoViewFrame
-                self.remoteVideoView.frame = kCallKitSingleSmallVideoViewFrame
-            } completion: { finished in
-                self.sendSubviewToBack(self.selfVideoView)
-            }
-            selfUserIsLarge = true
+        
+        selfUserIsLarge = !selfUserIsLarge
+        UIView.animate(withDuration: 0.3) {
+            self.updateVideoFrames()
         }
     }
     
     private func updateUserInfo() {
-        if CallManager.shared.userState.selfUser.callStatus.value == .accept && CallManager.shared.callState.mediaType.value == .video {
+        if CallManager.shared.userState.selfUser.callStatus.value == .accept &&
+           CallManager.shared.callState.mediaType.value == .video {
             userHeadImageView.isHidden = true
             userNameLabel.isHidden = true
         }
@@ -234,28 +254,26 @@ class SingleCallVideoLayout: UIView, GestureViewDelegate {
     }
     
     @objc func panGestureAction(panGesture: UIPanGestureRecognizer) {
-        if panGesture.view?.frame.size.width != CGFloat(kCallKitSingleSmallVideoViewWidth) { return }
+        guard let smallView = panGesture.view?.superview,
+              smallView.frame.size.width == kCallKitSingleSmallVideoViewWidth else { return }
         
-        let smallView = panGesture.view?.superview
         if panGesture.state == .changed {
             let translation = panGesture.translation(in: self)
-            let newCenterX = translation.x + (smallView?.center.x ?? 0.0)
-            let newCenterY = translation.y + (smallView?.center.y ?? 0.0)
+            let newCenterX = translation.x + smallView.center.x
+            let newCenterY = translation.y + smallView.center.y
             
-            if newCenterX < ((smallView?.bounds.size.width ?? 0.0) / 2.0) ||
-                newCenterX > self.bounds.size.width - (smallView?.bounds.size.width ?? 0.0) / 2.0 {
-                return
-            }
+            let minX = smallView.bounds.width / 2
+            let maxX = bounds.width - smallView.bounds.width / 2
+            let minY = smallView.bounds.height / 2
+            let maxY = bounds.height - smallView.bounds.height / 2
             
-            if newCenterY < ((smallView?.bounds.size.height ?? 0.0) / 2.0) ||
-                newCenterY > self.bounds.size.height - (smallView?.bounds.size.height ?? 0.0) / 2.0 {
-                return
-            }
+            let clampedX = min(max(newCenterX, minX), maxX)
+            let clampedY = min(max(newCenterY, minY), maxY)
             
             UIView.animate(withDuration: 0.1) {
-                smallView?.center = CGPoint(x: newCenterX, y: newCenterY)
+                smallView.center = CGPoint(x: clampedX, y: clampedY)
             }
-            panGesture.setTranslation(CGPointZero, in: self)
+            panGesture.setTranslation(.zero, in: self)
         }
     }
 }

@@ -12,4 +12,11 @@ class GlobalState: NSObject {
     var enableVirtualBackground: Bool = false
     var enableForceUseV2API: Bool = false
     var enableMultiDeviceAbility: Bool = false
+    var orientation: Orientation = .portrait
+}
+
+enum Orientation: Int{
+    case portrait = 0
+    case landscape = 1
+    case auto = 2
 }

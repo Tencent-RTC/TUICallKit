@@ -75,6 +75,7 @@
 
 "TUICallKit.AVRoutePickerView.speakerPhone" = "スピーカー";
 "TUICallKit.AVRoutePickerView.earpiece" = "イヤホン";
+"TUICallKit.deviceNotSupportEarpiece" = "現在のデバイスはイヤホン再生をサポートしていません";
 
 "TUICallKit.JoinGroupView.title" = "%d人が通話中です";
 "TUICallKit.JoinGroupView.join" = "参加する";

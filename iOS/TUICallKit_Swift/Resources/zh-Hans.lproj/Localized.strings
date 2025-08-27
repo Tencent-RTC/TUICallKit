@@ -76,6 +76,7 @@
 
 "TUICallKit.AVRoutePickerView.speakerPhone" = "扬声器";
 "TUICallKit.AVRoutePickerView.earpiece" = "听筒";
+"TUICallKit.deviceNotSupportEarpiece" = "当前设备不支持从听筒播放";
 
 "TUICallKit.JoinGroupView.title" = "\%d人正在通话中";
 "TUICallKit.JoinGroupView.join" = "加入";

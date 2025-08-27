@@ -53,7 +53,10 @@ class AudioCallerWaitingAndAcceptedView : UIView {
             guard let self = self else { return }
             self.changeSpeakerEvent(sender: sender)
         })
-
+        if DeviceManager.isPad() {
+                changeSpeakerBtn.isUserInteractionEnabled = false
+                changeSpeakerBtn.alpha = 0.5
+            }
         return changeSpeakerBtn
     }()
     
@@ -170,9 +173,8 @@ class AudioCallerWaitingAndAcceptedView : UIView {
         }
     }
     
-    func updateChangeSpeakerBtn(isSpeaker: Bool) {
+    func updateChangeSpeakerBtn(isSpeaker: Bool) {      
         (audioRouteButton as? FeatureButton)?.updateTitle(title: TUICallKitLocalize(key: isSpeaker ? "TUICallKit.speakerPhone" : "TUICallKit.earpiece") ?? "")
-        
         if let image = CallKitBundle.getBundleImage(name: isSpeaker ? "icon_handsfree_on" : "icon_handsfree") {
             (audioRouteButton as? FeatureButton)?.updateImage(image: image)
         }

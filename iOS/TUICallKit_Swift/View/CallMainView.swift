@@ -15,7 +15,7 @@ class CallMainView: UIView {
     private let chatGroupIdObserver = Observer()
 
     private let videoLayout: UIView = CallVideoLayout(frame: .zero)
-    private let functionView = FunctionView(frame: CGRect(x: 0, y: Screen_Height - 220.scale375Height(), width: CGFloat(Int(375.scale375Width())), height: 220.scale375Height()))
+    private let functionView = FunctionView(frame: .zero)
     
     private let floatWindowButton: UIButton = {
         let floatButton = UIButton(type: .system)
@@ -26,6 +26,7 @@ class CallMainView: UIView {
         floatButton.isHidden = !CallManager.shared.globalState.enableFloatWindow
         return floatButton
     }()
+
     private let inviterUserButton: UIButton = {
         let inviteUserButton = UIButton(type: .system)
         if let image = CallKitBundle.getBundleImage(name: "icon_add_user") {
@@ -54,6 +55,12 @@ class CallMainView: UIView {
         unregisterObserver()
     }
     
+    @objc private func orientationChanged() {
+        DispatchQueue.main.async {
+            self.activateConstraints()
+        }
+    }
+    
     // MARK: UI Specification Processing
     override func didMoveToWindow() {
         super.didMoveToWindow()
@@ -73,51 +80,66 @@ class CallMainView: UIView {
     }
     
     private func activateConstraints() {
+        NSLayoutConstraint.deactivate(self.constraints)
+        if videoLayout.superview == nil { return }
+        
         videoLayout.translatesAutoresizingMaskIntoConstraints = false
-        if let superview = videoLayout.superview {
-            NSLayoutConstraint.activate([
-                videoLayout.widthAnchor.constraint(equalTo: superview.widthAnchor),
-                videoLayout.heightAnchor.constraint(equalTo: superview.heightAnchor)
-            ])
-        }
-        
         floatWindowButton.translatesAutoresizingMaskIntoConstraints = false
-        if let superview = floatWindowButton.superview {
-            NSLayoutConstraint.activate([
-                floatWindowButton.topAnchor.constraint(equalTo: superview.topAnchor, constant: StatusBar_Height + 12.scale375Height()),
-                floatWindowButton.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: 12.scale375Width()),
-                floatWindowButton.heightAnchor.constraint(equalToConstant: 24.scale375Width()),
-                floatWindowButton.widthAnchor.constraint(equalToConstant: 24.scale375Width())
-            ])
-        }
-        
         inviterUserButton.translatesAutoresizingMaskIntoConstraints = false
-        if let superview = inviterUserButton.superview {
-            NSLayoutConstraint.activate([
-                inviterUserButton.topAnchor.constraint(equalTo: superview.topAnchor, constant: StatusBar_Height + 12.scale375Height()),
-                inviterUserButton.trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: -12.scale375Width()),
-                inviterUserButton.heightAnchor.constraint(equalToConstant: 24.scale375Width()),
-                inviterUserButton.widthAnchor.constraint(equalToConstant: 24.scale375Width())
-            ])
-        }
-        
         timerView.translatesAutoresizingMaskIntoConstraints = false
-        if let superview = timerView.superview {
-            NSLayoutConstraint.activate([
-                timerView.topAnchor.constraint(equalTo: superview.topAnchor, constant: StatusBar_Height + 12.scale375Height()),
-                timerView.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
-                timerView.heightAnchor.constraint(equalToConstant: 24.scale375Width())
-            ])
+        hintView.translatesAutoresizingMaskIntoConstraints = false
+        functionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        var constraints = [
+            videoLayout.widthAnchor.constraint(equalTo: widthAnchor),
+            videoLayout.heightAnchor.constraint(equalTo: heightAnchor),
+            
+            functionView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            functionView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            functionView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            functionView.heightAnchor.constraint(equalToConstant: 220.scale375Height()),
+            
+            floatWindowButton.widthAnchor.constraint(equalToConstant: 24.scale375Width()),
+            floatWindowButton.heightAnchor.constraint(equalToConstant: 24.scale375Width()),
+            
+            inviterUserButton.widthAnchor.constraint(equalToConstant: 24.scale375Width()),
+            inviterUserButton.heightAnchor.constraint(equalToConstant: 24.scale375Width()),
+            
+            timerView.heightAnchor.constraint(equalToConstant: 24.scale375Width()),
+            hintView.heightAnchor.constraint(equalToConstant: 24.scale375Width())
+        ]
+        
+        if WindowUtils.isPortrait {
+            constraints += [
+                floatWindowButton.topAnchor.constraint(equalTo: topAnchor, constant: StatusBar_Height + 12.scale375Height()),
+                floatWindowButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12.scale375Width()),
+                
+                inviterUserButton.topAnchor.constraint(equalTo: topAnchor, constant: StatusBar_Height + 12.scale375Height()),
+                inviterUserButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12.scale375Width()),
+                
+                timerView.topAnchor.constraint(equalTo: topAnchor, constant: StatusBar_Height + 12.scale375Height()),
+                timerView.centerXAnchor.constraint(equalTo: centerXAnchor),
+                
+                hintView.centerXAnchor.constraint(equalTo: centerXAnchor),
+                hintView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -220.scale375Height() - 10.scale375Height()),
+            ]
+        } else {
+            constraints += [
+                floatWindowButton.topAnchor.constraint(equalTo: topAnchor, constant: 30.scale375Height()),
+                floatWindowButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale375Width()),
+                
+                inviterUserButton.topAnchor.constraint(equalTo: topAnchor, constant: 30.scale375Height()),
+                inviterUserButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12.scale375Width()),
+                
+                timerView.topAnchor.constraint(equalTo: topAnchor, constant: 10.scale375Height()),
+                timerView.centerXAnchor.constraint(equalTo: centerXAnchor),
+                
+                hintView.centerXAnchor.constraint(equalTo: centerXAnchor),
+                hintView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -150.scale375Height()),
+            ]
         }
         
-        hintView.translatesAutoresizingMaskIntoConstraints = false
-        if let superview = hintView.superview {
-            NSLayoutConstraint.activate([
-                hintView.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
-                hintView.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: -220.scale375Height() - 10.scale375Height()),
-                hintView.heightAnchor.constraint(equalToConstant: 24.scale375Width())
-            ])
-        }
+        NSLayoutConstraint.activate(constraints)
     }
     
     // MARK: Action Event
@@ -141,6 +163,10 @@ class CallMainView: UIView {
             guard let self = self else { return }
             self.updateInviterUserButton()
         }
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(orientationChanged),
+                                               name: UIDevice.orientationDidChangeNotification,
+                                               object: nil)
     }
     
     func unregisterObserver() {
@@ -160,6 +186,10 @@ class CallMainView: UIView {
             self.floatWindowButton.isHidden = false
             self.timerView.isHidden = false
         }
+        
+        NotificationCenter.default.removeObserver(self,
+                                                  name: UIDevice.orientationDidChangeNotification,
+                                                  object: nil)
     }
     
     func updateInviterUserButton() {

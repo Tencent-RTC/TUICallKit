@@ -14,6 +14,7 @@ import TXLiteAVSDK_Professional
 #endif
 
 class AISubtitle: UIView {
+    private let showDuration: Double = 8
     private let textLabel: UILabel = {
         let label = UILabel()
         label.textColor = .white
@@ -81,7 +82,7 @@ class AISubtitle: UIView {
             
             self.textLabel.isHidden = false
             self.hideTimer?.invalidate()
-            self.hideTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { [weak self] _ in
+            self.hideTimer = Timer.scheduledTimer(withTimeInterval: showDuration, repeats: false) { [weak self] _ in
                 self?.textLabel.isHidden = true
                 self?.textLabel.attributedText = NSAttributedString(string: "")
             }
@@ -115,8 +116,9 @@ extension AISubtitle: TRTCCloudDelegate {
                type == 10000,
                let sender = json["sender"] as? String,
                let payload = json["payload"] as? [String: Any],
+               let text = payload["text"] as? String,
                let translationText = payload["translation_text"] as? String {
-                updateSubtitle(sender: sender, text: translationText)
+                updateSubtitle(sender: sender, text: "\(translationText)(\(text))")
             }
         }
     }

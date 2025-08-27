@@ -29,49 +29,69 @@ class MultiCallVideoFlowLayout: UICollectionViewFlowLayout {
         
         guard let collectionView = collectionView else { return }
         
+        let isLandscape = collectionView.bounds.width > collectionView.bounds.height
+        let referenceWidth = min(UIScreen.main.bounds.width, UIScreen.main.bounds.height)
+        let xOffset = isLandscape ? (collectionView.bounds.width - referenceWidth) / 2 : 0
+        
         cachedAttributes.removeAll()
         contentBounds = CGRect(origin: .zero, size: collectionView.bounds.size)
         
         let count = collectionView.numberOfItems(inSection: 0)
         var currentIndex = 0
         var segment: MosaicSegmentStyle = getSegment(count: count, currentIndex: currentIndex)
-        let cvWidth = collectionView.bounds.size.width
-        var lastFrame: CGRect = (count != 2 || CallManager.shared.viewState.multiCallLargeViewIndex >= 0) ? .zero : CGRect(x: 0, y: cvWidth / 5, width: 0, height: 0)
+        var lastFrame: CGRect = (count != 2 || CallManager.shared.viewState.multiCallLargeViewIndex >= 0) ?
+            .zero :
+            CGRect(x: xOffset, y: referenceWidth / 5, width: 0, height: 0)
         
         while currentIndex < count {
             var segmentRects = [CGRect]()
             switch segment {
             case .fullWidth:
-                segmentRects = [CGRect(x: 0, y: lastFrame.maxY + 1.0, width: cvWidth, height: cvWidth)]
+                segmentRects = [CGRect(x: xOffset, y: lastFrame.maxY + 1.0,
+                                     width: referenceWidth,
+                                     height: referenceWidth)]
                 
             case .fiftyFifty:
-                let segmentFrame = CGRect(x: 0, y: lastFrame.maxY + 1.0, width: cvWidth, height: cvWidth / 2)
+                let segmentFrame = CGRect(x: xOffset, y: lastFrame.maxY + 1.0,
+                                        width: referenceWidth,
+                                        height: referenceWidth / 2)
                 let horizontalSlices = segmentFrame.dividedIntegral(fraction: 0.5, from: .minXEdge)
                 segmentRects = [horizontalSlices.first, horizontalSlices.second]
                 
             case .oneThird:
-                segmentRects = [CGRect(x: cvWidth / 4.0, y: lastFrame.maxY + 1.0, width: cvWidth / 2.0, height: cvWidth / 2.0)]
+                segmentRects = [CGRect(x: xOffset + referenceWidth / 4.0,
+                                     y: lastFrame.maxY + 1.0,
+                                     width: referenceWidth / 2.0,
+                                     height: referenceWidth / 2.0)]
                 
             case .threeOneThirds:
-                let segmentFrame = CGRect(x: 0, y: lastFrame.maxY + 1.0, width: cvWidth, height: cvWidth / 3)
+                let segmentFrame = CGRect(x: xOffset, y: lastFrame.maxY + 1.0,
+                                         width: referenceWidth,
+                                         height: referenceWidth / 3)
                 let horizontalSlicesFirst = segmentFrame.dividedIntegral(fraction: 1.0 / 3, from: .minXEdge)
                 let horizontalSlices = horizontalSlicesFirst.second.dividedIntegral(fraction: 0.5, from: .minXEdge)
                 segmentRects = [horizontalSlicesFirst.first, horizontalSlices.first, horizontalSlices.second]
                 
             case .twoThirdsOneThirdRight:
-                let segmentFrame = CGRect(x: 0, y: lastFrame.maxY + 1.0, width: cvWidth, height: cvWidth * 2 / 3)
+                let segmentFrame = CGRect(x: xOffset, y: lastFrame.maxY + 1.0,
+                                         width: referenceWidth,
+                                         height: referenceWidth * 2 / 3)
                 let horizontalSlices = segmentFrame.dividedIntegral(fraction: (1.0 / 3), from: .minXEdge)
                 let verticalSlices = horizontalSlices.first.dividedIntegral(fraction: 0.5, from: .minYEdge)
                 segmentRects = [verticalSlices.first, verticalSlices.second, horizontalSlices.second]
                 
             case .twoThirdsOneThirdCenter:
-                let segmentFrame = CGRect(x: 0, y: lastFrame.maxY + 1.0, width: cvWidth, height: cvWidth * 2 / 3)
+                let segmentFrame = CGRect(x: xOffset, y: lastFrame.maxY + 1.0,
+                                         width: referenceWidth,
+                                         height: referenceWidth * 2 / 3)
                 let horizontalSlices = segmentFrame.dividedIntegral(fraction: (1.0 / 3), from: .minXEdge)
                 let verticalSlices = horizontalSlices.first.dividedIntegral(fraction: 0.5, from: .minYEdge)
                 segmentRects = [verticalSlices.first, horizontalSlices.second, verticalSlices.second]
                 
             case .oneThirdTwoThirds:
-                let segmentFrame = CGRect(x: 0, y: lastFrame.maxY + 1.0, width: cvWidth, height: cvWidth * 2 / 3)
+                let segmentFrame = CGRect(x: xOffset, y: lastFrame.maxY + 1.0,
+                                         width: referenceWidth,
+                                         height: referenceWidth * 2 / 3)
                 let horizontalSlices = segmentFrame.dividedIntegral(fraction: (2.0 / 3), from: .minXEdge)
                 let verticalSlices = horizontalSlices.second.dividedIntegral(fraction: 0.5, from: .minYEdge)
                 segmentRects = [horizontalSlices.first, verticalSlices.first, verticalSlices.second]
@@ -83,7 +103,7 @@ class MultiCallVideoFlowLayout: UICollectionViewFlowLayout {
                 attributes.frame = rect
                 
                 cachedAttributes.append(attributes)
-                contentBounds = contentBounds.union(lastFrame)
+                contentBounds = contentBounds.union(rect)
                 
                 currentIndex += 1
                 lastFrame = rect
