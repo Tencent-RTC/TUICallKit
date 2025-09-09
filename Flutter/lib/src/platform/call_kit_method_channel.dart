@@ -22,9 +22,11 @@ class MethodChannelTUICallKit extends TUICallKitPlatform {
   final methodChannel = const MethodChannel('tuicall_kit');
 
   @override
-  Future<void> startForegroundService() async {
+  Future<void> startForegroundService(bool isVideo) async {
     if (!kIsWeb && Platform.isAndroid) {
-      await methodChannel.invokeMethod('startForegroundService', {});
+      await methodChannel.invokeMethod('startForegroundService', {
+        'isVideo': isVideo,
+      });
     }
   }
 

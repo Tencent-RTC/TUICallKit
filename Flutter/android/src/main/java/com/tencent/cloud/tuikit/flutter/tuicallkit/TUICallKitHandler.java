@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 
 import com.tencent.cloud.tuikit.engine.call.TUICallDefine;
 import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
-import com.tencent.cloud.tuikit.flutter.tuicallkit.service.ForegroundService;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.service.ServiceInitializer;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.TUICallState;
 import com.tencent.cloud.tuikit.flutter.tuicallkit.state.User;
@@ -31,6 +30,8 @@ import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.permission.PermissionCallback;
 import com.tencent.qcloud.tuicore.permission.PermissionRequester;
+import com.trtc.tuikit.common.foregroundservice.AudioForegroundService;
+import com.trtc.tuikit.common.foregroundservice.VideoForegroundService;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -81,12 +82,18 @@ public class TUICallKitHandler {
 
 
     public void startForegroundService(MethodCall call, MethodChannel.Result result) {
-        ForegroundService.start(mApplicationContext);
+        boolean isVideo = MethodCallUtils.getMethodParams(call, "isVideo");
+        if (isVideo) {
+            VideoForegroundService.start(mApplicationContext, "", "", 0);
+        } else {
+            AudioForegroundService.start(mApplicationContext, "", "", 0);
+        }
         result.success(0);
     }
 
     public void stopForegroundService(MethodCall call, MethodChannel.Result result) {
-        ForegroundService.stop(mApplicationContext);
+        VideoForegroundService.stop(mApplicationContext);
+        AudioForegroundService.stop(mApplicationContext);
         result.success(0);
     }
 

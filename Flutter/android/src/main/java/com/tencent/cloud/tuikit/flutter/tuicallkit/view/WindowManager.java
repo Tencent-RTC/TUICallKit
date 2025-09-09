@@ -39,9 +39,7 @@ public class WindowManager {
     }
 
     public static void backCallingPageFromFloatWindow(Context context) {
-        if (Permission.hasPermission(PermissionRequester.BG_START_PERMISSION)) {
-            launchMainActivity(context);
-        }
+        launchMainActivity(context);
         TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_GOTO_CALLING_PAGE, null);
     }
 

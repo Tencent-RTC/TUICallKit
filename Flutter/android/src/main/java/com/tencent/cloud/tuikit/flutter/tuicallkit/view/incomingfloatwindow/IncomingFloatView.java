@@ -101,9 +101,7 @@ public class IncomingFloatView {
             @Override
             public void onClick(View v) {
                 cancelIncomingView();
-                if (Permission.hasPermission(PermissionRequester.BG_START_PERMISSION)) {
-                    WindowManager.launchMainActivity(context);
-                }
+                WindowManager.launchMainActivity(context);
                 TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_HANDLE_CALL_RECEIVED, null);
             }
         });
@@ -113,9 +111,7 @@ public class IncomingFloatView {
             public void onClick(View v) {
                 cancelIncomingView();
                 TUICallEngine.createInstance(context).accept(null);
-                if (Permission.hasPermission(PermissionRequester.BG_START_PERMISSION)) {
-                    WindowManager.launchMainActivity(context);
-                }
+                WindowManager.launchMainActivity(context);
                 TUICore.notifyEvent(Constants.KEY_CALLKIT_PLUGIN, Constants.SUB_KEY_HANDLE_CALL_RECEIVED, null);
             }
         });
