@@ -71,7 +71,7 @@ class _CallsIndividualUserWidgetState extends State<CallsIndividualUserWidget> {
           children: [
             _buildBackground(),
             _buildBigVideoWidget(),
-            CallsIndividualUserWidgetData.isOnlyShowBigVideoView ? const SizedBox() : _buildSmallVideoWidget(),
+            _buildSmallVideoWidget(),
             CallsIndividualUserWidgetData.isOnlyShowBigVideoView ? const SizedBox() : _buildUserInfoWidget(),
           ],
         ),

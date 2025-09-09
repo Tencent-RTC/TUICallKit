@@ -34,7 +34,7 @@ class CallManager {
 
         if (PermissionResult.granted == permissionResult) {
           TUICallKitNavigatorObserver.getInstance().enterCallingPage();
-        } else {
+        } else if (PermissionResult.denied == permissionResult) {
           CallManager.instance.reject();
           CallingBellFeature.stopRing();
         }
@@ -784,7 +784,9 @@ class CallManager {
   void startForegroundService() {
     if (!CallState.instance.isStartForegroundService) {
       TRTCLogger.info('CallManager startForegroundService');
-      TUICallKitPlatform.instance.startForegroundService();
+      bool isVideo = CallState.instance.mediaType == TUICallMediaType.video
+              || CallState.instance.scene != TUICallScene.singleCall;
+      TUICallKitPlatform.instance.startForegroundService(isVideo);
       CallState.instance.isStartForegroundService = true;
     }
   }

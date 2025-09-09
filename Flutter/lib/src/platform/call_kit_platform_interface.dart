@@ -17,8 +17,8 @@ abstract class TUICallKitPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<void> startForegroundService() async {
-    await instance.startForegroundService();
+  Future<void> startForegroundService(bool isVideo) async {
+    await instance.startForegroundService(isVideo);
   }
 
   Future<void> stopForegroundService() async {
