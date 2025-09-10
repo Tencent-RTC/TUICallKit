@@ -1,14 +1,13 @@
 package com.tencent.qcloud.tuikit.tuicallkit.view.component.function
 
 import android.content.Context
-import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuikit.tuicallkit.manager.CallManager
 import com.trtc.tuikit.common.livedata.Observer
 
 class CallFunctionLayout(context: Context) : ConstraintLayout(context) {
-    private var functionLayout: RelativeLayout? = null
+    private var functionLayout: ConstraintLayout? = null
     private val callStatusObserver = Observer<TUICallDefine.Status> {
         if (it == TUICallDefine.Status.Accept) {
             updateLayout()

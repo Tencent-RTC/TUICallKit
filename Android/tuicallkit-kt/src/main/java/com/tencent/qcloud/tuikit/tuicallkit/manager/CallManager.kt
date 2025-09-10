@@ -31,6 +31,8 @@ import com.tencent.qcloud.tuikit.tuicallkit.state.ViewState
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout.VideoFactory
 import com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout.VideoView
 import com.tencent.trtc.TRTCCloud
+import com.tencent.trtc.TRTCCloudDef.TRTC_AUDIO_ROUTE_EARPIECE
+import com.tencent.trtc.TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER
 import org.json.JSONObject
 import java.util.Collections
 
@@ -460,6 +462,8 @@ class CallManager private constructor(context: Context) : ITUINotification {
     fun selectAudioPlaybackDevice(device: TUICommonDefine.AudioPlaybackDevice) {
         TUICallEngine.createInstance(context).selectAudioPlaybackDevice(device)
         mediaState.audioPlayoutDevice.set(device)
+        val currentAudioRoute = if (device == TUICommonDefine.AudioPlaybackDevice.Speakerphone) TRTC_AUDIO_ROUTE_SPEAKER else TRTC_AUDIO_ROUTE_EARPIECE
+        mediaState.selectedAudioDevice.set(currentAudioRoute)
     }
 
     fun startRemoteView(userId: String, videoView: VideoView?, callback: TUICommonDefine.PlayCallback?) {
