@@ -3,7 +3,6 @@ package com.tencent.qcloud.tuikit.tuicallkit.view.component.function
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -17,7 +16,7 @@ import com.trtc.tuikit.common.imageloader.ImageLoader
 import com.trtc.tuikit.common.livedata.Observer
 import com.trtc.tuikit.common.util.ScreenUtil
 
-class VideoCallerWaitingView(context: Context) : RelativeLayout(context) {
+class VideoCallerWaitingView(context: Context) : ConstraintLayout(context) {
     private lateinit var buttonCancel: ControlButton
     private lateinit var buttonSwitchCamera: ControlButton
     private lateinit var buttonCamera: ControlButton

@@ -94,6 +94,12 @@ class VideoView(context: Context, userInfo: UserState.User) : RelativeLayout(con
         updateUserNameView()
     }
 
+    private val isInPipObserver = Observer<Boolean> {
+        buttonSwitchCamera.visibility = if (it) View.GONE else View.VISIBLE
+        buttonBlur.visibility = if (it) View.GONE else View.VISIBLE
+        textUserName.visibility = if (it) View.GONE else View.VISIBLE
+    }
+
     init {
         initView()
         registerObserver()
@@ -109,6 +115,7 @@ class VideoView(context: Context, userInfo: UserState.User) : RelativeLayout(con
         user.networkQualityReminder.observe(networkQualityObserver)
         CallManager.instance.viewState.showLargeViewUserId.observe(showLargeViewUserIdObserver)
         CallManager.instance.viewState.router.observe(viewRouterObserver)
+        CallManager.instance.viewState.enterPipMode.observe(isInPipObserver)
     }
 
     private fun unregisterObserver() {
@@ -121,6 +128,7 @@ class VideoView(context: Context, userInfo: UserState.User) : RelativeLayout(con
         user.networkQualityReminder.removeObserver(networkQualityObserver)
         CallManager.instance.viewState.showLargeViewUserId.removeObserver(showLargeViewUserIdObserver)
         CallManager.instance.viewState.router.removeObserver(viewRouterObserver)
+        CallManager.instance.viewState.enterPipMode.removeObserver(isInPipObserver)
     }
 
     private fun initView() {
