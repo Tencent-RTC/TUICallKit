@@ -65,9 +65,9 @@ public class CallVideoLayout: UIView {
         aiSubtitle.translatesAutoresizingMaskIntoConstraints = false
         var constraints: [NSLayoutConstraint] = [
             aiSubtitle.centerXAnchor.constraint(equalTo: centerXAnchor),
-            aiSubtitle.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 120.scale375Height()),
-            aiSubtitle.heightAnchor.constraint(equalToConstant: 24.scale375Width()),
-            aiSubtitle.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8)
+            aiSubtitle.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -220.scale375Height()),
+            aiSubtitle.heightAnchor.constraint(equalToConstant: 200.scale375Height()),
+            aiSubtitle.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.95)
         ]
         
         if CallManager.shared.viewState.callingViewType.value == .one2one, let singleCallingView = singleCallingView {
