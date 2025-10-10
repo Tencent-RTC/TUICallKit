@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import { TUICallKitServer } from "../../TUICallKit/src/index";
+import { TUICallKitAPI } from "../../TUICallKit/src/index";
 import TUICallKit from "../../TUICallKit/src/Components/TUICallKit";
 import { reactive } from "@vue/composition-api";
 import { onLoad } from "@dcloudio/uni-app";
@@ -70,7 +70,7 @@ const searchUser = () => {
   // 去掉前后空格
   data.userIDToSearch = data.userIDToSearch.trim();
   data.invitee = data.userIDToSearch;
-  TUICallKitServer.getTim()
+  TUICallKitAPI.getTim()
     .getUserProfile({ userIDList: [data.userIDToSearch] })
     .then((imResponse) => {
       if (imResponse.data.length === 0) {
@@ -95,7 +95,7 @@ const call = async () => {
     return;
   }
   try {
-    await TUICallKitServer.call({
+    await TUICallKitAPI.call({
       userID: data.invitee.userID,
       type: data.type,
     });
@@ -110,7 +110,7 @@ const call = async () => {
 onLoad(async (option) => {
   data.userID = getApp().globalData.userID;
   data.type = Number(option.type);
-  await TUICallKitServer.init({
+  await TUICallKitAPI.init({
     sdkAppID: getApp().globalData.SDKAppID,
     userID: getApp().globalData.userID,
     userSig: getApp().globalData.userSig,

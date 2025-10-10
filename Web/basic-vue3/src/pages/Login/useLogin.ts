@@ -1,7 +1,7 @@
 import { toRefs } from "vue";
-import { TUICallKitServer } from '@tencentcloud/call-uikit-vue';
+import { TUICallKitAPI } from '@trtc/calls-uikit-vue';
 // @ts-ignore
-import TencentCloudChat from '@tencentcloud/chat';
+import TencentCloudChat from '@tencentcloud/lite-chat/basic';
 // @ts-ignore
 import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
 import { useMessage, useUserInfo, useMyRouter, useAegis } from "../../hooks";
@@ -39,7 +39,7 @@ export default function useLogin() {
       const options = { SDKAppID, testEnv: isChatTestEnv === 'true' };
       const chat = TencentCloudChat.create(options);
 
-      await TUICallKitServer.init({
+      await TUICallKitAPI.init({
         userID: userID.value,
         SDKAppID,
         userSig,
@@ -58,7 +58,7 @@ export default function useLogin() {
     } catch (error) {
       handleCallError('login', error);
     }
-    TUICallKitServer.enableVirtualBackground(true);
+    TUICallKitAPI.enableVirtualBackground(true);
   }
 
   return {

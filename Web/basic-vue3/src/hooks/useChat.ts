@@ -1,4 +1,4 @@
-import { TUICallKitServer } from "@tencentcloud/call-uikit-vue";
+import { TUICallKitAPI } from "@trtc/calls-uikit-vue";
 import useAegis from "./useAegis";
 
 export interface IMemberList {
@@ -7,7 +7,7 @@ export interface IMemberList {
 
 export default function useChat() {
   const { reportEvent } = useAegis();
-  const chat = TUICallKitServer?.getTUICallEngineInstance()?.tim;
+  const chat = TUICallKitAPI?.getTUICallEngineInstance()?.tim;
 
   const createGroupID = async (groupCallMember: string[]) => {
     const memberList: IMemberList[] = groupCallMember.map(userID => ({ userID }));

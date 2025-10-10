@@ -1,10 +1,10 @@
-import { TUICallKitServer } from "@tencentcloud/call-uikit-react";
+import { TUICallKitAPI } from "@trtc/calls-uikit-react";
 import useAegis from "./useAegis";
 import { IMemberList } from "../interface";
 
 export default function useChat() {
   const { reportEvent } = useAegis();
-  const chat = TUICallKitServer?.getTUICallEngineInstance()?.tim;
+  const chat = TUICallKitAPI?.getTUICallEngineInstance()?.tim;
 
   const createGroupID = async (groupCallMember: string[]) => {
     const memberList: IMemberList[] = groupCallMember.map(userID => ({ userID }));

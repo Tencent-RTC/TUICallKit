@@ -42,7 +42,7 @@ export default function useAegis() {
         level: Aegis.logType.REPORT, 
         ext1: String(userInfo?.SDKAppID),
         ext2: content,
-        ext3: `@tencentcloud/call-uikit-react`,
+        ext3: `@trtc/calls-uikit-react`,
       });
     } catch (error) {
       console.log('aegis', error);

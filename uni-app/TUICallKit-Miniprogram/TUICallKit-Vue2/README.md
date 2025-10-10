@@ -1,5 +1,5 @@
 ## 简介
-本 demo 演示了如何在 uni-app 项目中集成 [TUICallKit](https://www.npmjs.com/package/@tencentcloud/call-uikit-wechat) 音视频通话组件。
+本 demo 演示了如何在 uni-app 项目中集成 [TUICallKit](https://www.npmjs.com/package/@trtc/calls-uikit-wx-uniapp) 音视频通话组件。
 
 
 ## 环境准备
@@ -28,13 +28,13 @@
    
    mac端
    ```
-   mkdir -p ./TUICallKit && cp -r node_modules/@tencentcloud/call-uikit-wx-uniapp/ ./TUICallKit && cp node_modules/@tencentcloud/call-engine-wx/RTCCallEngine.wasm.br ./static
+   mkdir -p ./TUICallKit && cp -r node_modules/@trtc/calls-uikit-wx-uniapp/ ./TUICallKit && cp node_modules/@trtc/call-engine-lite-wx/RTCCallEngine.wasm.br ./static
    ```
 
    windows端
    ```
-   xcopy node_modules\@tencentcloud\call-uikit-wx-uniapp\ .\TUICallKit /i /e
-   xcopy node_modules\@tencentcloud\call-engine-wx\RTCCallEngine.wasm.br .\static
+   xcopy node_modules\@trtc\calls-uikit-wx-uniapp\ .\TUICallKit /i /e
+   xcopy node_modules\@trtc\call-engine-lite-wx\RTCCallEngine.wasm.br .\static
    ```
 
 4. HBuilder 中导入项目

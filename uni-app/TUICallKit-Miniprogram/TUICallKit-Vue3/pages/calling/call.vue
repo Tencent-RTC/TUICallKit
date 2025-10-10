@@ -49,7 +49,7 @@
 </template>
 
 <script setup>
-import { TUICallKitServer } from "../../TUICallKit/src/index";
+import { TUICallKitAPI } from "../../TUICallKit/src/index";
 import { reactive } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 const data = reactive({
@@ -68,7 +68,7 @@ const searchUser = () => {
   // 去掉前后空格
   data.userIDToSearch = data.userIDToSearch.trim();
   data.invitee = data.userIDToSearch;
-  TUICallKitServer.getTim()
+  TUICallKitAPI.getTim()
     .getUserProfile({ userIDList: [data.userIDToSearch] })
     .then((imResponse) => {
       if (imResponse.data.length === 0) {
@@ -93,7 +93,7 @@ const call = async () => {
     return;
   }
   try {
-    await TUICallKitServer.calls({
+    await TUICallKitAPI.calls({
       userIDList: [data.invitee.userID],
       type: data.type,
     });
