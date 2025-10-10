@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted } from 'vue';
-import { TUICallKitServer } from '@tencentcloud/call-uikit-vue';
+import { TUICallKitAPI } from '@trtc/calls-uikit-vue';
 import Card from '../common/Card/Card.vue';
 import Icon from '../common/Icon/Icon.vue';
 import LanguageSwitchSrc from '../../assets/LanguageSwitch/language-swtich.svg';
@@ -43,11 +43,11 @@ const LanguageTypeObj = {
 
 const handleCommand = (command: string) => {
   changeLanguage(command);
-  TUICallKitServer.setLanguage(LanguageTypeObj[language.value]);
+  TUICallKitAPI.setLanguage(LanguageTypeObj[language.value]);
 }
 
 onMounted(() => {
-  TUICallKitServer.setLanguage(LanguageTypeObj[language.value]);
+  TUICallKitAPI.setLanguage(LanguageTypeObj[language.value]);
 })
 
 </script>

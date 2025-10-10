@@ -79,7 +79,7 @@
 </template>
 
 <script setup>
-import { TUICallKitServer } from "../../TUICallKit/src/index";
+import { TUICallKitAPI } from "../../TUICallKit/src/index";
 import TUICallKit from "../../TUICallKit/src/Components/TUICallKit";
 import { nextTick, shallowRef, ref, reactive } from "@vue/composition-api";
 import { onUnload, onLoad } from "@dcloudio/uni-app";
@@ -128,7 +128,7 @@ const searchUser = () => {
       return;
     }
   }
-  TUICallKitServer.getTim()
+  TUICallKitAPI.getTim()
     .getUserProfile({ userIDList: [data.userIDToSearch] })
     .then((imResponse) => {
       if (imResponse.data.length === 0) {
@@ -184,7 +184,7 @@ const groupCall = async () => {
   // 创建群聊
   await createGroup(groupList);
   // 发起群通话
-  TUICallKitServer.groupCall({
+  TUICallKitAPI.groupCall({
     userIDList,
     type: data.type,
     groupID: data.groupID,
@@ -237,7 +237,7 @@ const allCancel = () => {
 
 // 创建IM群聊
 const createGroup = (userIDList) => {
-  return TUICallKitServer.getTim()
+  return TUICallKitAPI.getTim()
     .createGroup({
       type: Chat.TYPES.GRP_PUBLIC,
       name: "call 测试",
@@ -255,7 +255,7 @@ const createGroup = (userIDList) => {
 onLoad((option) => {
   data.userID = getApp().globalData.userID;
   data.type = Number(option.type);
-  TUICallKitServer.init({
+  TUICallKitAPI.init({
     sdkAppID: getApp().globalData.SDKAppID,
     userID: getApp().globalData.userID,
     userSig: getApp().globalData.userSig,

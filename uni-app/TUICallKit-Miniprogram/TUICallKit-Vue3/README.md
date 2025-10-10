@@ -1,5 +1,5 @@
 ## 简介
-本 demo 演示了如何在 uni-app 项目中集成 [TUICallKit](https://www.npmjs.com/package/@tencentcloud/call-uikit-wx-uniapp) 音视频通话组件。
+本 demo 演示了如何在 uni-app 项目中集成 [TUICallKit](https://www.npmjs.com/package/@trtc/calls-uikit-wx-uniapp) 音视频通话组件。
 
 
 ## 环境准备
@@ -28,13 +28,13 @@
    
    mac端
    ```
-   mkdir -p ./TUICallKit && cp -r node_modules/@tencentcloud/call-uikit-wx-uniapp/ ./TUICallKit && cp node_modules/@tencentcloud/call-engine-wx/RTCCallEngine.wasm.br ./static
+   mkdir -p ./TUICallKit && cp -r node_modules/@trtc/calls-uikit-wx-uniapp/ ./TUICallKit && cp node_modules/@trtc/call-engine-lite-wx/RTCCallEngine.wasm.br ./static
    ```
 
    windows端
    ```
-   xcopy node_modules\@tencentcloud\call-uikit-wx-uniapp\ .\TUICallKit /i /e
-   xcopy node_modules\@tencentcloud\call-engine-wx\RTCCallEngine.wasm.br .\static
+   xcopy node_modules\@trtc\calls-uikit-wx-uniapp\ .\TUICallKit /i /e
+   xcopy node_modules\@trtc\call-engine-lite-wx\RTCCallEngine.wasm.br .\static
    ```
 
 4. HBuilder 中导入项目
@@ -135,4 +135,3 @@ TUICallKit 是基于腾讯云 [即时通信 IM](https://cloud.tencent.com/docume
 - 如果您想要了解详细 API ，请阅读 [ API 概览](https://cloud.tencent.com/document/product/647/78759)
 - 如果你遇到了困难，可以先参阅 [常见问题](https://cloud.tencent.com/document/product/647/78912)；
 - 如果发现了示例代码的 bug，欢迎提交 issue；
-- 欢迎加入 QQ 群：**646165204**，进行技术交流和反馈~

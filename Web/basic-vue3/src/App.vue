@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, provide, reactive } from 'vue';
-import { TUICallKit } from '@tencentcloud/call-uikit-vue';
+import { TUICallKit } from '@trtc/calls-uikit-vue';
 import { useAegis } from './hooks/index';
 import { UserInfoContextKey, IUserInfoContext, UserInfoContextDefaultValue } from './context';
 import { isH5 } from './utils';

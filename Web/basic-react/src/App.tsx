@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
 import { ConfigProvider } from 'antd';
-import { TUICallKit } from '@tencentcloud/call-uikit-react';
+import { TUICallKit } from '@trtc/calls-uikit-react';
 import router from './routes/index.tsx';
 import { UserInfoContext } from './context/index.ts';
 import { useLanguage, useAegis } from './hooks/index.ts';

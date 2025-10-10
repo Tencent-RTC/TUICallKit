@@ -1,5 +1,5 @@
 import { toRefs } from 'vue';
-import { TUICallKitServer, TUICallType } from '@tencentcloud/call-uikit-vue';
+import { TUICallKitAPI, TUICallType } from '@trtc/calls-uikit-vue';
 import { useAegis, useUserInfo, useMessage, useLanguage } from "../../hooks";
 import { trim, checkUserID } from "../../utils";
 
@@ -27,7 +27,7 @@ export default function useCall() {
     userInfo.isCall.value = true;
 
     try {
-      await TUICallKitServer.calls({
+      await TUICallKitAPI.calls({
         userIDList: [calleeUserID.value],
         type: userInfo.currentCallType.value === 'video' ? TUICallType.VIDEO_CALL : TUICallType.AUDIO_CALL,
       })

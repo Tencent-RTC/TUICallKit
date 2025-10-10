@@ -1,6 +1,6 @@
 import { toRefs } from "vue";
 import type { Ref } from 'vue'
-import { TUICallKitServer, TUICallType } from '@tencentcloud/call-uikit-vue';
+import { TUICallKitAPI, TUICallType } from '@trtc/calls-uikit-vue';
 import { trim, checkUserID } from "../../utils";
 import { useLanguage, useMessage, useUserInfo, useAegis, useChat } from "../../hooks";
 
@@ -12,7 +12,7 @@ export default function useGroupCall() {
   const { showMessage, handleCallError } = useMessage();
   const userInfo = toRefs(useUserInfo());
 
-  TUICallKitServer.setLogLevel(0)
+  TUICallKitAPI.setLogLevel(0)
 
   const groupCall = async (groupCallMember: Ref<string[]>) => {
     reportEvent({ apiName: 'groupCall.start' });
@@ -26,7 +26,7 @@ export default function useGroupCall() {
     userInfo.isCall.value = true;
     try {
       // const groupID = await createGroupID(groupCallMember.value);
-      await TUICallKitServer.calls({
+      await TUICallKitAPI.calls({
         userIDList: groupCallMember.value, 
         type: userInfo?.currentCallType.value === 'video' ? TUICallType.VIDEO_CALL : TUICallType.AUDIO_CALL,
       })

@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Typography, Image, Flex, Button, Input } from 'antd';
-import { TUICallKitServer, TUICallType } from '@tencentcloud/call-uikit-react';
+import { TUICallKitAPI, TUICallType } from '@trtc/calls-uikit-react';
 import { UserInfoContext } from '../../../context';
 import { useLanguage, useAegis, useMessage, useChat } from '../../../hooks';
 import { getUrl, checkUserID } from '../../../utils';
@@ -35,7 +35,7 @@ export default function GroupCall() {
     });
     try {
       // const groupID = await createGroupID(groupCallMember);
-      await TUICallKitServer.calls({
+      await TUICallKitAPI.calls({
         userIDList: groupCallMember, 
         type: state?.callType === 'video' ? TUICallType.VIDEO_CALL : TUICallType.AUDIO_CALL,
       })

@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@tencentcloud/call-uikit-wechat": "latest",
+    "@trtc/calls-uikit-wx-uniapp": "latest",
     "@vue/composition-api": "^1.7.2",
     "unplugin-vue2-script-setup": "^0.11.4"
   },

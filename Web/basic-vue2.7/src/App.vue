@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-import { TUICallKit, TUICallKitServer, STATUS, TUIGlobal } from "@tencentcloud/call-uikit-vue2";
+import { TUICallKit, TUICallKitAPI, STATUS, TUIGlobal } from "@trtc/calls-uikit-vue2";
 import DeviceDetector from "./components/DeviceDetector/index.vue";
 import * as GenerateTestUserSig from "./debug/GenerateTestUserSig-es.js";
-import TIM from "@tencentcloud/chat";
+import TIM from "@tencentcloud/lite-chat/basic";
 import copy from "copy-to-clipboard";
 import videoBlackSVG from "./assets/videoBlack.svg";
 import videoWhiteSVG from "./assets/videoWhite.svg";
@@ -47,7 +47,7 @@ onMounted(() => {
     isNewTab.value = true;
   }
   SecretKey.value = getUrlParam("SecretKey") || "";
-  TUICallKitServer.setLanguage(locale.value);
+  TUICallKitAPI.setLanguage(locale.value);
   finishedRTCDetectStatus.value = localStorage.getItem("callkit-basic-demo-finish-rtc-detect") || "";
 });
 
@@ -79,7 +79,7 @@ async function login() {
     SDKAppID: SDKAppID.value,
   });
   try {
-    await TUICallKitServer.init({
+    await TUICallKitAPI.init({
       userID: loginUserID.value,
       userSig,
       SDKAppID: Number(SDKAppID.value),
@@ -94,7 +94,7 @@ async function login() {
   }
 }
 function handleDestroy() {
-  TUICallKitServer.destroyed();
+  TUICallKitAPI.destroyed();
   isLogin.value = false;
 }
 
@@ -118,14 +118,14 @@ async function startCall(typeString: string) {
   try {
     isCalling.value = true;
     if (callType === "call")
-      await TUICallKitServer.calls({
+      await TUICallKitAPI.calls({
         userIDList: [userList.value[0]],
         type, 
       });
     else {
       // you can use existing groups, no need to create a new group every time
       // groupID.value = await createGroup();
-      await TUICallKitServer.calls({
+      await TUICallKitAPI.calls({
         userIDList: userList.value,
         type,
       });
@@ -267,19 +267,19 @@ function switchLanguage() {
     case "zh-cn":
       locale.value = "en";
       localStorage.setItem("basic-demo-language", "en");
-      TUICallKitServer.setLanguage("en");
+      TUICallKitAPI.setLanguage("en");
       break;
     case "en":
     default:
       locale.value = "zh-cn";
       localStorage.setItem("basic-demo-language", "zh-cn");
-      TUICallKitServer.setLanguage("zh-cn");
+      TUICallKitAPI.setLanguage("zh-cn");
       break;
   }
 }
 
 async function logout() {
-  await TUICallKitServer.destroyed();
+  await TUICallKitAPI.destroyed();
   tim.logout();
   isLogin.value = false;
 }
@@ -299,7 +299,7 @@ function handleStatusChanged(args: { oldStatus: string; newStatus: string; }) {
 async function accept() {
   try {
     if (TUICallKitStatus === STATUS.BE_INVITED) {
-      await TUICallKitServer.accept();
+      await TUICallKitAPI.accept();
       ElMessage.warning("Answered automatically");
     }
   } catch (error: any) {
@@ -310,7 +310,7 @@ async function accept() {
 async function reject() {
   try {
     if (TUICallKitStatus === STATUS.BE_INVITED) {
-      await TUICallKitServer.reject();
+      await TUICallKitAPI.reject();
       ElMessage.warning("Automatically rejected");
     }
   } catch (error: any) {
@@ -321,7 +321,7 @@ async function reject() {
 async function hangup() {
   try {
     if (TUICallKitStatus === STATUS.CALLING_C2C_AUDIO || TUICallKitStatus === STATUS.CALLING_C2C_VIDEO || TUICallKitStatus === STATUS.CALLING_GROUP_AUDIO || TUICallKitStatus === STATUS.CALLING_GROUP_VIDEO) {
-      await TUICallKitServer.hangup();
+      await TUICallKitAPI.hangup();
       ElMessage.warning("Automatically hung up");
     }
   } catch (error: any) {

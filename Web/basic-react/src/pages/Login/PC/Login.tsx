@@ -1,9 +1,9 @@
 import { useContext, useState } from 'react';
 import { Flex, Input, Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { TUICallKitServer } from '@tencentcloud/call-uikit-react';
+import { TUICallKitAPI } from '@trtc/calls-uikit-react';
 // @ts-ignore
-import TencentCloudChat from '@tencentcloud/chat';
+import TencentCloudChat from '@tencentcloud/lite-chat/basic';
 // @ts-ignore
 import * as GenerateTestUserSig from "../../../debug/GenerateTestUserSig-es";
 import { UserInfoContext } from '../../../context/index';
@@ -47,7 +47,7 @@ export default function Login() {
       const options = { SDKAppID, testEnv: isChatTestEnv === 'true' };
       const chat = TencentCloudChat.create(options);
 
-      await TUICallKitServer.init({ userID, SDKAppID, userSig, tim: chat });
+      await TUICallKitAPI.init({ userID, SDKAppID, userSig, tim: chat });
       setUserInfo({
         ...userInfo,
         userID,
@@ -65,7 +65,7 @@ export default function Login() {
       messageApi.info(`${t('Login failed')} ${error}`);
       handleCallError('login', error);
     }
-    TUICallKitServer.enableVirtualBackground(true);
+    TUICallKitAPI.enableVirtualBackground(true);
   }
 
   function renderTitle() {

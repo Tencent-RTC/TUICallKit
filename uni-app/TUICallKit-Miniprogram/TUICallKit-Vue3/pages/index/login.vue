@@ -35,9 +35,12 @@ const loginHandler = async () => {
   const { userSig, SDKAppID } = GenerateTestUserSig.genTestUserSig({
     userID: userID.value,
   });
+  console.warn('--- ', SDKAppID);
+
   getApp().globalData.userID = userID.value;
   getApp().globalData.userSig = userSig;
   getApp().globalData.SDKAppID = SDKAppID;
+
   await uni.CallManager.init({
     sdkAppID: SDKAppID, // 替换为用户自己的 sdkAppID
     userID: userID.value, // 替换为用户自己的 userID

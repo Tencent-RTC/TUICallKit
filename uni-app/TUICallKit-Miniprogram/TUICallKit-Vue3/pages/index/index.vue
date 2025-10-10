@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-// import { TUICallKitServer } from "../../TUICallKit/src/index";
+// import { TUICallKitAPI } from "../../TUICallKit/src/index";
 // import { ref } from "vue";
 const template = '1v1';
 const entryInfos = [
@@ -48,10 +48,10 @@ const entryInfos = [
 // let isMute = ref(false);
 // const enableMuteMode = async () => {
 //   isMute.value = !isMute.value;
-//   await TUICallKitServer.enableMuteMode(isMute.value);
+//   await TUICallKitAPI.enableMuteMode(isMute.value);
 // }
 // const setCallingBell = async () => {
-//   await TUICallKitServer.setCallingBell('mp2.mp3');
+//   await TUICallKitAPI.setCallingBell('mp2.mp3');
 // }
 const handleEntry = (e) => {
   const url = entryInfos[e.currentTarget.id].navigateTo;

@@ -1,7 +1,7 @@
 import { useContext, useState } from "react"
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Image, Flex, Input } from 'antd';
-import { TUICallKitServer, TUICallType } from '@tencentcloud/call-uikit-react';
+import { TUICallKitAPI, TUICallType } from '@trtc/calls-uikit-react';
 import { checkUserID, trim } from '../../../utils';
 import { UserInfoContext } from "../../../context";
 import { useLanguage, useAegis, useMessage } from '../../../hooks';
@@ -39,7 +39,7 @@ export default function Call() {
     });
 
     try {
-      await TUICallKitServer.calls({
+      await TUICallKitAPI.calls({
         userIDList: [calleeUserID],
         type: state.callType === 'video' ? TUICallType.VIDEO_CALL : TUICallType.AUDIO_CALL,
       })

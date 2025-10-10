@@ -4,9 +4,9 @@
 
 <div align="center">
 <img src="https://img.shields.io/badge/Platform-React-green">
-<img src="https://img.shields.io/npm/v/@tencentcloud/call-uikit-react">
+<img src="https://img.shields.io/npm/v/@trtc/calls-uikit-react">
 <img src="https://img.shields.io/badge/support-docs%20%26%20demos-yellow">
-<img src="https://img.shields.io/npm/l/@tencentcloud/call-uikit-react">
+<img src="https://img.shields.io/npm/l/@trtc/calls-uikit-react">
 
 [Demo](https://trtc.io/demo/homepage/#/detail?scene=callkit) · [Docs](https://cloud.tencent.com/document/product/647/102510) · [English](https://github.com/tencentyun/TUICallKit/blob/main/Web/README.md) · 中文
 </div>
