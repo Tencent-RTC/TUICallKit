@@ -95,8 +95,8 @@ const call = async () => {
     return;
   }
   try {
-    await TUICallKitAPI.call({
-      userID: data.invitee.userID,
+    await TUICallKitAPI.calls({
+      userIDList: [data.invitee.userID],
       type: data.type,
     });
   } catch (error) {

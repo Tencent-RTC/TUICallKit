@@ -1,5 +1,5 @@
-import { MEDIA_TYPE } from '@tencentcloud/call-engine-wx';
-import { TUICallKitServer } from "../../TUICallKit/TUICallService/index";
+import { CallMediaType } from '@trtc/call-engine-lite-wx';
+import { TUICallKitAPI } from "../../TUICallKit/TUICallService/index";
 
 Page({
   data: {
@@ -24,7 +24,7 @@ Page({
     this.data.invitee = {
       userID: this.data.userIDToSearch,
     };
-    TUICallKitServer.getTim()
+    TUICallKitAPI.getTim()
       .getUserProfile({ userIDList: [this.data.userIDToSearch] })
       .then((imResponse) => {
         if (imResponse.data.length === 0) {
@@ -50,7 +50,7 @@ Page({
       return;
     }
     try {
-      await TUICallKitServer.call({ userID: this.data.invitee.userID, type: MEDIA_TYPE.VIDEO});
+      await TUICallKitAPI.calls({ userIDList: [this.data.invitee.userID], type: CallMediaType.VIDEO});
     } catch (error) {
       wx.showModal({
         icon: 'none',

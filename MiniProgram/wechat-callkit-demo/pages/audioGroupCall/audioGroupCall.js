@@ -1,6 +1,5 @@
-import { MEDIA_TYPE } from '@tencentcloud/call-engine-wx';
-import { TUICallKitServer } from "../../TUICallKit/TUICallService/index";
-import TIM from '@tencentcloud/chat'
+import { CallMediaType } from '@trtc/call-engine-lite-wx';
+import { TUICallKitAPI } from "../../TUICallKit/TUICallService/index";
 
 Page({
   data: {
@@ -52,7 +51,7 @@ Page({
         return;
       }
     }
-    TUICallKitServer.getTim()
+    TUICallKitAPI.getTim()
       .getUserProfile({ userIDList: [this.data.userIDToSearch] })
       .then((imResponse) => {
         if (imResponse.data.length === 0) {
@@ -100,27 +99,16 @@ Page({
       };
       groupList[i] = user;
     }
-    // 创建群聊
-    await this.createGroup(groupList);
-    // 判断groupID是否创建成功
-    if (this.data.groupID) {
-      // 发起群通话
-      TUICallKitServer.groupCall({
-        userIDList,
-        type: MEDIA_TYPE.AUDIO,
-        groupID: this.data.groupID,
-      });
-      // 重置数据
-      this.setData({
-        // searchList: [],
-        isCheck: true,
-      });
-    } else {
-      wx.showToast({
-        icon: 'none',
-        title: '群创建失败',
-      });
-    }
+    // 发起群通话
+    TUICallKitAPI.calls({
+      userIDList,
+      type: CallMediaType.AUDIO,
+    });
+    // 重置数据
+    this.setData({
+      // searchList: [],
+      isCheck: true,
+    });
   },
 
   // 选中
@@ -174,24 +162,6 @@ Page({
       searchList: newList,
       isCheck: true,
     });
-  },
-
-
-  // 创建IM群聊
-  createGroup(userIDList) {
-    return TUICallKitServer.getTim().createGroup({
-      type: TIM.TYPES.GRP_PUBLIC,
-      name: 'WebSDK',
-      memberList: userIDList, // 如果填写了 memberList，则必须填写 userID
-    })
-      .then((imResponse) => { // 创建成功
-        this.setData({
-          groupID: imResponse.data.group.groupID,
-        });
-      })
-      .catch((imError) => {
-        console.warn('createGroup error:', imError); // 创建群组失败的相关信息
-      });
   },
 
   onBack() {

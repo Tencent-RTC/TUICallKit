@@ -30,19 +30,21 @@
    
    mac端
    ```
-   mkdir -p ./TUICallKit && cp -r node_modules/@tencentcloud/call-uikit-wx/ ./TUICallKit && cp node_modules/@tencentcloud/call-engine-wx/RTCCallEngine.wasm.br ./static/
+   mkdir -p ./TUICallKit && cp -r node_modules/@trtc/calls-uikit-wx/ ./TUICallKit && cp node_modules/@trtc/call-engine-lite-wx/RTCCallEngine.wasm.br ./static/
    ```
 
    windows端
    ```
-   xcopy node_modules\@tencentcloud\call-uikit-wx\ .\TUICallKit /i /e
-   xcopy node_modules\@tencentcloud\call-engine-wx\RTCCallEngine.wasm.br .\static\
+   xcopy node_modules\@trtc\calls-uikit-wx\ .\TUICallKit /i /e
+   xcopy node_modules\@trtc\call-engine-lite-wx\RTCCallEngine.wasm.br .\static\
 
    ```
 
 4. 项目导入到微信开发者工具，构建 npm。微信开发者工具【工具】->【构建 npm】。具体如下图：
    
    <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/build-npm.png" width="400" height="600" align="middle" />
+
+   > 注意：需要将 `node_modules/@tencentcloud/lite-chat/basic.js` 拷贝到 `miniprogram_npm/@tencentcloud/lite-chat/basic.js`。同时删除 `miniprogram_npm/@tencentcloud/lite-chat/index.js` 文件。
 
 5. 修改 `./TUICallKit/MiniProgram/TUICalling/debug/GenerateTestUserSig.js` 文件 的 SDKAPPID 以及 SECRETKEY（阅读文末 [如何获得SDKAppID与SecretKey？](#如何获得-SDKAppID-与-SecretKey？)）
    
