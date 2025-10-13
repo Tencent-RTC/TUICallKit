@@ -77,7 +77,6 @@
 import { nextTick, shallowRef, ref, reactive } from "vue";
 import { onUnload, onLoad } from "@dcloudio/uni-app";
 import { TUICallKitAPI } from "../../TUICallKit/src/index";
-import Chat from '@tencentcloud/lite-chat/basic';
 const data = reactive({
   searchList: [],
   callBtn: false,
@@ -175,8 +174,6 @@ const groupCall = async () => {
     };
     groupList[i] = user;
   }
-  // 创建群聊
-  // await createGroup(groupList);
   // 发起群通话
   TUICallKitAPI.calls({
     userIDList,
@@ -227,23 +224,6 @@ const allCancel = () => {
   }
   data.searchList = newlist;
   data.ischeck = true;
-};
-
-// 创建IM群聊
-const createGroup = (userIDList) => {
-  return TUICallKitAPI.getTim()
-    .createGroup({
-      type: Chat.TYPES.GRP_PUBLIC,
-      name: "call 测试",
-      memberList: userIDList, // 如果填写了 memberList，则必须填写 userID
-    })
-    .then((imResponse) => {
-      // 创建成功
-      data.groupID = imResponse.data.group.groupID;
-    })
-    .catch((imError) => {
-      console.warn("createGroup error:", imError); // 创建群组失败的相关信息
-    });
 };
 
 onLoad((option) => {
