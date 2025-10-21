@@ -46,7 +46,7 @@
 
    > 注意：需要将 `node_modules/@tencentcloud/lite-chat/basic.js` 拷贝到 `miniprogram_npm/@tencentcloud/lite-chat/basic.js`。同时删除 `miniprogram_npm/@tencentcloud/lite-chat/index.js` 文件。
 
-5. 修改 `./TUICallKit/MiniProgram/TUICalling/debug/GenerateTestUserSig.js` 文件 的 SDKAPPID 以及 SECRETKEY（阅读文末 [如何获得SDKAppID与SecretKey？](#如何获得-SDKAppID-与-SecretKey？)）
+5. 修改 `./TUICallKit/debug/GenerateTestUserSig-es.js` 文件 的 SDKAPPID 以及 SECRETKEY（阅读文末 [如何获得SDKAppID与SecretKey？](#如何获得-SDKAppID-与-SecretKey？)）
    
    <img src="https://user-images.githubusercontent.com/72854065/226269630-7d33a694-aad4-414e-bfea-19919fcacb48.png"/>
 
