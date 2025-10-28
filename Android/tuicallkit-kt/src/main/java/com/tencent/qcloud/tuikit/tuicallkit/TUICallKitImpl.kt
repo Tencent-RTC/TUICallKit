@@ -45,7 +45,7 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit() {
     private val context = context.applicationContext
 
     private val callStatusObserver = Observer<TUICallDefine.Status> {
-        showAntiFraudReminder()
+        notifyInternalEvent()
 
         if (it != TUICallDefine.Status.Waiting
             || CallManager.instance.userState.selfUser.get().callRole == TUICallDefine.Role.Caller
@@ -501,36 +501,28 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit() {
         context.startActivity(intent)
     }
 
-    private fun showAntiFraudReminder() {
-        notifyCallEndEvent()
-        if (TUICallDefine.Status.Accept != CallManager.instance.userState.selfUser.get().callStatus.get()) {
-            return
-        }
-
-        if (TUICore.getService(TUIConstants.Service.TUI_PRIVACY) == null) {
-            return
-        }
-        val map = HashMap<String, Any?>()
-        map[TUIConstants.Privacy.PARAM_DIALOG_CONTEXT] = context
-        TUICore.callService(
-            TUIConstants.Service.TUI_PRIVACY, TUIConstants.Privacy.METHOD_ANTO_FRAUD_REMINDER, map, null
-        )
-    }
-
-    private fun notifyCallEndEvent() {
+    private fun notifyInternalEvent() {
         val selfUser = CallManager.instance.userState.selfUser.get()
         if (selfUser.callStatus.get() == TUICallDefine.Status.None) {
             TUICore.notifyEvent(
                 TUIConstants.Privacy.EVENT_ROOM_STATE_CHANGED, TUIConstants.Privacy.EVENT_SUB_KEY_ROOM_STATE_STOP, null
             )
             if (selfUser.callRole == Role.Caller) {
-
                 TUICore.notifyEvent(EVENT_KEY_TIME_LIMIT, EVENT_SUB_KEY_COUNTDOWN_END, null)
             }
             return
         }
-        if (selfUser.callStatus.get() == TUICallDefine.Status.Accept && selfUser.callRole == Role.Caller) {
-            TUICore.notifyEvent(EVENT_KEY_TIME_LIMIT, EVENT_SUB_KEY_COUNTDOWN_START, null)
+        if (selfUser.callStatus.get() == TUICallDefine.Status.Accept) {
+            if (selfUser.callRole == Role.Caller) {
+                TUICore.notifyEvent(EVENT_KEY_TIME_LIMIT, EVENT_SUB_KEY_COUNTDOWN_START, null)
+            }
+            if (TUICore.getService(TUIConstants.Service.TUI_PRIVACY) != null) {
+                val map = HashMap<String, Any?>()
+                map[TUIConstants.Privacy.PARAM_DIALOG_CONTEXT] = context
+                TUICore.callService(
+                    TUIConstants.Service.TUI_PRIVACY, TUIConstants.Privacy.METHOD_ANTO_FRAUD_REMINDER, map, null
+                )
+            }
         }
     }
 
