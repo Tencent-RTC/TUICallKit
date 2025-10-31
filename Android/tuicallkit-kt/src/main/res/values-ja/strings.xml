@@ -6,6 +6,7 @@
     <string name="tuicallkit_toast_callee_hangup">相手が切断、通話終了</string>
     <string name="tuicallkit_toast_callee_reject">相手による通話拒否</string>
     <string name="tuicallkit_toast_callee_no_response">呼び出しタイムアウト</string>
+    <string name="tuicallkit_toast_call_busy">電話が話し中ですので、後ほどもう一度お試しください</string>
     <string name="tuicallkit_other_party_network_low_quality">相手のネットワーク接続が不安定です</string>
     <string name="tuicallkit_self_network_low_quality">ネットワーク接続が不安定です</string>
     <string name="tuicallkit_toast_switch_camera">カメラの切り替え</string>
