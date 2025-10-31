@@ -6,9 +6,9 @@ export interface IUserInfo {
   isLogin: boolean;
   currentPage: string;
   isCall: boolean;
-  chat: any;
+  params?: any;
 }
 export interface IUserInfoContext {
   userInfo: IUserInfo;
-  setUserInfo: React.Dispatch<IUserInfo>;
+  setUserInfo: React.Dispatch<React.SetStateAction<IUserInfo>>;
 }

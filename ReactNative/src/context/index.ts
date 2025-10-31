@@ -1,5 +1,5 @@
-import React, { createContext } from 'react';
-import { IUserInfo, IUserInfoContext } from '../interface/index';
+import React, {createContext} from 'react';
+import type {IUserInfo, IUserInfoContext} from '../interface/index';
 
 const userInfoDefaultValue: IUserInfo = {
   userID: '',
@@ -8,10 +8,11 @@ const userInfoDefaultValue: IUserInfo = {
   userSig: '',
   isLogin: false,
   isCall: false,
-  currentPage: 'home',
-  chat: null,
+  currentPage: 'Login',
 };
 
-const setUserInfoDefaultValue: React.Dispatch<IUserInfo> = () => {};
+const setUserInfoDefaultValue: React.Dispatch<React.SetStateAction<IUserInfo>> =
+    () => {};
 
-export const UserInfoContext = createContext<IUserInfoContext>({ userInfo: userInfoDefaultValue, setUserInfo: setUserInfoDefaultValue });
+export const UserInfoContext = createContext<IUserInfoContext>(
+    {userInfo: userInfoDefaultValue, setUserInfo: setUserInfoDefaultValue});

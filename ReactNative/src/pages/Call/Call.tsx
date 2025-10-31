@@ -8,9 +8,14 @@ import {
 } from 'react-native';
 import { TUICallKit, MediaType } from '@tencentcloud/call-uikit-react-native';
 
-export default function Call({ route }: any): React.JSX.Element {
+interface CallProps {
+  params?: any;
+  onGoBack: () => void;
+}
+
+export default function Call({ params = {}, onGoBack }: CallProps): React.JSX.Element {
   const [calleeID, setCalleeID] = useState('');
-  const { callType } = route.params;
+  const { callType = 'video' } = params;
 
   const call = () => {
     TUICallKit.call(

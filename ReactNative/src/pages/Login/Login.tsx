@@ -1,5 +1,4 @@
 import React, { useState, useContext } from 'react';
-import { useNavigation } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -9,44 +8,26 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import { TUICallEvent, TUICallKit } from '@tencentcloud/call-uikit-react-native';
-import Chat from '@tencentcloud/chat';
+import {
+  TUICallEvent,
+  TUICallKit,
+} from '@tencentcloud/call-uikit-react-native';
 import { UserInfoContext } from '../../context';
+// @ts-ignore
 import { genTestUserSig } from '../../debug/GenerateTestUserSig-es';
 
 const LOGO_EN_SRC = require('../../assets/logo-en.png');
 const BG_SRC = require('../../assets/bg.png');
 
-export default function Login(): React.JSX.Element {
+interface LoginProps {
+  onNavigate: (page: string, params?: any) => void;
+}
+
+export default function Login({ onNavigate }: LoginProps): React.JSX.Element {
   const { userInfo, setUserInfo } = useContext(UserInfoContext);
-  const navigation: any = useNavigation();
   const [userID, setUserID] = useState('');
 
-  function onRtcListener(type: TUICallEvent, params: any) {
-    if (type === TUICallEvent.onCallBegin) {
-      console.log('==onCallBegin params:', params);
-    }
-    if (type === TUICallEvent.onCallBegin) {
-      console.log('==onCallBegin params:', params);
-    }
-    if (type === TUICallEvent.onCallEnd) {
-      console.log('==onCallEnd');
-    }
-    if (type === TUICallEvent.onCallCancelled) {
-      console.log('==onCallCancelled params:', params);
-    }
-    if (type === TUICallEvent.onError) {
-      console.log('==onError');
-    }
-    if (type === TUICallEvent.onCallReceived) {
-      console.log('==onCallReceived');
-    }
-    if (type === TUICallEvent.onUserJoin) {
-      console.log('==onUserJoin');
-    }
-  }
-
-  const handleLogin = async () => {
+  const handleLogin = () => {
     const { SDKAppID, userSig } = genTestUserSig({ userID });
 
     TUICallKit.login(
@@ -62,20 +43,17 @@ export default function Login(): React.JSX.Element {
         console.log('login error', errCode, errMsg, SDKAppID, userID, userSig);
       }
     );
-    const chat = Chat.create({ SDKAppID });
-    await chat.login({ userID: String(userID), userSig });
-    
-    TUICallKit.on(onRtcListener);
+    TUICallKit.on(TUICallEvent.onError, (res: any) => {
+      console.log('==onError', res);
+    });
     setUserInfo({
       ...userInfo,
       userID,
       currentPage: 'login',
       SDKAppID,
       userSig,
-      chat,
     });
-
-    navigation.navigate('Home');
+    onNavigate('Home');
   };
 
   return (
