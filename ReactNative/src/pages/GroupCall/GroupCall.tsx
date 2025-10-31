@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,25 +7,23 @@ import {
   StyleSheet,
 } from 'react-native';
 import { TUICallKit, MediaType } from '@tencentcloud/call-uikit-react-native';
-import Chat from '@tencentcloud/chat';
-import { UserInfoContext } from '../../context';
 
-export default function GroupCall({ route }: any): React.JSX.Element {
+interface GroupCallProps {
+  params?: any;
+  onGoBack: () => void;
+}
+
+export default function GroupCall({ params = {}, onGoBack }: GroupCallProps): React.JSX.Element {
   const [calleeID, setCalleeID] = useState('');
-  const { callType } = route.params;
-  const { userInfo } = useContext(UserInfoContext);
-  let chat: any = null;
+  const { callType = 'video' } = params;
 
-  const groupCall = async () => {
+  const groupCall = () => {
     const userIDList = calleeID.split(',');
-    const groupId = await createGroupID(userIDList);
-    console.log('groupCall', callType, calleeID, groupId);
-
     TUICallKit.groupCall(
       {
         userIdList: userIDList,
         mediaType: callType === 'audio' ? MediaType.Audio : MediaType.Video,
-        groupId,
+        groupId: '@TGS#2VWQGGHOE',
       },
       (res) => {
         console.log('groupCall success', res);
@@ -35,21 +33,6 @@ export default function GroupCall({ route }: any): React.JSX.Element {
       }
     );
   };
-
-  async function createGroupID(userIDList: any[]) {
-    const memberList: any[] = userIDList.map(userId => ({ userID: userId }));
-    console.log('createGroupID', memberList);
-
-    const res = await userInfo.chat.createGroup({
-      type: Chat.TYPES.GRP_PUBLIC, // Must be a public group
-      name: 'WebSDK',
-      memberList,
-    })
-
-    console.log('createGroupID', res);
-    return res.data.group.groupID;
-  }
-  
 
   return (
     <View style={styles.container}>

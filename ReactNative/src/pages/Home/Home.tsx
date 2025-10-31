@@ -1,22 +1,24 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { UserInfoContext } from '../../context';
 
 const LOGO_EN_SRC = require('../../assets/logo-en.png');
 const CALL_SVG_SRC = require('../../assets/call.png');
 const GROUP_CALL_SVG_SRC = require('../../assets/group-call.png');
 
-export default function Home(): React.JSX.Element {
-  const navigation: any = useNavigation();
+interface HomeProps {
+  onNavigate: (page: string, params?: any) => void;
+}
+
+export default function Home({ onNavigate }: HomeProps): React.JSX.Element {
   const { userInfo } = useContext(UserInfoContext);
   const [callType, setCallType] = useState('video');
 
   const goCall = () => {
-    navigation.navigate('Call', { callType: callType });
+    onNavigate('Call', { callType: callType });
   };
   const goGroupCall = () => {
-    navigation.navigate('GroupCall', { callType: callType });
+    onNavigate('GroupCall', { callType: callType });
   };
 
   return (
@@ -39,7 +41,7 @@ export default function Home(): React.JSX.Element {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[callType === 'audio' && styles.segmented_content_active ]}
+          style={[callType === 'audio' && styles.segmented_content_active]}
           onPress={() => setCallType('audio')}
         >
           <Text
