@@ -79,7 +79,7 @@
     <string name="app_user_id_colon">ユーザーID：</string>
     <string name="app_group_call">グループ通話</string>
     <string name="app_please_input_group_id">グループIDを入力してください</string>
-    <string name="app_please_input_user_id_list">ユーザーIDのリストを入力してください</string>
+    <string name="app_please_input_user_id_list">ユーザーIDをカンマ区切りで入力してください</string>
     <string name="app_room_id_num">ルームID（番号）</string>
     <string name="app_room_id_str">ルームID（文字列）</string>
     <string name="app_please_input_room_id">ルームIDを入力してください</string>

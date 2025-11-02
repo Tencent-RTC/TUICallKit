@@ -24,7 +24,7 @@
 "TUICallKitApp.Call.InputUserId" = "Please enter the user ID";
 "TUICallKitApp.Call.GroupId" = "Group ID";
 "TUICallKitApp.Call.InputGroupId" = "Please enter the ChatGroup ID";
-"TUICallKitApp.Call.InputUserIds" = "Please enter the User ID, separated by “,”";
+"TUICallKitApp.Call.InputUserIds" = "Enter the User IDs, split by \",\"";
 "TUICallKitApp.Call.RoomIdInt" = "Room Id(Int)";
 "TUICallKitApp.Call.RoomIdString" = "Room Id(String)";
 "TUICallKitApp.Call.InputRoomId" = "Please enter the Room ID";
