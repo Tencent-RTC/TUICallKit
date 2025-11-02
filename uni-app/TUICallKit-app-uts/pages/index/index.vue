@@ -19,7 +19,7 @@
           <view class="desc">{{ item.desc }}</view>
         </view>
       </view>
-      <button class="loginBtn" @click="logoutHandler">{{ "Logout" }}</button>
+      <button class="loginBtn" @click="logoutHandler">{{ $t('Logout') }}</button>
     </view>
   </view>
 </template>
@@ -29,33 +29,37 @@ export default {
   data() {
     return {
       template: "1v1",
-      entryInfos: [
+    };
+  },
+  computed: {
+    entryInfos() {
+      return [
         {
           icon: "https://web.sdk.qcloud.com/component/miniApp/resources/audio-card.png",
-          title: "Voice Call",
-          desc: "a 70% packet loss rate",
+          title: this.$t('Voice Call'),
+          desc: this.$t('a 70% packet loss rate'),
           navigateTo: "../call/call?type=1",
         },
         {
           icon: "https://web.sdk.qcloud.com/component/miniApp/resources/video-card.png",
-          title: "Video Call",
-          desc: "a 50% packet loss rate",
+          title: this.$t('Video Call'),
+          desc: this.$t('a 50% packet loss rate'),
           navigateTo: "../call/call?type=2",
         },
         {
           icon: "https://web.sdk.qcloud.com/component/miniApp/resources/audio-card.png",
-          title: "Multi-Person Voice Call",
-          desc: "a 70% packet loss rate",
+          title: this.$t('Multi-Person Voice Call'),
+          desc: this.$t('a 70% packet loss rate'),
           navigateTo: "../groupCall/groupCall?type=1",
         },
         {
           icon: "https://web.sdk.qcloud.com/component/miniApp/resources/video-card.png",
-          title: "Multi-Person Video Call",
-          desc: "a 50% packet loss rat",
+          title: this.$t('Multi-Person Video Call'),
+          desc: this.$t('a 50% packet loss rate'),
           navigateTo: "../groupCall/groupCall?type=2",
         },
-      ],
-    };
+      ];
+    },
   },
   methods: {
     joinAPI() {
