@@ -79,7 +79,7 @@
     <string name="app_user_id_colon">用户ID:</string>
     <string name="app_group_call">多人通话</string>
     <string name="app_please_input_group_id">请输入群组ID</string>
-    <string name="app_please_input_user_id_list">请输入用户ID列表</string>
+    <string name="app_please_input_user_id_list">请输入用户 ID，以"，"分隔</string>
     <string name="app_room_id_num">房间号（数字）</string>
     <string name="app_room_id_str">房间号（字符串）</string>
     <string name="app_please_input_room_id">请输入房间ID</string>

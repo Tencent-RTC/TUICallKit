@@ -24,7 +24,7 @@
 "TUICallKitApp.Call.InputUserId" = "発信するUser IDを入力してください";
 "TUICallKitApp.Call.GroupId" = "グループID";
 "TUICallKitApp.Call.InputGroupId" = "ChatGroup IDを入力してください";
-"TUICallKitApp.Call.InputUserIds" = "User IDを入力してください。\",\"で区切ります";
+"TUICallKitApp.Call.InputUserIds" = "ユーザーIDをカンマ区切りで入力してください";
 "TUICallKitApp.Call.RoomIdInt" = "ルームId(数字)";
 "TUICallKitApp.Call.RoomIdString" = "ルームId(文字列)";
 "TUICallKitApp.Call.InputRoomId" = "Room IDを入力してください";
