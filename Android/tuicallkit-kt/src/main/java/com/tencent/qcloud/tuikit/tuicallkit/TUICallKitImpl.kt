@@ -98,6 +98,10 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit() {
     override fun calls(
         userIdList: List<String?>?, mediaType: TUICallDefine.MediaType, params: CallParams?, callback: Callback?
     ) {
+        if (CallManager.instance.userState.selfUser.get().callStatus.get() != TUICallDefine.Status.None) {
+            ToastUtil.toastShortMessage(context.getString(R.string.tuicallkit_error_request_refused))
+            return
+        }
         val list = userIdList?.toHashSet()?.toMutableList()
         list?.remove(TUILogin.getLoginUser())
         list?.removeAll(Collections.singleton(null))
