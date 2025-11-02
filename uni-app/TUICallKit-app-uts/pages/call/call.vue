@@ -10,13 +10,13 @@
               maxlength="50"
               type="text"
               v-on:input="userIDToSearchInput"
-              :placeholder="'Search User ID'"
+              :placeholder="$t('Search User ID')"
             />
           </view>
-          <view class="btn-search" @click="searchUser">{{ "Search" }}</view>
+          <view class="btn-search" @click="searchUser">{{ $t('Search') }}</view>
         </view>
         <view class="search-selfInfo">
-          <label class="search-selfInfo-label">{{ "Your ID" }}</label>
+          <label class="search-selfInfo-label">{{ $t('Your ID') }}</label>
           <view class="search-selfInfo-phone">
             {{ config.userID }}
           </view>
@@ -27,9 +27,9 @@
               <Avatar :imgSrc="invitee.avatar" />
               <text class="userInfo-name">{{ invitee.userID }}</text>
             </view>
-            <view class="btn-userinfo-call" @click="call">{{ "Call" }}</view>
+            <view class="btn-userinfo-call" @click="call">{{ $t('Call') }}</view>
           </view>
-          <view v-else>{{ "User not found" }}</view>
+          <view v-else>{{ $t('User not found') }}</view>
         </view>
         <view v-if="!invitee.userID" class="search-default">
           <view class="search-default-box">
@@ -39,7 +39,7 @@
               lazy-load="true"
             />
             <view class="search-default-message">
-              {{ "initiated a call" }}
+              {{ $t('initiated a call') }}
             </view>
           </view>
         </view>
@@ -95,7 +95,7 @@ export default {
           if (imResponse.data.length === 0) {
             uni.showToast({
               icon: "none",
-              title: "Do not call local",
+              title: this.$t("Do not call local"),
             });
             return;
           }
@@ -109,7 +109,7 @@ export default {
       if (this.config.userID === this.invitee.userID) {
         uni.showToast({
           icon: "none",
-          title: "Do not call local",
+          title: this.$t("Do not call local"),
         });
         return;
       }

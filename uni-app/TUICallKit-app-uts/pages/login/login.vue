@@ -5,23 +5,23 @@
       <view class="header-content">
         <image src="../../static/calling-logo.png" class="icon-box" />
         <view class="text-header">{{
-          "Tencent Cloud Audio and Video Plugin"
+          $t('Tencent Cloud Audio and Video Plugin')
         }}</view>
       </view>
       <view class="box">
         <view class="list-item">
-          <label class="list-item-label">{{ "User ID" }}</label>
+          <label class="list-item-label">{{ $t('User ID') }}</label>
           <input
             class="input-box"
             type="text"
             v-model="userID"
-            placeholder="Please enter User ID"
+            :placeholder="$t('Please enter User ID')"
             placeholder-style="color:#BBBBBB;"
           />
         </view>
         <view class="login"
           ><button class="loginBtn" @click="loginHandler">
-            {{ "Login" }}
+            {{ $t('Login') }}
           </button></view
         >
       </view>

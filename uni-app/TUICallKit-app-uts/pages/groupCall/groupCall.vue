@@ -10,23 +10,23 @@
               maxlength="11"
               type="text"
               v-on:input="userIDToSearchInput"
-              :placeholder="'Search User ID'"
+              :placeholder="$t('Search User ID')"
             />
           </view>
-          <view class="btn-search" @click="searchUser">{{ "Search" }}</view>
+          <view class="btn-search" @click="searchUser">{{ $t('Search') }}</view>
         </view>
         <view class="search-selfInfo">
-          <label class="search-selfInfo-label">{{ "Your ID" }}</label>
+          <label class="search-selfInfo-label">{{ $t('Your ID') }}</label>
           <view class="search-selfInfo-phone">
             {{ config.userID }}
           </view>
 
           <view v-if="searchList.length !== 0">
             <view class="allcheck" @click="allCheck" v-if="ischeck">
-              {{ "Select All" }}
+              {{ $t('Select All') }}
             </view>
             <view class="allcheck" @click="allCancel" v-else>
-              {{ "Cancel" }}
+              {{ $t('Cancel') }}
             </view>
           </view>
         </view>
@@ -72,7 +72,7 @@
           class="trtc-calling-group-user-callbtn"
           @click="groupCall"
         >
-          {{ "Start Call" }}
+          {{ $t('Start Call') }}
         </view>
 
         <view v-if="!callBtn" class="search-default">
@@ -83,7 +83,7 @@
               lazy-load="true"
             />
             <view class="search-default-message">
-              {{ "initiated a call" }}
+              {{ $t('initiated a call') }}
             </view>
           </view>
         </view>
@@ -131,7 +131,7 @@ export default {
       if (this.userIDToSearch === getApp().globalData.userID) {
         uni.showToast({
           icon: "none",
-          title: "Do not call local",
+          title: this.$t("Do not call local"),
         });
         return;
       }
@@ -142,7 +142,7 @@ export default {
         if (this.searchList[i].userID === this.userIDToSearch) {
           uni.showToast({
             icon: "none",
-            title: "The userId already exists",
+            title: this.$t("The userId already exists"),
           });
           return;
         }
@@ -154,7 +154,7 @@ export default {
         .then((imResponse) => {
           if (imResponse.data.length === 0) {
             wx.showToast({
-              title: "User not found",
+              title: this.$t("User not found"),
               icon: "none",
             });
             return;
@@ -181,7 +181,7 @@ export default {
       if (userIDList.length === 0) {
         uni.showToast({
           icon: "none",
-          title: "No call user is selected",
+          title: this.$t("No call user is selected"),
         });
         return;
       }
