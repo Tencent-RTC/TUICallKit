@@ -24,7 +24,7 @@
 "TUICallKitApp.Call.InputUserId" = "请输入要呼叫的User ID";
 "TUICallKitApp.Call.GroupId" = "群组ID";
 "TUICallKitApp.Call.InputGroupId" = "请输入ChatGroup ID";
-"TUICallKitApp.Call.InputUserIds" = "请输入User ID，以“，”分隔";
+"TUICallKitApp.Call.InputUserIds" = "请输入用户 ID，以"，"分隔";
 "TUICallKitApp.Call.RoomIdInt" = "房间Id(数字)";
 "TUICallKitApp.Call.RoomIdString" = "房间Id(字符串)";
 "TUICallKitApp.Call.InputRoomId" = "请输入Room ID";

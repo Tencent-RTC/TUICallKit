@@ -82,7 +82,7 @@
     <string name="app_user_id_colon">UserID:</string>
     <string name="app_group_call">group call</string>
     <string name="app_please_input_group_id">Please enter the group ID</string>
-    <string name="app_please_input_user_id_list">Please enter a list of user IDs</string>
+    <string name="app_please_input_user_id_list">Enter user IDs, split by ","</string>
     <string name="app_room_id_num">RoomID（Number）</string>
     <string name="app_room_id_str">RoomID（String）</string>
     <string name="app_please_input_room_id">Please enter the room ID</string>
