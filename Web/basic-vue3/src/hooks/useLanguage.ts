@@ -2,6 +2,7 @@ import { useI18n } from "vue-i18n";
 
 export default function useLanguage(): any {
   const { t, locale } = useI18n();
+  locale.value = navigator.language === "zh-CN" ? "zh_CN" : navigator.language;
 
   const changeLanguage = (value: string) => {
     locale.value = value;
