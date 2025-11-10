@@ -112,16 +112,6 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit() {
         }
         PermissionRequest.requestPermissions(context, mediaType, object : PermissionCallback() {
             override fun onGranted() {
-                CallManager.instance.calls(userIdList, mediaType, createDefaultCallParams(params), object : Callback {
-                    override fun onSuccess() {
-                        callback?.onSuccess()
-                    }
-
-                    override fun onError(errCode: Int, errMsg: String?) {
-                        callback?.onError(errCode, errMsg)
-                        CallManager.instance.reset()
-                    }
-                })
                 val selfUser = CallManager.instance.userState.selfUser.get()
                 selfUser.id = TUILogin.getLoginUser() ?: ""
                 selfUser.avatar.set(TUILogin.getFaceUrl())
@@ -150,7 +140,19 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit() {
                 }
                 CallManager.instance.callState.scene.set(scene)
                 initCameraAndAudioDeviceState()
-                startCallActivity()
+                CallManager.instance.calls(list, mediaType, createDefaultCallParams(params), object : Callback {
+                    override fun onSuccess() {
+                        callback?.onSuccess()
+                    }
+
+                    override fun onError(errCode: Int, errMsg: String?) {
+                        callback?.onError(errCode, errMsg)
+                        CallManager.instance.reset()
+                    }
+                })
+                if (CallManager.instance.userState.selfUser.get().callStatus.get() != TUICallDefine.Status.None) {
+                    startCallActivity()
+                }
             }
 
             override fun onDenied() {
