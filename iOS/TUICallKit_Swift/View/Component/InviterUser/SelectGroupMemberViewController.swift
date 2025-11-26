@@ -81,7 +81,6 @@ class SelectGroupMemberViewController: UIViewController, UITableViewDelegate, UI
     func constructViewHierarchy() {
         view.addSubview(navigationView)
         view.addSubview(leftBtn)
-        view.addSubview(leftBtn)
         view.addSubview(centerLabel)
         view.addSubview(rightBtn)
         view.addSubview(selectTableView)
@@ -214,11 +213,12 @@ extension SelectGroupMemberViewController {
         }
         
         if indexPath.row == 0 {
-            cell.configCell(user: CallManager.shared.userState.selfUser, isSelect: true)
+            cell.configCell(user: CallManager.shared.userState.selfUser, isSelect: true, isDisabled: true)
         } else {
             let user = groupMemberList.value[indexPath.row - 1]
             let isSelect = groupMemberState[user.id.value]
-            cell.configCell(user: user, isSelect: isSelect ?? false)
+            let isDisabled = groupMemberStateOrigin[user.id.value] ?? false
+            cell.configCell(user: user, isSelect: isSelect ?? false, isDisabled: isDisabled)
         }
         
         return cell

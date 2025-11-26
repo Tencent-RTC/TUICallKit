@@ -52,6 +52,8 @@ class SingleCallVideoLayout: UIView, GestureViewDelegate {
         userNameLabel.font = UIFont.boldSystemFont(ofSize: 18.0)
         userNameLabel.backgroundColor = UIColor.clear
         userNameLabel.textAlignment = .center
+        userNameLabel.lineBreakMode = .byTruncatingTail
+        userNameLabel.numberOfLines = 1
         if let user = CallManager.shared.userState.remoteUserList.value.first {
             userNameLabel.text = UserManager.getUserDisplayName(user: user)
         }
@@ -114,7 +116,7 @@ class SingleCallVideoLayout: UIView, GestureViewDelegate {
             
             userNameLabel.topAnchor.constraint(equalTo: userHeadImageView.bottomAnchor, constant: 10.scale375Height()),
             userNameLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            userNameLabel.widthAnchor.constraint(equalTo: widthAnchor),
+            userNameLabel.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, constant: -32.scale375Width()),
             userNameLabel.heightAnchor.constraint(equalToConstant: 30)
         ])
         
