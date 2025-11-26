@@ -84,7 +84,7 @@ class SelectGroupMemberCell: UITableViewCell {
         }
     }
     
-    func configCell(user: User, isSelect: Bool) {
+    func configCell(user: User, isSelect: Bool, isDisabled: Bool = false) {
         backgroundColor = UIColor.clear
         userImageView.sd_setImage(with: URL(string: user.avatar.value), placeholderImage: CallKitBundle.getBundleImage(name: "default_user_icon"))
         
@@ -95,5 +95,19 @@ class SelectGroupMemberCell: UITableViewCell {
         }
         
         nameLabel.text = UserManager.getUserDisplayName(user: user)
+        
+        if isDisabled {
+            selectImageView.alpha = 0.5
+            isUserInteractionEnabled = false
+        } else {
+            selectImageView.alpha = 1.0
+            isUserInteractionEnabled = true
+        }
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        selectImageView.alpha = 1.0
+        isUserInteractionEnabled = true
     }
 }

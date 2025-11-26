@@ -12,6 +12,7 @@ class GlobalState: NSObject {
     var enableVirtualBackground: Bool = false
     var enableForceUseV2API: Bool = false
     var enableMultiDeviceAbility: Bool = false
+    var enablePictureInPicture: Bool = false
     var orientation: Orientation = .portrait
 }
 

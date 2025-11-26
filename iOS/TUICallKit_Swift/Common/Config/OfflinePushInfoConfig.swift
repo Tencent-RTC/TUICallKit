@@ -16,7 +16,7 @@ public class OfflinePushInfoConfig: NSObject {
         pushInfo.title = ""
         pushInfo.desc = TUICallKitLocalize(key: "TUICallKit.have.new.invitation") ?? ""
         // iOS push type: if you want user VoIP, please modify type to TUICallIOSOfflinePushTypeVoIP
-        pushInfo.iOSPushType = .apns
+        pushInfo.iOSPushType = .voIP
         pushInfo.ignoreIOSBadge = false
         pushInfo.iOSSound = "phone_ringing.mp3"
         pushInfo.androidSound = "phone_ringing"

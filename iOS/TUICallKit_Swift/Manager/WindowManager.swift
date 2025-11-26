@@ -71,14 +71,13 @@ class WindowManager: NSObject, GestureViewDelegate {
         UIDevice.current.setValue(orientationValue, forKey: "orientation")
         UIViewController.attemptRotationToDeviceOrientation()
 
-
-        Permission.hasPermission(callMediaType: CallManager.shared.callState.mediaType.value, fail: nil)
         CallManager.shared.viewState.router.value = .fullView
         window.frame = currentScreenFrame
         window.rootViewController = CallKitNavigationController(rootViewController: CallMainViewController())
         window.isHidden = false
         window.backgroundColor = UIColor.black
         window.t_makeKeyAndVisible()
+        Permission.hasPermission(callMediaType: CallManager.shared.callState.mediaType.value, fail: nil)
     }
     
     // MARK: show Floating Window
@@ -177,5 +176,10 @@ class WindowManager: NSObject, GestureViewDelegate {
     func getBannerWindowFrame() -> CGRect {
         return CGRect(x: 8.scale375Width(), y: StatusBar_Height + 10,
                       width: currentScreenWidth - 16.scale375Width(), height: 92.scale375Width())
+    }
+        
+    // MARK: - Public Methods for Permission
+    func getCallKitWindow() -> UIWindow? {
+        return window.isHidden ? nil : window
     }
 }

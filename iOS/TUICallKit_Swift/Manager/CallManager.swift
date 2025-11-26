@@ -21,6 +21,7 @@ class CallManager {
     
     var callingVibratorFeature: CallingVibratorFeature?
     var callingBellFeature: CallingBellFeature?
+    var pictureInPictureFeature: PictureInPictureFeature?
     let voipDataSyncHandler = VoIPDataSyncHandler()
     let globalState = GlobalState()
     let callState = CallState()
@@ -68,9 +69,10 @@ class CallManager {
             self.callingBellFeature = CallingBellFeature()
         } fail: { Int32errCode, errMessage in
         }
-        CallManager.shared.addObserver(CallEngineObserver.shared)
-        CallManager.shared.setFramework()
-        CallManager.shared.setExcludeFromHistoryMessage()
+        addObserver(CallEngineObserver.shared)
+        setFramework()
+        setExcludeFromHistoryMessage()
+        enablePictureInPicture(enable: globalState.enablePictureInPicture)
         TUICallEngine.createInstance().getTRTCCloudInstance().addDelegate(trtcObserver)
     }
     
@@ -171,7 +173,7 @@ class CallManager {
             if self.viewState.callingViewType.value == .multi {
                 self.viewState.showLargeViewUserId.value = self.userState.selfUser.id.value
             }
-
+            
             self.userState.selfUser.callRole.value = TUICallRole.call
             self.userState.selfUser.callStatus.value = TUICallStatus.waiting
             
@@ -229,6 +231,7 @@ class CallManager {
             self.callState.mediaType.value = callMediaType
             CallManager.shared.viewState.callingViewType.value = .multi
             
+            self.viewState.showLargeViewUserId.value = self.userState.selfUser.id.value
             self.userState.selfUser.callRole.value = TUICallRole.call
             self.userState.selfUser.callStatus.value = TUICallStatus.waiting
             
@@ -383,7 +386,7 @@ class CallManager {
             voipDataSyncHandler.setVoIPMute(true)
         }
     }
-        
+    
     func selectAudioPlaybackDevice(device: TUIAudioPlaybackDevice) {
         TUICallEngine.createInstance().selectAudioPlaybackDevice(device)
         mediaState.audioPlayoutDevice.value = AudioPlaybackDevice(rawValue: device.rawValue) ?? .earpiece
@@ -431,7 +434,7 @@ class CallManager {
     func stopRemoteView(user: User) {
         TUICallEngine.createInstance().stopRemoteView(userId: user.id.value)
     }
-        
+    
     func switchToAudio() {
         TUICallEngine.createInstance().switchCallMediaType(.audio)
     }
@@ -441,7 +444,20 @@ class CallManager {
         callParams.offlinePushInfo = OfflinePushInfoConfig.createOfflinePushInfo()
         callParams.timeout = TUI_CALLKIT_SIGNALING_MAX_TIME
         
-        TUICallEngine.createInstance().inviteUser(userIdList: userIds, params: callParams) { userIds in            
+        TUICallEngine.createInstance().inviteUser(userIdList: userIds, params: callParams) { userIds in
+            if CallManager.shared.globalState.enableForceUseV2API {
+                UserManager.getUserInfosFromIM(userIDs: userIds) { [weak self] newRemoteUsers in
+                    guard let self = self else { return }
+                    for newUser in newRemoteUsers {
+                        newUser.callStatus.value = TUICallStatus.waiting
+                        newUser.callRole.value = TUICallRole.called
+                        self.userState.remoteUserList.value.append(newUser)
+                    }
+                    succ()
+                }
+                return
+            }
+            
             succ()
         } fail: { code, message in
             fail(code,message)
@@ -561,7 +577,7 @@ class CallManager {
         } catch {
         }
     }
-        
+    
     func setFramework() {
         var jsonParams: [String: Any]
         if TUICore.getService(TUICore_TUIChatService) == nil {
@@ -605,6 +621,14 @@ class CallManager {
         TUICallEngine.createInstance().callExperimentalAPI(jsonObject: paramsString)
     }
     
+    func enablePictureInPicture(enable: Bool) {
+        if enable {
+            pictureInPictureFeature = PictureInPictureFeature()
+        } else {
+            pictureInPictureFeature = nil
+        }
+    }
+    
     func setBlurBackground(enable: Bool) {
         let level = enable ? 3 : 0
         viewState.isVirtualBackgroundOpened.value = enable
@@ -612,7 +636,6 @@ class CallManager {
         }
     }
     
-
     func setScreenOrientation(orientation: Orientation, succ: @escaping TUICallSucc, fail: @escaping TUICallFail) {
         CallManager.shared.globalState.orientation = orientation
         succ()
