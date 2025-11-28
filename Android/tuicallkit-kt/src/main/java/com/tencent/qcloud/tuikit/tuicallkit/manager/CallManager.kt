@@ -18,6 +18,7 @@ import com.tencent.qcloud.tuikit.tuicallkit.R
 import com.tencent.qcloud.tuikit.tuicallkit.common.config.OfflinePushInfoConfig
 import com.tencent.qcloud.tuikit.tuicallkit.common.data.Constants
 import com.tencent.qcloud.tuikit.tuicallkit.common.data.Logger
+import com.tencent.qcloud.tuikit.tuicallkit.common.utils.KeyMetrics
 import com.tencent.qcloud.tuikit.tuicallkit.common.utils.PermissionRequest
 import com.tencent.qcloud.tuikit.tuicallkit.manager.feature.CallingBellFeature
 import com.tencent.qcloud.tuikit.tuicallkit.manager.feature.CallingVibratorFeature
@@ -54,6 +55,7 @@ class CallManager private constructor(context: Context) : ITUINotification {
         callState.reset()
         mediaState.reset()
         viewState.reset()
+        KeyMetrics.reset()
         VideoFactory.instance.clearVideoView()
     }
 
@@ -462,7 +464,8 @@ class CallManager private constructor(context: Context) : ITUINotification {
     fun selectAudioPlaybackDevice(device: TUICommonDefine.AudioPlaybackDevice) {
         TUICallEngine.createInstance(context).selectAudioPlaybackDevice(device)
         mediaState.audioPlayoutDevice.set(device)
-        val currentAudioRoute = if (device == TUICommonDefine.AudioPlaybackDevice.Speakerphone) TRTC_AUDIO_ROUTE_SPEAKER else TRTC_AUDIO_ROUTE_EARPIECE
+        val currentAudioRoute =
+            if (device == TUICommonDefine.AudioPlaybackDevice.Speakerphone) TRTC_AUDIO_ROUTE_SPEAKER else TRTC_AUDIO_ROUTE_EARPIECE
         mediaState.selectedAudioDevice.set(currentAudioRoute)
     }
 
@@ -622,6 +625,7 @@ class CallManager private constructor(context: Context) : ITUINotification {
             } else if (TUIConstants.TUILogin.EVENT_SUB_KEY_USER_LOGIN_SUCCESS == subKey) {
                 TUICallEngine.createInstance(context).addObserver(callEngineObserver)
                 initCallEngine()
+                KeyMetrics.flushMetrics()
             }
         }
     }
@@ -631,10 +635,6 @@ class CallManager private constructor(context: Context) : ITUINotification {
             TUILogin.getUserSig(), object : TUICommonDefine.Callback {
                 override fun onSuccess() {
                     TUICallEngine.createInstance(context).addObserver(callEngineObserver)
-
-                    if (GlobalState.instance.enableMultiDevice) {
-                        TUICallEngine.createInstance(context).enableMultiDeviceAbility(true, null)
-                    }
 
                     val notificationFeature = NotificationFeature(context)
                     notificationFeature.registerNotificationBannerChannel()

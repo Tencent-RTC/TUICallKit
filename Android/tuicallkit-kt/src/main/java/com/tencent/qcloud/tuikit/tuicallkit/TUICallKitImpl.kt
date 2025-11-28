@@ -98,10 +98,6 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit() {
     override fun calls(
         userIdList: List<String?>?, mediaType: TUICallDefine.MediaType, params: CallParams?, callback: Callback?
     ) {
-        if (CallManager.instance.userState.selfUser.get().callStatus.get() != TUICallDefine.Status.None) {
-            ToastUtil.toastShortMessage(context.getString(R.string.tuicallkit_toast_call_busy))
-            return
-        }
         val list = userIdList?.toHashSet()?.toMutableList()
         list?.remove(TUILogin.getLoginUser())
         list?.removeAll(Collections.singleton(null))
@@ -112,6 +108,16 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit() {
         }
         PermissionRequest.requestPermissions(context, mediaType, object : PermissionCallback() {
             override fun onGranted() {
+                CallManager.instance.calls(userIdList, mediaType, createDefaultCallParams(params), object : Callback {
+                    override fun onSuccess() {
+                        callback?.onSuccess()
+                    }
+
+                    override fun onError(errCode: Int, errMsg: String?) {
+                        callback?.onError(errCode, errMsg)
+                        CallManager.instance.reset()
+                    }
+                })
                 val selfUser = CallManager.instance.userState.selfUser.get()
                 selfUser.id = TUILogin.getLoginUser() ?: ""
                 selfUser.avatar.set(TUILogin.getFaceUrl())
@@ -140,19 +146,7 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit() {
                 }
                 CallManager.instance.callState.scene.set(scene)
                 initCameraAndAudioDeviceState()
-                CallManager.instance.calls(list, mediaType, createDefaultCallParams(params), object : Callback {
-                    override fun onSuccess() {
-                        callback?.onSuccess()
-                    }
-
-                    override fun onError(errCode: Int, errMsg: String?) {
-                        callback?.onError(errCode, errMsg)
-                        CallManager.instance.reset()
-                    }
-                })
-                if (CallManager.instance.userState.selfUser.get().callStatus.get() != TUICallDefine.Status.None) {
-                    startCallActivity()
-                }
+                startCallActivity()
             }
 
             override fun onDenied() {

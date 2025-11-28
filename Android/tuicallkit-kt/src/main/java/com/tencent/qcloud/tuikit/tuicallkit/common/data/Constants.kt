@@ -1,6 +1,8 @@
 package com.tencent.qcloud.tuikit.tuicallkit.common.data
 
 object Constants {
+    const val VERSION = "3.5.0.0"
+
     const val CALL_WAITING_MAX_TIME = 30 //unit:s
     const val MAX_USER = 9
     const val MIN_AUDIO_VOLUME = 10
