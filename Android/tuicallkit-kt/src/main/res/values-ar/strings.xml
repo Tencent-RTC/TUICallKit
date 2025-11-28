@@ -6,7 +6,6 @@
     <string name="tuicallkit_toast_callee_hangup">أنهى الطرف الآخر المكالمة</string>
     <string name="tuicallkit_toast_callee_reject">الطرف الآخر رفض المكالمة</string>
     <string name="tuicallkit_toast_callee_no_response">لم يستجب الطرف الآخر</string>
-    <string name="tuicallkit_toast_call_busy">المكالمة مشغولة، يرجى المحاولة مرة أخرى لاحقًا.</string>
     <string name="tuicallkit_other_party_network_low_quality">اتصال الطرف الآخر بالشبكة ضعيف</string>
     <string name="tuicallkit_self_network_low_quality">اتصالك بالشبكة ضعيف</string>
     <string name="tuicallkit_toast_switch_camera">تبديل الكاميرا</string>

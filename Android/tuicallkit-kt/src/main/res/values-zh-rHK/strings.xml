@@ -7,7 +7,6 @@
     <string name="tuicallkit_toast_callee_hangup">對方已掛斷，通話結束</string>
     <string name="tuicallkit_toast_callee_reject">對方拒絕了通話請求</string>
     <string name="tuicallkit_toast_callee_no_response">對方未響應</string>
-    <string name="tuicallkit_toast_call_busy">正在通話，請稍後再試</string>
     <string name="tuicallkit_other_party_network_low_quality">當前通話對方網絡不佳</string>
     <string name="tuicallkit_self_network_low_quality">當前通話你的網絡不佳</string>
     <string name="tuicallkit_toast_switch_camera">翻轉</string>

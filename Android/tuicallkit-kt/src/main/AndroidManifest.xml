@@ -27,6 +27,7 @@
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTask"
             android:supportsPictureInPicture="true"
+            android:taskAffinity="${applicationId}.call"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".view.component.inviteuser.SelectGroupMemberActivity"

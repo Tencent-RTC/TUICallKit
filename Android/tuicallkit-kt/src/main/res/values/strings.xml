@@ -6,7 +6,6 @@
     <string name="tuicallkit_toast_callee_hangup">Other party hung up, call ended</string>
     <string name="tuicallkit_toast_callee_reject">Call rejected by other party</string>
     <string name="tuicallkit_toast_callee_no_response">The other party did not respond</string>
-    <string name="tuicallkit_toast_call_busy">You are currently on a call, please try again later.</string>
     <string name="tuicallkit_other_party_network_low_quality">The other party\'s network connection is poor</string>
     <string name="tuicallkit_self_network_low_quality">Your network connection is poor</string>
     <string name="tuicallkit_toast_switch_camera">Switch Camera</string>
