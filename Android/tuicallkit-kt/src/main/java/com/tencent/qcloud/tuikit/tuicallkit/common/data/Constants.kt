@@ -13,6 +13,7 @@ object Constants {
     const val KEY_TUI_CALLKIT = "keyTUICallKit"
     const val SUB_KEY_SHOW_FLOAT_WINDOW = "subKeyShowFloatWindow"
     const val AI_TRANSLATION_ROBOT = "TAI_Robot"
+    const val KEY_VIRTUAL_BACKGROUND = "enablevirtualbackground"
 
     /**
      * framework: native(1),uni-app(11),flutter(7),RN(22)
