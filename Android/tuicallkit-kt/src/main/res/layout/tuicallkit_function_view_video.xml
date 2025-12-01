@@ -4,7 +4,6 @@
     android:id="@+id/cl_view_video"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_centerHorizontal="true"
     android:adjustViewBounds="true"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"

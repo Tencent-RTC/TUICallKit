@@ -507,6 +507,10 @@ class CallManager private constructor(context: Context) : ITUINotification {
     fun enableVirtualBackground(enable: Boolean) {
         Logger.i(TAG, "enableVirtualBackground, enable: $enable")
         GlobalState.instance.enableVirtualBackground = enable
+
+        val data = HashMap<String, Any>()
+        data[Constants.KEY_VIRTUAL_BACKGROUND] = enable
+        reportOnlineLog(data)
     }
 
     fun enableIncomingBanner(enable: Boolean) {
@@ -682,6 +686,29 @@ class CallManager private constructor(context: Context) : ITUINotification {
         map[TUICallDefine.ERROR_REQUEST_REPEATED] = context.getString(R.string.tuicallkit_error_request_repeated)
         map[TUICallDefine.ERROR_SCENE_NOT_SUPPORTED] = context.getString(R.string.tuicallkit_error_scene_not_support)
         return map
+    }
+
+    private fun reportOnlineLog(data: Map<String, Any>) {
+        try {
+            val map: JSONObject = JSONObject(data)
+            map.put("version", TUICallDefine.VERSION)
+            map.put("platform", "android")
+            map.put("framework", "native")
+            map.put("sdk_app_id", TUILogin.getSdkAppId())
+
+            val params = JSONObject()
+            params.put("level", 1)
+            params.put("msg", map.toString())
+            params.put("more_msg", "TUICallKit")
+
+            val jsonObject = JSONObject()
+            jsonObject.put("api", "reportOnlineLog")
+            jsonObject.put("params", params)
+
+            TUICallEngine.createInstance(context).trtcCloudInstance.callExperimentalAPI(jsonObject.toString())
+        } catch (e: Exception) {
+            Logger.e(TAG, "reportOnlineLog fail, error: $e")
+        }
     }
 
     companion object {
