@@ -65,7 +65,7 @@ object KeyMetrics {
         try {
             val paramsJson = JSONObject().apply {
                 put("opt", "CountPV")
-                put("key", eventId)
+                put("key", eventId.value)
                 put("withInstanceTrace", false)
                 put("version", Constants.VERSION)
             }
