@@ -61,7 +61,6 @@ class CallState {
   final TUICallObserver observer = TUICallObserver(
       onError: (int code, String message) {
         TRTCLogger.info('TUICallObserver onError(code:$code, message:$message)');
-        CallManager.instance.showToast('Error: $code, $message');
       },
       onCallReceived: (String callId, String callerId, List<String> calleeIdList, TUICallMediaType mediaType, CallObserverExtraInfo info) async {
         TRTCLogger.info(
@@ -233,9 +232,7 @@ class CallState {
             return;
           }
         }
-
-        CallingBellFeature.stopRing();
-
+        
         final user = User();
         user.id = userId;
         user.callStatus == TUICallStatus.accept;

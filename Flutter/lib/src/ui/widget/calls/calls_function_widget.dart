@@ -8,6 +8,7 @@ import 'package:tencent_calls_uikit/src/data/constants.dart';
 import 'package:tencent_calls_uikit/src/i18n/i18n_utils.dart';
 import 'package:tencent_calls_uikit/src/ui/widget/common/extent_button.dart';
 import 'package:tencent_calls_uikit/src/utils/permission.dart';
+import 'package:tencent_calls_uikit/src/utils/debounce.dart';
 import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 
 import 'calls_widget.dart';
@@ -495,17 +496,19 @@ class CallsFunctionWidget {
   }
 
   static _handleAccept() async {
-    PermissionResult permissionRequestResult = PermissionResult.requesting;
-    if (Platform.isAndroid) {
-      permissionRequestResult = await Permission.request(CallState.instance.mediaType);
-    }
-    if (permissionRequestResult == PermissionResult.granted || Platform.isIOS) {
-      await CallManager.instance.accept();
-      CallState.instance.selfUser.callStatus = TUICallStatus.accept;
-    } else {
-      CallManager.instance.showToast(CallKit_t("insufficientPermissions"));
-    }
-    TUICore.instance.notifyEvent(setStateEvent);
+    Debounce.run(DebounceKeys.accept, DebounceDurations.important, () async {
+      PermissionResult permissionRequestResult = PermissionResult.requesting;
+      if (Platform.isAndroid) {
+        permissionRequestResult = await Permission.request(CallState.instance.mediaType);
+      }
+      if (permissionRequestResult == PermissionResult.granted || Platform.isIOS) {
+        await CallManager.instance.accept();
+        CallState.instance.selfUser.callStatus = TUICallStatus.accept;
+      } else {
+        CallManager.instance.showToast(CallKit_t("insufficientPermissions"));
+      }
+      TUICore.instance.notifyEvent(setStateEvent);
+    });
   }
 
   static void _handleOpenCloseCamera() async {

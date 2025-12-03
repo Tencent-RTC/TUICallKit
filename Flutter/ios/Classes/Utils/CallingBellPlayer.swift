@@ -100,7 +100,7 @@ class CallingBellPlayer: NSObject, AVAudioPlayerDelegate {
         param.id = id
         param.isShortFile = true
         param.path = path
-        
+        param.publish = false
         TUICallEngine.createInstance().getTRTCCloudInstance().getAudioEffectManager().startPlayMusic(param,
                                                                                                      onStart: nil,
                                                                                                      onProgress: nil)
