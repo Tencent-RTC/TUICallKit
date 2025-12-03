@@ -53,7 +53,7 @@ dependencies {
     if (projects.contains("tuicore")) {
         api project(':tuicore')
     } else {
-        api "com.tencent.imsdk:imsdk-plus:8.7.7207"
+        api "com.tencent.imsdk:imsdk-plus:8.8.+"
         api "com.tencent.liteav.tuikit:tuicore:8.7.7202"
     }
 
@@ -70,5 +70,5 @@ dependencies {
     }
 
     //For FCM data message
-    implementation "androidx.work:work-runtime-ktx:2.7.1"
+    implementation "androidx.work:work-runtime-ktx:2.8.1"
 }
