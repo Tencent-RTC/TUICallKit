@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.tencent.trtc"
-        versionName "3.0.0"
+        versionName "3.5.0.0"
         versionCode 1
         minSdkVersion 21
         targetSdkVersion 34
@@ -49,6 +49,6 @@ dependencies {
 
     // Optional, if you use support library fragments:
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
-    implementation 'com.tencent.timpush:timpush:8.6+'
-    implementation 'com.tencent.timpush:fcm:8.6+'
+    implementation 'com.tencent.timpush:timpush:8.7+'
+    implementation 'com.tencent.timpush:fcm:8.7+'
 }
