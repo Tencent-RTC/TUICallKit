@@ -131,7 +131,7 @@ class IncomingFloatBanner(context: Context) : RelativeLayout(context) {
 
         CallManager.instance.viewState.router.set(ViewState.ViewRouter.Banner)
         windowManager.addView(layoutView, viewParams)
-        KeyMetrics.countUV(KeyMetrics.EventId.WAKEUP)
+        KeyMetrics.countUV(KeyMetrics.EventId.WAKEUP, CallManager.instance.callState.callId)
     }
 
     private val viewParams: WindowManager.LayoutParams

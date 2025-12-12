@@ -60,7 +60,7 @@ class CallEngineObserver : TUICallObserver() {
         CallManager.instance.callState.chatGroupId = groupId
         CallManager.instance.callState.mediaType.set(mediaType)
 
-        KeyMetrics.countUV(KeyMetrics.EventId.RECEIVED)
+        KeyMetrics.countUV(KeyMetrics.EventId.RECEIVED, CallManager.instance.callState.callId)
 
         if (!callerId.isNullOrEmpty()) {
             val user = UserState.User()
