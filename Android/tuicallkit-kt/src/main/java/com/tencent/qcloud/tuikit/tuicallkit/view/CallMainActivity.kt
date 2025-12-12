@@ -160,7 +160,7 @@ class CallMainActivity : FullScreenActivity() {
         val rootView = window.decorView.findViewById<View>(android.R.id.content) as ViewGroup
         rootView.addView(view)
 
-        KeyMetrics.countUV(KeyMetrics.EventId.WAKEUP)
+        KeyMetrics.countUV(KeyMetrics.EventId.WAKEUP, CallManager.instance.callState.callId)
         FloatWindowManager.sharedInstance().dismiss()
         CallManager.instance.viewState.router.set(ViewState.ViewRouter.FullView)
     }

@@ -21,68 +21,31 @@ object KeyMetrics {
 
     private val hasPendingWakeup = AtomicBoolean(false)
 
-    fun countUV(eventId: EventId) {
+    enum class EventId(val value: Int) {
+        RECEIVED(171010),
+        WAKEUP(171011),
+        WAKEUP_BY_PUSH(171012),
+    }
+
+    fun countUV(eventId: EventId, callId: String) {
         when (eventId) {
             EventId.RECEIVED -> {
                 hasPendingWakeup.set(true)
-                countEvent(eventId)
+                countEvent(eventId, callId)
             }
 
             EventId.WAKEUP -> {
                 if (hasPendingWakeup.compareAndSet(true, false)) {
-                    countEvent(eventId)
+                    countEvent(eventId, callId)
                 }
             }
 
-            EventId.WAKEUP_BY_PUSH -> countEvent(eventId)
+            EventId.WAKEUP_BY_PUSH -> countEvent(eventId, callId)
         }
     }
 
     fun reset() {
         hasPendingWakeup.set(false)
-    }
-
-    private fun countEvent(eventId: EventId) {
-        try {
-            val extensionJson = buildExtensionJson()
-            val payload = buildEventPayload(eventId, extensionJson.toString())
-
-            V2TIMManager.getInstance().callExperimentalAPI(API_REPORT_ROOM_ENGINE_EVENT, payload.toString(),
-                object : V2TIMValueCallback<Any?> {
-                    override fun onSuccess(data: Any?) {
-                        Log.i(TAG, "reportEvent success: eventId=$eventId")
-                    }
-
-                    override fun onError(code: Int, desc: String) {
-                        Log.e(TAG, "reportEvent failed: code=$code, desc=$desc")
-                    }
-                }
-            )
-        } catch (e: Exception) {
-            Log.e(TAG, "reportEvent exception: eventId=$eventId", e)
-        }
-
-        try {
-            val paramsJson = JSONObject().apply {
-                put("opt", "CountPV")
-                put("key", eventId.value)
-                put("withInstanceTrace", false)
-                put("version", Constants.VERSION)
-            }
-            val jsonParams = JSONObject().apply {
-                put("api", "KeyMetricsStats")
-                put("params", paramsJson)
-            }
-
-            TRTCCloud.sharedInstance(ContextProvider.getApplicationContext()).callExperimentalAPI(jsonParams.toString())
-        } catch (e: JSONException) {
-            Log.e(TAG, "reportEvent call exception: eventId=$eventId", e)
-            e.printStackTrace()
-        }
-
-        if (TUILogin.getSdkAppId() > 0) {
-            flushMetrics()
-        }
     }
 
     fun flushMetrics() {
@@ -101,24 +64,65 @@ object KeyMetrics {
         }
     }
 
-    private fun buildExtensionJson(): JSONObject {
-        return JSONObject().apply {
-            put(JsonKeys.BASIC_INFO, buildBasicInfoJson())
-            put(JsonKeys.PLATFORM_INFO, buildPlatformInfoJson())
+    private fun countEvent(eventId: EventId, callId: String) {
+        trackForKibana(eventId, callId)
+        trackForTRTC(eventId)
+    }
+
+    private fun trackForKibana(eventId: EventId, callId: String) {
+        try {
+            val extensionJson = buildExtensionJson(callId)
+            val payload = buildEventPayload(eventId, extensionJson.toString())
+
+            V2TIMManager.getInstance().callExperimentalAPI(API_REPORT_ROOM_ENGINE_EVENT, payload.toString(),
+                object : V2TIMValueCallback<Any?> {
+                    override fun onSuccess(data: Any?) {
+                        Log.i(TAG, "trackForKibana success: eventId=$eventId")
+                    }
+
+                    override fun onError(code: Int, desc: String) {
+                        Log.e(TAG, "trackForKibana failed: code=$code, desc=$desc")
+                    }
+                }
+            )
+        } catch (e: Exception) {
+            Log.e(TAG, "trackForKibana exception: eventId=$eventId", e)
         }
     }
 
-    private fun buildBasicInfoJson(): JSONObject {
+    private fun trackForTRTC(eventId: EventId) {
+        try {
+            val paramsJson = JSONObject().apply {
+                put("opt", "CountPV")
+                put("key", eventId.value)
+                put("withInstanceTrace", false)
+                put("version", Constants.VERSION)
+            }
+            val jsonParams = JSONObject().apply {
+                put("api", "KeyMetricsStats")
+                put("params", paramsJson)
+            }
+
+            TRTCCloud.sharedInstance(ContextProvider.getApplicationContext()).callExperimentalAPI(jsonParams.toString())
+        } catch (e: JSONException) {
+            Log.e(TAG, "trackForTRTC call exception: eventId=$eventId", e)
+            e.printStackTrace()
+        }
+
+        if (TUILogin.getSdkAppId() > 0) {
+            flushMetrics()
+        }
+    }
+
+    private fun buildExtensionJson(callId: String): JSONObject {
         return JSONObject().apply {
-            put(JsonKeys.CALL_ID, CallManager.instance.callState.callId ?: "")
+            // Basic Info
+            put(JsonKeys.CALL_ID, callId)
             put(JsonKeys.INT_ROOM_ID, CallManager.instance.callState.roomId?.intRoomId ?: 0)
             put(JsonKeys.STR_ROOM_ID, CallManager.instance.callState.roomId?.strRoomId ?: "")
             put(JsonKeys.UI_KIT_VERSION, Constants.VERSION)
-        }
-    }
 
-    private fun buildPlatformInfoJson(): JSONObject {
-        return JSONObject().apply {
+            // Platform Info
             put(JsonKeys.PLATFORM, "android")
             put(JsonKeys.FRAMEWORK, Constants.framework)
             put(JsonKeys.DEVICE_BRAND, TUIBuild.getBrand())
@@ -149,12 +153,6 @@ object KeyMetrics {
         }
     }
 
-    enum class EventId(val value: Int) {
-        RECEIVED(171010),
-        WAKEUP(171011),
-        WAKEUP_BY_PUSH(171012)
-    }
-
     private object JsonKeys {
         // Event Payload Keys
         const val EVENT_ID = "event_id"
@@ -164,26 +162,22 @@ object KeyMetrics {
         const val MORE_MESSAGE = "more_message"
         const val EXTENSION_MESSAGE = "extension_message"
 
-        // Extension Payload Keys
-        const val BASIC_INFO = "basicInfo"
-        const val PLATFORM_INFO = "platformInfo"
-
         // Basic Info Keys
-        const val CALL_ID = "callId"
-        const val INT_ROOM_ID = "intRoomId"
-        const val STR_ROOM_ID = "strRoomId"
-        const val UI_KIT_VERSION = "uiKitVersion"
+        const val CALL_ID = "call_id"
+        const val INT_ROOM_ID = "int_room_id"
+        const val STR_ROOM_ID = "str_room_id"
+        const val UI_KIT_VERSION = "ui_kit_version"
 
         // Platform Info Keys
         const val PLATFORM = "platform"
         const val FRAMEWORK = "framework"
-        const val DEVICE_BRAND = "deviceBrand"
-        const val DEVICE_MODEL = "deviceModel"
-        const val ANDROID_VERSION = "androidVersion"
-        const val IS_FOREGROUND = "isForeground"
-        const val IS_SCREEN_LOCKED = "isScreenLocked"
-        const val HAS_FLOATING_WINDOW_PERMISSION = "hasFloatingWindowPermission"
-        const val HAS_BACKGROUND_LAUNCH_PERMISSION = "hasBackgroundLaunchPagePermission"
-        const val HAS_NOTIFICATION_PERMISSION = "hasNotificationPermission"
+        const val DEVICE_BRAND = "device_brand"
+        const val DEVICE_MODEL = "device_model"
+        const val ANDROID_VERSION = "android_version"
+        const val IS_FOREGROUND = "is_foreground"
+        const val IS_SCREEN_LOCKED = "is_screen_locked"
+        const val HAS_FLOATING_WINDOW_PERMISSION = "has_floating_window_permission"
+        const val HAS_BACKGROUND_LAUNCH_PERMISSION = "has_background_launch_permission"
+        const val HAS_NOTIFICATION_PERMISSION = "has_notification_permission"
     }
 }

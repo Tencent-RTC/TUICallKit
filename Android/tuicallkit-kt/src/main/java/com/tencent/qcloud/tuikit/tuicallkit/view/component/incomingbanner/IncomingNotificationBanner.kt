@@ -53,7 +53,7 @@ class IncomingNotificationBanner(context: Context) {
 
     fun showNotification(user: UserState.User) {
         Logger.i(TAG, "showNotification, user: $user")
-        KeyMetrics.countUV(KeyMetrics.EventId.WAKEUP)
+        KeyMetrics.countUV(KeyMetrics.EventId.WAKEUP, CallManager.instance.callState.callId)
         registerObserver()
         notification = createNotification()
 
