@@ -1,3 +1,0 @@
-export type PushListenerOptions = {
-	listener: (eventType: string, data: any) => void
-}
