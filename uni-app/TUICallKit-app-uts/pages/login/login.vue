@@ -32,9 +32,6 @@
 import TIM from "@tencentcloud/chat";
 import { TUILogin } from "@tencentcloud/tui-core";
 import { genTestUserSig } from "../../debug/GenerateTestUserSig.js";
-// import * as Push from '@/uni_modules/TencentCloud-Push';
-const appKey =
-  "ZH4kE76C5BAYgP2wlbK4iRCiAxLGTGbIh7hPTXV0T8J22ZCdp3vNsEGJgXVdlNm2";
 
 export default {
   data() {
@@ -66,7 +63,6 @@ export default {
           getApp().globalData.userID = this.userID;
           getApp().globalData.userSig = userSig;
           getApp().globalData.SDKAppID = SDKAppID;
-          // this.pushLogin();
           this.chatLogin();
           uni.navigateTo({
             url: "/pages/index/index",
@@ -75,24 +71,7 @@ export default {
       });
       uni.$TUICallKit.enableVirtualBackground(true);
     },
-    pushLogin() {
-      Push.setRegistrationID(this.userID, (res) => {
-        console.log("setRegistrationID OK", res);
-      });
-      Push.registerPush(
-        getApp().globalData.SDKAppID,
-        appKey,
-        (data) => {
-          console.log("registerPush ok", data);
-          Push.getRegistrationID((registrationID) => {
-            console.log("getRegistrationID ok", registrationID);
-          });
-        },
-        (errCode, errMsg) => {
-          console.error("registerPush failed", errCode, errMsg);
-        }
-      );
-    },
+
     chatLogin() {
       uni.$TUIKit = TIM.create({
         SDKAppID: getApp().globalData.SDKAppID,
