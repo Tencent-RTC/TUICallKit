@@ -31,8 +31,6 @@ class MultiCallWaitingView: UIView, UICollectionViewDelegate, UICollectionViewDa
         userNameLabel.font = UIFont.boldSystemFont(ofSize: 18.0)
         userNameLabel.backgroundColor = UIColor.clear
         userNameLabel.textAlignment = .center
-        userNameLabel.lineBreakMode = .byTruncatingTail
-        userNameLabel.numberOfLines = 1
         if let user = CallManager.shared.userState.remoteUserList.value.first {
             userNameLabel.text = UserManager.getUserDisplayName(user: user)
         }
@@ -120,8 +118,7 @@ class MultiCallWaitingView: UIView, UICollectionViewDelegate, UICollectionViewDa
         NSLayoutConstraint.activate([
             callerNameLabel.bottomAnchor.constraint(equalTo: describeLabel.topAnchor, constant: -20.scale375Height()),
             callerNameLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            callerNameLabel.heightAnchor.constraint(equalToConstant: 30),
-            callerNameLabel.widthAnchor.constraint(lessThanOrEqualToConstant: Screen_Width - 40.scale375Width()) 
+            callerNameLabel.heightAnchor.constraint(equalToConstant: 30)
         ])
 
         callerHeadImageView.translatesAutoresizingMaskIntoConstraints = false

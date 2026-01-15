@@ -21,7 +21,6 @@ class CallManager {
     
     var callingVibratorFeature: CallingVibratorFeature?
     var callingBellFeature: CallingBellFeature?
-    var pictureInPictureFeature: PictureInPictureFeature?
     let voipDataSyncHandler = VoIPDataSyncHandler()
     let globalState = GlobalState()
     let callState = CallState()
@@ -72,7 +71,6 @@ class CallManager {
         addObserver(CallEngineObserver.shared)
         setFramework()
         setExcludeFromHistoryMessage()
-        enablePictureInPicture(enable: globalState.enablePictureInPicture)
         TUICallEngine.createInstance().getTRTCCloudInstance().addDelegate(trtcObserver)
     }
     
@@ -231,7 +229,6 @@ class CallManager {
             self.callState.mediaType.value = callMediaType
             CallManager.shared.viewState.callingViewType.value = .multi
             
-            self.viewState.showLargeViewUserId.value = self.userState.selfUser.id.value
             self.userState.selfUser.callRole.value = TUICallRole.call
             self.userState.selfUser.callStatus.value = TUICallStatus.waiting
             
@@ -619,14 +616,6 @@ class CallManager {
         }
         
         TUICallEngine.createInstance().callExperimentalAPI(jsonObject: paramsString)
-    }
-    
-    func enablePictureInPicture(enable: Bool) {
-        if enable {
-            pictureInPictureFeature = PictureInPictureFeature()
-        } else {
-            pictureInPictureFeature = nil
-        }
     }
     
     func setBlurBackground(enable: Bool) {

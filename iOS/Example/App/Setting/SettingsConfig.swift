@@ -41,8 +41,8 @@ class SettingsConfig {
     var userData: String = ""
     let pushInfo: TUIOfflinePushInfo = {
         let pushInfo: TUIOfflinePushInfo = TUIOfflinePushInfo()
-        pushInfo.title = ""
-        pushInfo.desc = ""
+        pushInfo.title = "new call"
+        pushInfo.desc = "you have a new call"
         // iOS push type: if you want user VoIP, please modify type to TUICallIOSOfflinePushTypeVoIP
         pushInfo.iOSPushType = .apns
         pushInfo.ignoreIOSBadge = false
