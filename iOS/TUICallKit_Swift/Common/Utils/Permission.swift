@@ -125,30 +125,12 @@ class Permission: NSObject {
     
     private static func getAvailableWindow() -> UIWindow? {
         if #available(iOS 13.0, *) {
-            let allWindows = UIApplication.shared.connectedScenes
+            return UIApplication.shared.connectedScenes
                 .compactMap { $0 as? UIWindowScene }
                 .flatMap { $0.windows }
-                .filter { $0.rootViewController != nil }
-            
-            let foregroundKeyWindow = allWindows.first { window in
-                window.isKeyWindow && 
-                (window.windowScene?.activationState == .foregroundActive)
-            }
-            if let window = foregroundKeyWindow { return window }
-            
-            let foregroundWindow = allWindows.first { window in
-                window.windowScene?.activationState == .foregroundActive
-            }
-            if let window = foregroundWindow { return window }
-            
-            let anyKeyWindow = allWindows.first { $0.isKeyWindow }
-            if let window = anyKeyWindow { return window }
-            
-            return allWindows.first
+                .first { $0.rootViewController != nil }
         } else {
-            return UIApplication.shared.keyWindow?.rootViewController != nil ?
-                   UIApplication.shared.keyWindow : 
-                   UIApplication.shared.windows.first { $0.rootViewController != nil }
+            return UIApplication.shared.windows.first { $0.rootViewController != nil }
         }
     }
 }

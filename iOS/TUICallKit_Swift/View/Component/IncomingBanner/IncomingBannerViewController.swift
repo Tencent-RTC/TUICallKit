@@ -24,9 +24,7 @@ class IncomingBannerViewController: UIViewController {
         userNameLabel.textColor = Color_OweWhite
         userNameLabel.font = UIFont.boldSystemFont(ofSize: 18.0)
         userNameLabel.backgroundColor = UIColor.clear
-        userNameLabel.textAlignment = .left
-        userNameLabel.lineBreakMode = .byTruncatingTail
-        userNameLabel.numberOfLines = 1
+        userNameLabel.textAlignment = .center
         if let remoteUser = CallManager.shared.userState.remoteUserList.value.first {
             userNameLabel.text = UserManager.getUserDisplayName(user: remoteUser)
         }
@@ -45,6 +43,7 @@ class IncomingBannerViewController: UIViewController {
         if let image = CallKitBundle.getBundleImage(name: "icon_hangup") {
             btn.setBackgroundImage(image, for: .normal)
         }
+        btn.addTarget(self, action: #selector(rejectTouchEvent(sender: )), for: .touchUpInside)
         return btn
     }()
     private let acceptBtn: UIButton = {
@@ -53,6 +52,7 @@ class IncomingBannerViewController: UIViewController {
         if let image = CallKitBundle.getBundleImage(name: imageStr) {
             btn.setBackgroundImage(image, for: .normal)
         }
+        btn.addTarget(self, action: #selector(acceptTouchEvent(sender: )), for: .touchUpInside)
         return btn
     }()
     
@@ -77,7 +77,6 @@ class IncomingBannerViewController: UIViewController {
         isViewReady = true
         constructViewHierarchy()
         activateConstraints()
-        bindInteraction()        
     }
     
     private func constructViewHierarchy() {
@@ -103,8 +102,7 @@ class IncomingBannerViewController: UIViewController {
         if let superview = userNameLabel.superview {
             NSLayoutConstraint.activate([
                 userNameLabel.topAnchor.constraint(equalTo: userHeadImageView.topAnchor, constant: 10.scale375Width()),
-                userNameLabel.leadingAnchor.constraint(equalTo: userHeadImageView.trailingAnchor, constant: 12.scale375Width()),
-                userNameLabel.trailingAnchor.constraint(equalTo: rejectBtn.leadingAnchor, constant: -12.scale375Width())
+                userNameLabel.leadingAnchor.constraint(equalTo: userHeadImageView.trailingAnchor, constant: 12.scale375Width())
             ])
         }
         
@@ -138,11 +136,6 @@ class IncomingBannerViewController: UIViewController {
     }
     
     // MARK: Event Action
-    private func bindInteraction() {
-        rejectBtn.addTarget(self, action: #selector(rejectTouchEvent(sender: )), for: .touchUpInside)
-        acceptBtn.addTarget(self, action: #selector(acceptTouchEvent(sender: )), for: .touchUpInside)
-    }
-    
     @objc func showCallView(sender: UIButton) {
         view.removeFromSuperview()
         WindowManager.shared.showCallingWindow()

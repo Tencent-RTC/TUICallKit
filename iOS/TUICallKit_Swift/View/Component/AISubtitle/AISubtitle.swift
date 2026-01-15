@@ -21,6 +21,7 @@ class AISubtitle: UIView {
         tableView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         tableView.layer.cornerRadius = 12
         tableView.layer.masksToBounds = true
+        tableView.isHidden = true
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = true
         tableView.bounces = true
@@ -46,7 +47,6 @@ class AISubtitle: UIView {
     }
     
     private func setupUI() {
-        self.isHidden = true
         addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -65,7 +65,8 @@ class AISubtitle: UIView {
     private func updateSubtitle() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            self.isHidden = false
+            
+            self.tableView.isHidden = false
             self.tableView.reloadData()
             
             if !self.translationInfo.isEmpty && !self.isUserScrolling {
@@ -78,8 +79,7 @@ class AISubtitle: UIView {
             
             self.hideTimer?.invalidate()
             self.hideTimer = Timer.scheduledTimer(withTimeInterval: showDuration, repeats: false) { [weak self] _ in
-                guard let self = self else { return }
-                self.isHidden = true
+                self?.tableView.isHidden = true
             }
         }
     }
