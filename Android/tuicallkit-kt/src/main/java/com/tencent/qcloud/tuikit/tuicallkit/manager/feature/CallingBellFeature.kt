@@ -108,6 +108,10 @@ class CallingBellFeature(context: Context) {
         if (TextUtils.isEmpty(dialPath)) {
             dialPath = getBellPath(context, R.raw.phone_dialing, "phone_dialing.mp3")
         }
+        if (TextUtils.isEmpty(dialPath)) {
+            Logger.e(TAG, "startDialingMusic failed: dialPath is null or empty")
+            return
+        }
         TUICallEngine.createInstance(context).trtcCloudInstance
             .audioEffectManager.setMusicPlayoutVolume(AUDIO_DIAL_ID, 100)
         val param = AudioMusicParam(AUDIO_DIAL_ID, dialPath)
@@ -203,31 +207,43 @@ class CallingBellFeature(context: Context) {
     }
 
     private fun getBellPath(context: Context, resId: Int, name: String): String? {
-        val savePath = ContextCompat.getExternalFilesDirs(context, null)[0].absolutePath
-        val dir = File(savePath)
-        if (!dir.exists()) {
-            dir.mkdir()
-        }
-        try {
-            val file = File("$savePath/$name")
-            if (file.exists()) {
-                return file.absolutePath
+        val externalDir = ContextCompat.getExternalFilesDirs(context, null).getOrNull(0)
+        externalDir?.let { dir ->
+            tryCopyResourceToPath(context, resId, name, dir.absolutePath)?.let { path ->
+                return path
             }
-            val inputStream = context.resources.openRawResource(resId)
-            val outputStream = FileOutputStream(file)
-            val buffer = ByteArray(2048)
-            var length: Int
-            while (inputStream.read(buffer).also { length = it } > 0) {
-                outputStream.write(buffer, 0, length)
-            }
-            outputStream.flush()
-            outputStream.close()
-            inputStream.close()
-            return file.absolutePath
-        } catch (e: IOException) {
-            e.printStackTrace()
         }
+
+        val internalDir = context.filesDir.absolutePath
+        tryCopyResourceToPath(context, resId, name, internalDir)?.let { path ->
+            return path
+        }
+        
+        Logger.e(TAG, "getBellPath: both external and internal storage failed")
         return null
+    }
+
+    private fun tryCopyResourceToPath(context: Context, resId: Int, name: String, savePath: String): String? {
+        return try {
+            val dir = File(savePath)
+            if (!dir.exists() && !dir.mkdirs()) {
+                Logger.e(TAG, "tryCopyResourceToPath: failed to create directory $savePath")
+                return null
+            }
+            
+            val file = File(savePath, name)
+            file.takeIf { it.exists() && it.length() > 0 }?.absolutePath?.let { return it }
+
+            context.resources.openRawResource(resId).use { inputStream ->
+                FileOutputStream(file).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+            return file.absolutePath
+        } catch (e: Exception) {
+            Logger.e(TAG, "tryCopyResourceToPath: failed at $savePath e=${e.message}")
+            null
+        }
     }
 
     companion object {
