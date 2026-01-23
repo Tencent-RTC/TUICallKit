@@ -55,6 +55,10 @@ class CallMainActivity : FullScreenActivity() {
     }
 
     private fun enterPictureInPictureModeWithBuild() {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+            CallManager.instance.viewState.enterPipMode.set(false)
+            return
+        }
         if (TUIBuild.getVersionInt() >= Build.VERSION_CODES.O && hasPipModePermission()) {
             val pictureInPictureParams: PictureInPictureParams.Builder = PictureInPictureParams.Builder()
             val floatViewWidth = resources.getDimensionPixelSize(R.dimen.tuicallkit_video_small_view_width)
