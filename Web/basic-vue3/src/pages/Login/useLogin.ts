@@ -7,7 +7,7 @@ import TencentCloudChat from '@tencentcloud/lite-chat/basic';
 import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
 import { useMessage, useUserInfo, useMyRouter, useAegis } from "../../hooks";
 // @ts-ignore
-import { checkUserID, getUrlParams, getUrlParam } from "../../utils";
+import { checkUserID, getUrlParam } from "../../utils";
 
 
 export default function useLogin() {

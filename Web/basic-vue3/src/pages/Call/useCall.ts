@@ -5,7 +5,6 @@ import { trim, checkUserID } from "../../utils";
 
 // @ts-ignore
 import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
-import { startAITranscription } from '../../api';
 
 export default function useCall() {
   const { t } = useLanguage();
@@ -36,15 +35,6 @@ export default function useCall() {
         userIDList: [calleeUserID.value],
         roomID: roomID,
         type: userInfo.currentCallType.value === 'video' ? TUICallType.VIDEO_CALL : TUICallType.AUDIO_CALL,
-      });
-       // Notice: test AISubtitle
-      const robotInfo = GenerateTestUserSig.genTestUserSig({ userID: 'robot' });
-      await startAITranscription({
-        SdkAppId: robotInfo.SDKAppID,
-        RoomId: String(roomID),
-        RoomIdType: 0,
-        UserId: 'robot',
-        UserSig: robotInfo.userSig,
       });
 
       reportEvent({ apiName: 'call.success' });

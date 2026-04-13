@@ -3,16 +3,15 @@
   "private": true,
   "homepage": "./",
   "scripts": {
-    "predev": "node ../../../scripts/sync-dependencies.js",
-    "dev": "pnpm run predev && vite",
-    "dev:deep": "pnpm run predev deep && vite",
-    "build": "pnpm run predev deep && run-p build-only",
+    "dev": "pvite",
+    "dev:deep": "pvite",
+    "build": "prun-p build-only",
     "preview": "vite preview --port 4173",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@trtc/calls-uikit-vue2.6": "workspace:~",
+    "@trtc/calls-uikit-vue2.6": "~4.4.9",
     "@tencentcloud/chat": "^3.5.2",
     "@tencentcloud/tui-core": "latest",
     "@vue/composition-api": "^1.7.2",
