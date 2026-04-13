@@ -13,18 +13,16 @@
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
     "@trtc/calls-uikit-react": "~4.4.9",
-    "@tencentcloud/chat": "^3.5.2",
     "@tencentcloud/lite-chat": "^1.6.0",
     "aegis-web-sdk": "^1.39.1",
     "antd": "^5.19.0",
     "i18next": "latest",
-    "axios": "^0.26.1",
     "i18next-browser-languagedetector": "^8.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-i18next": "latest",
     "react-router-dom": "^6.24.0",
-    "trtc-sdk-v5": "5.9.1"
+    "trtc-js-sdk": "^4.15.22"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
