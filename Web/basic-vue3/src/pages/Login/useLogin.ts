@@ -1,7 +1,6 @@
 import { toRefs } from "vue";
 import { TUICallKitAPI } from '@trtc/calls-uikit-vue';
 // @ts-ignore
-// import TencentCloudChat from '@tencentcloud/chat';
 import TencentCloudChat from '@tencentcloud/lite-chat/basic';
 // @ts-ignore
 import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";

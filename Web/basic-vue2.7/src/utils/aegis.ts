@@ -1,6 +1,6 @@
 import Aegis from "aegis-web-sdk";
 
-import { Version } from "@tencentcloud/call-uikit-vue2";
+import { Version } from "@trtc/calls-uikit-vue2";
 
 const aegis = new Aegis({
   id: "iHWefAYqUsdWyZYVKV",

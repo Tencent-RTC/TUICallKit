@@ -3,8 +3,7 @@ import { Flex, Input, Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { TUICallKitAPI } from '@trtc/calls-uikit-react';
 // @ts-ignore
-// import TencentCloudChat from '@tencentcloud/chat';
-import TencentCloudChat from '@tencentcloud/lite-chat';
+import TencentCloudChat from '@tencentcloud/lite-chat/basic';
 // @ts-ignore
 import * as GenerateTestUserSig from "../../../debug/GenerateTestUserSig-es";
 import { UserInfoContext } from '../../../context/index';
