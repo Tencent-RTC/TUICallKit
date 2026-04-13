@@ -4,23 +4,28 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "predev": "node ../../../scripts/sync-dependencies.js",
+    "dev": "pnpm run predev && vite",
+    "dev:deep": "pnpm run predev deep && vite",
+    "build": "pnpm run predev deep && tsc -b && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
-    "@trtc/calls-uikit-react": "latest",
+    "@trtc/calls-uikit-react": "workspace:~",
+    "@tencentcloud/chat": "^3.5.2",
+    "@tencentcloud/lite-chat": "^1.6.0",
     "aegis-web-sdk": "^1.39.1",
     "antd": "^5.19.0",
     "i18next": "latest",
+    "axios": "^0.26.1",
     "i18next-browser-languagedetector": "^8.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-i18next": "latest",
     "react-router-dom": "^6.24.0",
-    "trtc-sdk-v5": "latest"
+    "trtc-sdk-v5": "5.9.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

@@ -38,11 +38,14 @@ import RightArrowSrc from '../../../assets/Home/right-arrow.svg';
 const { t } = useLanguage();
 const { navigate } = useMyRouter();
 
+const hashList = window.location.hash.split('?');
+const queryParamStr = hashList.length > 1 ? hashList[1] : '';
+
 const goCall = () => {
-  navigate('/call');
+  navigate(`/call?${queryParamStr}`);
 }
 const goGroupCall = () => {
-  navigate('/groupCall');
+  navigate(`/groupCall?${queryParamStr}`);
 }
 </script>
 

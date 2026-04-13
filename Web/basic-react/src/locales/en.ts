@@ -71,6 +71,16 @@ const en = {
   "The current Call uikit package you purchased does not support this feature. We recommend going to the TRTC console to enable it.": "The current Call uikit package you purchased does not support this feature. We recommend going to the TRTC console to enable it.",
   "You have disabled camera/microphone access permission. Please allow the current application to use the camera/microphone.": "You have disabled camera/microphone access permission. Please allow the current application to use the camera/microphone.",
   "You have not purchased the Call UIKit package. Please go to the Tencent RTC console to subscribe.": "You have not purchased the Call UIKit package. Please go to the Tencent RTC console to subscribe.",
+  // configuration check tips
+  "Configuration Check": "Configuration Check",
+  "Please check the following configuration": "Please check the following configuration",
+  "config tip 1": "Please fill in the correct SDKAppID and SecretKey",
+  "config tip 2 prefix": "Please ensure to apply for or purchase ",
+  "config tip 2 link": "audio/video call package",
+  "config tip 2 suffix": "",
+  "config tip 3": "Please call a registered userID (ensure the other party is logged in)",
+  "config tip 4": "Please ensure running under localhost or HTTPS environment",
+  "config tip 5": "Desktop: check microphone availability; Laptop: check microphone permissions",
 }
 
 export  default en;

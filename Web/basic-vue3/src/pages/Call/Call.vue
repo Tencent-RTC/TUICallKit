@@ -15,7 +15,9 @@ const userInfo = toRefs(useUserInfo());
 
 onMounted(() => {
   if (!userInfo?.isLogin.value) {
-    navigate('/login');
+    const hashList = window.location.hash.split('?');
+    const queryParamStr = hashList.length > 1 ? hashList[1] : '';
+    navigate(`/login?${queryParamStr}`);
   }
   userInfo.currentPage.value = 'call';
 })

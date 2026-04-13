@@ -8,6 +8,10 @@ import { useLanguage, useAegis, useMessage } from '../../../hooks';
 import ReturnH5Svg from '../../../assets/pages/h5-return.svg';
 import './Call.css';
 
+// @ts-ignore
+import * as GenerateTestUserSig from '../../../debug/GenerateTestUserSig-es.js';
+import { startAITranscription } from '../../../api';
+
 export default function Call() {
   const { userInfo, setUserInfo } = useContext(UserInfoContext);
   const navigate = useNavigate();
@@ -38,11 +42,24 @@ export default function Call() {
       isCall: true,
     });
 
+    const roomID = Math.round(Math.random() * 100000);
     try {
       await TUICallKitAPI.calls({
         userIDList: [calleeUserID],
+        roomID: roomID,
         type: state.callType === 'video' ? TUICallType.VIDEO_CALL : TUICallType.AUDIO_CALL,
       })
+
+      // Notice: test AISubtitle
+      const robotInfo = GenerateTestUserSig.genTestUserSig({ userID: 'robot' });
+      await startAITranscription({
+        SdkAppId: robotInfo.SDKAppID,
+        RoomId: String(roomID),
+        RoomIdType: 0,
+        UserId: 'robot',
+        UserSig: robotInfo.userSig,
+      });
+
       reportEvent({ apiName: 'call.success' });
       setCalleeUserID('');
     } catch (error: any) {

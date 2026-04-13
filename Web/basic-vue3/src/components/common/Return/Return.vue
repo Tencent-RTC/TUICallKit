@@ -14,7 +14,9 @@ const { navigate } = useMyRouter();
 const { t } = useLanguage();
 
 const goHome = () => {
-  navigate('/home');
+  const hashList = window.location.hash.split('?');
+  const queryParamStr = hashList.length > 1 ? hashList[1] : '';
+  navigate(`/home?${queryParamStr}`);
 }
 
 </script>

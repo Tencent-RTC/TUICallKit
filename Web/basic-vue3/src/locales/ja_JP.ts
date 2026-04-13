@@ -48,6 +48,16 @@ const ja = {
   "The userID you dialed does not exist, please create one": "あなたがダイヤルした userID は存在しません、作成してください",
   "The called userID does not exist. Please verify if it is correct": "呼び出されたユーザーIDは存在しません。正しいかどうかを確認してください。",
   "Create more userIDs to enable one-on-one calls": "もっとユーザーIDを作成してください 1対1の通話のために",
+  // configuration check tips
+  "Configuration Check": "設定チェック",
+  "Please check the following configuration": "以下の設定を確認してください",
+  "config tip 1": "正しい SDKAppID と SecretKey を入力してください",
+  "config tip 2 prefix": "音声/ビデオ通話パッケージを申請または購入していることを確認してください",
+  "config tip 2 link": "",
+  "config tip 2 suffix": "",
+  "config tip 3": "登録済みの userID を呼び出してください（相手がログインしていることを確認）",
+  "config tip 4": "localhost または HTTPS 環境で実行していることを確認してください",
+  "config tip 5": "デスクトップ: マイクの有無を確認; ノートPC: マイクの権限を確認",
   "Create immediately": "すぐに作成してください",
   // groupCall
   "input userID to Add": "追加するユーザーIDを入力してください",
