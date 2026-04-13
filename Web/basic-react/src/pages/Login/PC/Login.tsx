@@ -10,6 +10,7 @@ import { UserInfoContext } from '../../../context/index';
 import { useLanguage, useAegis, useMessage } from '../../../hooks';
 import { checkUserID, trim, getUrlParams } from '../../../utils/index';
 import Container from '../../../components/Container/Container';
+import ConfigCheckTips from '../../../components/ConfigCheckTips/ConfigCheckTips';
 import './Login.css';
 
 const { Text } = Typography;
@@ -56,6 +57,7 @@ export default function Login() {
         isLogin: true,
         SecretKey,
       });
+      TUICallKitAPI.enableAITranscriber(true);
       navigate('/home');
       reportEvent({ 
         apiName: 'login.success',
@@ -81,6 +83,7 @@ export default function Login() {
     return (
       <div className='pc-login-panel'>
         <Flex vertical={true} >
+          <ConfigCheckTips />
           <Input
             className='login-input'
             placeholder={t('Please enter the userID you want to create/login')}

@@ -5,7 +5,8 @@ import TencentCloudChat from '@tencentcloud/lite-chat/basic';
 // @ts-ignore
 import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
 import { useMessage, useUserInfo, useMyRouter, useAegis } from "../../hooks";
-import { checkUserID, getUrlParams } from "../../utils";
+// @ts-ignore
+import { checkUserID, getUrlParam } from "../../utils";
 
 
 export default function useLogin() {
@@ -25,19 +26,37 @@ export default function useLogin() {
       userID.value = '';
       return;
     }
+    const sdkAppId = getUrlParam('sdkAppId') || '';
+    const secretKey = getUrlParam('secretKey');
     const { SDKAppID, userSig, SecretKey } = GenerateTestUserSig.genTestUserSig({
       userID: userID.value, 
-      SDKAppID: userInfo?.SDKAppID.value, 
-      SecretKey: userInfo?.SecretKey.value, 
+      SDKAppID: userInfo?.SDKAppID.value || +sdkAppId, 
+      SecretKey: userInfo?.SecretKey.value || secretKey, 
     });
     if (!SDKAppID || !SecretKey) {
       handleLoginMessage('userSig')
       return;
     }
     try {
-      const { isChatTestEnv } = getUrlParams(['isChatTestEnv']);
-      const options = { SDKAppID, testEnv: isChatTestEnv === 'true' };
+      const isTestEnv = getUrlParam('isTestEnv');
+      const isDevMode = getUrlParam('isDevMode');
+      const options = {
+        SDKAppID,
+        testEnv: isTestEnv === 'true',
+        devMode: isDevMode === 'true',
+      };
       const chat = TencentCloudChat.create(options);
+
+      // 虚拟背景需要设置 assetsPath
+      let assetsPath = 'xxx'; // 例如: https://web.sdk.qcloud.com/trtc/call/rg-test/4.4.2/virtualBackground/assets
+      // @ts-ignore
+      const params = {
+        api: 'setAssetsPath',
+        params: {
+          assetsPath, // 资源文件存放地址
+        }
+      };
+      TUICallKitAPI?.callExperimentalAPI(JSON.stringify(params));
 
       await TUICallKitAPI.init({
         userID: userID.value,
@@ -45,12 +64,16 @@ export default function useLogin() {
         userSig,
         tim: chat,
       });
+      TUICallKitAPI.enableAITranscriber(true);
       userInfo.userID.value = userID.value;
       userInfo.SDKAppID.value = SDKAppID;
       userInfo.SecretKey.value = SecretKey;
       userInfo.isLogin.value = true;
       userInfo.userSig.value = userSig;
-      navigate('/home');
+
+      const hashList = window.location.hash.split('?');
+      const queryParamStr = hashList.length > 1 ? hashList[1] : '';
+      navigate(`/home?${queryParamStr}`);
       reportEvent({ 
         apiName: 'login.success',
         content: JSON.stringify(userInfo),

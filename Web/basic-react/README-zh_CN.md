@@ -70,7 +70,7 @@ Calls SDK for Web React demo 的最低要求是：
 
 ## 参考
 
-- 如果您想了解更多产品功能，可以点击以下：[链接](https://trtc.io/products)。
+- 如果您想了解更多产品功能，可以点击以下：[链接](https://trtc.io/products/call)。
 - 如果您遇到困难，可以参考：[FAQs](https://trtc.io/document/53565)。这里是开发者最常遇到的问题，涵盖各个平台，希望可以帮助您快速解决问题。
 - 有关完整的 API 文档，请参阅 [Audio Video Call SDK API Example](https://trtc.io/document/51014)。包括 TUICallKit（带 UIKit）、TUICallEngine（不带 UIKit）、以及通话事件回调等。
 

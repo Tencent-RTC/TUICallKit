@@ -48,6 +48,16 @@ const en = {
   "The userID you dialed does not exist, please create one": "The userID you dialed does not exist, please create one",
   "The called userID does not exist. Please verify if it is correct": "The called userID does not exist. Please verify if it is correct",
   "Create more userIDs to enable one-on-one calls": "Create more userIDs to enable one-on-one calls",
+  // configuration check tips
+  "Configuration Check": "Configuration Check",
+  "Please check the following configuration": "Please check the following configuration",
+  "config tip 1": "Please fill in the correct SDKAppID and SecretKey",
+  "config tip 2 prefix": "Please ensure to apply for or purchase ",
+  "config tip 2 link": "audio/video call package",
+  "config tip 2 suffix": "",
+  "config tip 3": "Please call a registered userID (ensure the other party is logged in)",
+  "config tip 4": "Please ensure running under localhost or HTTPS environment",
+  "config tip 5": "Desktop: check microphone availability; Laptop: check microphone permissions",
   "Create immediately": "Create immediately",
   // groupCall
   "input userID to Add": "input userID to Add",

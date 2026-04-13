@@ -1,0 +1,66 @@
+.config-check-tips {
+  width: 100%;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  margin-bottom: 20px;
+}
+
+.tips-content {
+  padding: 12px 16px;
+}
+
+.tips-subtitle {
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+.tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  font-size: 12px;
+  line-height: 1.4;
+  color: red;
+}
+
+.tip-number {
+  color: red;
+  font-weight: 500;
+  min-width: 16px;
+}
+
+.tip-text {
+  flex: 1;
+}
+
+.tip-link {
+  color: #1C66E5;
+  text-decoration: none;
+}
+
+.tip-link:hover {
+  text-decoration: underline;
+}
+
+/* H5 适配 */
+@media (max-width: 768px) {
+  .config-check-tips {
+    max-width: 315px;
+  }
+  
+  .tips-content {
+    padding: 10px 12px;
+  }
+  
+  .tip-item {
+    font-size: 11px;
+  }
+}
