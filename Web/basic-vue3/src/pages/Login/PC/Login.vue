@@ -1,5 +1,6 @@
 <template>
   <div class="login-container">
+    <ConfigCheckTips />
     <el-input 
       class="login-input"
       :placeholder=placeholderText
@@ -26,6 +27,7 @@ import { useLanguage } from '../../../hooks/index';
 import useLogin from '../useLogin';
 import { trim } from '../../../utils';
 import Button from '../../../components/common/Button/Button.vue';
+import ConfigCheckTips from '../../../components/ConfigCheckTips/ConfigCheckTips.vue';
 
 const userID = ref('');
 const { t } = useLanguage();
@@ -45,7 +47,7 @@ const handleInputUserID = () => {
 
 <style lang="scss" scoped>
 .login-container {
-  margin: 130px 140px;
+  margin: 10px 140px;
   display: flex;
   flex-direction: column;
 

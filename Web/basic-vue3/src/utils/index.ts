@@ -18,6 +18,7 @@ export function getUrl() {
   return window?.location.href;
 }
 
+// getUrlParams 有 bug, 不可用
 export function getUrlParams(keyList: string[]) {
   const url = window?.location?.href;
   const params = new URLSearchParams(new URL(url).search);
@@ -28,6 +29,14 @@ export function getUrlParams(keyList: string[]) {
   });
 
   return result;
+}
+
+export function getUrlParam(key: string) {
+  const url = window.location.href.replace(/^[^?]*\?/, '');
+  const regexp = new RegExp(`(^|&)${key}=([^&#]*)(&|$|)`, 'i');
+  const paramMatch = url.match(regexp);
+
+  return paramMatch ? paramMatch[2] : null;
 }
 
 export function setLocalStorage(key: string, value: string) {

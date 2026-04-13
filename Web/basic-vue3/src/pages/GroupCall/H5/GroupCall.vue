@@ -70,7 +70,9 @@ const placeholderText = computed(() => {
 })
 
 const goHome = () => {
-  navigate('/home');
+  const hashList = window.location.hash.split('?');
+  const queryParamStr = hashList.length > 1 ? hashList[1] : '';
+  navigate(`/home?${queryParamStr}`);
 }
 
 const handleGroupCall = async () => {

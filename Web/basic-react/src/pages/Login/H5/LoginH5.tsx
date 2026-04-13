@@ -3,13 +3,15 @@ import { Flex, Input, Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { TUICallKitAPI } from '@trtc/calls-uikit-react';
 // @ts-ignore
-import TencentCloudChat from '@tencentcloud/lite-chat/basic';
+// import TencentCloudChat from '@tencentcloud/chat';
+import TencentCloudChat from '@tencentcloud/lite-chat';
 // @ts-ignore
 import * as GenerateTestUserSig from "../../../debug/GenerateTestUserSig-es";
 import { UserInfoContext } from '../../../context/index';
 import { useLanguage, useAegis, useMessage } from '../../../hooks';
 import { checkUserID, trim, getUrlParams } from '../../../utils/index';
 import Layout from '../../../components/Layout/Layout';
+import ConfigCheckTips from '../../../components/ConfigCheckTips/ConfigCheckTips';
 import './LoginH5.css';
 
 const { Text } = Typography;
@@ -58,6 +60,7 @@ export default function LoginH5() {
         isLogin: true,
         SecretKey,
       });
+      TUICallKitAPI.enableAITranscriber(true);
       reportEvent({ 
         apiName: 'login.success',
         content: JSON.stringify(userInfo),
@@ -79,6 +82,7 @@ export default function LoginH5() {
       <>
         {contextHolder}
         <Flex vertical={true} className="h5-login-panel">
+          <ConfigCheckTips />
           <Input
             className="h5-login-input"
             placeholder={t('Please enter the userID you want to create/login')}

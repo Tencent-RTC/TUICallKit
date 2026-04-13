@@ -48,6 +48,16 @@ const zh_CN = {
   "The userID you dialed does not exist, please create one": "您所拨打的 userID 不存在，请创建",
   "The called userID does not exist. Please verify if it is correct": "呼叫的 userID 不存在，请确认是否正确",
   "Create more userIDs to enable one-on-one calls": "创建更多 userID 以实现单人通话",
+  // configuration check tips
+  "Configuration Check": "配置检查",
+  "Please check the following configuration": "请检查以下配置",
+  "config tip 1": "请填入正确的 SDKAppID 和 SecretKey",
+  "config tip 2 prefix": "请确保领用或购买",
+  "config tip 2 link": "音视频通话套餐",
+  "config tip 2 suffix": "",
+  "config tip 3": "请呼叫已经注册过的 userID（确保对方已登录）",
+  "config tip 4": "请确保在 localhost 或 HTTPS 环境下运行",
+  "config tip 5": "台式电脑请检查有无麦克风，笔记本请检查麦克风权限",
   "Create immediately": "立即创建",
   // groupCall
   "input userID to Add": "输入要添加的 userID",

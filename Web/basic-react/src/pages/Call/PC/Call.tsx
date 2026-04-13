@@ -10,6 +10,9 @@ import ShareSvg from '../../../assets/pages/share.svg';
 import QRCodeSvg from '../../../assets/pages/qr.svg';
 import './Call.css';
 
+// @ts-ignore
+import * as GenerateTestUserSig from '../../../debug/GenerateTestUserSig-es.js';
+
 export default function Call() {
   const { Text, Link } = Typography;
   const { state } = useLocation();
@@ -37,11 +40,14 @@ export default function Call() {
       isCall: true,
     });
 
+    const roomID = Math.round(Math.random() * 100000);
     try {
       await TUICallKitAPI.calls({
         userIDList: [calleeUserID],
+        roomID: roomID,
         type: state.callType === 'video' ? TUICallType.VIDEO_CALL : TUICallType.AUDIO_CALL,
-      })
+      });
+
       reportEvent({ apiName: 'call.success' });
       setCalleeUserID('');
     } catch (error: any) {

@@ -3,11 +3,29 @@ import en from './en';
 import zh_CN from './zh_CN';
 import ja from './ja_JP';
 
-// https://stackblitz.com/edit/vue-i18n-get-started?file=main.js
-// https://vue-i18n.intlify.dev/guide/essentials/started.html
+function getBrowserLocale() {
+  const navigatorLocale = navigator.language || (navigator as any).userLanguage;
+  
+  const localeMap: { [key: string]: string } = {
+    'zh': 'zh_CN',
+    'zh-cn': 'zh_CN',
+    'zh-CN': 'zh_CN',
+    'ja': 'ja',
+    'ja-jp': 'ja',
+    'ja-JP': 'ja',
+    'en': 'en',
+    'en-us': 'en',
+    'en-US': 'en',
+  };
+  
+  return localeMap[navigatorLocale] || 'en';
+}
+
+const savedLocale = localStorage.getItem('locale') || getBrowserLocale();
+
 const i18n = createI18n({
   legacy: false,
-  locale: 'en',
+  locale: savedLocale,
   fallbackLocale: 'en',
   messages: {
     en,
@@ -17,6 +35,3 @@ const i18n = createI18n({
 })
 
 export default i18n;
-
-// <p v-html="$t('message.hello')"></p>
-// https://vue-i18n.intlify.dev/guide/advanced/composition.html
