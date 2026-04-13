@@ -9,6 +9,7 @@
         @keyup.enter="handleLogin"
       />
       <p class="login-tip"> {{ t('userID Limit') }}</p>
+      <ConfigCheckTips />
       <Button
         class="login-btn"
         @click="handleLogin"
@@ -26,6 +27,7 @@ import useLogin from '../useLogin';
 import { trim } from '../../../utils';
 import Layout from '../../../components/Layout/Layout.vue';
 import Button from '../../../components/common/Button/Button.vue';
+import ConfigCheckTips from '../../../components/ConfigCheckTips/ConfigCheckTips.vue';
 
 const userID = ref('');
 const { t } = useLanguage();

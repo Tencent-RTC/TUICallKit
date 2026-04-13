@@ -3,6 +3,7 @@ import { ref, onMounted } from "@vue/composition-api";
 import { TUICallKit, TUICallKitAPI, STATUS, TUIGlobal } from "@trtc/calls-uikit-vue2.6";
 import DeviceDetector from "./components/DeviceDetector/index.vue";
 import * as GenerateTestUserSig from "./debug/GenerateTestUserSig-es.js";
+// import TIM from "@tencentcloud/chat";
 import TIM from "@tencentcloud/lite-chat/basic";
 import copy from "copy-to-clipboard";
 import videoBlackSVG from "./assets/videoBlack.svg";

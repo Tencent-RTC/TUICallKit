@@ -3,6 +3,9 @@ import { TUICallKitAPI, TUICallType } from '@trtc/calls-uikit-vue';
 import { useAegis, useUserInfo, useMessage, useLanguage } from "../../hooks";
 import { trim, checkUserID } from "../../utils";
 
+// @ts-ignore
+import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
+
 export default function useCall() {
   const { t } = useLanguage();
   const { reportEvent } = useAegis();
@@ -26,11 +29,14 @@ export default function useCall() {
     }
     userInfo.isCall.value = true;
 
+    const roomID = Math.round(Math.random() * 100000);
     try {
       await TUICallKitAPI.calls({
         userIDList: [calleeUserID.value],
+        roomID: roomID,
         type: userInfo.currentCallType.value === 'video' ? TUICallType.VIDEO_CALL : TUICallType.AUDIO_CALL,
-      })
+      });
+
       reportEvent({ apiName: 'call.success' });
       calleeUserID.value = '';
     } catch (error: any) {

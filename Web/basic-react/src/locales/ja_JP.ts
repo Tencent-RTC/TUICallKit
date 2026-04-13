@@ -71,6 +71,16 @@ const ja = {
   "The current Call uikit package you purchased does not support this feature. We recommend going to the TRTC console to enable it.": "現在のCall uikitパッケージでは、この機能はサポートされていません。TRTCコンソールに移動して有効にすることをおすすめします。",
   "You have disabled camera/microphone access permission. Please allow the current application to use the camera/microphone.": "カメラ/マイクへのアクセス許可が無効になっています。現在のアプリケーションにカメラ/マイクの使用を許可してください。",
   "You have not purchased the Call UIKit package. Please go to the Tencent RTC console to subscribe.": "Call UIKitパッケージを購入していません。Tencent RTCコンソールにアクセスして購読してください。",
+  // configuration check tips
+  "Configuration Check": "設定チェック",
+  "Please check the following configuration": "以下の設定を確認してください",
+  "config tip 1": "正しい SDKAppID と SecretKey を入力してください",
+  "config tip 2 prefix": "音声/ビデオ通話パッケージを申請または購入していることを確認してください",
+  "config tip 2 link": "",
+  "config tip 2 suffix": "",
+  "config tip 3": "登録済みの userID を呼び出してください（相手がログインしていることを確認）",
+  "config tip 4": "localhost または HTTPS 環境で実行していることを確認してください",
+  "config tip 5": "デスクトップ: マイクの有無を確認; ノートPC: マイクの権限を確認",
 }
 
 export  default ja;

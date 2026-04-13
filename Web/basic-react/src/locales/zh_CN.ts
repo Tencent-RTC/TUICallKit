@@ -71,6 +71,16 @@ const zh_CN = {
   "The current Call uikit package you purchased does not support this feature. We recommend going to the TRTC console to enable it.": "您当前购买的 Call uikit 能力套餐不支持该功能，建议前往 TRTC 控制台开通。",
   "You have disabled camera/microphone access permission. Please allow the current application to use the camera/microphone.": "您已禁用摄像头/麦克风访问权限，请允许当前应用程序使用摄像头/麦克风。",
   "You have not purchased the Call UIKit package. Please go to the Tencent RTC console to subscribe.": "您当前未购买 Call UIKit 套餐，请前往 Tencent RTC 控制台开通。",
+  // configuration check tips
+  "Configuration Check": "配置检查",
+  "Please check the following configuration": "请检查以下配置",
+  "config tip 1": "请填入正确的 SDKAppID 和 SecretKey",
+  "config tip 2 prefix": "请确保领用或购买",
+  "config tip 2 link": "音视频通话套餐",
+  "config tip 2 suffix": "",
+  "config tip 3": "请呼叫已经注册过的 userID（确保对方已登录）",
+  "config tip 4": "请确保在 localhost 或 HTTPS 环境下运行",
+  "config tip 5": "台式电脑请检查有无麦克风，笔记本请检查麦克风权限",
 }
 
 export default zh_CN;
