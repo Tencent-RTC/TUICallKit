@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@trtc/calls-uikit-vue2": "~4.4.9",
-    "@tencentcloud/chat": "^3.5.2",
     "aegis-web-sdk": "^1.36.5",
     "copy-to-clipboard": "^3.3.3",
     "element-ui": "^2.15.12",

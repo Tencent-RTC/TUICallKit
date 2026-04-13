@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@trtc/calls-uikit-vue2.6": "~4.4.9",
-    "@tencentcloud/chat": "^3.5.2",
     "@tencentcloud/tui-core": "latest",
     "@vue/composition-api": "^1.7.2",
     "aegis-web-sdk": "^1.36.5",

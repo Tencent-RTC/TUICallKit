@@ -12,7 +12,6 @@ import './Call.css';
 
 // @ts-ignore
 import * as GenerateTestUserSig from '../../../debug/GenerateTestUserSig-es.js';
-import { startAITranscription } from '../../../api';
 
 export default function Call() {
   const { Text, Link } = Typography;
@@ -47,16 +46,6 @@ export default function Call() {
         userIDList: [calleeUserID],
         roomID: roomID,
         type: state.callType === 'video' ? TUICallType.VIDEO_CALL : TUICallType.AUDIO_CALL,
-      });
-
-      // Notice: test AISubtitle
-      const robotInfo = GenerateTestUserSig.genTestUserSig({ userID: 'robot' });
-      await startAITranscription({
-        SdkAppId: robotInfo.SDKAppID,
-        RoomId: String(roomID),
-        RoomIdType: 0,
-        UserId: 'robot',
-        UserSig: robotInfo.userSig,
       });
 
       reportEvent({ apiName: 'call.success' });
