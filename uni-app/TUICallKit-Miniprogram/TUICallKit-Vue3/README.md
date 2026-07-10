@@ -25,32 +25,21 @@
    ```
    npm install
    ```
-   
-   mac端
-   ```
-   mkdir -p ./TUICallKit && cp -r node_modules/@trtc/calls-uikit-wx-uniapp/ ./TUICallKit && cp node_modules/@trtc/call-engine-lite-wx/RTCCallEngine.wasm.br ./static
-   ```
-
-   windows端
-   ```
-   xcopy node_modules\@trtc\calls-uikit-wx-uniapp\ .\TUICallKit /i /e
-   xcopy node_modules\@trtc\call-engine-lite-wx\RTCCallEngine.wasm.br .\static
-   ```
 
 4. HBuilder 中导入项目
-   
+
    <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/hbuilder-vue.png" width="400" align="middle" />
 
 5. 修改 `./TUICallKit/uni-app/TUICallKit-Miniprogram/TUICallKit-Vue3/debug/GenerateTestUserSig-es.js` 文件 的 SDKAPPID 以及 SECRETKEY（阅读文末 [开通服务](#开通服务)）
-   
+
    <img src="https://qcloudimg.tencent-cloud.cn/raw/49931d68084b2d79f0f69f278894999b.png" width="400" />
 
 6. 运行到【微信开发者工具】，勾选 **【运行时是否压缩代码】**
-   
+
    <img src="https://web.sdk.qcloud.com/component/trtccalling/images/miniProgram/exportWechatTool.png" width="400" align="middle" />
 
 7. 项目导入到微信开发者工具，目录如下图：
-   
+
    <img src="https://qcloudimg.tencent-cloud.cn/raw/a79cd64ac5be8ee099f2d802f1c847c6.png" width="150" align="middle" />
 
 ## 示例体验
@@ -58,11 +47,8 @@
 
 **用户 A（userId：111）**
 - 步骤 1：在欢迎页，输入用户名（<font color=red>请确保用户名唯一性，不能与其他用户重复</font>）登录，比如：111。
-- 步骤 2：根据不同的场景&业务需求，进入不同的场景界面，比如：视频通话。
-- 步骤 3：输入要拨打的用户 B 的 userId（例如：222），点击搜索，然后点击呼叫。
-  | 步骤1 | 步骤2 | 步骤3 | 
-  | :-: | :-: | :-: |
-  |<img src="https://qcloudimg.tencent-cloud.cn/raw/13bf844da5636f3640da05020800fff9.jpg" width="240"/>|<img src="https://qcloudimg.tencent-cloud.cn/raw/ceed4039c6ce8f9b8ff48deb89199b6e.jpg" width="240">|<img src="https://qcloudimg.tencent-cloud.cn/raw/dc1984904c9790c8a3355ff1c5dada50.jpg" width="240"/>
+- 步骤 2：根据不同的场景&业务需求，选择不同的场景，比如：视频通话。
+- 步骤 3：输入要拨打的用户 B 的 userId（例如：222），然后点击呼叫。
 
 **用户 B（userId：222）**
 - 步骤 1：在欢迎页，输入用户名（<font color=red>请确保用户名唯一性，不能与其他用户重复</font>）登录，比如：222。

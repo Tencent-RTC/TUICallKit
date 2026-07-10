@@ -1,15 +1,18 @@
 {
   "name": "tuicallkit-vue3",
   "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "main": "index.js",
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "description": "",
+  "scripts": {
+    "prepublishOnly": "node ./script/prepublish.js",
+    "postpublish": "node ./script/prepublish.js --restore"
+  },
   "dependencies": {
-    "@trtc/calls-uikit-wx-uniapp": "^4.1.0"
+    "@trtc/calls-uikit-wx-uniapp": "^5.0.0",
+    "@trtc/call-engine-lite-wx": "^5.0.0",
+    "@tencentcloud/trtc-component-uniapp": "^1.0.5"
   }
 }

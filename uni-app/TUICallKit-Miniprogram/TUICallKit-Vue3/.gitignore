@@ -1,23 +1,12 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
+# OS X Files
 .DS_Store
-dist
-*.local
-
-# Editor directories and files
+**/.DS_Store
+node_modules
+package-lock.json
+**/pnpm-lock.yaml
+!conference/pnpm-lock.yaml
+!live/pnpm-lock.yaml
 .idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-TUICallKit
+.vscode
+.history
+unpackage
