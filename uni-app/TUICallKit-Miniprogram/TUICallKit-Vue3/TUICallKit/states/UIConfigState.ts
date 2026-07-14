@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue';
+import { ref, computed } from '../adapter/vue-demi';
 import {
   TUIStore,
   StoreName,

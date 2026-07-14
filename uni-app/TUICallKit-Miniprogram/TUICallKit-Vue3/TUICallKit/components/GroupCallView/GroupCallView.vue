@@ -1,27 +1,20 @@
 <template>
   <!-- Group call main container -->
-  <div class="TUIGroupCall-container" v-if="callParticipantInfo?.selfInfo?.status !== CallStatus.IDLE">
-    <!-- Background: default-avatar watermark + dark translucent mask. Matches
-         the source project's BackGround.vue (Overlay bgColor + bgImage). -->
+  <div class="TUIGroupCall-container" v-if="selfStatus !== CallStatus.IDLE">
+    <!-- Background: default-avatar watermark + dark translucent mask. -->
     <image class="backdrop-image" :src="IMG_DEFAULT_AVATAR" mode="aspectFill" />
     <view class="backdrop-mask" />
 
     <!-- Top bar: shows call duration in CONNECTED state -->
-    <view class="topBar" v-if="callParticipantInfo?.selfInfo?.status === CallStatus.CONNECTED">
+    <view class="topBar" v-if="selfStatus === CallStatus.CONNECTED">
       <view class="call-duration">
         <text>{{ formatDuration(duration) }}</text>
       </view>
     </view>
 
-    <!-- Waiting overlay: callee side, while in CALLING state. Mirrors the
-         source Waiting.vue mobile group-call layout:
-           - Background: dark translucent mask over a blurred default avatar,
-             covers the whole screen (buttons float above via higher z-index).
-           - Content anchored at top ~26%: inviter avatar (100px) + nickname
-             + "邀请你加入群通话" tip.
-           - Below the content: participant count + avatar group grid.  -->
+    <!-- Waiting overlay: callee side, while in CALLING state. -->
     <view class="waiting-overlay"
-      v-if="callParticipantInfo?.selfInfo?.status === CallStatus.CALLING && callParticipantInfo?.selfInfo?.role === CallRole.CALLEE">
+      v-if="selfStatus === CallStatus.CALLING && selfRole === CallRole.CALLEE">
       <view class="waiting-mask" />
       <view class="waiting-content">
         <Avatar :avatarStyle="inviterAvatarStyle" :src="inviterAvatar || IMG_DEFAULT_AVATAR" />
@@ -47,7 +40,7 @@
       <!-- NOTE: TRTCPusher MUST stay mounted for the entire call to keep the
            room session alive. Use v-show/absolute overlays so the pusher DOM
            is never destroyed while camera is off or media type changes. -->
-      <view class="media-tile" :style="tileStyle(0)" @click="toggleFocus(0)">
+      <view class="media-tile" :style="tileStyles[0]" @click="toggleFocus(0)">
         <view class="tile-stream">
           <TRTCPusher :key="pusherId" :id="pusherId" v-if="pusherId" />
         </view>
@@ -59,7 +52,7 @@
         >
           <image v-if="localViewBgImage" :src="localViewBgImage" mode="aspectFill" style="position:absolute;width:100%;height:100%;z-index:1;" />
           <template v-else>
-            <Avatar class="tile-bg-avatar" :avatarStyle="tileBgAvatarStyle" :src="callParticipantInfo?.selfInfo?.avatarUrl" />
+            <Avatar class="tile-bg-avatar" :avatarStyle="tileBgAvatarStyle" :src="selfAvatarUrl" />
             <view class="tile-bg-mask" />
           </template>
         </view>
@@ -74,30 +67,29 @@
            call. v-show + absolute overlay keeps the player from being torn
            down when the remote user closes their camera. -->
       <view
-        v-for="(participant, index) in callParticipantInfo?.allParticipants || []"
-        :key="participant?.id || index"
+        v-for="(participant, index) in allParticipants"
+        :key="participant.id || index"
         class="media-tile"
-        :style="tileStyle(Number(index) + 1)"
+        :style="tileStyles[Number(index) + 1]"
         @click="toggleFocus(Number(index) + 1)"
       >
         <view class="tile-stream">
-          <TRTCPlayer v-if="participant?.id" :id="`${participant?.id}_0`" :stream-id="`${participant?.id}_0`" />
+          <TRTCPlayer v-if="participant.id" :id="participant.id + '_0'" :stream-id="participant.id + '_0'" />
         </view>
-        <!-- Camera-off overlay for remote: custom background image (if configured)
-             or the default full-bleed avatar + dark mask. -->
+        <!-- Camera-off overlay for remote -->
         <view
           class="tile-audio-stream"
-          v-show="!participant?.isCameraOpened"
+          v-show="!participant.isCameraOpened"
         >
-          <image v-if="getViewBgImage(participant?.id || '')" :src="getViewBgImage(participant?.id || '')" mode="aspectFill" style="position:absolute;width:100%;height:100%;z-index:1;" />
+          <image v-if="getViewBgImage(participant.id || '')" :src="getViewBgImage(participant.id || '')" mode="aspectFill" style="position:absolute;width:100%;height:100%;z-index:1;" />
           <template v-else>
-            <Avatar class="tile-bg-avatar" :avatarStyle="tileBgAvatarStyle" :src="participant?.avatarUrl" />
+            <Avatar class="tile-bg-avatar" :avatarStyle="tileBgAvatarStyle" :src="participant.avatarUrl" />
             <view class="tile-bg-mask" />
           </template>
         </view>
         <view class="tile-info">
-          <text class="tile-name">{{ participant?.name || participant?.id || '' }}</text>
-          <image class="mic-icon" :src="participant?.isMicrophoneOpened ? IMG_TILE_MIC_ON : IMG_TILE_MIC_OFF" mode="aspectFit" />
+          <text class="tile-name">{{ participant.name || participant.id || '' }}</text>
+          <image class="mic-icon" :src="participant.isMicrophoneOpened ? IMG_TILE_MIC_ON : IMG_TILE_MIC_OFF" mode="aspectFit" />
         </view>
       </view>
     </view>
@@ -109,7 +101,7 @@
            open : row1 = mic/speaker/camera, row2 = hangup (padding-top: 6vh)
            close: single row = mic/speaker/camera/hangup -->
     <view :class="videoPanelClassName"
-      v-if="callParticipantInfo?.selfInfo?.status === CallStatus.CALLING && callParticipantInfo?.selfInfo?.role === CallRole.CALLER">
+      v-if="selfStatus === CallStatus.CALLING && selfRole === CallRole.CALLER">
       <!-- Toggle button: same open/close affordance as CONNECTED. -->
       <view class="toggle-button-container" @click="togglePanelStatus">
         <image class="toggle-icon" :src="panelStatus === 'close' ? IMG_PANEL_UP : IMG_PANEL_DOWN" mode="aspectFit" />
@@ -118,19 +110,19 @@
       <view class="button-group">
         <view class="btn-operate">
           <view class="btn-operate-item" @click="microPhoneHandler" v-if="isButtonVisible(FeatureButton.Microphone)">
-            <view class="call-operate" :style="buttonBgColor(isLocalMicrophoneOpen)">
+            <view class="call-operate" :style="micBgColor">
               <image :src="isLocalMicrophoneOpen ? IMG_AUDIO_TRUE : IMG_AUDIO_FALSE" mode="aspectFit" />
             </view>
             <text v-if="panelStatus === 'open'">{{ isLocalMicrophoneOpen ? '麦克风已开启' : '麦克风已关闭' }}</text>
           </view>
           <view class="btn-operate-item" @click="setAudioRoute">
-            <view class="call-operate" :style="buttonBgColor(isSpeakerOpen)">
+            <view class="call-operate" :style="speakerBgColor">
               <image :src="isSpeakerOpen ? IMG_SPEAKER_TRUE : IMG_SPEAKER_FALSE" mode="aspectFit" />
             </view>
             <text v-if="panelStatus === 'open'">{{ isSpeakerOpen ? '扬声器已开启' : '扬声器已关闭' }}</text>
           </view>
           <view class="btn-operate-item" @click="cameraHandler" v-if="isButtonVisible(FeatureButton.Camera)">
-            <view class="call-operate" :style="buttonBgColor(isLocalCameraOpen)">
+            <view class="call-operate" :style="cameraBgColor">
               <image :src="isLocalCameraOpen ? IMG_CAMERA_TRUE : IMG_CAMERA_FALSE" mode="aspectFit" />
             </view>
             <text v-if="panelStatus === 'open'">{{ isLocalCameraOpen ? '摄像头已开启' : '摄像头已关闭' }}</text>
@@ -156,10 +148,8 @@
     </view>
 
     <!-- Callee CALLING footer: reject + accept, no button labels -->
-    <!-- Matches source InitConfig groupCall.[video|audio].accept where both
-         reject and accept have showText: false. -->
     <view class="footer"
-      v-if="callParticipantInfo?.selfInfo?.status === CallStatus.CALLING && callParticipantInfo?.selfInfo?.role !== CallRole.CALLER">
+      v-if="selfStatus === CallStatus.CALLING && selfRole !== CallRole.CALLER">
       <view class="btn-operate" style="gap: 40px">
         <view class="btn-operate-item">
           <view class="call-operate hangup-btn" @click="reject">
@@ -180,7 +170,7 @@
          close_connected: supports open/close folding via panelStatus, with
          the toggle button + focus-driven collapse for video calls. -->
     <view :class="videoPanelClassName"
-      v-if="callParticipantInfo?.selfInfo?.status === CallStatus.CONNECTED">
+      v-if="selfStatus === CallStatus.CONNECTED">
       <!-- Toggle button: manually collapse / expand the panel. -->
       <view class="toggle-button-container" @click="togglePanelStatus">
         <image class="toggle-icon" :src="panelStatus === 'close' ? IMG_PANEL_UP : IMG_PANEL_DOWN" mode="aspectFit" />
@@ -189,19 +179,19 @@
       <view class="button-group">
         <view class="btn-operate">
           <view class="btn-operate-item" @click="microPhoneHandler" v-if="isButtonVisible(FeatureButton.Microphone)">
-            <view class="call-operate" :style="buttonBgColor(isLocalMicrophoneOpen)">
+            <view class="call-operate" :style="micBgColor">
               <image :src="isLocalMicrophoneOpen ? IMG_AUDIO_TRUE : IMG_AUDIO_FALSE" mode="aspectFit" />
             </view>
             <text v-if="panelStatus === 'open'">{{ isLocalMicrophoneOpen ? '麦克风已开启' : '麦克风已关闭' }}</text>
           </view>
           <view class="btn-operate-item" @click="setAudioRoute">
-            <view class="call-operate" :style="buttonBgColor(isSpeakerOpen)">
+            <view class="call-operate" :style="speakerBgColor">
               <image :src="isSpeakerOpen ? IMG_SPEAKER_TRUE : IMG_SPEAKER_FALSE" mode="aspectFit" />
             </view>
             <text v-if="panelStatus === 'open'">{{ isSpeakerOpen ? '扬声器已开启' : '扬声器已关闭' }}</text>
           </view>
           <view class="btn-operate-item" @click="cameraHandler" v-if="isButtonVisible(FeatureButton.Camera)">
-            <view class="call-operate" :style="buttonBgColor(isLocalCameraOpen)">
+            <view class="call-operate" :style="cameraBgColor">
               <image :src="isLocalCameraOpen ? IMG_CAMERA_TRUE : IMG_CAMERA_FALSE" mode="aspectFit" />
             </view>
             <text v-if="panelStatus === 'open'">{{ isLocalCameraOpen ? '摄像头已开启' : '摄像头已关闭' }}</text>
@@ -238,7 +228,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch } from '../../adapter/vue-demi';
 import { onUnload } from '@dcloudio/uni-app';
 import Avatar from '../Avatar/Avatar.vue';
 import TRTCPusher from '@tencentcloud/trtc-component-uniapp/src/components/TRTCPusher.vue';
@@ -312,12 +302,42 @@ const panelStatus = ref<'open' | 'close'>(
   mediaType.value === CallMediaType.VIDEO ? 'close' : 'open',
 );
 
-const isLocalMicrophoneOpen = computed(() => callParticipantInfo?.value?.selfInfo?.isMicrophoneOpened);
-const isLocalCameraOpen = computed(() => callParticipantInfo?.value?.selfInfo?.isCameraOpened);
+// Vue 2-safe computed properties that avoid optional chaining in template expressions.
+const selfStatus = computed(() => {
+  const info = callParticipantInfo && callParticipantInfo.value;
+  return (info && info.selfInfo && info.selfInfo.status) || CallStatus.IDLE;
+});
+const selfRole = computed(() => {
+  const info = callParticipantInfo && callParticipantInfo.value;
+  return (info && info.selfInfo && info.selfInfo.role) || '';
+});
+const selfAvatarUrl = computed(() => {
+  const info = callParticipantInfo && callParticipantInfo.value;
+  return (info && info.selfInfo && info.selfInfo.avatarUrl) || '';
+});
+const allParticipants = computed(() => {
+  const info = callParticipantInfo && callParticipantInfo.value;
+  return (info && info.allParticipants) || [];
+});
+
+const isLocalMicrophoneOpen = computed(() => {
+  const info = callParticipantInfo && callParticipantInfo.value;
+  return !!(info && info.selfInfo && info.selfInfo.isMicrophoneOpened);
+});
+const isLocalCameraOpen = computed(() => {
+  const info = callParticipantInfo && callParticipantInfo.value;
+  return !!(info && info.selfInfo && info.selfInfo.isCameraOpened);
+});
 const isSpeakerOpen = computed(() => currentAudioRoute.value !== AudioPlayBackDevice.EAR);
 
+// Pre-computed style objects for :style bindings — Vue 2 template compiler
+// does not allow function calls (even plain functions) inside :style.
+const micBgColor = computed(() => getButtonBgColor(isLocalMicrophoneOpen.value));
+const speakerBgColor = computed(() => getButtonBgColor(isSpeakerOpen.value));
+const cameraBgColor = computed(() => getButtonBgColor(isLocalCameraOpen.value));
+
 // Tile count = 1 (local) + remotes
-const tileCount = computed(() => 1 + (callParticipantInfo?.value?.allParticipants?.length || 0));
+const tileCount = computed(() => 1 + allParticipants.value.length);
 
 // View background image helpers for group call tiles.
 const getViewBgImage = (userId: string) => {
@@ -325,7 +345,8 @@ const getViewBgImage = (userId: string) => {
   return bg[userId] || bg['*'] || '';
 };
 const localViewBgImage = computed(() => {
-  const selfId = callParticipantInfo?.value?.selfInfo?.id || '';
+  const info = callParticipantInfo && callParticipantInfo.value;
+  const selfId = (info && info.selfInfo && info.selfInfo.id) || '';
   return getViewBgImage(selfId);
 });
 
@@ -431,49 +452,51 @@ function computeLayout(length: number, focusIdx: number | null) {
  * square-shaped (1/12 of viewport width per grid unit), which matches the
  * source project's mobile behavior.
  */
-function tileStyle(index: number) {
+function _computeTileStyle(index: number): string {
   const layout = computeLayout(tileCount.value, focusIndex.value);
   const target = layout.find(item => item.i === index);
   // Never fully unmount a tile via display:none, because the tile contains a
   // TRTCPusher / TRTCPlayer whose lifecycle must span the whole call. When a
   // tile has no layout slot (e.g. transient race conditions), keep it in the
   // DOM but hide it via visibility so the underlying stream keeps running.
+  //
+  // NOTE: returns a CSS string (not an object). The uni-app Vue 2 mini-program
+  // build does not normalize object `:style` bindings referenced via a
+  // variable, so an object would render as "[object Object]" and the tiles
+  // would lose all positioning. A string renders identically on Vue 2/Vue 3.
   if (!target) {
-    return {
-      position: 'absolute',
-      width: '0',
-      height: '0',
-      left: '0',
-      top: '0',
-      visibility: 'hidden',
-    } as Record<string, string>;
+    return 'position: absolute; width: 0; height: 0; left: 0; top: 0; visibility: hidden;';
   }
   const unit = 100 / 12; // 1 grid cell in vw
-  return {
-    position: 'absolute',
-    width: `${target.w * unit}vw`,
-    height: `${target.h * unit}vw`,
-    left: `${target.x * unit}vw`,
-    top: `${target.y * unit}vw`,
-  } as Record<string, string>;
+  return `position: absolute; width: ${target.w * unit}vw; height: ${target.h * unit}vw; left: ${target.x * unit}vw; top: ${target.y * unit}vw;`;
 }
+
+// Pre-computed tile style array — Vue 2 template compiler does not allow
+// function calls inside :style bindings.
+const tileStyles = computed(() => {
+  const styles: string[] = [];
+  for (let i = 0; i < tileCount.value; i++) {
+    styles.push(_computeTileStyle(i));
+  }
+  return styles;
+});
 
 // Callee waiting overlay: derive inviter info from the authoritative
 // CALLER_USER_INFO (callerInfo), mirroring the official Waiting.vue which reads
 // callerUserInfo rather than scanning the remote list. This is immune to the
 // async ordering / mutations of allParticipants, so the big inviter avatar and
 // name always reflect the real caller.
-const inviterAvatar = computed(() => callParticipantInfo?.value?.callerInfo?.avatarUrl || '');
-const inviterDisplayName = computed(() => {
-  const caller = callParticipantInfo?.value?.callerInfo;
-  return caller?.name || caller?.id || inviterId.value || '';
+const inviterAvatar = computed(() => {
+  const info = callParticipantInfo && callParticipantInfo.value;
+  const caller = info && info.callerInfo;
+  return (caller && caller.avatarUrl) || '';
 });
-// "N people in the call" grid: the full roster = all remote participants
-// (caller + other invitees) PLUS the local user. allParticipants is remote
-// only, so the local user (also a callee) must be appended explicitly,
-// otherwise the callee viewing this page would see one fewer member than
-// actually in the call.
-const participantAvatarList = computed(() => callParticipantInfo?.value?.allParticipants || []);
+const inviterDisplayName = computed(() => {
+  const info = callParticipantInfo && callParticipantInfo.value;
+  const caller = info && info.callerInfo;
+  return (caller && caller.name) || (caller && caller.id) || inviterId.value || '';
+});
+const participantAvatarList = computed(() => allParticipants.value);
 
 
 // Class name for the media grid container. Matches the source project's
@@ -519,42 +542,33 @@ function togglePanelStatus() {
 // Inviter avatar: 100x100 to match source OverlayStream avatarSize=100 on mobile.
 // Uses a 12px rounded-square corner to stay consistent with the 1v1 CallView
 // caller avatar (avatarStyle borderRadius: 12px).
-const inviterAvatarStyle = ref({
-  width: '100px',
-  height: '100px',
-  borderRadius: '12px',
-  display: 'block',
-  margin: '0 auto 12px',
-});
+// NOTE: all avatar style values below are CSS strings (not objects). In the
+// uni-app Vue 2 mini-program build a `:style` bound to a variable is compiled
+// to `style="{{expr}}"` without object normalization, so an object would
+// render as "[object Object]" and be ignored. Strings render identically on
+// both Vue 2 and Vue 3, keeping the UI aligned across frameworks.
+const inviterAvatarStyle = 'width: 100px; height: 100px; border-radius: 12px; display: block; margin: 0 auto 12px;';
 
 // Full-bleed background avatar for a media tile when the camera is off.
 // Absolutely positioned to cover the whole tile (aspectFill via Avatar).
-const tileBgAvatarStyle = ref({
-  position: 'absolute',
-  top: '0',
-  left: '0',
-  width: '100%',
-  height: '100%',
-});
+const tileBgAvatarStyle = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%;';
 
 // Participant avatar tiles in the "N people in the call" grid: 10vw square,
 // matching source Waiting.vue .avatar-item { width: 10vw; height: 10vw }.
-const avatarGroupItemStyle = ref({
-  width: '10vw',
-  height: '10vw',
-  borderRadius: '50%',
-  display: 'block',
-});
+const avatarGroupItemStyle = 'width: 10vw; height: 10vw; border-radius: 50%; display: block;';
 
 // Toggle button background: white when active (mic/camera/speaker on) and
 // muted grey-blue (#6b758a4d = ~30% opacity gray-blue) when closed. Colors
 // match source DefaultUI (basicConfig color: '#FFFFFF', closedConfig color:
 // '#6b758a4d').
-const buttonBgColor = computed(() => (isActive: boolean) => {
+// Returns a CSS string (not an object): the uni-app Vue 2 mini-program build
+// does not normalize object `:style` bindings referenced via a variable, so an
+// object would render as "[object Object]". A string works on both Vue 2/Vue 3.
+function getButtonBgColor(isActive: boolean) {
   return isActive
-    ? { backgroundColor: '#FFFFFF' }
-    : { backgroundColor: '#6b758a4d' };
-});
+    ? 'background-color: #FFFFFF;'
+    : 'background-color: #6b758a4d;';
+}
 
 async function cameraHandler() {
   if (isLocalCameraOpen.value) {
@@ -618,8 +632,8 @@ async function hangupHandler() {
 }
 
 // Watch call status: reset focus and button-clickable flags on IDLE.
-watch(() => callParticipantInfo?.value?.selfInfo, (newObj) => {
-  const newStatus = newObj?.status;
+watch(() => callParticipantInfo.value && callParticipantInfo.value.selfInfo, (newObj) => {
+  const newStatus = newObj && newObj.status;
 
   if (newStatus === CallStatus.IDLE) {
     isAcceptBtnClickable.value = true;
@@ -635,8 +649,9 @@ watch(inviterId, (newVal) => {
 
 // Auto-cleanup: hangup / reject on page unload if still active.
 onUnload(() => {
-  const callStatus = callParticipantInfo?.value?.selfInfo?.status;
-  const callRole = callParticipantInfo?.value?.selfInfo?.role;
+  const info = callParticipantInfo.value && callParticipantInfo.value.selfInfo;
+  const callStatus = info && info.status;
+  const callRole = info && info.role;
 
   if (callStatus === CallStatus.IDLE) return;
   if (callStatus === CallStatus.CALLING) {

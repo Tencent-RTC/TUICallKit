@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "jsx": "preserve",
+    "lib": ["ESNext", "DOM"],
+    "baseUrl": ".",
+    "types": [],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "compileOnSave": false,
+  "include": [
+    "**/*.ts",
+    "**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "unpackage"
+  ]
+}

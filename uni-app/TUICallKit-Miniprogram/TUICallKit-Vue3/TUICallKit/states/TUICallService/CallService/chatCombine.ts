@@ -32,7 +32,7 @@ export default class ChatCombine {
         const { chat, userID, userSig, SDKAppID } = options?.params || {};
         await this._callService?.init({ tim: chat, userID, userSig, sdkAppID: SDKAppID, isFromChat: true, component: COMPONENT.TIM_CALL_KIT });
         this._callService?.setIsFromChat(true);
-        this._callService?.setLogLevel(LOG_LEVEL.NORMAL);
+        this._callService?.setLogLevel(LOG_LEVEL.NONE);
       }
       if (options?.eventName === EVENT.LOGOUT_SUCCESS) {
         await this._callService?.destroyed();

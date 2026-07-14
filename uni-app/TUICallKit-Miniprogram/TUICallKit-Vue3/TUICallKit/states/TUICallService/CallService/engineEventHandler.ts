@@ -201,7 +201,7 @@ export default class EngineEventHandler {
   private async _handleUserEnter(event: any): Promise<void> {
     const { userID: userId, data } = analyzeEventData(event);
 
-    if (userId && TUIStore.getData(StoreName.CALL, NAME.CALL_ROLE === CallRole.CALLEE)) {
+    if (userId && TUIStore.getData(StoreName.CALL, NAME.CALL_ROLE) === CallRole.CALLEE) {
       if (TUIStore.getData(StoreName.CALL, NAME.CALL_STATUS) === CallStatus.CALLING) {
         this._callService._handleAcceptResponse({});
       }

@@ -1,6 +1,6 @@
 import { IUserInfo, ISelfInfoParams, IInitParams } from '../interface/ICallService';
 import { CallMediaType, CameraPosition, AudioPlayBackDevice, LOG_LEVEL } from '@trtc/call-engine-lite-wx';
-import { ICallsParam } from '@trtc/call-engine-lite-wx';
+import { ICallsParams } from '@trtc/call-engine-lite-wx';
 import { StoreName, CallStatus, NAME, CALL_DATA_KEY, CallRole, COMPONENT, FeatureButton, ButtonState, LayoutMode, CALL_RING_EVENTS } from '../const/index';
 import { TUICallEngine } from '@trtc/call-engine-lite-wx';
 import { useRingPlugin } from '../../../plugin/ring';
@@ -8,6 +8,7 @@ import { beforeCall, handlePackageError } from './miniProgram';
 import { checkMicrophonePermission, checkCameraPermission, handlePermissionDenied } from '../../../utils/permission';
 import { CallTips, t } from '../locales/index';
 import { handleModalError, notifyBusyCall } from './UIKitModal';
+import { vueVersion } from '../../../adapter/vue-demi';
 import { handleRepeatedCallError, performanceNow } from '../utils/common-utils';
 import { getMyProfile, getRemoteUserProfile, noDevicePermissionToast, setLocalUserInfoAudioVideoAvailable } from './utils';
 import { ITUIStore } from '../interface/index';
@@ -18,7 +19,7 @@ import { UIDesign } from './UIDesign';
 const TUIStore: ITUIStore = TuiStore.getInstance();
 const uiDesign = UIDesign.getInstance();
 uiDesign.setTUIStore(TUIStore);
-const version = '5.0.0';
+const version = '5.0.1';
 export { TUIStore, uiDesign };
 const defaultOfflinePushInfo = { title: '', description: t('you have a new call') };
 
@@ -65,8 +66,8 @@ export default class TUICallService {
         callkitVersion: version,
         isFromChat: isFromChat || false,
         component,
-        scene: 'wx-uniapp-vue3-lite',
-      });
+        scene: vueVersion === 2 ? 'wx-uniapp-vue2-v5' : 'wx-uniapp-vue3-v5',
+      } as any);
       uiDesign.setEngineInstance(this._tuiCallEngine);
       this._addListenTuiCallEngineEvent();
       this.registerPlugin(useRingPlugin());
@@ -115,7 +116,7 @@ export default class TUICallService {
     }
   }
   // ===============================【通话操作】===============================
-  public async calls(callsParams: ICallsParam) {
+  public async calls(callsParams: ICallsParams) {
     // Guard: only allow a new call when current status is IDLE.
     // The call UI may not be mounted yet, so we trigger a global modal via the
     // UI bridge (UIKitModal) instead of touching any UI code from this layer.
@@ -125,7 +126,7 @@ export default class TUICallService {
     }
     try {
       TUIStore.update(StoreName.CALL, NAME.PUSHER_ID, NAME.NEW_PUSHER);
-      const { userIDList, type, chatGroupID, offlinePushInfo } = callsParams;
+      const { userIDList, type, groupID: chatGroupID, offlinePushInfo } = callsParams;
       if (TUIStore.getData(StoreName.CALL, NAME.CALL_STATUS) !== CallStatus.IDLE) return;
       const remoteUserInfoList = userIDList.map(userId => ({ userId }));
       const callStatus = await this._updateCallStoreBeforeCall(type, remoteUserInfoList, chatGroupID);

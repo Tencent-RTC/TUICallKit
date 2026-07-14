@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue';
+import { ref, watch } from '../adapter/vue-demi';
 import { CallMediaType, AudioPlayBackDevice } from '@trtc/call-engine-lite-wx';
 import {
   TUIStore,
@@ -21,7 +21,7 @@ TUIStore?.watch(StoreName.CALL, {
 function _handleCallMediaTypeChange(value: CallMediaType) {
   mediaType.value = value;
 }
-function _handleCallDurationChange(value: Number) {
+function _handleCallDurationChange(value: number) {
   duration.value = value;
 }
 function _handleCallInfoChange(obj: any) {

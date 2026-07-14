@@ -1,5 +1,7 @@
 // Main entry point for @trtc/calls-uikit-wx-uniapp-engine.
 // Exports composable hooks, login state, constants, types, and utilities.
+// Supports both Vue 2 (with @vue/composition-api + unplugin-vue2-script-setup)
+// and Vue 3 via the adapter/vue-demi compatibility layer.
 
 export { useCallListState } from './states/CallListState';
 export { useCallParticipantState } from './states/CallParticipantState';
@@ -34,4 +36,7 @@ export { checkMicrophonePermission, checkCameraPermission, handlePermissionDenie
 
 // TUIBridge singleton (event bus for Chat integration).
 export { TUIBridge } from './TUIBridge/index';
+
+// Vue version adapter — exposes `vueVersion` (2 or 3) for runtime detection.
+export { vueVersion } from './adapter/vue-demi';
 

@@ -11,8 +11,8 @@
     "postpublish": "node ./script/prepublish.js --restore"
   },
   "dependencies": {
-    "@trtc/calls-uikit-wx-uniapp": "^5.0.0",
-    "@trtc/call-engine-lite-wx": "^5.0.0",
+    "@trtc/calls-uikit-wx-uniapp": "latest",
+    "@trtc/call-engine-lite-wx": "latest",
     "@tencentcloud/trtc-component-uniapp": "^1.0.5"
   }
 }

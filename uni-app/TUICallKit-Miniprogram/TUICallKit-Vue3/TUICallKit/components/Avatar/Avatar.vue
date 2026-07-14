@@ -9,12 +9,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch } from '../../adapter/vue-demi';
 import IMG_DEFAULT_AVATAR from '../../assets/base/default-avatar.png';
 
 const props = defineProps({
   src: { type: String, default: '' },
-  avatarStyle: { type: Object, default: () => ({}) },
+  // Accept a CSS string (preferred) so the `:style` binding renders correctly
+  // on both the uni-app Vue 2 and Vue 3 mini-program builds. Object is kept for
+  // backward compatibility, but callers should pass a string.
+  avatarStyle: { type: [String, Object], default: '' },
 });
 
 // Track load failures so a broken avatar URL falls back to the default image

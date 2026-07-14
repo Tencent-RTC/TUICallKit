@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref } from '../adapter/vue-demi';
 import type { LoginParams, LoginUserInfo, SetSelfInfoParams } from '../types/login';
 import TencentCloudChat from '@tencentcloud/lite-chat/basic';
 import TUIStore from '../utils/TUIStore';

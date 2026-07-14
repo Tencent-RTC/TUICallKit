@@ -1,11 +1,7 @@
-// WeChat Mini Program global API declaration
-declare const wx: {
-  createInnerAudioContext: (options?: { useWebAudioImplement?: boolean }) => WechatInnerAudioContext;
-  onAudioInterruptionBegin: (callback: () => void) => void;
-  onAudioInterruptionEnd: (callback: () => void) => void;
-  offAudioInterruptionBegin: (callback: () => void) => void;
-  offAudioInterruptionEnd: (callback: () => void) => void;
-};
+// WeChat Mini Program audio context types.
+// The `wx` global is declared in TUICallKit/global.d.ts as Record<string, any>
+// so it already covers all APIs. This file only provides the audio context
+// interface shape for internal type safety within the ring plugin.
 
 interface WechatInnerAudioContext {
   src: string;

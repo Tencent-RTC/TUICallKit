@@ -6,43 +6,30 @@
   <div
     class="TUICall-container"
     :class="{ 'is-callee-waiting': isCalleeWaiting }"
-    v-if="callParticipantInfo?.selfInfo?.status !== CallStatus.IDLE"
+    v-if="selfStatus !== CallStatus.IDLE"
   >
     <!-- 顶部菜单栏 -->
-    <view class='topBar' v-if="callParticipantInfo?.selfInfo?.status === CallStatus.CONNECTED">
+    <view class='topBar' v-if="selfStatus === CallStatus.CONNECTED">
       <view class="call-duration">
         <text>{{ formatDuration(duration) }}</text>
       </view>
     </view>
 
-    <!-- Local avatar overlay: rendered only after the call is CONNECTED and
-         the local camera is off. During CALLING the pusher is not yet
-         started so isCameraOpen is false; we intentionally skip the overlay
-         in that phase so the caller does not see their own avatar plastered
-         over the invite screen.
-         When a view background image is configured via setLocalViewBackgroundImage,
-         it replaces the default avatar overlay entirely. -->
+    <!-- Local avatar overlay -->
     <view @click="!isLocalStreamMain && toggleViewSize()" :class="isLocalStreamMain ? 'big-overlay' : 'small-overlay'"
-      v-if="mediaType === CallMediaType.VIDEO && callParticipantInfo?.selfInfo?.status === CallStatus.CONNECTED && !isCameraOpen">
-      <!-- Custom view background image (if configured) -->
+      v-if="mediaType === CallMediaType.VIDEO && selfStatus === CallStatus.CONNECTED && !isCameraOpen">
       <image v-if="localViewBgImage" :src="localViewBgImage" mode="aspectFill" style="position:absolute;width:100%;height:100%;z-index:1;" />
-      <!-- Default avatar overlay (when no custom background is set) -->
       <template v-else>
         <Avatar :avatarStyle="isLocalStreamMain ? bigOverlayAvatarStyle : smallOverlayAvatarStyle"
-          :src="callParticipantInfo?.selfInfo.avatarUrl || IMG_DEFAULT_AVATAR" />
+          :src="selfAvatarUrl || IMG_DEFAULT_AVATAR" />
         <view :class="isLocalStreamMain ? 'big-overlay-mask' : 'small-overlay-mask'"></view>
-        <!-- Centered portrait rendered on top of the blurred cover for both
-             the main (big) and thumbnail (small) slots. -->
         <Avatar
           :avatarStyle="isLocalStreamMain ? centeredOverlayAvatarStyle : centeredSmallOverlayAvatarStyle"
-          :src="callParticipantInfo?.selfInfo.avatarUrl || IMG_DEFAULT_AVATAR" />
+          :src="selfAvatarUrl || IMG_DEFAULT_AVATAR" />
       </template>
     </view>
 
-    <!-- Local stream. Hidden (0x0 via .player-audio) only while the callee is
-         still waiting to accept, so the dark-gray invite background is not
-         covered by the local video container. The caller keeps their local
-         preview visible during CALLING. -->
+    <!-- Local stream -->
     <div
       :class="(mediaType === CallMediaType.AUDIO || !isCameraOpen || isCalleeWaiting) ? 'player-audio' : (isLocalStreamMain ? 'big-video' : 'small-video')"
       @click="!isLocalStreamMain && toggleViewSize()">
@@ -50,56 +37,46 @@
       <TRTCPusher :key="pusherId" :id="pusherId" v-if="pusherId" />
     </div>
 
-    <!-- Remote avatar overlay: rendered when the remote camera is off in a
-         connected 1v1 video call, during an audio call, or while a video
-         callee is still waiting to accept.
-         When a view background image is configured via setRemoteViewBackgroundImage,
-         it replaces the default avatar overlay entirely. -->
+    <!-- Remote avatar overlay -->
     <view :class="(!isLocalStreamMain || isCalleeWaiting) ? 'big-overlay' : 'small-overlay'"
       @click="!isCalleeWaiting && isLocalStreamMain && toggleViewSize()"
-      v-if="mediaType === CallMediaType.AUDIO || isCalleeWaiting || (mediaType === CallMediaType.VIDEO && callParticipantInfo?.selfInfo?.status === CallStatus.CONNECTED && !callParticipantInfo?.allParticipants[0]?.isCameraOpened)">
-      <!-- Custom view background image for remote (if configured) -->
+      v-if="mediaType === CallMediaType.AUDIO || isCalleeWaiting || (mediaType === CallMediaType.VIDEO && selfStatus === CallStatus.CONNECTED && !remoteIsCameraOpened)">
       <image v-if="remoteViewBgImage" :src="remoteViewBgImage" mode="aspectFill" style="position:absolute;width:100%;height:100%;z-index:1;" />
-      <!-- Default avatar overlay (when no custom background is set) -->
       <template v-else>
         <Avatar :avatarStyle="(!isLocalStreamMain || isCalleeWaiting) ? bigOverlayAvatarStyle : smallOverlayAvatarStyle"
-          :src="callParticipantInfo?.allParticipants[0]?.avatarUrl || IMG_DEFAULT_AVATAR" />
+          :src="remoteAvatarUrl || IMG_DEFAULT_AVATAR" />
         <view :class="(!isLocalStreamMain || isCalleeWaiting) ? 'big-overlay-mask' : 'small-overlay-mask'"></view>
-        <!-- Centered portrait rendered on top of the blurred cover. Skipped
-             whenever the voice-invite-message block is visible (audio calls, or
-             any CALLING phase), because that block already renders a centered
-             avatar + nickname over this blurred background. -->
         <Avatar
-          v-if="!(mediaType === CallMediaType.AUDIO || callParticipantInfo?.selfInfo?.status === CallStatus.CALLING)"
+          v-if="!(mediaType === CallMediaType.AUDIO || selfStatus === CallStatus.CALLING)"
           :avatarStyle="!isLocalStreamMain ? centeredOverlayAvatarStyle : centeredSmallOverlayAvatarStyle"
-          :src="callParticipantInfo?.allParticipants[0]?.avatarUrl || IMG_DEFAULT_AVATAR" />
+          :src="remoteAvatarUrl || IMG_DEFAULT_AVATAR" />
       </template>
     </view>
 
     <!-- 远端流 -->
     <view
-      :class="(mediaType === CallMediaType.AUDIO || callParticipantInfo?.selfInfo?.status === CallStatus.CALLING || !callParticipantInfo?.allParticipants[0]?.isCameraOpened) ? 'player-audio' : (!isLocalStreamMain ? 'big-video' : 'small-video')"
+      :class="(mediaType === CallMediaType.AUDIO || selfStatus === CallStatus.CALLING || !remoteIsCameraOpened) ? 'player-audio' : (!isLocalStreamMain ? 'big-video' : 'small-video')"
       @click="isLocalStreamMain && toggleViewSize()">
-      <TRTCPlayer v-if="callParticipantInfo?.allParticipants[0]?.id"
-        :id="`${callParticipantInfo?.allParticipants[0]?.id}_0`" ref="player"
-        :stream-id="`${callParticipantInfo?.allParticipants[0]?.id}_0`" />
+      <TRTCPlayer v-if="remoteUserId"
+        :id="remoteUserId + '_0'" ref="player"
+        :stream-id="remoteUserId + '_0'" />
     </view>
 
     <!-- 用户信息 -->
-    <view v-if="mediaType === CallMediaType.AUDIO || callParticipantInfo?.selfInfo?.status === CallStatus.CALLING"
+    <view v-if="mediaType === CallMediaType.AUDIO || selfStatus === CallStatus.CALLING"
       class="voice-invite-message">
       <Avatar :avatarStyle="avatarStyle"
-        :src="callParticipantInfo?.allParticipants[0]?.avatarUrl || IMG_DEFAULT_AVATAR" />
+        :src="remoteAvatarUrl || IMG_DEFAULT_AVATAR" />
       <text class="nick-name">
-        {{ callParticipantInfo?.allParticipants[0]?.name || callParticipantInfo?.allParticipants[0]?.id }}
+        {{ remoteDisplayName }}
       </text>
     </view>
 
     <!-- 通话状态提示 -->
     <div class="tips">
       <text v-if="showConnectedTip">已接通</text>
-      <div v-if="!showConnectedTip && callParticipantInfo.selfInfo.status !== CallStatus.CONNECTED">
-        <text v-if="callParticipantInfo?.selfInfo?.role !== CallRole.CALLER">
+      <div v-if="!showConnectedTip && selfStatus !== CallStatus.CONNECTED">
+        <text v-if="selfRole !== CallRole.CALLER">
           {{ mediaType === CallMediaType.AUDIO ? '邀请你语音通话' : '邀请你视频通话' }}
         </text>
         <text v-else>等待对方接受</text>
@@ -108,7 +85,7 @@
 
     <!-- 主叫呼叫阶段按钮 -->
     <view class="footer"
-      v-if="callParticipantInfo?.selfInfo?.status === CallStatus.CALLING && callParticipantInfo?.selfInfo?.role === CallRole.CALLER">
+      v-if="selfStatus === CallStatus.CALLING && selfRole === CallRole.CALLER">
       <view class="btn-operate">
         <view class="btn-operate-item">
           <view class="call-operate" style="background-color: #ED4651;" @click="CallerHangupHandler">
@@ -122,7 +99,7 @@
 
     <!-- 被叫呼叫阶段按钮 -->
     <view class="footer"
-      v-if="callParticipantInfo?.selfInfo?.status === CallStatus.CALLING && callParticipantInfo?.selfInfo?.role !== CallRole.CALLER">
+      v-if="selfStatus === CallStatus.CALLING && selfRole !== CallRole.CALLER">
       <view class="btn-operate" style="gap: 40px">
         <view class="btn-operate-item">
           <view class="call-operate" style="background-color: #ED4651;" @click="reject">
@@ -142,10 +119,10 @@
 
     <!-- 语音通话接听阶段按钮 -->
     <view class="footer"
-      v-if="mediaType === CallMediaType.AUDIO && callParticipantInfo?.selfInfo?.status === CallStatus.CONNECTED">
+      v-if="mediaType === CallMediaType.AUDIO && selfStatus === CallStatus.CONNECTED">
       <view class="btn-operate">
         <view class="btn-operate-item" @click="microPhoneHandler" v-if="isButtonVisible(FeatureButton.Microphone)">
-          <view class="call-operate" :style="buttonBgColor(isMicrophoneOpen)">
+          <view class="call-operate" :style="micBgColor">
             <image :src="isMicrophoneOpen ? IMG_AUDIO_TRUE : IMG_AUDIO_FALSE" mode="aspectFit"></image>
           </view>
           <text>{{ isMicrophoneOpen ? '麦克风已开启' : '麦克风已关闭' }}</text>
@@ -158,7 +135,7 @@
           <text>挂断</text>
         </view>
         <view class="btn-operate-item" @click="setAudioRoute">
-          <view class="call-operate" :style="buttonBgColor(isSpeakerOpen)">
+          <view class="call-operate" :style="speakerBgColor">
             <image mode="aspectFit" class="btn-image" :src="isSpeakerOpen ? IMG_SPEAKER_TRUE : IMG_SPEAKER_FALSE">
             </image>
           </view>
@@ -169,23 +146,23 @@
 
     <!-- 视频通话接听阶段按钮 -->
     <view class="footer"
-      v-if="mediaType === CallMediaType.VIDEO && callParticipantInfo?.selfInfo?.status === CallStatus.CONNECTED">
+      v-if="mediaType === CallMediaType.VIDEO && selfStatus === CallStatus.CONNECTED">
       <view class="btn-operate">
         <view class="btn-operate-item" @click="microPhoneHandler" v-if="isButtonVisible(FeatureButton.Microphone)">
-          <view class="call-operate" :style="buttonBgColor(isMicrophoneOpen)">
+          <view class="call-operate" :style="micBgColor">
             <image :src="isMicrophoneOpen ? IMG_AUDIO_TRUE : IMG_AUDIO_FALSE" mode="aspectFit"></image>
           </view>
           <text>{{ isMicrophoneOpen ? '麦克风已开启' : '麦克风已关闭' }}</text>
         </view>
         <view class="btn-operate-item" @click="setAudioRoute">
-          <view class="call-operate" :style="buttonBgColor(isSpeakerOpen)">
+          <view class="call-operate" :style="speakerBgColor">
             <image mode="aspectFit" class="btn-image" :src="isSpeakerOpen ? IMG_SPEAKER_TRUE : IMG_SPEAKER_FALSE">
             </image>
           </view>
           <text>{{ isSpeakerOpen ? '扬声器已开启' : '扬声器已关闭' }}</text>
         </view>
         <view class="btn-operate-item" @click="cameraHandler" v-if="isButtonVisible(FeatureButton.Camera)">
-          <view class="call-operate" :style="buttonBgColor(isCameraOpen)">
+          <view class="call-operate" :style="cameraBgColor">
             <image mode="aspectFit" class="btn-image" :src="isCameraOpen ? IMG_CAMERA_TRUE : IMG_CAMERA_FALSE"></image>
           </view>
           <text>{{ isCameraOpen ? '摄像头已开启' : '摄像头已关闭' }}</text>
@@ -197,8 +174,7 @@
             <image v-if="isHangupBtnClickable" :src="IMG_HANGUP" mode="aspectFit" />
             <image v-else class="img-loading" :src="IMG_LOADING" mode="aspectFit"></image>
           </view>
-          <!-- Switch-camera: hidden when hideFeatureButton(SwitchCamera) is called;
-               otherwise rendered, but disabled when the local camera is off. -->
+          <!-- Switch-camera -->
           <view v-if="isButtonVisible(FeatureButton.SwitchCamera)" :class="['switch-camera', { disabled: !isCameraOpen }]" @click.stop="switchCameraHandler">
             <image :src="IMG_SWITCH_CAMERA" mode="aspectFit"/>
           </view>
@@ -210,7 +186,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed } from '../../adapter/vue-demi';
 import { onHide, onUnload } from '@dcloudio/uni-app'
 import Avatar from '../Avatar/Avatar.vue';
 import TRTCPusher from '@tencentcloud/trtc-component-uniapp/src/components/TRTCPusher.vue';
@@ -269,75 +245,77 @@ const isButtonVisible = (btn: FeatureButton) => !hiddenButtons.value.has(btn);
 
 // View background images for local / remote overlays.
 const localViewBgImage = computed(() => {
-  const selfId = callParticipantInfo?.value?.selfInfo?.id || '';
+  const info = callParticipantInfo && callParticipantInfo.value;
+  const selfId = (info && info.selfInfo && info.selfInfo.id) || '';
   return viewBackground.value[selfId] || '';
 });
 const remoteViewBgImage = computed(() => {
-  const remoteId = callParticipantInfo?.value?.allParticipants?.[0]?.id || '';
-  return viewBackground.value[remoteId] || viewBackground.value['*'] || '';
+  const rId = remoteUserId.value;
+  return viewBackground.value[rId] || viewBackground.value['*'] || '';
 });
-const isMicrophoneOpen = computed(() => callParticipantInfo?.value.selfInfo?.isMicrophoneOpened);
-const isCameraOpen = computed(() => callParticipantInfo?.value.selfInfo?.isCameraOpened);
+// Vue 2-safe computed properties that avoid optional chaining in template expressions.
+const selfStatus = computed(() => {
+  const info = callParticipantInfo && callParticipantInfo.value;
+  return (info && info.selfInfo && info.selfInfo.status) || CallStatus.IDLE;
+});
+const selfRole = computed(() => {
+  const info = callParticipantInfo && callParticipantInfo.value;
+  return (info && info.selfInfo && info.selfInfo.role) || '';
+});
+const selfAvatarUrl = computed(() => {
+  const info = callParticipantInfo && callParticipantInfo.value;
+  return (info && info.selfInfo && info.selfInfo.avatarUrl) || '';
+});
+const remoteUser = computed((): any => {
+  const info = callParticipantInfo && callParticipantInfo.value;
+  const participants = info && info.allParticipants;
+  return (participants && participants[0]) || {};
+});
+const remoteUserId = computed(() => remoteUser.value.id || '');
+const remoteAvatarUrl = computed(() => remoteUser.value.avatarUrl || '');
+const remoteDisplayName = computed(() => remoteUser.value.name || remoteUser.value.id || '');
+const remoteIsCameraOpened = computed(() => !!remoteUser.value.isCameraOpened);
+
+const isMicrophoneOpen = computed(() => {
+  const info = callParticipantInfo && callParticipantInfo.value;
+  return !!(info && info.selfInfo && info.selfInfo.isMicrophoneOpened);
+});
+const isCameraOpen = computed(() => {
+  const info = callParticipantInfo && callParticipantInfo.value;
+  return !!(info && info.selfInfo && info.selfInfo.isCameraOpened);
+});
 const isSpeakerOpen = computed(() => currentAudioRoute.value !== AudioPlayBackDevice.EAR);
+
+// Pre-computed style objects for :style bindings — Vue 2 template compiler
+// does not allow function calls (even plain functions) inside :style.
+const micBgColor = computed(() => getButtonBgColor(isMicrophoneOpen.value));
+const speakerBgColor = computed(() => getButtonBgColor(isSpeakerOpen.value));
+const cameraBgColor = computed(() => getButtonBgColor(isCameraOpen.value));
 const showConnectedTip = ref(false);
 // True while the local user is the callee and has not yet accepted the call.
-// Used to gate the dark-gray invite background and hide the local video
-// container that would otherwise cover it.
 const isCalleeWaiting = computed(() =>
-  callParticipantInfo?.value?.selfInfo?.status === CallStatus.CALLING
-    && callParticipantInfo?.value?.selfInfo?.role !== CallRole.CALLER,
+  selfStatus.value === CallStatus.CALLING && selfRole.value !== CallRole.CALLER,
 );
-const bigOverlayAvatarStyle = ref({
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-  objectFit: 'cover',
-  zIndex: 1,
-});
+// NOTE: Avatar style values MUST be CSS strings (not objects). In the uni-app
+// Vue 2 mini-program build, a `:style` bound to a variable is compiled to
+// `style="{{expr}}"` without object normalization, so an object would render
+// as "[object Object]" and be ignored. CSS strings render identically on both
+// Vue 2 and Vue 3, keeping the UI aligned across frameworks.
+const bigOverlayAvatarStyle = 'position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: 1;';
 
 // Centered rounded-square avatar rendered on top of the blurred big-overlay
 // background, shown in the main stream slot when the participant's camera
 // is off. Provides a clear focal portrait in addition to the blurred cover.
-const centeredOverlayAvatarStyle = ref({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  width: '100px',
-  height: '100px',
-  transform: 'translate(-50%, -50%)',
-  borderRadius: '12px',
-  zIndex: 3,
-});
+const centeredOverlayAvatarStyle = 'position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; transform: translate(-50%, -50%); border-radius: 12px; z-index: 3;';
 
 // Smaller centered avatar for the small-overlay (thumbnail) slot, so a
 // participant with the camera off still shows a recognisable portrait in
 // the picture-in-picture tile.
-const centeredSmallOverlayAvatarStyle = ref({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  width: '48px',
-  height: '48px',
-  transform: 'translate(-50%, -50%)',
-  borderRadius: '8px',
-  zIndex: 101,
-});
+const centeredSmallOverlayAvatarStyle = 'position: absolute; top: 50%; left: 50%; width: 48px; height: 48px; transform: translate(-50%, -50%); border-radius: 8px; z-index: 101;';
 
-const smallOverlayAvatarStyle = ref({
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-  objectFit: 'cover',
-  zIndex: 99
-});
+const smallOverlayAvatarStyle = 'position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: 99;';
 
-const avatarStyle = ref({
-  width: '100px',
-  height: '100px',
-  borderRadius: '12px',
-  display: 'block',
-  margin: '140px auto 15px'
-});
+const avatarStyle = 'width: 100px; height: 100px; border-radius: 12px; display: block; margin: 140px auto 15px;';
 
 function toggleViewSize() {
   if (mediaType.value === CallMediaType.VIDEO) {
@@ -406,15 +384,17 @@ async function hangupHandler() {
   }
 }
 
-const buttonBgColor = computed(() => (isActive: boolean) => {
-  return isActive ? { backgroundColor: '#FFFFFF', } : {
-    backgroundColor: '#22262E',
-    opacity: '0.5'
-  };
-})
+// Returns a CSS string (not an object): the uni-app Vue 2 mini-program build
+// does not normalize object `:style` bindings referenced via a variable, so an
+// object would render as "[object Object]". A string works on both Vue 2/Vue 3.
+function getButtonBgColor(isActive: boolean) {
+  return isActive
+    ? 'background-color: #FFFFFF;'
+    : 'background-color: #22262E; opacity: 0.5;';
+}
 
-watch(() => callParticipantInfo?.value?.selfInfo, (newObj, oldObj) => {
-  const newStatus = newObj?.status;
+watch(() => callParticipantInfo.value && callParticipantInfo.value.selfInfo, (newObj, oldObj) => {
+  const newStatus = newObj && newObj.status;
 
   if (mediaType.value === CallMediaType.VIDEO) {
     // During CALLING the caller sees their own stream large (matches original);
@@ -428,7 +408,7 @@ watch(() => callParticipantInfo?.value?.selfInfo, (newObj, oldObj) => {
     isLocalStreamMain.value = false;
   }
 
-  if (newStatus === CallStatus.CONNECTED && oldObj?.status === CallStatus.CALLING) {
+  if (newStatus === CallStatus.CONNECTED && oldObj && oldObj.status === CallStatus.CALLING) {
     showConnectedTip.value = true;
     setTimeout(() => {
       showConnectedTip.value = false;
@@ -449,8 +429,9 @@ watch(inviterId, (newVal, oldVal) => {
 });
 
 onUnload(() => {
-  const callStatus = callParticipantInfo?.value?.selfInfo?.status;
-  const callRole = callParticipantInfo?.value?.selfInfo?.role;
+  const info = callParticipantInfo.value && callParticipantInfo.value.selfInfo;
+  const callStatus = info && info.status;
+  const callRole = info && info.role;
 
   if (callStatus === CallStatus.IDLE) return;
   if (callStatus === CallStatus.CALLING) {

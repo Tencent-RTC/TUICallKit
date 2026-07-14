@@ -3,13 +3,17 @@ module.exports = {
   parallel: false,
   configureWebpack: {
     plugins: [
-      ScriptSetup({
-        /* options */
-      }),
+      ScriptSetup({}),
     ],
+    resolve: {
+      // Prevent webpack from following pnpm symlinks to their real .pnpm store
+      // paths. UniApp's compiler uses the resolved path to generate component
+      // references in the output JSON. Without this, it produces unresolvable
+      // paths like `node-modules/.pnpm/@tencentcloud+trtc-component-uniapp@.../...`.
+      symlinks: false,
+    },
   },
   chainWebpack(config) {
-    // disable type check and let `vue-tsc` handles it
     config.plugins.delete('fork-ts-checker');
   },
 };

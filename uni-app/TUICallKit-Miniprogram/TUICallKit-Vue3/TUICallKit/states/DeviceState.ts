@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref } from '../adapter/vue-demi';
 import { AudioPlayBackDevice } from '@trtc/call-engine-lite-wx';
 import {
   TUIStore,

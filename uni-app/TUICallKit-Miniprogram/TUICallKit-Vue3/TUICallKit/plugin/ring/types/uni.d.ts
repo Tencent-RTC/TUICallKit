@@ -1,6 +1,3 @@
-// Uni-app global API declaration — used for cross-module event bus communication.
-declare const uni: {
-  $on(eventName: string, callback: (data?: any) => void): void;
-  $off(eventName: string, callback?: (data?: any) => void): void;
-  $emit(eventName: string, data?: any): void;
-};
+// Uni-app global API declarations have been consolidated into /shims/uni.d.ts.
+// This file is intentionally kept empty to avoid duplicate `declare const uni` conflicts.
+

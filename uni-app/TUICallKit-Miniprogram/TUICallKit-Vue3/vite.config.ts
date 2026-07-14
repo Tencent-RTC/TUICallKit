@@ -8,9 +8,11 @@ import uni from '@dcloudio/vite-plugin-uni';
 export default defineConfig({
   plugins: [uni()],
   resolve: {
-    // Prefer the `miniprogram` / `wx` fields declared by `@trtc/call-engine-lite-wx`
-    // package.json `exports` map; fall back to standard fields otherwise.
-    mainFields: ['miniprogram', 'wx', 'module', 'jsnext:main', 'jsnext', 'main'],
+    // Do NOT use 'miniprogram' condition here — the mp build of call-engine
+    // calls native wx APIs (e.g. getTRTCShareInstance) directly, which are
+    // not available in UniApp. Use the default ESM build instead.
+    conditions: ['import', 'module', 'default'],
+    mainFields: ['module', 'jsnext:main', 'jsnext', 'main'],
     dedupe: [
       '@tencentcloud/lite-chat',
       'eventemitter3',

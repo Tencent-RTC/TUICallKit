@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref } from '../adapter/vue-demi';
 import { TUIStore, StoreName, NAME, CallStatus, CallRole } from './TUICallService/index';
 
 // UI-facing participant model consumed by CallView / GroupCallView.
