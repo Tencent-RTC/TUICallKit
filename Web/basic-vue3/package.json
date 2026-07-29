@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "pvite",
-    "dev:deep": "pvite",
+    "dev": "vite",
+    "dev:deep": "vite",
     "start": "vite",
-    "build": "pvue-tsc -b && vite build",
+    "build": "vue-tsc -b && vite build",
     "preview": "vite preview"
   },
   "dependencies": {

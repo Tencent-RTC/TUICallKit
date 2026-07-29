@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "pvite",
-    "dev:deep": "pvite",
-    "build": "ptsc -b && vite build",
+    "dev": "vite",
+    "dev:deep": "vite",
+    "build": "tsc -b && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },

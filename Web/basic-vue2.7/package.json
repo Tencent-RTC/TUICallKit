@@ -3,9 +3,9 @@
   "private": true,
   "homepage": "./",
   "scripts": {
-    "dev": "pvite",
-    "dev:deep": "pvite",
-    "build": "prun-p build-only",
+    "dev": "vite",
+    "dev:deep": "vite",
+    "build": "run-p build-only",
     "preview": "vite preview --port 4173",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit"
