@@ -3,15 +3,15 @@
   "private": true,
   "homepage": "./",
   "scripts": {
-    "dev": "pvite",
-    "dev:deep": "pvite",
-    "build": "prun-p build-only",
+    "dev": "vite",
+    "dev:deep": "vite",
+    "build": "run-p build-only",
     "preview": "vite preview --port 4173",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@trtc/calls-uikit-vue2": "~4.4.9",
+    "@trtc/calls-uikit-vue2": "4.5.5",
     "aegis-web-sdk": "^1.36.5",
     "copy-to-clipboard": "^3.3.3",
     "element-ui": "^2.15.12",
@@ -19,7 +19,6 @@
     "rtc-detect": "^0.0.5",
     "sass": "^1.58.3",
     "sass-loader": "^13.2.0",
-    "trtc-js-sdk": "^4.15.22",
     "vue": "^2.7.14",
     "vue-i18n": "^8.28.2",
     "vue-i18n-bridge": "^9.2.2"

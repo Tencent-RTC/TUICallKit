@@ -1,4 +1,5 @@
 import { useContext, useMemo } from 'react';
+import type { JSX } from 'react';
 import { Row, Col, Flex, } from 'antd';
 import { UserInfoContext } from '../../../context';
 import { ClassNames, getClientSize, NAME } from '../../../utils/index';

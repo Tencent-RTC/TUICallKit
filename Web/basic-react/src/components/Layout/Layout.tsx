@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import { isH5 } from '../../utils';
 import LayoutPC from './PC/Layout';
 import LayoutH5 from './H5/Layout';
