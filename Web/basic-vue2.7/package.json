@@ -7,11 +7,12 @@
     "dev:deep": "vite",
     "build": "run-p build-only",
     "preview": "vite preview --port 4173",
+    "prebuild-only": "node ./scripts/patch-trtc-esm.cjs",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@trtc/calls-uikit-vue2": "4.5.5",
+    "@trtc/calls-uikit-vue2": "~4.5.5",
     "aegis-web-sdk": "^1.36.5",
     "copy-to-clipboard": "^3.3.3",
     "element-ui": "^2.15.12",
