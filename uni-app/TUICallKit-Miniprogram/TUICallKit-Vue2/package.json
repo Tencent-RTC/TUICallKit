@@ -1,20 +1,24 @@
 {
   "name": "TUICallKit-Vue2",
   "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "main": "index.js",
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "description": "TUICallKit WeChat mini-program demo for UniApp (Vue 2)",
+  "scripts": {
+    "prepublishOnly": "node ./script/prepublish.js",
+    "postpublish": "node ./script/prepublish.js --restore"
+  },
   "dependencies": {
+    "@tencentcloud/lite-chat": ">=1.6.0",
+    "@tencentcloud/trtc-cloud-wx": "^1.0.9",
+    "@tencentcloud/trtc-component-uniapp": "^1.0.5",
+    "@tencentcloud/trtc-component-wx": "^1.0.7",
+    "@trtc/call-engine-lite-wx": "latest",
     "@trtc/calls-uikit-wx-uniapp": "latest",
     "@vue/composition-api": "^1.7.2",
+    "trtc-wx-sdk": "^1.1.15",
     "unplugin-vue2-script-setup": "^0.11.4"
-  },
-  "devDependencies": {
-    "unplugin-vue-components": "^0.25.1"
   }
 }

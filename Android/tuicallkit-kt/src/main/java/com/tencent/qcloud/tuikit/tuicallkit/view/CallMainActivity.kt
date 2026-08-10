@@ -1,5 +1,6 @@
 package com.tencent.qcloud.tuikit.tuicallkit.view
 
+import android.app.Activity
 import android.app.AppOpsManager
 import android.app.PictureInPictureParams
 import android.content.pm.ActivityInfo
@@ -8,8 +9,12 @@ import android.os.Bundle
 import android.util.Rational
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.enableEdgeToEdge
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.qcloud.tuicore.permission.PermissionCallback
@@ -56,7 +61,6 @@ class CallMainActivity : FullScreenActivity() {
 
     private fun enterPictureInPictureModeWithBuild() {
         if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            CallManager.instance.viewState.enterPipMode.set(false)
             return
         }
         if (TUIBuild.getVersionInt() >= Build.VERSION_CODES.O && hasPipModePermission()) {
@@ -113,12 +117,14 @@ class CallMainActivity : FullScreenActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         DeviceUtils.setScreenLockParams(window)
         if (TUIBuild.getVersionInt() >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
             setTurnScreenOn(true)
         }
         setContentView(R.layout.tuicallkit_activity_call_kit)
+        applyWindowInsets()
         requestedOrientation = when (GlobalState.instance.orientation) {
             Constants.Orientation.Portrait -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             Constants.Orientation.LandScape -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
@@ -128,6 +134,11 @@ class CallMainActivity : FullScreenActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (isInPipModeSafe()) {
+            initPipView()
+            registerObserver()
+            return
+        }
 
         PermissionRequest.requestPermissions(application, CallManager.instance.callState.mediaType.get(),
             object : PermissionCallback() {
@@ -167,6 +178,36 @@ class CallMainActivity : FullScreenActivity() {
         KeyMetrics.countUV(KeyMetrics.EventId.WAKEUP, CallManager.instance.callState.callId)
         FloatWindowManager.sharedInstance().dismiss()
         CallManager.instance.viewState.router.set(ViewState.ViewRouter.FullView)
+    }
+
+    private fun initPipView() {
+        callView = ConstraintLayout(this)
+        val lp = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        callView?.addView(PipWindowView(this), lp)
+        val rootView = window.decorView.findViewById<View>(android.R.id.content) as ViewGroup
+        rootView.addView(callView)
+    }
+
+    private fun Activity.isInPipModeSafe(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            try {
+                isInPictureInPictureMode
+            } catch (e: Exception) {
+                Logger.e(TAG, "isInPictureInPictureMode failed. {Device:${Build.MODEL},Exception:$e}")
+                false
+            }
+        } else {
+            false
+        }
+    }
+
+    private fun applyWindowInsets() {
+        val rootView = window.decorView.findViewById<View>(android.R.id.content)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updatePadding(bottom = insets.bottom)
+            windowInsets
+        }
     }
 
     private fun handleCallAcceptAction() {

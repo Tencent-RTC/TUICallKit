@@ -1,0 +1,12 @@
+# OS X Files
+.DS_Store
+**/.DS_Store
+node_modules
+package-lock.json
+**/pnpm-lock.yaml
+!conference/pnpm-lock.yaml
+!live/pnpm-lock.yaml
+.idea
+.vscode
+.history
+unpackage

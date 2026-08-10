@@ -1,6 +1,6 @@
 {
     "name" : "uniapp-callkit-vue3",
-    "appid" : "__UNI__5205699",
+    "appid" : "__UNI__DA0D07A",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -50,7 +50,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wxc297db62adbdb10c",
+        "appid" : "wx6546805a14bb7ef9",
         "setting" : {
             "urlCheck" : false
         },

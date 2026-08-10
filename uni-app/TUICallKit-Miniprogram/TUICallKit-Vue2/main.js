@@ -1,9 +1,10 @@
-import vuecomposition from "@vue/composition-api" 
 import App from './App'
-Vue.use(vuecomposition)
+
 // #ifndef VUE3
 import Vue from 'vue'
+import VueCompositionAPI from '@vue/composition-api'
 import './uni.promisify.adaptor'
+Vue.use(VueCompositionAPI)
 Vue.config.productionTip = false
 App.mpType = 'app'
 const app = new Vue({
