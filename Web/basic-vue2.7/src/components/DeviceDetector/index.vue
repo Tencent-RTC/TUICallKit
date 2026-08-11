@@ -2,11 +2,6 @@
   <div v-if="visible" class="device-detector-backdrop">
     <div class="root" @click="stopBubble">
       <Button type="outlined" class="close" :onClick="handleClose">Skip detection</Button>
-      <DeviceConnect
-        v-if="detectStage === 0"
-        :stepNameList="stepNameList"
-        :startDeviceDetect="() => setDetectStage(1)"></DeviceConnect>
-
       <div v-if="detectStage === 1" class="step-container">
         <div
           v-for="(label, index) in stepNameList"
@@ -22,33 +17,6 @@
           <span class="step-label">{{label.toUpperCase()}}</span>
         </div>
       </div>
-
-      <div v-if="detectStage === 1" class="testing-container">
-        <div v-for="(step, index) in stepNameList" :key="index">
-          <CameraDetector
-            v-if="step === 'camera'"
-            :key="index"
-            :activeDetector="stepNameList[activeStep]"
-            :handleCompleted="handleCompleted"></CameraDetector>
-          <MicDetector
-            v-if="step === 'microphone'"
-            :key="index"
-            :activeDetector="stepNameList[activeStep]"
-            :handleCompleted="handleCompleted"></MicDetector>
-          <SpeakerDetector
-            v-if="step === 'speaker'"
-            :key="index"
-            :activeDetector="stepNameList[activeStep]"
-            :handleCompleted="handleCompleted"></SpeakerDetector>
-          <NetworkDetector
-            v-if="step === 'network'"
-            :key="index"
-            :activeDetector="stepNameList[activeStep]"
-            :networkDetectInfo="networkDetectInfo"
-            :handleCompleted="handleCompleted"
-            :generateReport="() => setDetectStage(2)"></NetworkDetector>
-        </div>
-      </div>
       <DetectorReport
         v-if="detectStage === 2"
         :reportData="completed"
@@ -60,22 +28,10 @@
 <script>
 import RTCDetect from 'rtc-detect';
 import Button from './button.vue';
-import DeviceConnect from './deviceConnect.vue';
-import CameraDetector from './cameraDetector.vue';
-import MicDetector from './micDetector.vue';
-import SpeakerDetector from './speakerDetector.vue';
-import NetworkDetector from './networkDetector.vue';
-import DetectorReport from './detectorReport.vue';
 export default {
   name: 'deviceDetector',
   components: {
     Button,
-    DeviceConnect,
-    CameraDetector,
-    MicDetector,
-    SpeakerDetector,
-    NetworkDetector,
-    DetectorReport,
   },
   props: {
     onClose: Function,

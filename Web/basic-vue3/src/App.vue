@@ -3,6 +3,7 @@
     :class="callClass"
     :allowedMinimized="true"
     :allowedFullScreen="true"
+    :videoResolution="VideoResolution.RESOLUTION_360P"
   />
   <template v-if="!isH5">
     <Layout>
@@ -16,7 +17,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, provide, reactive } from 'vue';
-import { TUICallKit } from '@trtc/calls-uikit-vue';
+import { TUICallKit, VideoResolution } from '@trtc/calls-uikit-vue';
 import { useAegis } from './hooks/index';
 import { UserInfoContextKey, IUserInfoContext, UserInfoContextDefaultValue } from './context';
 import { isH5 } from './utils';

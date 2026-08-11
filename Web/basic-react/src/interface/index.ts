@@ -55,12 +55,12 @@ export interface IDeviceCheckPanelProps {
   operateDevicePanel: IOperateDevicePanel;
 }
 export interface ICardProps {
-  title?: JSX.Element;
-  body?: JSX.Element;
+  title?: React.JSX.Element;
+  body?: React.JSX.Element;
   className?: string;
 }
 export interface IContentProps {
-  children?: JSX.Element;
+  children?: React.JSX.Element;
 }
 export enum LanguageType {
   en = 'en',
