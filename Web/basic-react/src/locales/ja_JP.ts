@@ -70,6 +70,8 @@ const ja = {
   "Please open the browser console to see the failure reason.": "ブラウザのコンソールを開いて、失敗の原因を確認してください。",
   "The current Call uikit package you purchased does not support this feature. We recommend going to the TRTC console to enable it.": "現在のCall uikitパッケージでは、この機能はサポートされていません。TRTCコンソールに移動して有効にすることをおすすめします。",
   "You have disabled camera/microphone access permission. Please allow the current application to use the camera/microphone.": "カメラ/マイクへのアクセス許可が無効になっています。現在のアプリケーションにカメラ/マイクの使用を許可してください。",
+  "No camera or microphone detected. Please check whether your device is properly connected.": "カメラまたはマイクが検出されませんでした。デバイスが正しく接続されているか確認してください。",
+  "The camera/microphone could not be started. It may be occupied by another application. Please close other apps and try again.": "カメラ/マイクを起動できませんでした。他のアプリケーションに使用されている可能性があります。他のアプリを閉じてから再試行してください。",
   "You have not purchased the Call UIKit package. Please go to the Tencent RTC console to subscribe.": "Call UIKitパッケージを購入していません。Tencent RTCコンソールにアクセスして購読してください。",
   // configuration check tips
   "Configuration Check": "設定チェック",

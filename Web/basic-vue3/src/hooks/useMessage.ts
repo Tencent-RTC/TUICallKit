@@ -59,6 +59,16 @@ export default function useMessage() {
         message: `${t('You have disabled camera/microphone access permission. Please allow the current application to use the camera/microphone.')}`,
         type: 'error',
       });
+    } else if (String(error)?.includes('NotFoundError')) {
+      showMessage({
+        message: `${t('No camera or microphone detected. Please check whether your device is properly connected.')}`,
+        type: 'error',
+      });
+    } else if (String(error)?.includes('NotReadableError')) {
+      showMessage({
+        message: `${t('The camera/microphone could not be started. It may be occupied by another application. Please close other apps and try again.')}`,
+        type: 'error',
+      });
     } else if (String(error)?.includes('-1001')) {
       showMessage({
         message: `${t('You have not purchased the Call UIKit package. Please go to the Tencent RTC console to subscribe.')}`,

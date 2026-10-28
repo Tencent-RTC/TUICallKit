@@ -35,6 +35,7 @@ export default function useCall() {
         userIDList: [calleeUserID.value],
         roomID: roomID,
         type: userInfo.currentCallType.value === 'video' ? TUICallType.VIDEO_CALL : TUICallType.AUDIO_CALL,
+        // cloudRecordPolicy: CloudRecordPolicy.Enable,
       });
 
       reportEvent({ apiName: 'call.success' });

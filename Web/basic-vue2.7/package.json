@@ -12,7 +12,7 @@
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@trtc/calls-uikit-vue2": "~4.5.5",
+    "@trtc/calls-uikit-vue2": "~4.7.0",
     "aegis-web-sdk": "^1.36.5",
     "copy-to-clipboard": "^3.3.3",
     "element-ui": "^2.15.12",

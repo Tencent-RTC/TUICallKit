@@ -3,7 +3,13 @@ import QuickLinkObj from './quick-link';
 
 export const BASE_URL = 'https://web.sdk.qcloud.com/component/TUICallKit/basic-vue3/index.html';
 
-export const isH5 = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+// HarmonyOS phones/tablets are treated as H5, while HarmonyOS 2-in-1 PCs are
+// not: every HarmonyOS UA contains "OpenHarmony"/"HarmonyOS"/"ArkWeb", so the
+// device type (Phone/Tablet/Mobile vs. PC) in the UA is used to exclude PCs.
+const ua = navigator.userAgent;
+const isHarmony = /OpenHarmony|HarmonyOS|ArkWeb/i.test(ua);
+const isHarmonyMobile = isHarmony && /Phone|Tablet|Mobile/i.test(ua) && !/\bPC\b/i.test(ua);
+export const isH5 = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua) || isHarmonyMobile;
 
 export function checkUserID(userID: string) {
   const regex = /^[a-zA-Z0-9_-]{1,32}$/;
