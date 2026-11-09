@@ -1,0 +1,18 @@
+{
+  "name": "subscribe-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "微信小程序订阅消息下发服务端示例",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1"
+  }
+}
