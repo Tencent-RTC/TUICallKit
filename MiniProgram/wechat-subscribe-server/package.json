@@ -1,5 +1,5 @@
 {
-  "name": "subscribe-demo",
+  "name": "wechat-subscribe-server",
   "version": "1.0.0",
   "private": true,
   "description": "微信小程序订阅消息下发服务端示例",

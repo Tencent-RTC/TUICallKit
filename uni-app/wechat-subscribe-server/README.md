@@ -14,7 +14,7 @@
 ## 快速开始
 
 ```bash
-cd MiniProgram/subscribe-demo
+cd uni-app/wechat-subscribe-server
 npm install
 cp .env.example .env   # 填入 AppID / AppSecret / 模板 ID / DEMO_OPENID
 npm start
@@ -50,53 +50,11 @@ curl -X POST http://localhost:3000/api/notify/send \
 
 返回 `data.errcode` 为 `0` 表示已下发。
 
-## 小程序端发起订阅
-
-`wx.requestSubscribeMessage` 必须在用户点击事件的同步调用栈中发起，调用前不得存在 `await` 或异步回调，因此模板 ID 需在 `onLoad` 阶段提前取好。
-
-```javascript
-Page({
-  onLoad() {
-    wx.request({
-      url: 'https://your-domain.com/api/config',
-      success: ({ data }) => {
-        this.templateId = data.data.templateId;
-      },
-    });
-  },
-
-  onTapSubscribe() {
-    wx.requestSubscribeMessage({
-      tmplIds: [this.templateId],
-      success: (res) => {
-        const result = res[this.templateId];
-        const accepted = result === 'accept' || result === 'acceptWithAudio';
-
-        if (accepted) {
-          wx.showToast({ title: '已开启提醒', icon: 'none' });
-        } else if (result === 'reject') {
-          wx.showModal({
-            title: '提醒未开启',
-            content: '需允许接收消息，才能在离开小程序时收到提醒。',
-            confirmText: '前往设置',
-            success: (m) => { if (m.confirm) wx.openSetting(); },
-          });
-        }
-      },
-      fail: (err) => {
-        console.error('[subscribe] fail', err.errCode, err.errMsg);
-      },
-    });
-  },
-});
-```
-
 ## 注意事项
 
 - `data` 的字段名与类型由模板决定，不可自定义：`thing` 限 20 个字符，`time` 须形如 `2026年11月5日 14:30`，所有类型均不支持 emoji 与换行符，不符合时下发接口返回 `47003`。示例中的 `sanitize`、`formatTime` 用于满足该限制。
 - `access_token` 按 AppID 全局唯一、有效期 7200 秒。示例使用进程内缓存，多实例部署须改为 Redis 等集中缓存，否则会随机出现 `40001`。
 - `miniprogram_state` 为 `developer` 时仅开发版可接收消息；使用体验版或正式版测试需同步改为 `trial` 或 `formal`，否则消息不会送达但下发接口仍返回成功。
-- 消息由微信「服务通知」送达，需在手机微信中查看，开发者工具不接收消息。
 
 ## 参考文档
 
